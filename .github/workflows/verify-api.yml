@@ -5,6 +5,10 @@ name: Verify API key
 
 on:
   workflow_dispatch:
+  # TEMP: lets me trigger a verification run via push (the integration can't dispatch workflows).
+  push:
+    branches: [main]
+    paths: [".github/workflows/verify-api.yml"]
 
 permissions:
   contents: read
