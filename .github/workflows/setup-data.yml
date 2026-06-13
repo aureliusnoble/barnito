@@ -1,0 +1,60 @@
+name: Setup data (one-time)
+
+# Manually-triggered: builds the real roster + fixtures from API-Football (uses ~a day's
+# free-tier quota), regenerates dummy predictions against that real roster so the demo stays
+# coherent, recomputes scores, and commits everything. Run this once after adding the secret.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dummy_predictions:
+        description: "Regenerate sample/dummy predictions from the real roster"
+        type: boolean
+        default: true
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Build roster (teams, players, positions)
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: npm run roster
+
+      - name: Pull all fixtures (full refresh)
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: npm run fetch -- --full
+
+      - name: Regenerate dummy predictions from real roster
+        if: ${{ inputs.dummy_predictions }}
+        run: npm run seed:predictions
+
+      - name: Recompute scores
+        run: npm run score
+
+      - name: Commit data
+        run: |
+          git config user.name "barnito-bot"
+          git config user.email "actions@github.com"
+          if git diff --quiet -- public/data; then
+            echo "No data changes."
+          else
+            git add public/data
+            git commit -m "data: initial roster, fixtures & scores from API-Football"
+            git push
+          fi

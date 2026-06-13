@@ -232,8 +232,8 @@ function applyOverrides(file: MatchesFile): MatchesFile {
 
 async function main() {
   if (!roster.teams.some((t) => t.apiId)) {
-    console.error("roster.json has no API ids — run `npm run roster` first.");
-    process.exit(1);
+    console.warn("roster.json has no API ids yet — run the setup workflow / `npm run roster`. Skipping (0 API requests).");
+    return;
   }
 
   const needFull = FORCE || isStale() || !prev.matches.some((m) => m.apiId);
