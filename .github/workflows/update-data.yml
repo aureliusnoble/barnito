@@ -11,6 +11,10 @@ on:
         description: "Force a full refresh (re-pull all fixtures)"
         type: boolean
         default: false
+  # TEMP: validate the v3 pipeline live (only fires when this file changes; remove after).
+  push:
+    branches: [claude/barnito-world-cup-tracker-0fjkzn]
+    paths: [".github/workflows/update-data.yml"]
 
 # Don't let runs overlap; let a running commit finish before the next starts.
 concurrency:
