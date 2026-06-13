@@ -12,7 +12,7 @@ import type { Roster, Team, Player, GroupLetter, GoalMultiplier } from "@shared/
 import { GOAL_MULTIPLIER } from "@shared/constants.js";
 import {
   apiGet, apiGetAllPages, getRequestCount, mapPosition, groupLetterFrom,
-  WC_LEAGUE, WC_SEASON, type ApiStandingRow, type ApiPlayerEntry,
+  WC_LEAGUE, WC_SEASON, type ApiStandingRow, type ApiPlayerEntry, type ApiTeamEntry,
 } from "./lib/apiFootball.js";
 import { slug, writeJson } from "./lib/util.js";
 
@@ -40,6 +40,21 @@ async function main() {
   }
   teams.sort((a, b) => a.group.localeCompare(b.group) || a.name.localeCompare(b.name));
   console.log(`  ${teams.length} teams across ${groups.length} groups`);
+
+  // enrich with crest, code and venue from /teams
+  const teamEntries = await apiGet<ApiTeamEntry>("teams", { league: WC_LEAGUE, season: WC_SEASON });
+  const byApi = new Map(teamEntries.map((e) => [e.team.id, e]));
+  for (const t of teams) {
+    const e = t.apiId != null ? byApi.get(t.apiId) : undefined;
+    if (!e) continue;
+    t.logo = e.team.logo ?? null;
+    t.code = e.team.code ?? null;
+    if (e.venue)
+      t.venue = {
+        name: e.venue.name ?? null, city: e.venue.city ?? null,
+        capacity: e.venue.capacity ?? null, image: e.venue.image ?? null,
+      };
+  }
 
   const players: Player[] = [];
   const usedIds = new Set<string>();

@@ -81,8 +81,8 @@ export async function apiGetAllPages<T>(path: string, params: Record<string, str
 // --- response shapes we use ------------------------------------------------
 
 export interface ApiTeamEntry {
-  team: { id: number; name: string; logo: string };
-  group?: string;
+  team: { id: number; name: string; code?: string | null; logo: string };
+  venue?: { name: string | null; city: string | null; capacity?: number | null; image?: string | null };
 }
 
 export interface ApiStandingRow {
@@ -112,11 +112,77 @@ export interface ApiFixture {
 }
 
 export interface ApiEvent {
-  time: { elapsed: number | null };
+  time: { elapsed: number | null; extra?: number | null };
   team: { id: number; name: string };
   player: { id: number | null; name: string | null };
-  type: string; // "Goal", "Card", "subst"
-  detail: string; // "Normal Goal", "Own Goal", "Penalty", "Missed Penalty"
+  assist?: { id: number | null; name: string | null };
+  type: string; // "Goal", "Card", "subst", "Var"
+  detail: string; // "Normal Goal", "Own Goal", "Penalty", "Missed Penalty", "Yellow Card", ...
+}
+
+export interface ApiLineupPlayer {
+  player: { id: number | null; name: string; number: number | null; pos: string | null; grid: string | null };
+}
+export interface ApiLineup {
+  team: { id: number; name: string };
+  formation: string | null;
+  startXI: ApiLineupPlayer[];
+  substitutes: ApiLineupPlayer[];
+  coach?: { id: number; name: string } | null;
+}
+export interface ApiStatistics {
+  team: { id: number };
+  statistics: { type: string; value: string | number | null }[];
+}
+export interface ApiFixturePlayers {
+  team: { id: number };
+  players: {
+    player: { id: number; name: string };
+    statistics: { games: { number: number | null; position: string | null; rating: string | null } }[];
+  }[];
+}
+
+/** /fixtures?ids=... returns the base fixture plus these embedded objects. */
+export interface ApiFixtureDetailed extends ApiFixture {
+  events?: ApiEvent[];
+  lineups?: ApiLineup[];
+  statistics?: ApiStatistics[];
+  players?: ApiFixturePlayers[];
+}
+
+// top scorers / assists / cards: /players/topscorers etc.
+export interface ApiPlayerStat {
+  player: { id: number; name: string; photo: string };
+  statistics: {
+    team: { id: number; name: string };
+    goals: { total: number | null; assists: number | null };
+    games: { position: string | null; appearences: number | null };
+    cards: { yellow: number | null; red: number | null };
+  }[];
+}
+
+export interface ApiInjury {
+  player: { id: number; name: string };
+  team: { id: number; name: string };
+  type: string;
+  reason: string;
+}
+
+export interface ApiPrediction {
+  predictions: {
+    winner: { id: number | null; name: string | null } | null;
+    advice: string | null;
+    percent: { home: string; draw: string; away: string };
+  };
+  teams: { home: { id: number }; away: { id: number } };
+}
+
+export function mapEventType(t: string): "GOAL" | "CARD" | "SUBST" | "VAR" {
+  const s = t.toLowerCase();
+  if (s === "goal") return "GOAL";
+  if (s === "card") return "CARD";
+  if (s === "subst") return "SUBST";
+  return "VAR";
 }
 
 /** Map API-Football position strings to our four buckets. */

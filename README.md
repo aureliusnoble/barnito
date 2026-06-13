@@ -81,13 +81,22 @@ The cron is deliberately stingy:
 
 - **Zero API calls** except (a) the one-time setup, and (b) inside a live match window — from 10 min
   before kickoff until ~2h45 after ("just after"). No live game → no calls.
-- During a live window it polls every 10 min: **1 call** for live scores, and a `/fixtures/events`
-  call only when a new goal appears (capped at `MAX_EVENT_FETCHES`, default 8/run).
-- A hard **daily ceiling** (`API_DAILY_CAP`, default 400) is tracked in `public/data/_api-usage.json`
-  and the cron refuses to exceed it — runaway protection on top of API-Football's own 7,500/day.
+- During a live window it polls every 10 min with **~2 calls**: `/fixtures?live=all`, then one
+  batched `/fixtures?ids=…` (up to 20 matches) that returns **events, lineups, live stats and player
+  ratings embedded** — so a whole round of simultaneous matches is still ~2 calls.
+- Top scorers / injuries refresh at most every ~20 min while live; forecasts (match predictions) only
+  on setup / daily. A hard **daily ceiling** (`API_DAILY_CAP`, default 400) tracked in
+  `public/data/_api-usage.json` stops runaways, on top of API-Football's own 7,500/day.
 - Standings are computed locally (no `/standings` calls after setup).
 
 Realistically that's well under ~150 calls on the busiest match day — a rounding error against 7,500.
+
+## Extra data shown (from API-Football)
+
+Crests & player photos, stadium/city, a full match **event timeline** (goals/cards/subs/VAR),
+**lineups**, **live match stats** (possession/shots bars), **player ratings**, the **Golden Boot**
+race (highlighting picked players), **injury** flags on picks, group **form** guides, and the API's
+**match-prediction** favourite on upcoming games. All gracefully degrade if a feed is missing.
 
 ## Admin: fixing data on the fly
 

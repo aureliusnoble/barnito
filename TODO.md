@@ -94,6 +94,18 @@ See the approved plan for the full design. This file tracks status, decisions, a
 ### Status
 - [x] main created & pushed; demo site deployed (synthetic data) at https://aureliusnoble.github.io/barnito/
 - [x] setup-data made manual-only (was auto-failing on free key)
+- [x] Pro plan verified live (72 fixtures, 12+1 groups, positions present, 0/7500 used)
+
+## v2 enhancements (paid API confirmed) — done
+- [x] 2026 design system: lucide icons, crests/photos, emerald accent, Inter+Bricolage, motion
+- [x] Crest (logo→flag) + Avatar (photo→initials) primitives
+- [x] Match modal: event timeline, live stat bars, lineups, top performers (ratings)
+- [x] Golden Boot race (picked-player highlight), injuries flags, group form dots, forecast chips
+- [x] live auto-refresh (45s while a match is live)
+- [x] data contract extended; seed emits events/lineups/stats/ratings/venues + stats/injuries/forecasts.json
+- [x] build-roster: team crests/codes/venues; fetch-data: batched /fixtures?ids embedded details +
+      topscorers/injuries/predictions, cost-gated; all typecheck, 20 tests + build green
+- note: pipeline (build-roster/fetch-data) still UNtested live — runs at user's setup.
 
 ## Issues encountered
 - openfootball path `2026/cup.json` is 404; the correct file is `2026/worldcup.json`. Top-level keys
