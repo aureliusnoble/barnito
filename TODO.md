@@ -107,19 +107,20 @@ See the approved plan for the full design. This file tracks status, decisions, a
       topscorers/injuries/predictions, cost-gated; all typecheck, 20 tests + build green
 - note: pipeline (build-roster/fetch-data) still UNtested live — runs at user's setup.
 
-## v3 requests (2026-06-13) — in progress
-- [ ] A. Live matches must NOT contribute points until FINISHED. In the live match view, highlight
-      predictions matching the CURRENT score (strong) and matching the current winner/draw (subtle).
-      → scoring engine: points only on FINISHED; add matchesCurrentScore/Outcome flags; update modal + tests.
-- [ ] B. Replace synth airhorn with a real copyright-free MLG airhorn mp3 (public/airhorn.mp3).
-- [ ] C. Redesign the Spicy page — currently messy; make it sleek/modern.
-- [ ] D. Knockout bracket page — show rounds as confirmed, with match date/time.
-      → bracket.json + types; fetch-data captures knockout fixtures; seed placeholder bracket.
-- [ ] E. Team info / lineups / stadium — lineups already done (pre+post). Add stadium capacity;
-      coach via API lineups. FIFA ranking + weather: NOT in API-Football → skip (note it).
-- [ ] F. Navigation reorg for the extra pages; keep mobile sleek (≤6 bottom tabs).
-- [ ] G. Final design review: sleekness, mobile, animations, flow; reorganise as needed.
-- [ ] H. Pull REAL data from main, recompute scores with new rules, push to main (dummy preds for now).
+## v3 requests (2026-06-13) — done
+- [x] A. Live matches award no points until FINISHED; live modal highlights "on the score"/"on the result".
+- [x] B. Real copyright-free airhorn: generated public/airhorn.wav (synthesised); button plays it.
+- [x] C. Spicy redesigned: hero "don't miss" + clean heat-bar list; focuses next 7 days.
+- [x] D. Knockout bracket (bracket.json + fetch-data capture) as Knockouts toggle on Matches; placeholder until drawn.
+- [x] E. Lineups (pre @45m + post) + stadium name/city in modal. FIFA ranking + weather NOT in API → skipped.
+- [x] F. Nav kept at 6 tabs (bracket folded into Matches); animated active indicator + bigger tap targets.
+- [x] G. Design pass: route transitions, Now-hub teasers, prediction-split donut (replaced win-prob), sleekness.
+- [x] H. Real data merged + cleaned + rescored under new rules; daily full refresh added (knockout draw/fixtures).
+
+## Deploy note
+- ⚠️ github-pages env only allows the repo DEFAULT branch (currently the working branch) to deploy →
+  main deploys were rejected. Bridge: deploy.yml also triggers on the working branch. USER must set
+  default branch = main (Settings → General) and/or add `main` to github-pages env deployment branches.
 
 - openfootball path `2026/cup.json` is 404; the correct file is `2026/worldcup.json`. Top-level keys
   are `{ name, matches[] }` (104 matches incl. knockout placeholders; 72 are group-stage Group A–L).

@@ -69,11 +69,12 @@ const toNum = (v: unknown): number | null => {
   return Number.isFinite(n) ? n : null;
 };
 
-interface Usage { date: string; count: number }
+interface Usage { date: string; count: number; lastFull?: string }
+const FULL_INTERVAL_MS = 20 * 3600_000; // one lightweight full refresh / day (catches knockout draw, fixture changes)
 const todayUtc = () => new Date().toISOString().slice(0, 10);
 function loadUsage(): Usage {
   const u = load<Usage>(USAGE_FILE, { date: todayUtc(), count: 0 });
-  return u.date === todayUtc() ? u : { date: todayUtc(), count: 0 };
+  return u.date === todayUtc() ? u : { date: todayUtc(), count: 0, lastFull: u.lastFull };
 }
 
 function inLiveWindow(): boolean {
@@ -355,14 +356,17 @@ async function main() {
     console.warn("roster.json has no API ids yet — run setup / `npm run roster`. Skipping (0 requests).");
     return;
   }
-  const bootstrapped = prev.matches.some((m) => m.apiId);
-  const needFull = FORCE;
-  const live = inLiveWindow();
-  if (!needFull) {
-    if (!bootstrapped) { console.log("Fixtures not bootstrapped — run setup (--full). Skipping."); return; }
-    if (!live) { console.log("No match live right now — skipping (0 requests)."); return; }
-  }
   const usage = loadUsage();
+  const lastFull = usage.lastFull ? Date.parse(usage.lastFull) : 0;
+  const bootstrapped = prev.matches.some((m) => m.apiId);
+  // Full refresh on setup/force, the first run, or once a day (catches the knockout draw,
+  // fixture time changes, and any results missed outside live windows).
+  const needFull = FORCE || !bootstrapped || now - lastFull > FULL_INTERVAL_MS;
+  const live = inLiveWindow();
+  if (!needFull && !live) {
+    console.log("No match live and fixtures are fresh — skipping (0 requests).");
+    return;
+  }
   if (!FORCE && usage.count >= DAILY_CAP) {
     console.warn(`Daily API cap (${DAILY_CAP}) reached — skipping.`);
     return;
@@ -394,6 +398,7 @@ async function main() {
     catch (e) { console.warn("  forecasts refresh failed:", (e as Error).message); }
   }
 
+  if (needFull) usage.lastFull = new Date().toISOString();
   usage.count += getRequestCount();
   writeJson(USAGE_FILE, usage);
   console.log(`  ${getRequestCount()} requests this run; ${usage.count}/${DAILY_CAP} used today.`);

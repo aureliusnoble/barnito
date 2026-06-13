@@ -2,7 +2,10 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    # The current repo default branch is the working branch; the github-pages environment only
+    # allows its default branch to deploy. We list both so the latest deploys regardless — once
+    # you set the default branch to `main`, the working-branch line can be removed.
+    branches: [main, claude/barnito-world-cup-tracker-0fjkzn]
     paths-ignore:
       - "TODO.md"
       - "README.md"
