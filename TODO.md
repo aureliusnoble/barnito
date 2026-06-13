@@ -21,10 +21,11 @@ See the approved plan for the full design. This file tracks status, decisions, a
 - [x] `scripts/seed-from-openfootball.ts` — dev seed roster/matches/standings (synthetic mid-tournament)
 - [x] `scripts/seed-predictions.ts` — sample participants for the demo
 - [x] `scripts/score.ts` — scoring CLI → scores.json
-- [ ] `scripts/build-roster.ts` — full roster + positions from API-Football (runtime, needs key)
-- [ ] `scripts/parse-predictions.ts` — SheetJS parser, names→IDs, fail loudly
-- [ ] `scripts/make-template.ts` — generate the Excel prediction template
-- [ ] `scripts/fetch-data.ts` — API-Football fetch, self-throttle, merge overrides → matches/standings.json
+- [x] `scripts/build-roster.ts` — full roster + positions from API-Football (manual/local, needs key)
+- [x] `scripts/parse-predictions.ts` — exceljs parser, labels→IDs, fail loudly w/ fuzzy hints (tested)
+- [x] `scripts/make-template.ts` — Excel template with dropdown validation (exceljs)
+- [x] `scripts/fetch-data.ts` — API-Football fetch, self-throttle, local standings, merge overrides
+- note: swapped `xlsx` → `exceljs` (free xlsx can't write dropdown data-validation)
 
 ## 3. Scoring engine + tests
 - [x] exact=45, outcome=30, draw handling
@@ -48,15 +49,18 @@ See the approved plan for the full design. This file tracks status, decisions, a
 - [x] `npm run build` succeeds (208 kB JS / 67 kB gzip)
 
 ## 5. CI / deploy
-- [ ] `.github/workflows/deploy.yml` — build + deploy to Pages
-- [ ] `.github/workflows/update-data.yml` — cron fetch+score, commit changed JSON
-- [ ] README with setup steps (API key secret, Pages enable, template distribution)
+- [x] `.github/workflows/deploy.yml` — build + deploy to Pages (push to main / dispatch)
+- [x] `.github/workflows/update-data.yml` — cron (*/10) fetch+score, commit changed JSON
+- [x] README with setup steps (API key secret, Pages enable, template distribution)
+- [x] overrides.example.json + predictions/ README
 
 ## 6. Verification
-- [ ] tests green
-- [ ] build + preview, click through all pages on seed data
-- [ ] parser round-trip with sample filled template
-- [ ] push branch, confirm workflows
+- [x] tests green (20: scoring, standings, full-app render/modal smoke)
+- [x] build succeeds; seed:all regenerates data
+- [x] parser round-trip with sample filled templates (success + loud failure paths)
+- [~] push branch, confirm workflows (push pending; workflows can't run until on main + secret set)
+- [ ] ⚠️ no live browser screenshot possible in sandbox (Chromium download blocked) — verify via `npm run dev`
+- [ ] ⚠️ API-Football scripts (build-roster/fetch-data) typecheck but are UNtested live (no key in sandbox)
 
 ---
 

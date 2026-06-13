@@ -1,0 +1,24 @@
+{
+  "_comment": "Copy to overrides.json to hand-correct data. Merged AFTER the API fetch, so it always wins. Use it when the API misses a goal, mislabels a result, or to award the champion at the end. Match keys are Barnito match ids like 'A-1' (see public/data/matches.json). Delete entries once the API catches up.",
+
+  "tournamentComplete": false,
+  "championTeamId": null,
+
+  "matches": {
+    "A-1": {
+      "status": "FINISHED",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "playerId": "brazil-some-player",
+          "apiPlayerId": null,
+          "playerName": "Manual Entry",
+          "minute": 23,
+          "teamId": "brazil",
+          "ownGoal": false
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,53 @@
+name: Update match data
+
+on:
+  schedule:
+    # every 10 minutes — the script self-throttles and makes ZERO API calls
+    # outside live match windows, so this stays well under the free-tier 100/day.
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force a full refresh (re-pull all fixtures)"
+        type: boolean
+        default: false
+
+# Don't let runs overlap; let a running commit finish before the next starts.
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Fetch latest results
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          FORCE: ${{ inputs.force && '1' || '' }}
+        run: npm run fetch
+
+      - name: Recompute scores
+        run: npm run score
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "barnito-bot"
+          git config user.email "actions@github.com"
+          if git diff --quiet -- public/data; then
+            echo "No data changes."
+          else
+            git add public/data
+            git commit -m "data: update results & scores"
+            git push
+          fi

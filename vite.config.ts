@@ -4,7 +4,7 @@ import { fileURLToPath, URL } from "node:url";
 
 // Deployed under https://<user>.github.io/barnito/ so assets need the /barnito/ base.
 // Override with BARNITO_BASE for custom domains (e.g. "/").
-const base = process.env.BARNITO_BASE ?? "/barnito/";
+const base = process.env.BARNITO_BASE || "/barnito/";
 
 export default defineConfig({
   base,
