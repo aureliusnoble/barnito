@@ -104,7 +104,7 @@ export interface ApiFixture {
     id: number;
     date: string;
     status: { short: string; elapsed: number | null };
-    venue: { name: string | null };
+    venue: { name: string | null; city?: string | null };
   };
   league: { id: number; round: string };
   teams: { home: { id: number; name: string }; away: { id: number; name: string } };

@@ -135,17 +135,21 @@ function buildMatch(f: ApiFixture, id: string, details?: Details, carry?: Match)
   const home = teamByApi.get(f.teams.home.id)!;
   const away = teamByApi.get(f.teams.away.id)!;
   const md = f.league.round.match(/(\d+)\s*$/);
+  const status = mapStatus(f.fixture.status.short);
+  const played = status === "LIVE" || status === "HT" || status === "FINISHED";
+  const v = f.fixture.venue;
   return {
     id, apiId: f.fixture.id, group: home.group, matchday: md ? Number(md[1]) : 1,
-    kickoff: f.fixture.date, ground: f.fixture.venue?.name ?? carry?.ground ?? null,
-    venue: carry?.venue ?? null,
-    homeTeamId: home.id, awayTeamId: away.id, status: mapStatus(f.fixture.status.short),
+    kickoff: f.fixture.date, ground: v?.name ?? null,
+    venue: v?.name ? { name: v.name, city: v.city ?? null } : null,
+    homeTeamId: home.id, awayTeamId: away.id, status,
     elapsed: f.fixture.status.elapsed, homeGoals: f.goals.home, awayGoals: f.goals.away,
-    goals: details?.goals ?? carry?.goals ?? [],
-    events: details?.events ?? carry?.events,
-    lineups: details?.lineups ?? carry?.lineups,
-    stats: details?.stats ?? carry?.stats,
-    ratings: details?.ratings ?? carry?.ratings,
+    // rich data only for played matches; never carry it onto a (re-)scheduled fixture
+    goals: played ? (details?.goals ?? carry?.goals ?? []) : [],
+    events: played ? (details?.events ?? carry?.events) : undefined,
+    lineups: details?.lineups ?? (played ? carry?.lineups : undefined),
+    stats: played ? (details?.stats ?? carry?.stats) : undefined,
+    ratings: played ? (details?.ratings ?? carry?.ratings) : undefined,
   };
 }
 
