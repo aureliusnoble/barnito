@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Radio, CalendarDays, Trophy, Table2, Goal, Flame } from "lucide-react";
 import { useBarnito } from "../data/store";
 import AirhornButton from "./AirhornButton";
@@ -17,6 +17,7 @@ const NAV = [
 export default function Layout({ children }: { children: ReactNode }) {
   const { scores } = useBarnito();
   const updated = new Date(scores.updatedAt);
+  const loc = useLocation();
 
   return (
     <div className="mx-auto flex min-h-screen max-w-3xl flex-col">
@@ -66,7 +67,11 @@ export default function Layout({ children }: { children: ReactNode }) {
       </header>
 
       <main className="flex-1 px-3 pb-28 pt-5 sm:px-4">
-        <MatchModalProvider>{children}</MatchModalProvider>
+        <MatchModalProvider>
+          <div key={loc.pathname} className="animate-slide-up">
+            {children}
+          </div>
+        </MatchModalProvider>
       </main>
 
       {/* mobile bottom nav */}
@@ -78,14 +83,21 @@ export default function Layout({ children }: { children: ReactNode }) {
               to={n.to}
               end={n.end}
               className={({ isActive }) =>
-                `flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition ${
-                  isActive ? "text-accent-400" : "text-pitch-400"
+                `relative flex min-h-[52px] flex-col items-center justify-center gap-1 text-[10px] font-semibold transition ${
+                  isActive ? "text-accent-400" : "text-pitch-400 active:text-pitch-200"
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <n.icon size={20} strokeWidth={isActive ? 2.6 : 2} />
+                  {isActive && (
+                    <span className="absolute top-0 h-0.5 w-7 rounded-full bg-accent-400 animate-fade-in" />
+                  )}
+                  <n.icon
+                    size={20}
+                    strokeWidth={isActive ? 2.6 : 2}
+                    className={`transition-transform ${isActive ? "-translate-y-px scale-110" : ""}`}
+                  />
                   {n.label}
                 </>
               )}

@@ -331,3 +331,30 @@ export interface ForecastsFile {
   updatedAt: string;
   items: Forecast[];
 }
+
+// ---------------------------------------------------------------------------
+// bracket.json — knockout rounds (populated as they're confirmed)
+// ---------------------------------------------------------------------------
+
+export interface BracketMatch {
+  apiId: number | null;
+  round: string;
+  kickoff: string | null;
+  ground?: string | null;
+  homeTeamId: string | null; // null while TBD
+  awayTeamId: string | null;
+  homeName?: string | null; // placeholder label when a slot is undecided
+  awayName?: string | null;
+  status: MatchStatus;
+  homeGoals: number | null;
+  awayGoals: number | null;
+}
+export interface BracketRound {
+  name: string;
+  order: number;
+  matches: BracketMatch[];
+}
+export interface BracketFile {
+  updatedAt: string;
+  rounds: BracketRound[];
+}

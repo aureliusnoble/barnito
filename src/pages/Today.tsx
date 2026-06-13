@@ -1,15 +1,20 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Trophy, Radio, CalendarDays, ChevronRight } from "lucide-react";
-import { useBarnito } from "../data/store";
+import { Trophy, Radio, CalendarDays, ChevronRight, Goal, Flame } from "lucide-react";
+import { useBarnito, useHelpers } from "../data/store";
 import MatchCard from "../components/MatchCard";
-import { SectionTitle } from "../components/bits";
+import { SectionTitle, Crest } from "../components/bits";
 import { sameUtcDay, formatDay } from "../lib/format";
 import type { Match } from "@shared/types";
 
 export default function Today() {
-  const { matches, scores } = useBarnito();
+  const { matches, scores, stats, matchById } = useBarnito();
+  const { teamName } = useHelpers();
   const now = new Date();
+  const topScorer = stats.topScorers[0];
+  const horizon = Date.now() + 7 * 24 * 60 * 60 * 1000;
+  const spicy = scores.spiciness.find((s) => Date.parse(s.kickoff) <= horizon) ?? scores.spiciness[0];
+  const spicyMatch = spicy && matchById.get(spicy.matchId);
 
   const { live, todays, nextDayLabel, nextDay } = useMemo(() => {
     const all = [...matches.matches].sort((a, b) => a.kickoff.localeCompare(b.kickoff));
@@ -58,6 +63,44 @@ export default function Today() {
           </div>
         </Link>
       )}
+
+      <div className="grid grid-cols-2 gap-3">
+        <Link to="/scorers" className="card card-hover flex flex-col gap-1 p-3">
+          <span className="flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-pitch-400">
+            <Goal size={13} className="text-accent-400" /> Golden Boot
+          </span>
+          {topScorer ? (
+            <>
+              <span className="truncate font-display font-bold text-white">{topScorer.name}</span>
+              <span className="text-xs text-pitch-400">
+                {topScorer.value} {topScorer.value === 1 ? "goal" : "goals"}
+                {topScorer.teamName ? ` · ${topScorer.teamName}` : ""}
+              </span>
+            </>
+          ) : (
+            <span className="text-sm text-pitch-500">No goals yet</span>
+          )}
+        </Link>
+        <Link to="/spicy" className="card card-hover flex flex-col gap-1 p-3">
+          <span className="flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-pitch-400">
+            <Flame size={13} className="text-spice-400" /> Spiciest soon
+          </span>
+          {spicyMatch ? (
+            <>
+              <span className="flex items-center gap-1 font-display font-bold text-white">
+                <Crest teamId={spicyMatch.homeTeamId} size={16} />
+                <span className="truncate text-sm">{teamName(spicyMatch.homeTeamId)}</span>
+                <span className="text-pitch-600">v</span>
+                <Crest teamId={spicyMatch.awayTeamId} size={16} />
+                <span className="truncate text-sm">{teamName(spicyMatch.awayTeamId)}</span>
+              </span>
+              <span className="text-xs text-spice-400">up to {spicy!.maxSwing} pts swing</span>
+            </>
+          ) : (
+            <span className="text-sm text-pitch-500">Nothing upcoming</span>
+          )}
+        </Link>
+      </div>
 
       {live.length > 0 && (
         <section>

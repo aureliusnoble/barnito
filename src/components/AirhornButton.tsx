@@ -63,7 +63,7 @@ let realClip: HTMLAudioElement | null | undefined;
 function playAirhorn() {
   // try a real clip once; fall back to the synth
   if (realClip === undefined) {
-    const a = new Audio(`${import.meta.env.BASE_URL}airhorn.mp3`);
+    const a = new Audio(`${import.meta.env.BASE_URL}airhorn.wav`);
     a.addEventListener("error", () => {
       realClip = null;
       playSynthAirhorn();

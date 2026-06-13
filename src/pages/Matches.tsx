@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
+import { LayoutGrid, Trophy } from "lucide-react";
 import { useBarnito } from "../data/store";
 import MatchCard from "../components/MatchCard";
+import Bracket from "../components/Bracket";
 import { formatDay } from "../lib/format";
 import { GROUPS } from "@shared/constants";
 
@@ -9,6 +11,7 @@ type DayFilter = "ALL" | 1 | 2 | 3;
 
 export default function Matches() {
   const { matches } = useBarnito();
+  const [mode, setMode] = useState<"groups" | "knockouts">("groups");
   const [group, setGroup] = useState<GroupFilter>("ALL");
   const [matchday, setMatchday] = useState<DayFilter>("ALL");
 
@@ -33,6 +36,28 @@ export default function Matches() {
 
   return (
     <div className="space-y-4">
+      {/* group stage vs knockouts */}
+      <div className="grid grid-cols-2 gap-1 rounded-xl bg-pitch-900/70 p-1 ring-1 ring-white/[0.06]">
+        {([["groups", "Group stage", LayoutGrid], ["knockouts", "Knockouts", Trophy]] as const).map(
+          ([m, label, Icon]) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-sm font-semibold transition ${
+                mode === m ? "bg-accent-500 text-pitch-950" : "text-pitch-300 hover:text-white"
+              }`}
+            >
+              <Icon size={14} strokeWidth={2.5} />
+              {label}
+            </button>
+          ),
+        )}
+      </div>
+
+      {mode === "knockouts" ? (
+        <Bracket />
+      ) : (
+        <>
       <div className="space-y-2">
         <Pills
           label="Group"
@@ -66,6 +91,8 @@ export default function Matches() {
           </div>
         </section>
       ))}
+        </>
+      )}
     </div>
   );
 }

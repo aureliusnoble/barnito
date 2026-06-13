@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type {
   Roster, MatchesFile, PredictionsFile, StandingsFile, ScoresFile,
-  StatsFile, InjuriesFile, ForecastsFile,
+  StatsFile, InjuriesFile, ForecastsFile, BracketFile,
   Team, Player, Match, Participant, InjuryItem, Forecast,
 } from "@shared/types";
 
@@ -14,6 +14,7 @@ export interface BarnitoData {
   stats: StatsFile;
   injuries: InjuriesFile;
   forecasts: ForecastsFile;
+  bracket: BracketFile;
   // lookups
   teamById: Map<string, Team>;
   playerById: Map<string, Player>;
@@ -47,7 +48,7 @@ async function fetchOptional<T>(file: string, fallback: T, bust: number): Promis
 }
 
 async function loadAll(bust: number): Promise<BarnitoData> {
-  const [roster, matches, predictions, standings, scores, stats, injuries, forecasts] =
+  const [roster, matches, predictions, standings, scores, stats, injuries, forecasts, bracket] =
     await Promise.all([
       fetchJson<Roster>("roster.json", bust),
       fetchJson<MatchesFile>("matches.json", bust),
@@ -57,9 +58,10 @@ async function loadAll(bust: number): Promise<BarnitoData> {
       fetchOptional<StatsFile>("stats.json", { updatedAt: "", topScorers: [], topAssists: [], topCards: [] }, bust),
       fetchOptional<InjuriesFile>("injuries.json", { updatedAt: "", items: [] }, bust),
       fetchOptional<ForecastsFile>("forecasts.json", { updatedAt: "", items: [] }, bust),
+      fetchOptional<BracketFile>("bracket.json", { updatedAt: "", rounds: [] }, bust),
     ]);
   return {
-    roster, matches, predictions, standings, scores, stats, injuries, forecasts,
+    roster, matches, predictions, standings, scores, stats, injuries, forecasts, bracket,
     teamById: new Map(roster.teams.map((t) => [t.id, t])),
     playerById: new Map(roster.players.map((p) => [p.id, p])),
     matchById: new Map(matches.matches.map((m) => [m.id, m])),

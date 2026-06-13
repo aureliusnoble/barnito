@@ -91,6 +91,13 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
         </div>
 
         <div className="space-y-5 p-4">
+          {match.status === "SCHEDULED" && (
+            <PredictionSplit
+              preds={predicted}
+              homeName={teamName(match.homeTeamId)}
+              awayName={teamName(match.awayTeamId)}
+            />
+          )}
           {events.length > 0 && <Timeline match={match} events={events} />}
           {match.stats && match.stats.length === 2 && <StatBars match={match} stats={match.stats} />}
           <TopPerformers match={match} />
@@ -150,6 +157,82 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
         </div>
       </div>
     </div>
+  );
+}
+
+/** Donut (hollow ring) of how the GROUP predicted this upcoming match: home win / draw / away win. */
+function PredictionSplit({
+  preds,
+  homeName,
+  awayName,
+}: {
+  preds: { predHome: number | null; predAway: number | null }[];
+  homeName: string;
+  awayName: string;
+}) {
+  const made = preds.filter((p) => p.predHome != null && p.predAway != null);
+  const total = made.length;
+  if (total === 0) return null;
+  let home = 0, draw = 0, away = 0;
+  for (const p of made) {
+    const d = (p.predHome as number) - (p.predAway as number);
+    if (d > 0) home++;
+    else if (d < 0) away++;
+    else draw++;
+  }
+  const pct = (n: number) => Math.round((n / total) * 100);
+  const segs = [
+    { n: home, color: "#10b981", label: `${homeName} win` },
+    { n: draw, color: "#5a6a63", label: "Draw" },
+    { n: away, color: "#f97316", label: `${awayName} win` },
+  ].filter((s) => s.n > 0);
+
+  const R = 42, C = 2 * Math.PI * R;
+  let offset = 0;
+
+  return (
+    <section>
+      <h3 className="mb-2 font-display font-bold text-white">How the group called it</h3>
+      <div className="flex items-center gap-4">
+        <svg viewBox="0 0 120 120" className="h-28 w-28 shrink-0 -rotate-90">
+          <circle cx="60" cy="60" r={R} fill="none" stroke="#1a2320" strokeWidth="14" />
+          {segs.map((s, i) => {
+            const len = (s.n / total) * C;
+            const el = (
+              <circle
+                key={i}
+                cx="60" cy="60" r={R} fill="none" stroke={s.color} strokeWidth="14"
+                strokeDasharray={`${len} ${C - len}`} strokeDashoffset={-offset}
+                strokeLinecap="butt"
+              />
+            );
+            offset += len;
+            return el;
+          })}
+          <text x="60" y="56" transform="rotate(90 60 60)" textAnchor="middle" style={{ fill: "#ffffff" }} className="font-display" fontSize="20" fontWeight="800">
+            {total}
+          </text>
+          <text x="60" y="72" transform="rotate(90 60 60)" textAnchor="middle" style={{ fill: "#7c8e86" }} fontSize="9">
+            picks
+          </text>
+        </svg>
+        <ul className="flex-1 space-y-1.5 text-sm">
+          <Legend color="#10b981" label={`${homeName} win`} value={pct(home)} />
+          <Legend color="#5a6a63" label="Draw" value={pct(draw)} />
+          <Legend color="#f97316" label={`${awayName} win`} value={pct(away)} />
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+function Legend({ color, label, value }: { color: string; label: string; value: number }) {
+  return (
+    <li className="flex items-center gap-2">
+      <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
+      <span className="min-w-0 flex-1 truncate text-pitch-200">{label}</span>
+      <span className="font-bold tabular-nums text-white">{value}%</span>
+    </li>
   );
 }
 

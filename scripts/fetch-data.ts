@@ -14,7 +14,7 @@ import { resolve } from "node:path";
 import type {
   Roster, MatchesFile, Match, GoalEvent, MatchEvent, Lineup, TeamStat, PlayerRating,
   StandingsFile, StatsFile, InjuriesFile, ForecastsFile, PlayerStatLine, Forecast,
-  GroupLetter,
+  BracketFile, BracketMatch, GroupLetter,
 } from "@shared/types.js";
 import { MATCHES_PER_GROUP } from "@shared/constants.js";
 import { computeGroupTable, type GroupResult } from "./lib/standings.js";
@@ -26,7 +26,7 @@ import {
 } from "./lib/apiFootball.js";
 
 const FORCE = !!process.env.FORCE || process.argv.includes("--full");
-const LIVE_LEAD_MS = 10 * 60 * 1000;
+const LIVE_LEAD_MS = 45 * 60 * 1000; // start polling ~45 min before kickoff (captures pre-match lineups)
 const LIVE_TAIL_MS = 165 * 60 * 1000;
 const DAILY_CAP = Number(process.env.API_DAILY_CAP ?? 400);
 const STATS_REFRESH_MS = 20 * 60 * 1000; // refresh golden boot/injuries at most every 20 min when live
@@ -179,10 +179,43 @@ function ourMatchId(fixtures: ApiFixture[]): Map<number, string> {
 }
 const goalCount = (h: number | null, a: number | null) => (h ?? 0) + (a ?? 0);
 
+const ROUND_ORDER: Record<string, number> = {
+  "Round of 32": 1, "Round of 16": 2, "Quarter-finals": 3, "Semi-finals": 4,
+  "3rd Place Final": 5, Final: 6,
+};
+function buildBracket(all: ApiFixture[]): BracketFile {
+  const ko = all.filter((f) => !/^Group/i.test(f.league.round));
+  const byRound = new Map<string, BracketMatch[]>();
+  for (const f of ko) {
+    const round = f.league.round;
+    const home = teamByApi.get(f.teams.home.id);
+    const away = teamByApi.get(f.teams.away.id);
+    const bm: BracketMatch = {
+      apiId: f.fixture.id, round, kickoff: f.fixture.date ?? null,
+      ground: f.fixture.venue?.name ?? null,
+      homeTeamId: home?.id ?? null, awayTeamId: away?.id ?? null,
+      homeName: home ? null : f.teams.home.name, awayName: away ? null : f.teams.away.name,
+      status: mapStatus(f.fixture.status.short),
+      homeGoals: f.goals.home, awayGoals: f.goals.away,
+    };
+    (byRound.get(round) ?? byRound.set(round, []).get(round)!).push(bm);
+  }
+  const rounds = [...byRound.entries()]
+    .map(([name, matches]) => ({
+      name, order: ROUND_ORDER[name] ?? 99,
+      matches: matches.sort((a, b) => (a.kickoff ?? "").localeCompare(b.kickoff ?? "")),
+    }))
+    .sort((a, b) => a.order - b.order);
+  return { updatedAt: new Date().toISOString(), rounds };
+}
+
 async function fullRefresh(): Promise<Match[]> {
   console.log("  full refresh: GET /fixtures");
-  const fixtures = (await apiGet<ApiFixture>("fixtures", { league: WC_LEAGUE, season: WC_SEASON }))
-    .filter((f) => teamByApi.has(f.teams.home.id) && teamByApi.has(f.teams.away.id));
+  const allFixtures = await apiGet<ApiFixture>("fixtures", { league: WC_LEAGUE, season: WC_SEASON });
+  writeJson("bracket.json", buildBracket(allFixtures));
+  const fixtures = allFixtures.filter(
+    (f) => teamByApi.has(f.teams.home.id) && teamByApi.has(f.teams.away.id) && /^Group/i.test(f.league.round),
+  );
   const idMap = ourMatchId(fixtures);
   const prevById = new Map(prev.matches.map((m) => [m.id, m]));
 
