@@ -1,16 +1,19 @@
 name: Setup data (one-time)
 
-# Manually-triggered: builds the real roster + fixtures from API-Football (uses ~a day's
-# free-tier quota), regenerates dummy predictions against that real roster so the demo stays
-# coherent, recomputes scores, and commits everything. Run this once after adding the secret.
+# Builds the real roster + fixtures from API-Football (uses ~a day's free-tier quota),
+# regenerates dummy predictions against that real roster so the demo stays coherent, recomputes
+# scores, and commits everything. Runs automatically on the first push to main (when the roster
+# has no API ids yet) and then self-disables. Can also be run manually.
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
-      dummy_predictions:
-        description: "Regenerate sample/dummy predictions from the real roster"
+      force:
+        description: "Run even if the roster already looks set up"
         type: boolean
-        default: true
+        default: false
 
 concurrency:
   group: update-data
@@ -20,7 +23,26 @@ permissions:
   contents: write
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      needs_setup: ${{ steps.c.outputs.needs_setup }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        run: |
+          if [ "${{ inputs.force }}" = "true" ]; then
+            echo "needs_setup=true" >> "$GITHUB_OUTPUT"
+          elif grep -qE '"apiId": [0-9]' public/data/roster.json; then
+            echo "Roster already has API ids — skipping setup."
+            echo "needs_setup=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_setup=true" >> "$GITHUB_OUTPUT"
+          fi
+
   setup:
+    needs: check
+    if: needs.check.outputs.needs_setup == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,8 +62,7 @@ jobs:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         run: npm run fetch -- --full
 
-      - name: Regenerate dummy predictions from real roster
-        if: ${{ inputs.dummy_predictions }}
+      - name: Regenerate dummy predictions from the real roster
         run: npm run seed:predictions
 
       - name: Recompute scores

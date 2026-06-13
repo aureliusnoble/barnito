@@ -6,6 +6,10 @@ on:
     paths-ignore:
       - "TODO.md"
       - "README.md"
+  # Data workflows commit with GITHUB_TOKEN, which doesn't trigger `push`; redeploy via workflow_run.
+  workflow_run:
+    workflows: ["Update match data", "Setup data (one-time)"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
