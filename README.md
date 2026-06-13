@@ -53,28 +53,41 @@ it in production.
 
 ## Going live (one-time setup)
 
-1. **Get a free API-Football key** at <https://www.api-football.com> (no card needed) and add it as a
-   repo secret named **`API_FOOTBALL_KEY`** (Settings → Secrets and variables → Actions).
-2. **Build the real roster** (run locally; uses most of a free day's quota, so do it once):
-   ```bash
-   API_FOOTBALL_KEY=xxx npm run roster      # → public/data/roster.json (teams, players, positions)
-   API_FOOTBALL_KEY=xxx npm run fetch -- --full   # → matches.json + standings.json (canonical fixtures)
-   ```
-3. **Generate & distribute the template**, then collect and parse:
-   ```bash
-   npm run template            # → templates/Barnito-Predictions-Template.xlsx (with dropdowns)
-   # everyone fills it in; drop the files into predictions/
-   npm run predictions         # → public/data/predictions.json (validates strictly)
-   npm run score               # → public/data/scores.json
-   ```
-   Commit `public/data/*.json`.
-4. **Enable Pages**: Settings → Pages → Source: **GitHub Actions**. Merge to `main` →
-   `deploy.yml` publishes the site. (For a custom domain / user-root, set the `BARNITO_BASE`
-   repo *variable* to `/`.)
+> **API-Football's *free* tier cannot access season 2026** (it returns "Free plans do not have access
+> to this season"). You need the cheapest **paid plan: Pro — $19/month, 7,500 requests/day, all
+> seasons, prepaid with no auto-renewal** (<https://www.api-football.com/pricing>). One prepaid month
+> covers the group stage and can't silently recur. We use only a tiny fraction of 7,500/day (see
+> "Cost & call budget").
 
-That's it. The **`update-data.yml`** cron then runs every 10 minutes: it self-throttles to **zero API
-calls** outside live match windows, polls live scores during them, recomputes scores, and commits any
-changes (which redeploys the site).
+1. **Subscribe to API-Football Pro**, copy your key, and add it as the repo secret
+   **`API_FOOTBALL_KEY`** (Settings → Secrets and variables → Actions).
+2. **Set `main` as the default branch** (Settings → General → Default branch) — the scheduled cron and
+   post-data redeploy only run from the default branch.
+3. **Enable Pages**: Settings → Pages → Source: **GitHub Actions**. (Custom domain / user root → set
+   the `BARNITO_BASE` repo *variable* to `/`.)
+4. **Run the "Verify API key" workflow** (Actions tab → Run workflow). ~4 calls; confirms your plan
+   sees 2026 and prints your daily limit. Look for `✅ Looks good`.
+5. **Run the "Setup data (one-time)" workflow.** It builds `roster.json` (teams, players, positions),
+   pulls all fixtures into `matches.json`/`standings.json`, regenerates dummy predictions, scores, and
+   commits — then the site redeploys with real data.
+6. **Predictions**: `npm run template` → distribute → collect into `predictions/` → run the parser
+   (`npm run predictions && npm run score`) and commit, or just keep the dummy predictions for now.
+
+After that, the **`update-data.yml`** cron takes over automatically.
+
+## Cost & call budget
+
+The cron is deliberately stingy:
+
+- **Zero API calls** except (a) the one-time setup, and (b) inside a live match window — from 10 min
+  before kickoff until ~2h45 after ("just after"). No live game → no calls.
+- During a live window it polls every 10 min: **1 call** for live scores, and a `/fixtures/events`
+  call only when a new goal appears (capped at `MAX_EVENT_FETCHES`, default 8/run).
+- A hard **daily ceiling** (`API_DAILY_CAP`, default 400) is tracked in `public/data/_api-usage.json`
+  and the cron refuses to exceed it — runaway protection on top of API-Football's own 7,500/day.
+- Standings are computed locally (no `/standings` calls after setup).
+
+Realistically that's well under ~150 calls on the busiest match day — a rounding error against 7,500.
 
 ## Admin: fixing data on the fly
 
@@ -92,6 +105,6 @@ offline) and blasts confetti everywhere. Drop a clip at `public/airhorn.mp3` to 
 
 - Built and unit/render-tested headless; I couldn't capture a live browser screenshot in the build
   sandbox, so eyeball it with `npm run dev` and tweak Tailwind classes to taste.
-- The free API tier limits historical seasons; the **current** (2026) season is included. Confirm on
-  your dashboard with `/fixtures?league=1&season=2026` after registering.
+- The free API tier does **not** include season 2026 (confirmed) — the paid Pro plan does. The
+  "Verify API key" workflow checks this for you.
 - Knockouts aren't scored yet (group stage only), but the data shapes are built to extend to them.

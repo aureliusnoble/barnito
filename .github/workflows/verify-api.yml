@@ -1,0 +1,25 @@
+name: Verify API key
+
+# Cheap (~4 calls) preflight: confirms your API-Football key/plan can see season 2026 and prints
+# your daily request limit. Run this BEFORE "Setup data" to confirm cost + coverage. No commits.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Verify
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: npm run verify

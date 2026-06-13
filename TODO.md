@@ -73,6 +73,28 @@ See the approved plan for the full design. This file tracks status, decisions, a
   excluded), standings 25/correct position locked only when a group's 6 matches all finished.
 - Standings tiebreak: points → GD → goals scored → predicted H2H → alphabetical (deterministic).
 
+## Data source (resolved 2026-06-13)
+- ⚠️ API-Football **free tier has NO access to season 2026** (`{"plan":"Free plans do not have access
+  to this season, try from 2022 to 2024."}`). Confirmed via the failed setup run.
+- Decision: **paid API-Football Pro** ($19/mo, 7,500 req/day, prepaid, no auto-renew).
+- Careful-cost design added per request:
+  - cron calls API **only inside live windows** (kickoff−10min … +2h45) or setup (`--full`); else 0 calls.
+  - hard daily ceiling `API_DAILY_CAP` (default 400) tracked in `public/data/_api-usage.json`.
+  - local standings (no `/standings` after setup); event fetches capped per run.
+  - `scripts/verify-api.ts` + `verify-api.yml` — cheap (~4 calls) preflight: confirms 2026 access + prints daily limit.
+- API client hardened: per-minute throttle + 429/rate-message backoff.
+
+### Pending USER actions (live data)
+- [ ] Subscribe to API-Football **Pro**; ensure secret `API_FOOTBALL_KEY` is the paid key.
+- [ ] Set repo **default branch = main** (needed for cron + post-data redeploy).
+- [ ] Run **Verify API key** workflow → expect `✅ Looks good`.
+- [ ] Run **Setup data (one-time)** workflow → commits real roster/fixtures/scores.
+- note: I can't dispatch workflows via the integration (403); these are one-click in the Actions tab.
+
+### Status
+- [x] main created & pushed; demo site deployed (synthetic data) at https://aureliusnoble.github.io/barnito/
+- [x] setup-data made manual-only (was auto-failing on free key)
+
 ## Issues encountered
 - openfootball path `2026/cup.json` is 404; the correct file is `2026/worldcup.json`. Top-level keys
   are `{ name, matches[] }` (104 matches incl. knockout placeholders; 72 are group-stage Group A–L).

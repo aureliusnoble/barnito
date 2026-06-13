@@ -27,10 +27,20 @@ import {
 } from "./lib/apiFootball.js";
 
 const FORCE = !!process.env.FORCE || process.argv.includes("--full");
-const STALE_HOURS = Number(process.env.STALE_HOURS ?? 8);
 const LIVE_LEAD_MS = 10 * 60 * 1000; // poll from 10 min before kickoff
-const LIVE_TAIL_MS = 165 * 60 * 1000; // until ~2h45 after kickoff
+const LIVE_TAIL_MS = 165 * 60 * 1000; // until ~2h45 after kickoff ("just after")
 const MAX_EVENT_FETCHES = Number(process.env.MAX_EVENT_FETCHES ?? 8);
+// Hard safety ceiling on API calls per UTC day across cron runs (paid Pro = 7,500/day, so this
+// is a runaway-protection net, not a normal limit). Setup (--full) bypasses the check.
+const DAILY_CAP = Number(process.env.API_DAILY_CAP ?? 400);
+const USAGE_FILE = "_api-usage.json";
+
+interface Usage { date: string; count: number }
+function todayUtc(): string { return new Date().toISOString().slice(0, 10); }
+function loadUsage(): Usage {
+  const u = load<Usage>(USAGE_FILE, { date: todayUtc(), count: 0 });
+  return u.date === todayUtc() ? u : { date: todayUtc(), count: 0 };
+}
 
 function load<T>(file: string, fallback: T): T {
   const path = resolve(DATA_DIR, file);
@@ -65,10 +75,6 @@ function inLiveWindow(): boolean {
     const k = Date.parse(m.kickoff);
     return now >= k - LIVE_LEAD_MS && now <= k + LIVE_TAIL_MS;
   });
-}
-function isStale(): boolean {
-  if (!prev.updatedAt) return true;
-  return now - Date.parse(prev.updatedAt) > STALE_HOURS * 3600_000;
 }
 
 // --- build a Match from an API fixture, carrying over prior goals when unchanged ----------
@@ -236,14 +242,29 @@ async function main() {
     return;
   }
 
-  const needFull = FORCE || isStale() || !prev.matches.some((m) => m.apiId);
+  // Only ever call the API during setup (--full) or inside a live match window ("+ just after").
+  const bootstrapped = prev.matches.some((m) => m.apiId);
+  const needFull = FORCE;
   const live = inLiveWindow();
-  if (!needFull && !live) {
-    console.log("Nothing live and data is fresh — skipping (0 API requests).");
+  if (!needFull) {
+    if (!bootstrapped) {
+      console.log("Fixtures not bootstrapped yet — run setup (`fetch --full`). Skipping (0 API requests).");
+      return;
+    }
+    if (!live) {
+      console.log("No match is live right now — skipping (0 API requests).");
+      return;
+    }
+  }
+
+  // Hard daily ceiling (runaway protection). Setup/force bypasses the check but still records usage.
+  const usage = loadUsage();
+  if (!FORCE && usage.count >= DAILY_CAP) {
+    console.warn(`Daily API cap (${DAILY_CAP}) already reached today — skipping to protect quota.`);
     return;
   }
 
-  console.log(`Fetching (full=${needFull}, liveWindow=${live}):`);
+  console.log(`Fetching (full=${needFull}, liveWindow=${live}, used today=${usage.count}):`);
   let matches = needFull ? await fullRefresh() : await livePoll();
   matches.sort((a, b) => a.kickoff.localeCompare(b.kickoff) || a.id.localeCompare(b.id));
 
@@ -258,7 +279,10 @@ async function main() {
 
   writeJson("matches.json", matchesFile);
   writeJson("standings.json", standings);
-  console.log(`  ${getRequestCount()} API requests used this run.`);
+
+  usage.count += getRequestCount();
+  writeJson(USAGE_FILE, usage);
+  console.log(`  ${getRequestCount()} API requests this run; ${usage.count}/${DAILY_CAP} used today.`);
 }
 
 main().catch((e) => {
