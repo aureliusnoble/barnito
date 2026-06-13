@@ -105,32 +105,45 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
                   ? "points pending"
                   : match.status === "FINISHED"
                     ? "final points"
-                    : "provisional *"}
+                    : "live — points at full time"}
               </span>
             </div>
             {predicted.length === 0 ? (
               <p className="text-sm text-pitch-400">No predictions on record for this match.</p>
             ) : (
               <ul className="divide-y divide-white/[0.05]">
-                {predicted.map((p) => (
-                  <li key={p.participantId} className="flex items-center justify-between py-2">
-                    <span className="flex items-center gap-2 text-sm text-pitch-100">
-                      {p.name}
-                      {p.exact && <span title="Exact score">🎯</span>}
-                      {!p.exact && p.outcome && match.status !== "SCHEDULED" && (
-                        <span title="Correct result">✅</span>
-                      )}
-                    </span>
-                    <span className="flex items-center gap-3">
-                      <span className="font-mono text-sm tabular-nums text-pitch-300">
-                        {p.predHome}–{p.predAway}
+                {predicted.map((p) => {
+                  const onScore = p.live && p.matchesCurrentScore;
+                  const onResult = p.live && !p.matchesCurrentScore && p.matchesCurrentOutcome;
+                  return (
+                    <li
+                      key={p.participantId}
+                      className={`flex items-center justify-between rounded-lg px-2 py-2 ${
+                        onScore ? "bg-accent-500/10 ring-1 ring-accent-500/30" : onResult ? "bg-white/[0.03]" : ""
+                      }`}
+                    >
+                      <span className="flex items-center gap-2 text-sm text-pitch-100">
+                        {p.name}
+                        {p.exact && <span title="Exact score">🎯</span>}
+                        {!p.exact && p.outcome && <span title="Correct result">✅</span>}
+                        {onScore && (
+                          <span className="chip bg-accent-500/20 text-accent-300">on the score</span>
+                        )}
+                        {onResult && (
+                          <span className="chip bg-pitch-700 text-pitch-300">on the result</span>
+                        )}
                       </span>
-                      {match.status !== "SCHEDULED" && (
-                        <PointsPill points={p.points} provisional={p.provisional} />
-                      )}
-                    </span>
-                  </li>
-                ))}
+                      <span className="flex items-center gap-3">
+                        <span
+                          className={`font-mono text-sm tabular-nums ${onScore ? "font-bold text-accent-300" : "text-pitch-300"}`}
+                        >
+                          {p.predHome}–{p.predAway}
+                        </span>
+                        {match.status === "FINISHED" && <PointsPill points={p.points} />}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </section>

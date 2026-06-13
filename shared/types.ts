@@ -212,10 +212,12 @@ export interface MatchPredictionResult {
   name: string;
   predHome: number | null;
   predAway: number | null;
-  points: number;
-  exact: boolean;
-  outcome: boolean;
-  provisional: boolean; // true while the match is live/not final
+  points: number; // awarded only once the match is FINISHED
+  exact: boolean; // final: exact scoreline correct
+  outcome: boolean; // final: correct result
+  live: boolean; // match in progress
+  matchesCurrentScore: boolean; // live: prediction equals the current scoreline
+  matchesCurrentOutcome: boolean; // live: prediction has the current winner/draw
 }
 
 export interface PerMatchScores {

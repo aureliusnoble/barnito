@@ -90,55 +90,55 @@ export function computeScores(input: ScoringInput): ScoresFile {
   }
 
   // --- per-match results --------------------------------------------------
+  // Points are awarded ONLY when a match is FINISHED. While live we surface highlight
+  // flags (prediction matches the current scoreline / current result) but award nothing.
   const perMatch = matches.matches.map((match) => {
-    const scored = isScored(match);
-    const provisional = scored && match.status !== "FINISHED";
+    const finished = match.status === "FINISHED" && match.homeGoals !== null && match.awayGoals !== null;
+    const live = isScored(match) && !finished;
     const preds: MatchPredictionResult[] = predictions.participants.map((p) => {
       const pred = predByParticipant.get(p.id)?.get(match.id);
-      if (!pred) {
-        return {
-          participantId: p.id,
-          name: p.name,
-          predHome: null,
-          predAway: null,
-          points: 0,
-          exact: false,
-          outcome: false,
-          provisional: false,
-        };
-      }
-      if (!scored) {
-        return {
-          participantId: p.id,
-          name: p.name,
-          predHome: pred.home,
-          predAway: pred.away,
-          points: 0,
-          exact: false,
-          outcome: false,
-          provisional: false,
-        };
-      }
-      const mp = matchPoints(pred.home, pred.away, match.homeGoals!, match.awayGoals!);
-      return {
+      const base = {
         participantId: p.id,
         name: p.name,
-        predHome: pred.home,
-        predAway: pred.away,
-        points: mp.points,
-        exact: mp.exact,
-        outcome: mp.outcome,
-        provisional,
+        predHome: pred ? pred.home : null,
+        predAway: pred ? pred.away : null,
+        points: 0,
+        exact: false,
+        outcome: false,
+        live,
+        matchesCurrentScore: false,
+        matchesCurrentOutcome: false,
       };
+      if (!pred) return base;
+      if (finished) {
+        const mp = matchPoints(pred.home, pred.away, match.homeGoals!, match.awayGoals!);
+        return { ...base, points: mp.points, exact: mp.exact, outcome: mp.outcome };
+      }
+      if (live) {
+        const mp = matchPoints(pred.home, pred.away, match.homeGoals!, match.awayGoals!);
+        return { ...base, matchesCurrentScore: mp.exact, matchesCurrentOutcome: mp.outcome };
+      }
+      return base;
     });
-    preds.sort((a, b) => b.points - a.points || a.name.localeCompare(b.name));
+    // sort: finished by points; live so current-score matches float up; else by name
+    preds.sort((a, b) => {
+      if (finished) return b.points - a.points || a.name.localeCompare(b.name);
+      if (live) {
+        const rank = (x: MatchPredictionResult) =>
+          (x.matchesCurrentScore ? 2 : 0) + (x.matchesCurrentOutcome ? 1 : 0);
+        return rank(b) - rank(a) || a.name.localeCompare(b.name);
+      }
+      return a.name.localeCompare(b.name);
+    });
     return { matchId: match.id, predictions: preds };
   });
 
   // --- scorer view --------------------------------------------------------
-  // group-stage goals per player (own goals excluded)
+  // group-stage goals per player (own goals excluded). Only FINISHED matches count toward
+  // participant scorer points — live goals don't contribute until full time.
   const goalsByPlayer = new Map<string, number>();
   for (const m of matches.matches) {
+    if (m.status !== "FINISHED") continue;
     for (const g of m.goals) {
       if (g.ownGoal || !g.playerId) continue;
       goalsByPlayer.set(g.playerId, (goalsByPlayer.get(g.playerId) ?? 0) + 1);
@@ -277,7 +277,7 @@ export function computeScores(input: ScoringInput): ScoresFile {
   const outcomeByP = new Map<string, number>();
   for (const pm of perMatch) {
     const match = matchById.get(pm.matchId);
-    if (!match || !isScored(match)) continue;
+    if (!match || match.status !== "FINISHED") continue;
     for (const r of pm.predictions) {
       if (r.exact) exactByP.set(r.participantId, (exactByP.get(r.participantId) ?? 0) + POINTS_EXACT);
       if (r.outcome)

@@ -101,13 +101,13 @@ function makeInput(): ScoringInput {
 describe("computeScores", () => {
   const out = computeScores(makeInput());
 
-  it("computes per-match points incl. provisional flag", () => {
+  it("computes per-match points for finished matches", () => {
     const m = out.perMatch.find((p) => p.matchId === "A-1")!;
     const alice = m.predictions.find((p) => p.participantId === "alice")!;
     const bob = m.predictions.find((p) => p.participantId === "bob")!;
     expect(alice.points).toBe(45);
     expect(alice.exact).toBe(true);
-    expect(alice.provisional).toBe(false);
+    expect(alice.live).toBe(false);
     expect(bob.points).toBe(30);
     expect(bob.exact).toBe(false);
   });
@@ -152,6 +152,30 @@ describe("computeScores", () => {
   it("excludes finished matches from spiciness, keeps scheduled ones", () => {
     expect(out.spiciness.some((s) => s.matchId === "A-1")).toBe(false);
     expect(out.spiciness.some((s) => s.matchId === "A-2")).toBe(true);
+  });
+});
+
+describe("computeScores — live matches award no points", () => {
+  const input = makeInput();
+  const a2 = input.matches.matches.find((m) => m.id === "A-2")!;
+  a2.status = "LIVE";
+  a2.elapsed = 60;
+  a2.homeGoals = 1;
+  a2.awayGoals = 0;
+  const out = computeScores(input);
+
+  it("awards 0 points live but flags the matching prediction", () => {
+    const m = out.perMatch.find((p) => p.matchId === "A-2")!;
+    const alice = m.predictions.find((p) => p.participantId === "alice")!; // predicted 1-0
+    expect(alice.points).toBe(0);
+    expect(alice.live).toBe(true);
+    expect(alice.matchesCurrentScore).toBe(true);
+    expect(alice.matchesCurrentOutcome).toBe(true);
+  });
+
+  it("excludes the live match from the leaderboard total", () => {
+    const alice = out.leaderboard.find((l) => l.participantId === "alice")!;
+    expect(alice.total).toBe(85); // 45 (finished A-1) + 40 (scorers); live A-2 adds nothing
   });
 });
 
