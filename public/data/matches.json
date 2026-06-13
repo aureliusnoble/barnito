@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-13T23:28:30.294Z",
+  "updatedAt": "2026-06-13T23:55:06.860Z",
   "tournamentComplete": false,
   "championTeamId": null,
   "matches": [
@@ -11,9 +11,8 @@
       "kickoff": "2026-06-11T19:00:00+00:00",
       "ground": "Estadio Azteca",
       "venue": {
-        "name": "Levi's Stadium",
-        "city": "San Francisco",
-        "capacity": 68500
+        "name": "Estadio Azteca",
+        "city": "Mexico City"
       },
       "homeTeamId": "mexico",
       "awayTeamId": "south-africa",
@@ -482,9 +481,8 @@
       "kickoff": "2026-06-12T02:00:00+00:00",
       "ground": "Estadio Akron",
       "venue": {
-        "name": "Mercedes-Benz Stadium",
-        "city": "Atlanta",
-        "capacity": 71000
+        "name": "Estadio Akron",
+        "city": "Guadalajara"
       },
       "homeTeamId": "south-korea",
       "awayTeamId": "czechia",
@@ -986,9 +984,8 @@
       "kickoff": "2026-06-12T19:00:00+00:00",
       "ground": "BMO Field",
       "venue": {
-        "name": "Estadio Azteca",
-        "city": "Mexico City",
-        "capacity": 87000
+        "name": "BMO Field",
+        "city": "Toronto"
       },
       "homeTeamId": "canada",
       "awayTeamId": "bosnia-and-herzegovina",
@@ -1474,8 +1471,7 @@
       "ground": "SoFi Stadium",
       "venue": {
         "name": "SoFi Stadium",
-        "city": "Los Angeles",
-        "capacity": 70000
+        "city": "Inglewood"
       },
       "homeTeamId": "usa",
       "awayTeamId": "paraguay",
@@ -1995,9 +1991,8 @@
       "kickoff": "2026-06-13T19:00:00+00:00",
       "ground": "Levi's Stadium",
       "venue": {
-        "name": "BMO Field",
-        "city": "Toronto",
-        "capacity": 45000
+        "name": "Levi's Stadium",
+        "city": "Santa Clara"
       },
       "homeTeamId": "qatar",
       "awayTeamId": "switzerland",
@@ -3090,14 +3085,13 @@
       "kickoff": "2026-06-13T22:00:00+00:00",
       "ground": "MetLife Stadium",
       "venue": {
-        "name": "NRG Stadium",
-        "city": "Houston",
-        "capacity": 72000
+        "name": "MetLife Stadium",
+        "city": "East Rutherford"
       },
       "homeTeamId": "brazil",
       "awayTeamId": "morocco",
       "status": "LIVE",
-      "elapsed": 63,
+      "elapsed": 90,
       "homeGoals": 1,
       "awayGoals": 1,
       "goals": [
@@ -3560,7 +3554,10 @@
       "matchday": 1,
       "kickoff": "2026-06-14T01:00:00+00:00",
       "ground": "Gillette Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Gillette Stadium",
+        "city": "Boston"
+      },
       "homeTeamId": "haiti",
       "awayTeamId": "scotland",
       "status": "SCHEDULED",
@@ -3576,7 +3573,10 @@
       "matchday": 1,
       "kickoff": "2026-06-14T04:00:00+00:00",
       "ground": "BC Place",
-      "venue": null,
+      "venue": {
+        "name": "BC Place",
+        "city": "Vancouver"
+      },
       "homeTeamId": "australia",
       "awayTeamId": "turkiye",
       "status": "SCHEDULED",
@@ -3592,7 +3592,10 @@
       "matchday": 1,
       "kickoff": "2026-06-14T17:00:00+00:00",
       "ground": "NRG Stadium",
-      "venue": null,
+      "venue": {
+        "name": "NRG Stadium",
+        "city": "Houston"
+      },
       "homeTeamId": "germany",
       "awayTeamId": "curacao",
       "status": "SCHEDULED",
@@ -3608,7 +3611,10 @@
       "matchday": 1,
       "kickoff": "2026-06-14T20:00:00+00:00",
       "ground": "AT&T Stadium",
-      "venue": null,
+      "venue": {
+        "name": "AT&T Stadium",
+        "city": "Dallas"
+      },
       "homeTeamId": "netherlands",
       "awayTeamId": "japan",
       "status": "SCHEDULED",
@@ -3624,7 +3630,10 @@
       "matchday": 1,
       "kickoff": "2026-06-14T23:00:00+00:00",
       "ground": "Lincoln Financial Field",
-      "venue": null,
+      "venue": {
+        "name": "Lincoln Financial Field",
+        "city": "Philadelphia"
+      },
       "homeTeamId": "ivory-coast",
       "awayTeamId": "ecuador",
       "status": "SCHEDULED",
@@ -3640,7 +3649,10 @@
       "matchday": 1,
       "kickoff": "2026-06-15T02:00:00+00:00",
       "ground": "Estadio BBVA",
-      "venue": null,
+      "venue": {
+        "name": "Estadio BBVA",
+        "city": "Monterrey"
+      },
       "homeTeamId": "sweden",
       "awayTeamId": "tunisia",
       "status": "SCHEDULED",
@@ -3656,7 +3668,10 @@
       "matchday": 1,
       "kickoff": "2026-06-15T16:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Mercedes-Benz Stadium",
+        "city": "Atlanta"
+      },
       "homeTeamId": "spain",
       "awayTeamId": "cape-verde-islands",
       "status": "SCHEDULED",
@@ -3672,7 +3687,10 @@
       "matchday": 1,
       "kickoff": "2026-06-15T19:00:00+00:00",
       "ground": "Lumen Field",
-      "venue": null,
+      "venue": {
+        "name": "Lumen Field",
+        "city": "Seattle"
+      },
       "homeTeamId": "belgium",
       "awayTeamId": "egypt",
       "status": "SCHEDULED",
@@ -3688,7 +3706,10 @@
       "matchday": 1,
       "kickoff": "2026-06-15T22:00:00+00:00",
       "ground": "Hard Rock Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Hard Rock Stadium",
+        "city": "Miami"
+      },
       "homeTeamId": "saudi-arabia",
       "awayTeamId": "uruguay",
       "status": "SCHEDULED",
@@ -3704,7 +3725,10 @@
       "matchday": 1,
       "kickoff": "2026-06-16T01:00:00+00:00",
       "ground": "SoFi Stadium",
-      "venue": null,
+      "venue": {
+        "name": "SoFi Stadium",
+        "city": "Los Angeles"
+      },
       "homeTeamId": "iran",
       "awayTeamId": "new-zealand",
       "status": "SCHEDULED",
@@ -3720,7 +3744,10 @@
       "matchday": 1,
       "kickoff": "2026-06-16T19:00:00+00:00",
       "ground": "MetLife Stadium",
-      "venue": null,
+      "venue": {
+        "name": "MetLife Stadium",
+        "city": "New York New Jersey"
+      },
       "homeTeamId": "france",
       "awayTeamId": "senegal",
       "status": "SCHEDULED",
@@ -3736,7 +3763,10 @@
       "matchday": 1,
       "kickoff": "2026-06-16T22:00:00+00:00",
       "ground": "Gillette Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Gillette Stadium",
+        "city": "Boston"
+      },
       "homeTeamId": "iraq",
       "awayTeamId": "norway",
       "status": "SCHEDULED",
@@ -3752,7 +3782,10 @@
       "matchday": 1,
       "kickoff": "2026-06-17T01:00:00+00:00",
       "ground": "Arrowhead Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Arrowhead Stadium",
+        "city": "Kansas City"
+      },
       "homeTeamId": "argentina",
       "awayTeamId": "algeria",
       "status": "SCHEDULED",
@@ -3768,7 +3801,10 @@
       "matchday": 1,
       "kickoff": "2026-06-17T04:00:00+00:00",
       "ground": "Levi's Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Levi's Stadium",
+        "city": "San Francisco Bay Area"
+      },
       "homeTeamId": "austria",
       "awayTeamId": "jordan",
       "status": "SCHEDULED",
@@ -3784,7 +3820,10 @@
       "matchday": 1,
       "kickoff": "2026-06-17T17:00:00+00:00",
       "ground": "NRG Stadium",
-      "venue": null,
+      "venue": {
+        "name": "NRG Stadium",
+        "city": "Houston"
+      },
       "homeTeamId": "portugal",
       "awayTeamId": "congo-dr",
       "status": "SCHEDULED",
@@ -3800,7 +3839,10 @@
       "matchday": 1,
       "kickoff": "2026-06-17T20:00:00+00:00",
       "ground": "AT&T Stadium",
-      "venue": null,
+      "venue": {
+        "name": "AT&T Stadium",
+        "city": "Dallas"
+      },
       "homeTeamId": "england",
       "awayTeamId": "croatia",
       "status": "SCHEDULED",
@@ -3816,7 +3858,10 @@
       "matchday": 1,
       "kickoff": "2026-06-17T23:00:00+00:00",
       "ground": "BMO Field",
-      "venue": null,
+      "venue": {
+        "name": "BMO Field",
+        "city": "Toronto"
+      },
       "homeTeamId": "ghana",
       "awayTeamId": "panama",
       "status": "SCHEDULED",
@@ -3832,7 +3877,10 @@
       "matchday": 1,
       "kickoff": "2026-06-18T02:00:00+00:00",
       "ground": "Estadio Azteca",
-      "venue": null,
+      "venue": {
+        "name": "Estadio Azteca",
+        "city": "Mexico City"
+      },
       "homeTeamId": "uzbekistan",
       "awayTeamId": "colombia",
       "status": "SCHEDULED",
@@ -3848,7 +3896,10 @@
       "matchday": 2,
       "kickoff": "2026-06-18T16:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Mercedes-Benz Stadium",
+        "city": "Atlanta"
+      },
       "homeTeamId": "czechia",
       "awayTeamId": "south-africa",
       "status": "SCHEDULED",
@@ -3864,7 +3915,10 @@
       "matchday": 2,
       "kickoff": "2026-06-18T19:00:00+00:00",
       "ground": "SoFi Stadium",
-      "venue": null,
+      "venue": {
+        "name": "SoFi Stadium",
+        "city": "Los Angeles"
+      },
       "homeTeamId": "switzerland",
       "awayTeamId": "bosnia-and-herzegovina",
       "status": "SCHEDULED",
@@ -3880,7 +3934,10 @@
       "matchday": 2,
       "kickoff": "2026-06-18T22:00:00+00:00",
       "ground": "BC Place",
-      "venue": null,
+      "venue": {
+        "name": "BC Place",
+        "city": "Vancouver"
+      },
       "homeTeamId": "canada",
       "awayTeamId": "qatar",
       "status": "SCHEDULED",
@@ -3896,7 +3953,10 @@
       "matchday": 2,
       "kickoff": "2026-06-19T01:00:00+00:00",
       "ground": "Estadio Akron",
-      "venue": null,
+      "venue": {
+        "name": "Estadio Akron",
+        "city": "Guadalajara"
+      },
       "homeTeamId": "mexico",
       "awayTeamId": "south-korea",
       "status": "SCHEDULED",
@@ -3912,7 +3972,10 @@
       "matchday": 2,
       "kickoff": "2026-06-19T19:00:00+00:00",
       "ground": "Lumen Field",
-      "venue": null,
+      "venue": {
+        "name": "Lumen Field",
+        "city": "Seattle"
+      },
       "homeTeamId": "usa",
       "awayTeamId": "australia",
       "status": "SCHEDULED",
@@ -3928,7 +3991,10 @@
       "matchday": 2,
       "kickoff": "2026-06-19T22:00:00+00:00",
       "ground": "Gillette Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Gillette Stadium",
+        "city": "Boston"
+      },
       "homeTeamId": "scotland",
       "awayTeamId": "morocco",
       "status": "SCHEDULED",
@@ -3944,7 +4010,10 @@
       "matchday": 2,
       "kickoff": "2026-06-20T00:30:00+00:00",
       "ground": "Lincoln Financial Field",
-      "venue": null,
+      "venue": {
+        "name": "Lincoln Financial Field",
+        "city": "Philadelphia"
+      },
       "homeTeamId": "brazil",
       "awayTeamId": "haiti",
       "status": "SCHEDULED",
@@ -3960,7 +4029,10 @@
       "matchday": 2,
       "kickoff": "2026-06-20T03:00:00+00:00",
       "ground": "Levi's Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Levi's Stadium",
+        "city": "San Francisco Bay Area"
+      },
       "homeTeamId": "turkiye",
       "awayTeamId": "paraguay",
       "status": "SCHEDULED",
@@ -3976,7 +4048,10 @@
       "matchday": 2,
       "kickoff": "2026-06-20T17:00:00+00:00",
       "ground": "NRG Stadium",
-      "venue": null,
+      "venue": {
+        "name": "NRG Stadium",
+        "city": "Houston"
+      },
       "homeTeamId": "netherlands",
       "awayTeamId": "sweden",
       "status": "SCHEDULED",
@@ -3992,7 +4067,10 @@
       "matchday": 2,
       "kickoff": "2026-06-20T20:00:00+00:00",
       "ground": "BMO Field",
-      "venue": null,
+      "venue": {
+        "name": "BMO Field",
+        "city": "Toronto"
+      },
       "homeTeamId": "germany",
       "awayTeamId": "ivory-coast",
       "status": "SCHEDULED",
@@ -4008,7 +4086,10 @@
       "matchday": 2,
       "kickoff": "2026-06-21T00:00:00+00:00",
       "ground": "Arrowhead Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Arrowhead Stadium",
+        "city": "Kansas City"
+      },
       "homeTeamId": "ecuador",
       "awayTeamId": "curacao",
       "status": "SCHEDULED",
@@ -4024,7 +4105,10 @@
       "matchday": 2,
       "kickoff": "2026-06-21T04:00:00+00:00",
       "ground": "Estadio BBVA",
-      "venue": null,
+      "venue": {
+        "name": "Estadio BBVA",
+        "city": "Monterrey"
+      },
       "homeTeamId": "tunisia",
       "awayTeamId": "japan",
       "status": "SCHEDULED",
@@ -4040,7 +4124,10 @@
       "matchday": 2,
       "kickoff": "2026-06-21T16:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Mercedes-Benz Stadium",
+        "city": "Atlanta"
+      },
       "homeTeamId": "spain",
       "awayTeamId": "saudi-arabia",
       "status": "SCHEDULED",
@@ -4056,7 +4143,10 @@
       "matchday": 2,
       "kickoff": "2026-06-21T19:00:00+00:00",
       "ground": "SoFi Stadium",
-      "venue": null,
+      "venue": {
+        "name": "SoFi Stadium",
+        "city": "Los Angeles"
+      },
       "homeTeamId": "belgium",
       "awayTeamId": "iran",
       "status": "SCHEDULED",
@@ -4072,7 +4162,10 @@
       "matchday": 2,
       "kickoff": "2026-06-21T22:00:00+00:00",
       "ground": "Hard Rock Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Hard Rock Stadium",
+        "city": "Miami"
+      },
       "homeTeamId": "uruguay",
       "awayTeamId": "cape-verde-islands",
       "status": "SCHEDULED",
@@ -4088,7 +4181,10 @@
       "matchday": 2,
       "kickoff": "2026-06-22T01:00:00+00:00",
       "ground": "BC Place",
-      "venue": null,
+      "venue": {
+        "name": "BC Place",
+        "city": "Vancouver"
+      },
       "homeTeamId": "new-zealand",
       "awayTeamId": "egypt",
       "status": "SCHEDULED",
@@ -4104,7 +4200,10 @@
       "matchday": 2,
       "kickoff": "2026-06-22T17:00:00+00:00",
       "ground": "AT&T Stadium",
-      "venue": null,
+      "venue": {
+        "name": "AT&T Stadium",
+        "city": "Dallas"
+      },
       "homeTeamId": "argentina",
       "awayTeamId": "austria",
       "status": "SCHEDULED",
@@ -4120,7 +4219,10 @@
       "matchday": 2,
       "kickoff": "2026-06-22T21:00:00+00:00",
       "ground": "Lincoln Financial Field",
-      "venue": null,
+      "venue": {
+        "name": "Lincoln Financial Field",
+        "city": "Philadelphia"
+      },
       "homeTeamId": "france",
       "awayTeamId": "iraq",
       "status": "SCHEDULED",
@@ -4136,7 +4238,10 @@
       "matchday": 2,
       "kickoff": "2026-06-23T00:00:00+00:00",
       "ground": "MetLife Stadium",
-      "venue": null,
+      "venue": {
+        "name": "MetLife Stadium",
+        "city": "New York New Jersey"
+      },
       "homeTeamId": "norway",
       "awayTeamId": "senegal",
       "status": "SCHEDULED",
@@ -4152,7 +4257,10 @@
       "matchday": 2,
       "kickoff": "2026-06-23T03:00:00+00:00",
       "ground": "Levi's Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Levi's Stadium",
+        "city": "San Francisco Bay Area"
+      },
       "homeTeamId": "jordan",
       "awayTeamId": "algeria",
       "status": "SCHEDULED",
@@ -4168,7 +4276,10 @@
       "matchday": 2,
       "kickoff": "2026-06-23T17:00:00+00:00",
       "ground": "NRG Stadium",
-      "venue": null,
+      "venue": {
+        "name": "NRG Stadium",
+        "city": "Houston"
+      },
       "homeTeamId": "portugal",
       "awayTeamId": "uzbekistan",
       "status": "SCHEDULED",
@@ -4184,7 +4295,10 @@
       "matchday": 2,
       "kickoff": "2026-06-23T20:00:00+00:00",
       "ground": "Gillette Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Gillette Stadium",
+        "city": "Boston"
+      },
       "homeTeamId": "england",
       "awayTeamId": "ghana",
       "status": "SCHEDULED",
@@ -4200,7 +4314,10 @@
       "matchday": 2,
       "kickoff": "2026-06-23T23:00:00+00:00",
       "ground": "BMO Field",
-      "venue": null,
+      "venue": {
+        "name": "BMO Field",
+        "city": "Toronto"
+      },
       "homeTeamId": "panama",
       "awayTeamId": "croatia",
       "status": "SCHEDULED",
@@ -4216,7 +4333,10 @@
       "matchday": 2,
       "kickoff": "2026-06-24T02:00:00+00:00",
       "ground": "Estadio Akron",
-      "venue": null,
+      "venue": {
+        "name": "Estadio Akron",
+        "city": "Guadalajara"
+      },
       "homeTeamId": "colombia",
       "awayTeamId": "congo-dr",
       "status": "SCHEDULED",
@@ -4232,7 +4352,10 @@
       "matchday": 3,
       "kickoff": "2026-06-24T19:00:00+00:00",
       "ground": "BC Place",
-      "venue": null,
+      "venue": {
+        "name": "BC Place",
+        "city": "Vancouver"
+      },
       "homeTeamId": "switzerland",
       "awayTeamId": "canada",
       "status": "SCHEDULED",
@@ -4248,7 +4371,10 @@
       "matchday": 3,
       "kickoff": "2026-06-24T19:00:00+00:00",
       "ground": "Lumen Field",
-      "venue": null,
+      "venue": {
+        "name": "Lumen Field",
+        "city": "Seattle"
+      },
       "homeTeamId": "bosnia-and-herzegovina",
       "awayTeamId": "qatar",
       "status": "SCHEDULED",
@@ -4264,7 +4390,10 @@
       "matchday": 3,
       "kickoff": "2026-06-24T22:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Mercedes-Benz Stadium",
+        "city": "Atlanta"
+      },
       "homeTeamId": "morocco",
       "awayTeamId": "haiti",
       "status": "SCHEDULED",
@@ -4280,7 +4409,10 @@
       "matchday": 3,
       "kickoff": "2026-06-24T22:00:00+00:00",
       "ground": "Hard Rock Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Hard Rock Stadium",
+        "city": "Miami"
+      },
       "homeTeamId": "scotland",
       "awayTeamId": "brazil",
       "status": "SCHEDULED",
@@ -4296,7 +4428,10 @@
       "matchday": 3,
       "kickoff": "2026-06-25T01:00:00+00:00",
       "ground": "Estadio BBVA",
-      "venue": null,
+      "venue": {
+        "name": "Estadio BBVA",
+        "city": "Monterrey"
+      },
       "homeTeamId": "south-africa",
       "awayTeamId": "south-korea",
       "status": "SCHEDULED",
@@ -4312,7 +4447,10 @@
       "matchday": 3,
       "kickoff": "2026-06-25T01:00:00+00:00",
       "ground": "Estadio Azteca",
-      "venue": null,
+      "venue": {
+        "name": "Estadio Azteca",
+        "city": "Mexico City"
+      },
       "homeTeamId": "czechia",
       "awayTeamId": "mexico",
       "status": "SCHEDULED",
@@ -4328,7 +4466,10 @@
       "matchday": 3,
       "kickoff": "2026-06-25T20:00:00+00:00",
       "ground": "Lincoln Financial Field",
-      "venue": null,
+      "venue": {
+        "name": "Lincoln Financial Field",
+        "city": "Philadelphia"
+      },
       "homeTeamId": "curacao",
       "awayTeamId": "ivory-coast",
       "status": "SCHEDULED",
@@ -4344,7 +4485,10 @@
       "matchday": 3,
       "kickoff": "2026-06-25T20:00:00+00:00",
       "ground": "MetLife Stadium",
-      "venue": null,
+      "venue": {
+        "name": "MetLife Stadium",
+        "city": "New York New Jersey"
+      },
       "homeTeamId": "ecuador",
       "awayTeamId": "germany",
       "status": "SCHEDULED",
@@ -4360,7 +4504,10 @@
       "matchday": 3,
       "kickoff": "2026-06-25T23:00:00+00:00",
       "ground": "Arrowhead Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Arrowhead Stadium",
+        "city": "Kansas City"
+      },
       "homeTeamId": "tunisia",
       "awayTeamId": "netherlands",
       "status": "SCHEDULED",
@@ -4376,7 +4523,10 @@
       "matchday": 3,
       "kickoff": "2026-06-25T23:00:00+00:00",
       "ground": "AT&T Stadium",
-      "venue": null,
+      "venue": {
+        "name": "AT&T Stadium",
+        "city": "Dallas"
+      },
       "homeTeamId": "japan",
       "awayTeamId": "sweden",
       "status": "SCHEDULED",
@@ -4392,7 +4542,10 @@
       "matchday": 3,
       "kickoff": "2026-06-26T02:00:00+00:00",
       "ground": "Levi's Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Levi's Stadium",
+        "city": "San Francisco Bay Area"
+      },
       "homeTeamId": "paraguay",
       "awayTeamId": "australia",
       "status": "SCHEDULED",
@@ -4408,7 +4561,10 @@
       "matchday": 3,
       "kickoff": "2026-06-26T02:00:00+00:00",
       "ground": "SoFi Stadium",
-      "venue": null,
+      "venue": {
+        "name": "SoFi Stadium",
+        "city": "Los Angeles"
+      },
       "homeTeamId": "turkiye",
       "awayTeamId": "usa",
       "status": "SCHEDULED",
@@ -4424,7 +4580,10 @@
       "matchday": 3,
       "kickoff": "2026-06-26T19:00:00+00:00",
       "ground": "Gillette Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Gillette Stadium",
+        "city": "Boston"
+      },
       "homeTeamId": "norway",
       "awayTeamId": "france",
       "status": "SCHEDULED",
@@ -4440,7 +4599,10 @@
       "matchday": 3,
       "kickoff": "2026-06-26T19:00:00+00:00",
       "ground": "BMO Field",
-      "venue": null,
+      "venue": {
+        "name": "BMO Field",
+        "city": "Toronto"
+      },
       "homeTeamId": "senegal",
       "awayTeamId": "iraq",
       "status": "SCHEDULED",
@@ -4456,7 +4618,10 @@
       "matchday": 3,
       "kickoff": "2026-06-27T00:00:00+00:00",
       "ground": "NRG Stadium",
-      "venue": null,
+      "venue": {
+        "name": "NRG Stadium",
+        "city": "Houston"
+      },
       "homeTeamId": "cape-verde-islands",
       "awayTeamId": "saudi-arabia",
       "status": "SCHEDULED",
@@ -4472,7 +4637,10 @@
       "matchday": 3,
       "kickoff": "2026-06-27T00:00:00+00:00",
       "ground": "Estadio Akron",
-      "venue": null,
+      "venue": {
+        "name": "Estadio Akron",
+        "city": "Guadalajara"
+      },
       "homeTeamId": "uruguay",
       "awayTeamId": "spain",
       "status": "SCHEDULED",
@@ -4488,7 +4656,10 @@
       "matchday": 3,
       "kickoff": "2026-06-27T03:00:00+00:00",
       "ground": "Lumen Field",
-      "venue": null,
+      "venue": {
+        "name": "Lumen Field",
+        "city": "Seattle"
+      },
       "homeTeamId": "egypt",
       "awayTeamId": "iran",
       "status": "SCHEDULED",
@@ -4504,7 +4675,10 @@
       "matchday": 3,
       "kickoff": "2026-06-27T03:00:00+00:00",
       "ground": "BC Place",
-      "venue": null,
+      "venue": {
+        "name": "BC Place",
+        "city": "Vancouver"
+      },
       "homeTeamId": "new-zealand",
       "awayTeamId": "belgium",
       "status": "SCHEDULED",
@@ -4520,7 +4694,10 @@
       "matchday": 3,
       "kickoff": "2026-06-27T21:00:00+00:00",
       "ground": "Lincoln Financial Field",
-      "venue": null,
+      "venue": {
+        "name": "Lincoln Financial Field",
+        "city": "Philadelphia"
+      },
       "homeTeamId": "croatia",
       "awayTeamId": "ghana",
       "status": "SCHEDULED",
@@ -4536,7 +4713,10 @@
       "matchday": 3,
       "kickoff": "2026-06-27T21:00:00+00:00",
       "ground": "MetLife Stadium",
-      "venue": null,
+      "venue": {
+        "name": "MetLife Stadium",
+        "city": "New York New Jersey"
+      },
       "homeTeamId": "panama",
       "awayTeamId": "england",
       "status": "SCHEDULED",
@@ -4552,7 +4732,10 @@
       "matchday": 3,
       "kickoff": "2026-06-27T23:30:00+00:00",
       "ground": "Hard Rock Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Hard Rock Stadium",
+        "city": "Miami"
+      },
       "homeTeamId": "colombia",
       "awayTeamId": "portugal",
       "status": "SCHEDULED",
@@ -4568,7 +4751,10 @@
       "matchday": 3,
       "kickoff": "2026-06-27T23:30:00+00:00",
       "ground": "Mercedes-Benz Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Mercedes-Benz Stadium",
+        "city": "Atlanta"
+      },
       "homeTeamId": "congo-dr",
       "awayTeamId": "uzbekistan",
       "status": "SCHEDULED",
@@ -4584,7 +4770,10 @@
       "matchday": 3,
       "kickoff": "2026-06-28T02:00:00+00:00",
       "ground": "Arrowhead Stadium",
-      "venue": null,
+      "venue": {
+        "name": "Arrowhead Stadium",
+        "city": "Kansas City"
+      },
       "homeTeamId": "algeria",
       "awayTeamId": "austria",
       "status": "SCHEDULED",
@@ -4600,7 +4789,10 @@
       "matchday": 3,
       "kickoff": "2026-06-28T02:00:00+00:00",
       "ground": "AT&T Stadium",
-      "venue": null,
+      "venue": {
+        "name": "AT&T Stadium",
+        "city": "Dallas"
+      },
       "homeTeamId": "jordan",
       "awayTeamId": "argentina",
       "status": "SCHEDULED",
