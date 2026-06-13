@@ -6,14 +6,17 @@ name: Setup data (one-time)
 # has no API ids yet) and then self-disables. Can also be run manually.
 
 on:
-  # NOTE: API-Football's FREE tier has no access to season 2026, so this can't pull real data
-  # on a free key. Kept as manual-only until a data source is settled (paid key, or openfootball).
   workflow_dispatch:
     inputs:
       force:
         description: "Run even if the roster already looks set up"
         type: boolean
         default: false
+  # TEMP: trigger the one-time setup via push (the integration can't dispatch workflows).
+  # The check job skips automatically once the roster has API ids, so this self-disables.
+  push:
+    branches: [main]
+    paths: [".github/workflows/setup-data.yml"]
 
 concurrency:
   group: update-data
