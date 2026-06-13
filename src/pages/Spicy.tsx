@@ -129,10 +129,13 @@ function SpicyRow({
           <Crest teamId={m.awayTeamId} size={18} />
           <span className="truncate">{teamName(m.awayTeamId)}</span>
         </div>
+        <div className="mt-1 text-[11px] text-pitch-400">
+          {formatDay(m.kickoff)} · {formatTime(m.kickoff)} · {relativeKickoff(m.kickoff)}
+        </div>
         <div className="mt-1.5 flex items-center gap-2">
           <div className="w-24"><HeatBar score={s.score} max={max} /></div>
-          <span className="text-[11px] text-pitch-400">
-            {formatTime(m.kickoff)} · up to <span className="font-semibold text-spice-400">{s.maxSwing}</span>
+          <span className="text-[11px] text-spice-400">
+            up to <span className="font-semibold">{s.maxSwing}</span> pts swing
           </span>
         </div>
       </div>

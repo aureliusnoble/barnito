@@ -1,5 +1,6 @@
 import type { Match, MatchStatus } from "@shared/types";
-import { useHelpers } from "../data/store";
+import { useBarnito, useHelpers } from "../data/store";
+import { useTick, liveMinute } from "../lib/clock";
 import { Crest } from "./visuals";
 
 export { Crest } from "./visuals";
@@ -37,8 +38,11 @@ const STATUS_STYLE: Record<MatchStatus, string> = {
 };
 
 export function StatusBadge({ match }: { match: Match }) {
+  const { matches } = useBarnito();
+  const isLive = match.status === "LIVE";
+  useTick(isLive); // tick the live clock forward between data snapshots
   let label: string = match.status;
-  if (match.status === "LIVE") label = match.elapsed != null ? `${match.elapsed}'` : "LIVE";
+  if (isLive) label = liveMinute(match.elapsed, matches.updatedAt);
   if (match.status === "HT") label = "HT";
   if (match.status === "FINISHED") label = "FT";
   if (match.status === "SCHEDULED") label = "—";
