@@ -1,0 +1,1 @@
+{"root":["./vite.config.ts","./scripts/score.ts","./scripts/seed-from-openfootball.ts","./scripts/seed-predictions.ts","./scripts/lib/scoring.test.ts","./scripts/lib/scoring.ts","./scripts/lib/standings.test.ts","./scripts/lib/standings.ts","./scripts/lib/util.ts","./shared/constants.ts","./shared/types.ts"],"version":"5.9.3"}

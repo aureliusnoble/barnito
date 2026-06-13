@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-pitch-950 text-pitch-50 antialiased;
+    background-image: radial-gradient(
+        ellipse at top,
+        rgba(22, 163, 74, 0.18),
+        transparent 55%
+      ),
+      radial-gradient(ellipse at bottom, rgba(6, 43, 22, 0.6), transparent 60%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-pitch-800/70 bg-pitch-900/60 backdrop-blur-sm shadow-lg;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold;
+  }
+  .tab-active {
+    @apply text-pitch-50;
+  }
+}
+
+/* hide scrollbars on horizontal pill rows but keep scrollability */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

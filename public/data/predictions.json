@@ -1,0 +1,3755 @@
+{
+  "updatedAt": "2026-06-13T21:59:59.845Z",
+  "participants": [
+    {
+      "id": "barney",
+      "name": "Barney",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "A-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-1",
+          "home": 4,
+          "away": 3
+        },
+        {
+          "matchId": "B-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "C-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-2",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "E-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "F-1",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "E-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "H-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-1",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "I-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "L-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "D-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "C-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "F-3",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "E-3",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "E-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "F-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "H-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "I-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-3",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "L-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-6",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "C-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-6",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "E-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "E-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-5",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "F-6",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "D-5",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "D-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "I-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-6",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "H-5",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "H-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "J-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-6",
+          "home": 1,
+          "away": 1
+        }
+      ],
+      "topPlayers": [
+        "iraq-6-wagner",
+        "saudi-arabia-4-hassan",
+        "morocco-7-dubois",
+        "ivory-coast-4-ivanov",
+        "portugal-7-greco",
+        "new-zealand-7-sokolov"
+      ],
+      "champion": "argentina"
+    },
+    {
+      "id": "mo",
+      "name": "Mo",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-1",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "B-2",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "C-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-2",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "D-2",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "E-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "F-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "G-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-2",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "G-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-1",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "J-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "L-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-2",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "K-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "A-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "C-3",
+          "home": 4,
+          "away": 3
+        },
+        {
+          "matchId": "C-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "D-4",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "F-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "E-4",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "F-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "H-3",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "G-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-4",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "G-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "L-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "C-5",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "C-6",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "A-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "E-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-5",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "F-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-5",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "D-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "I-5",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "I-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-5",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "H-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "G-5",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "G-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-5",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "L-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-6",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "J-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-6",
+          "home": 2,
+          "away": 2
+        }
+      ],
+      "topPlayers": [
+        "iraq-1-saito",
+        "panama-5-horvat",
+        "sweden-4-schmidt",
+        "mexico-6-mansour",
+        "ghana-5-rossi",
+        "switzerland-4-nakamura"
+      ],
+      "champion": "england"
+    },
+    {
+      "id": "priya",
+      "name": "Priya",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "A-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-1",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "D-1",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "B-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-1",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "E-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "H-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-2",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "G-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "J-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-1",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "L-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-3",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "B-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-3",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "E-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-4",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "H-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "J-3",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "I-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-3",
+          "home": 4,
+          "away": 3
+        },
+        {
+          "matchId": "L-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "B-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "A-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "E-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-5",
+          "home": 4,
+          "away": 3
+        },
+        {
+          "matchId": "F-6",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "D-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "H-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "J-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "J-6",
+          "home": 2,
+          "away": 2
+        }
+      ],
+      "topPlayers": [
+        "germany-7-kovac",
+        "saudi-arabia-6-cerny",
+        "jordan-6-andersson",
+        "dr-congo-4-muller",
+        "france-0-pereira",
+        "uzbekistan-6-novak"
+      ],
+      "champion": "england"
+    },
+    {
+      "id": "diego",
+      "name": "Diego",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "A-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-1",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "D-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "C-2",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "D-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "E-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-1",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "E-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-2",
+          "home": 4,
+          "away": 3
+        },
+        {
+          "matchId": "H-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-2",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "J-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "B-3",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "B-4",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "A-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "C-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "C-4",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "D-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-3",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "E-3",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "E-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "F-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "H-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "I-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-4",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "K-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-6",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "C-5",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "C-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "A-5",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "A-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "E-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "F-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-5",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "D-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-5",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "I-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-5",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "H-6",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "G-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-6",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "L-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-5",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "K-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-6",
+          "home": 2,
+          "away": 2
+        }
+      ],
+      "topPlayers": [
+        "paraguay-6-torres",
+        "iran-4-saito",
+        "portugal-4-okafor",
+        "brazil-7-saito",
+        "south-korea-1-bianchi",
+        "spain-6-cerny"
+      ],
+      "champion": "brazil"
+    },
+    {
+      "id": "saoirse",
+      "name": "Saoirse",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "A-2",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "B-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-1",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "H-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "G-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-1",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "J-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-2",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "A-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "A-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "D-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "H-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-4",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "J-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-4",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "B-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-6",
+          "home": 4,
+          "away": 3
+        },
+        {
+          "matchId": "E-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-6",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "F-5",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "F-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "G-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "L-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-5",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "J-6",
+          "home": 2,
+          "away": 2
+        }
+      ],
+      "topPlayers": [
+        "jordan-7-horvat",
+        "south-africa-4-cerny",
+        "switzerland-4-nakamura",
+        "czech-republic-6-schmidt",
+        "dr-congo-6-lopez",
+        "spain-6-cerny"
+      ],
+      "champion": "argentina"
+    },
+    {
+      "id": "kwame",
+      "name": "Kwame",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "A-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-1",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "B-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "H-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "J-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-1",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "L-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-2",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "K-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-3",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "B-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-3",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "E-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-4",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "H-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-4",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "J-3",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "I-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-3",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "L-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "B-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-6",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "C-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "A-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "E-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "F-6",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "D-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-5",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "H-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-5",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "L-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "J-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "J-6",
+          "home": 3,
+          "away": 2
+        }
+      ],
+      "topPlayers": [
+        "algeria-2-garcia",
+        "jordan-7-horvat",
+        "ecuador-5-muller",
+        "morocco-5-romano",
+        "new-zealand-7-sokolov",
+        "turkey-2-wagner"
+      ],
+      "champion": "france"
+    },
+    {
+      "id": "yuki",
+      "name": "Yuki",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "E-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-2",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "I-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "J-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "L-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-2",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "K-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-3",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "B-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "E-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "I-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-4",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "J-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "C-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-6",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "E-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "J-6",
+          "home": 0,
+          "away": 0
+        }
+      ],
+      "topPlayers": [
+        "australia-4-dubois",
+        "germany-4-torres",
+        "panama-7-sokolov",
+        "usa-3-mansour",
+        "norway-1-saito",
+        "senegal-5-dubois"
+      ],
+      "champion": "argentina"
+    },
+    {
+      "id": "lena",
+      "name": "Lena",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "A-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "B-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "B-2",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "C-1",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "C-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-2",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "E-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-2",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "H-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-1",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "H-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "I-2",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "J-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-2",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "K-1",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "L-1",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "L-2",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "K-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "A-3",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "B-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "D-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "C-3",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "C-4",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "D-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "F-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "E-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "H-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-3",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "I-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "J-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "L-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "K-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-5",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "B-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "C-6",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "A-5",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "A-6",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "E-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "F-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "D-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "I-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "I-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "H-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "H-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "G-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "G-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-5",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "L-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-5",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "J-6",
+          "home": 3,
+          "away": 3
+        }
+      ],
+      "topPlayers": [
+        "ecuador-7-lopez",
+        "canada-6-sokolov",
+        "algeria-0-diallo",
+        "tunisia-6-wagner",
+        "egypt-5-andersson",
+        "saudi-arabia-6-cerny"
+      ],
+      "champion": "germany"
+    },
+    {
+      "id": "tomas",
+      "name": "Tomás",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "A-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-1",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "D-1",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "B-2",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "C-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "C-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "D-2",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "E-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-1",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "G-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-2",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "G-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "I-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-1",
+          "home": 0,
+          "away": 4
+        },
+        {
+          "matchId": "J-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "K-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "L-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-2",
+          "home": 3,
+          "away": 4
+        },
+        {
+          "matchId": "A-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "B-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "B-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "A-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "C-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "C-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-3",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "G-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-4",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "G-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-3",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "I-3",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "I-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "J-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "K-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "L-3",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "L-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "K-4",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "B-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "B-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "C-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "C-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "A-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-6",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "E-5",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "E-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "H-5",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "H-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "G-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-6",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "K-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "K-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "J-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "J-6",
+          "home": 0,
+          "away": 0
+        }
+      ],
+      "topPlayers": [
+        "austria-6-sokolov",
+        "curacao-1-martin",
+        "dr-congo-4-muller",
+        "ivory-coast-7-novak",
+        "spain-5-nakamura",
+        "jordan-7-horvat"
+      ],
+      "champion": "brazil"
+    },
+    {
+      "id": "aisha",
+      "name": "Aisha",
+      "matchScores": [
+        {
+          "matchId": "A-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-2",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-2",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "C-1",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-2",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "D-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-1",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "F-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-2",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "F-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "G-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-2",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "G-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-1",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "J-2",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "K-1",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-1",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-2",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "A-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "B-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-4",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "D-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "C-3",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-4",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "D-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "F-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "E-3",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "E-4",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "matchId": "F-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "G-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "G-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-3",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "I-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "J-4",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "K-3",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "L-3",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-4",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-4",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "B-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "B-6",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "C-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "C-6",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-5",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "A-6",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "E-5",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "matchId": "E-6",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "F-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "F-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "D-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "D-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "I-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "I-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "H-5",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "H-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "G-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "G-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-5",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "L-6",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "K-5",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "K-6",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "J-5",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "J-6",
+          "home": 4,
+          "away": 4
+        }
+      ],
+      "topPlayers": [
+        "norway-6-andersson",
+        "senegal-7-romano",
+        "germany-4-torres",
+        "brazil-5-okafor",
+        "cape-verde-4-wagner",
+        "colombia-2-khalil"
+      ],
+      "champion": "germany"
+    }
+  ]
+}

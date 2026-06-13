@@ -1,0 +1,3367 @@
+{
+  "updatedAt": "2026-06-13T21:59:23.302Z",
+  "teams": [
+    {
+      "id": "czech-republic",
+      "name": "Czech Republic",
+      "group": "A",
+      "apiId": null
+    },
+    {
+      "id": "mexico",
+      "name": "Mexico",
+      "group": "A",
+      "apiId": null
+    },
+    {
+      "id": "south-africa",
+      "name": "South Africa",
+      "group": "A",
+      "apiId": null
+    },
+    {
+      "id": "south-korea",
+      "name": "South Korea",
+      "group": "A",
+      "apiId": null
+    },
+    {
+      "id": "bosnia-and-herzegovina",
+      "name": "Bosnia & Herzegovina",
+      "group": "B",
+      "apiId": null
+    },
+    {
+      "id": "canada",
+      "name": "Canada",
+      "group": "B",
+      "apiId": null
+    },
+    {
+      "id": "qatar",
+      "name": "Qatar",
+      "group": "B",
+      "apiId": null
+    },
+    {
+      "id": "switzerland",
+      "name": "Switzerland",
+      "group": "B",
+      "apiId": null
+    },
+    {
+      "id": "brazil",
+      "name": "Brazil",
+      "group": "C",
+      "apiId": null
+    },
+    {
+      "id": "haiti",
+      "name": "Haiti",
+      "group": "C",
+      "apiId": null
+    },
+    {
+      "id": "morocco",
+      "name": "Morocco",
+      "group": "C",
+      "apiId": null
+    },
+    {
+      "id": "scotland",
+      "name": "Scotland",
+      "group": "C",
+      "apiId": null
+    },
+    {
+      "id": "australia",
+      "name": "Australia",
+      "group": "D",
+      "apiId": null
+    },
+    {
+      "id": "paraguay",
+      "name": "Paraguay",
+      "group": "D",
+      "apiId": null
+    },
+    {
+      "id": "turkey",
+      "name": "Turkey",
+      "group": "D",
+      "apiId": null
+    },
+    {
+      "id": "usa",
+      "name": "USA",
+      "group": "D",
+      "apiId": null
+    },
+    {
+      "id": "curacao",
+      "name": "Curaçao",
+      "group": "E",
+      "apiId": null
+    },
+    {
+      "id": "ecuador",
+      "name": "Ecuador",
+      "group": "E",
+      "apiId": null
+    },
+    {
+      "id": "germany",
+      "name": "Germany",
+      "group": "E",
+      "apiId": null
+    },
+    {
+      "id": "ivory-coast",
+      "name": "Ivory Coast",
+      "group": "E",
+      "apiId": null
+    },
+    {
+      "id": "japan",
+      "name": "Japan",
+      "group": "F",
+      "apiId": null
+    },
+    {
+      "id": "netherlands",
+      "name": "Netherlands",
+      "group": "F",
+      "apiId": null
+    },
+    {
+      "id": "sweden",
+      "name": "Sweden",
+      "group": "F",
+      "apiId": null
+    },
+    {
+      "id": "tunisia",
+      "name": "Tunisia",
+      "group": "F",
+      "apiId": null
+    },
+    {
+      "id": "belgium",
+      "name": "Belgium",
+      "group": "G",
+      "apiId": null
+    },
+    {
+      "id": "egypt",
+      "name": "Egypt",
+      "group": "G",
+      "apiId": null
+    },
+    {
+      "id": "iran",
+      "name": "Iran",
+      "group": "G",
+      "apiId": null
+    },
+    {
+      "id": "new-zealand",
+      "name": "New Zealand",
+      "group": "G",
+      "apiId": null
+    },
+    {
+      "id": "cape-verde",
+      "name": "Cape Verde",
+      "group": "H",
+      "apiId": null
+    },
+    {
+      "id": "saudi-arabia",
+      "name": "Saudi Arabia",
+      "group": "H",
+      "apiId": null
+    },
+    {
+      "id": "spain",
+      "name": "Spain",
+      "group": "H",
+      "apiId": null
+    },
+    {
+      "id": "uruguay",
+      "name": "Uruguay",
+      "group": "H",
+      "apiId": null
+    },
+    {
+      "id": "france",
+      "name": "France",
+      "group": "I",
+      "apiId": null
+    },
+    {
+      "id": "iraq",
+      "name": "Iraq",
+      "group": "I",
+      "apiId": null
+    },
+    {
+      "id": "norway",
+      "name": "Norway",
+      "group": "I",
+      "apiId": null
+    },
+    {
+      "id": "senegal",
+      "name": "Senegal",
+      "group": "I",
+      "apiId": null
+    },
+    {
+      "id": "algeria",
+      "name": "Algeria",
+      "group": "J",
+      "apiId": null
+    },
+    {
+      "id": "argentina",
+      "name": "Argentina",
+      "group": "J",
+      "apiId": null
+    },
+    {
+      "id": "austria",
+      "name": "Austria",
+      "group": "J",
+      "apiId": null
+    },
+    {
+      "id": "jordan",
+      "name": "Jordan",
+      "group": "J",
+      "apiId": null
+    },
+    {
+      "id": "colombia",
+      "name": "Colombia",
+      "group": "K",
+      "apiId": null
+    },
+    {
+      "id": "dr-congo",
+      "name": "DR Congo",
+      "group": "K",
+      "apiId": null
+    },
+    {
+      "id": "portugal",
+      "name": "Portugal",
+      "group": "K",
+      "apiId": null
+    },
+    {
+      "id": "uzbekistan",
+      "name": "Uzbekistan",
+      "group": "K",
+      "apiId": null
+    },
+    {
+      "id": "croatia",
+      "name": "Croatia",
+      "group": "L",
+      "apiId": null
+    },
+    {
+      "id": "england",
+      "name": "England",
+      "group": "L",
+      "apiId": null
+    },
+    {
+      "id": "ghana",
+      "name": "Ghana",
+      "group": "L",
+      "apiId": null
+    },
+    {
+      "id": "panama",
+      "name": "Panama",
+      "group": "L",
+      "apiId": null
+    }
+  ],
+  "players": [
+    {
+      "id": "czech-republic-0-torres",
+      "apiId": null,
+      "name": "A. Torres",
+      "teamId": "czech-republic",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "czech-republic-1-kovac",
+      "apiId": null,
+      "name": "K. Kovač",
+      "teamId": "czech-republic",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "czech-republic-2-diallo",
+      "apiId": null,
+      "name": "P. Diallo",
+      "teamId": "czech-republic",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "czech-republic-3-bernard",
+      "apiId": null,
+      "name": "H. Bernard",
+      "teamId": "czech-republic",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "czech-republic-4-nilsson",
+      "apiId": null,
+      "name": "P. Nilsson",
+      "teamId": "czech-republic",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "czech-republic-5-santos",
+      "apiId": null,
+      "name": "H. Santos",
+      "teamId": "czech-republic",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "czech-republic-6-schmidt",
+      "apiId": null,
+      "name": "C. Schmidt",
+      "teamId": "czech-republic",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "czech-republic-7-ivanov",
+      "apiId": null,
+      "name": "O. Ivanov",
+      "teamId": "czech-republic",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "mexico-0-novak",
+      "apiId": null,
+      "name": "H. Novák",
+      "teamId": "mexico",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "mexico-1-santos",
+      "apiId": null,
+      "name": "P. Santos",
+      "teamId": "mexico",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "mexico-2-romano",
+      "apiId": null,
+      "name": "B. Romano",
+      "teamId": "mexico",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "mexico-3-tanaka",
+      "apiId": null,
+      "name": "A. Tanaka",
+      "teamId": "mexico",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "mexico-4-dubois",
+      "apiId": null,
+      "name": "F. Dubois",
+      "teamId": "mexico",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "mexico-5-almeida",
+      "apiId": null,
+      "name": "N. Almeida",
+      "teamId": "mexico",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "mexico-6-mansour",
+      "apiId": null,
+      "name": "H. Mansour",
+      "teamId": "mexico",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "mexico-7-fernandez",
+      "apiId": null,
+      "name": "P. Fernández",
+      "teamId": "mexico",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "south-africa-0-bernard",
+      "apiId": null,
+      "name": "E. Bernard",
+      "teamId": "south-africa",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "south-africa-1-torres",
+      "apiId": null,
+      "name": "H. Torres",
+      "teamId": "south-africa",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "south-africa-2-hassan",
+      "apiId": null,
+      "name": "C. Hassan",
+      "teamId": "south-africa",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "south-africa-3-diallo",
+      "apiId": null,
+      "name": "O. Diallo",
+      "teamId": "south-africa",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "south-africa-4-cerny",
+      "apiId": null,
+      "name": "A. Černý",
+      "teamId": "south-africa",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "south-africa-5-garcia",
+      "apiId": null,
+      "name": "K. García",
+      "teamId": "south-africa",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "south-africa-6-bianchi",
+      "apiId": null,
+      "name": "P. Bianchi",
+      "teamId": "south-africa",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "south-africa-7-pereira",
+      "apiId": null,
+      "name": "H. Pereira",
+      "teamId": "south-africa",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "south-korea-0-nakamura",
+      "apiId": null,
+      "name": "G. Nakamura",
+      "teamId": "south-korea",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "south-korea-1-bianchi",
+      "apiId": null,
+      "name": "T. Bianchi",
+      "teamId": "south-korea",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "south-korea-2-pereira",
+      "apiId": null,
+      "name": "L. Pereira",
+      "teamId": "south-korea",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "south-korea-3-cerny",
+      "apiId": null,
+      "name": "B. Černý",
+      "teamId": "south-korea",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "south-korea-4-garcia",
+      "apiId": null,
+      "name": "E. García",
+      "teamId": "south-korea",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "south-korea-5-hassan",
+      "apiId": null,
+      "name": "R. Hassan",
+      "teamId": "south-korea",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "south-korea-6-diallo",
+      "apiId": null,
+      "name": "G. Diallo",
+      "teamId": "south-korea",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "south-korea-7-bernard",
+      "apiId": null,
+      "name": "T. Bernard",
+      "teamId": "south-korea",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "bosnia-and-herzegovina-0-cerny",
+      "apiId": null,
+      "name": "B. Černý",
+      "teamId": "bosnia-and-herzegovina",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "bosnia-and-herzegovina-1-pereira",
+      "apiId": null,
+      "name": "L. Pereira",
+      "teamId": "bosnia-and-herzegovina",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "bosnia-and-herzegovina-2-bianchi",
+      "apiId": null,
+      "name": "T. Bianchi",
+      "teamId": "bosnia-and-herzegovina",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "bosnia-and-herzegovina-3-nakamura",
+      "apiId": null,
+      "name": "G. Nakamura",
+      "teamId": "bosnia-and-herzegovina",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "bosnia-and-herzegovina-4-bernard",
+      "apiId": null,
+      "name": "T. Bernard",
+      "teamId": "bosnia-and-herzegovina",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "bosnia-and-herzegovina-5-diallo",
+      "apiId": null,
+      "name": "G. Diallo",
+      "teamId": "bosnia-and-herzegovina",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "bosnia-and-herzegovina-6-hassan",
+      "apiId": null,
+      "name": "R. Hassan",
+      "teamId": "bosnia-and-herzegovina",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "bosnia-and-herzegovina-7-garcia",
+      "apiId": null,
+      "name": "E. García",
+      "teamId": "bosnia-and-herzegovina",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "canada-0-horvat",
+      "apiId": null,
+      "name": "N. Horvat",
+      "teamId": "canada",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "canada-1-wagner",
+      "apiId": null,
+      "name": "O. Wagner",
+      "teamId": "canada",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "canada-2-silva",
+      "apiId": null,
+      "name": "J. Silva",
+      "teamId": "canada",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "canada-3-andersson",
+      "apiId": null,
+      "name": "B. Andersson",
+      "teamId": "canada",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "canada-4-costa",
+      "apiId": null,
+      "name": "J. Costa",
+      "teamId": "canada",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "canada-5-dvorak",
+      "apiId": null,
+      "name": "B. Dvořák",
+      "teamId": "canada",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "canada-6-sokolov",
+      "apiId": null,
+      "name": "G. Sokolov",
+      "teamId": "canada",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "canada-7-rossi",
+      "apiId": null,
+      "name": "T. Rossi",
+      "teamId": "canada",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "qatar-0-khalil",
+      "apiId": null,
+      "name": "H. Khalil",
+      "teamId": "qatar",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "qatar-1-lopez",
+      "apiId": null,
+      "name": "P. López",
+      "teamId": "qatar",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "qatar-2-petrov",
+      "apiId": null,
+      "name": "B. Petrov",
+      "teamId": "qatar",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "qatar-3-muller",
+      "apiId": null,
+      "name": "A. Müller",
+      "teamId": "qatar",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "qatar-4-markovic",
+      "apiId": null,
+      "name": "F. Marković",
+      "teamId": "qatar",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "qatar-5-larsson",
+      "apiId": null,
+      "name": "N. Larsson",
+      "teamId": "qatar",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "qatar-6-nakamura",
+      "apiId": null,
+      "name": "H. Nakamura",
+      "teamId": "qatar",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "qatar-7-becker",
+      "apiId": null,
+      "name": "P. Becker",
+      "teamId": "qatar",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "switzerland-0-garcia",
+      "apiId": null,
+      "name": "D. García",
+      "teamId": "switzerland",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "switzerland-1-cerny",
+      "apiId": null,
+      "name": "L. Černý",
+      "teamId": "switzerland",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "switzerland-2-diallo",
+      "apiId": null,
+      "name": "F. Diallo",
+      "teamId": "switzerland",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "switzerland-3-hassan",
+      "apiId": null,
+      "name": "N. Hassan",
+      "teamId": "switzerland",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "switzerland-4-nakamura",
+      "apiId": null,
+      "name": "F. Nakamura",
+      "teamId": "switzerland",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "switzerland-5-becker",
+      "apiId": null,
+      "name": "N. Becker",
+      "teamId": "switzerland",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "switzerland-6-pereira",
+      "apiId": null,
+      "name": "T. Pereira",
+      "teamId": "switzerland",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "switzerland-7-bianchi",
+      "apiId": null,
+      "name": "S. Bianchi",
+      "teamId": "switzerland",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "brazil-0-khalil",
+      "apiId": null,
+      "name": "S. Khalil",
+      "teamId": "brazil",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "brazil-1-muller",
+      "apiId": null,
+      "name": "K. Müller",
+      "teamId": "brazil",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "brazil-2-martin",
+      "apiId": null,
+      "name": "E. Martin",
+      "teamId": "brazil",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "brazil-3-lopez",
+      "apiId": null,
+      "name": "H. López",
+      "teamId": "brazil",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "brazil-4-greco",
+      "apiId": null,
+      "name": "C. Greco",
+      "teamId": "brazil",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "brazil-5-okafor",
+      "apiId": null,
+      "name": "M. Okafor",
+      "teamId": "brazil",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "brazil-6-dvorak",
+      "apiId": null,
+      "name": "S. Dvořák",
+      "teamId": "brazil",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "brazil-7-saito",
+      "apiId": null,
+      "name": "K. Saitō",
+      "teamId": "brazil",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "haiti-0-saito",
+      "apiId": null,
+      "name": "F. Saitō",
+      "teamId": "haiti",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "haiti-1-dvorak",
+      "apiId": null,
+      "name": "N. Dvořák",
+      "teamId": "haiti",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "haiti-2-okafor",
+      "apiId": null,
+      "name": "H. Okafor",
+      "teamId": "haiti",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "haiti-3-greco",
+      "apiId": null,
+      "name": "P. Greco",
+      "teamId": "haiti",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "haiti-4-sokolov",
+      "apiId": null,
+      "name": "H. Sokolov",
+      "teamId": "haiti",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "haiti-5-wagner",
+      "apiId": null,
+      "name": "P. Wagner",
+      "teamId": "haiti",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "haiti-6-costa",
+      "apiId": null,
+      "name": "B. Costa",
+      "teamId": "haiti",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "haiti-7-rossi",
+      "apiId": null,
+      "name": "A. Rossi",
+      "teamId": "haiti",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "morocco-0-fernandez",
+      "apiId": null,
+      "name": "A. Fernández",
+      "teamId": "morocco",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "morocco-1-mansour",
+      "apiId": null,
+      "name": "M. Mansour",
+      "teamId": "morocco",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "morocco-2-mensah",
+      "apiId": null,
+      "name": "N. Mensah",
+      "teamId": "morocco",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "morocco-3-silva",
+      "apiId": null,
+      "name": "F. Silva",
+      "teamId": "morocco",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "morocco-4-tanaka",
+      "apiId": null,
+      "name": "N. Tanaka",
+      "teamId": "morocco",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "morocco-5-romano",
+      "apiId": null,
+      "name": "F. Romano",
+      "teamId": "morocco",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "morocco-6-almeida",
+      "apiId": null,
+      "name": "S. Almeida",
+      "teamId": "morocco",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "morocco-7-dubois",
+      "apiId": null,
+      "name": "H. Dubois",
+      "teamId": "morocco",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "scotland-0-okafor",
+      "apiId": null,
+      "name": "J. Okafor",
+      "teamId": "scotland",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "scotland-1-martin",
+      "apiId": null,
+      "name": "B. Martin",
+      "teamId": "scotland",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "scotland-2-lopez",
+      "apiId": null,
+      "name": "N. López",
+      "teamId": "scotland",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "scotland-3-khalil",
+      "apiId": null,
+      "name": "D. Khalil",
+      "teamId": "scotland",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "scotland-4-muller",
+      "apiId": null,
+      "name": "P. Müller",
+      "teamId": "scotland",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "scotland-5-petrov",
+      "apiId": null,
+      "name": "H. Petrov",
+      "teamId": "scotland",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "scotland-6-larsson",
+      "apiId": null,
+      "name": "J. Larsson",
+      "teamId": "scotland",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "scotland-7-markovic",
+      "apiId": null,
+      "name": "B. Marković",
+      "teamId": "scotland",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "australia-0-silva",
+      "apiId": null,
+      "name": "L. Silva",
+      "teamId": "australia",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "australia-1-andersson",
+      "apiId": null,
+      "name": "D. Andersson",
+      "teamId": "australia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "australia-2-horvat",
+      "apiId": null,
+      "name": "N. Horvat",
+      "teamId": "australia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "australia-3-wagner",
+      "apiId": null,
+      "name": "R. Wagner",
+      "teamId": "australia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "australia-4-dubois",
+      "apiId": null,
+      "name": "E. Dubois",
+      "teamId": "australia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "australia-5-fernandez",
+      "apiId": null,
+      "name": "R. Fernández",
+      "teamId": "australia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "australia-6-mansour",
+      "apiId": null,
+      "name": "J. Mansour",
+      "teamId": "australia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "australia-7-mensah",
+      "apiId": null,
+      "name": "T. Mensah",
+      "teamId": "australia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "paraguay-0-pereira",
+      "apiId": null,
+      "name": "N. Pereira",
+      "teamId": "paraguay",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "paraguay-1-cerny",
+      "apiId": null,
+      "name": "F. Černý",
+      "teamId": "paraguay",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "paraguay-2-garcia",
+      "apiId": null,
+      "name": "S. García",
+      "teamId": "paraguay",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "paraguay-3-hassan",
+      "apiId": null,
+      "name": "H. Hassan",
+      "teamId": "paraguay",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "paraguay-4-diallo",
+      "apiId": null,
+      "name": "A. Diallo",
+      "teamId": "paraguay",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "paraguay-5-bernard",
+      "apiId": null,
+      "name": "M. Bernard",
+      "teamId": "paraguay",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "paraguay-6-torres",
+      "apiId": null,
+      "name": "N. Torres",
+      "teamId": "paraguay",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "paraguay-7-kovac",
+      "apiId": null,
+      "name": "F. Kovač",
+      "teamId": "paraguay",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "turkey-0-rossi",
+      "apiId": null,
+      "name": "S. Rossi",
+      "teamId": "turkey",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "turkey-1-costa",
+      "apiId": null,
+      "name": "K. Costa",
+      "teamId": "turkey",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "turkey-2-wagner",
+      "apiId": null,
+      "name": "P. Wagner",
+      "teamId": "turkey",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "turkey-3-sokolov",
+      "apiId": null,
+      "name": "H. Sokolov",
+      "teamId": "turkey",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "turkey-4-andersson",
+      "apiId": null,
+      "name": "C. Andersson",
+      "teamId": "turkey",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "turkey-5-horvat",
+      "apiId": null,
+      "name": "D. Horvat",
+      "teamId": "turkey",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "turkey-6-mensah",
+      "apiId": null,
+      "name": "C. Mensah",
+      "teamId": "turkey",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "turkey-7-silva",
+      "apiId": null,
+      "name": "K. Silva",
+      "teamId": "turkey",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "usa-0-andersson",
+      "apiId": null,
+      "name": "T. Andersson",
+      "teamId": "usa",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "usa-1-silva",
+      "apiId": null,
+      "name": "G. Silva",
+      "teamId": "usa",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "usa-2-mensah",
+      "apiId": null,
+      "name": "R. Mensah",
+      "teamId": "usa",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "usa-3-mansour",
+      "apiId": null,
+      "name": "E. Mansour",
+      "teamId": "usa",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "usa-4-fernandez",
+      "apiId": null,
+      "name": "B. Fernández",
+      "teamId": "usa",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "usa-5-dubois",
+      "apiId": null,
+      "name": "L. Dubois",
+      "teamId": "usa",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "usa-6-almeida",
+      "apiId": null,
+      "name": "T. Almeida",
+      "teamId": "usa",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "usa-7-ivanov",
+      "apiId": null,
+      "name": "G. Ivanov",
+      "teamId": "usa",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "curacao-0-okafor",
+      "apiId": null,
+      "name": "A. Okafor",
+      "teamId": "curacao",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "curacao-1-martin",
+      "apiId": null,
+      "name": "M. Martin",
+      "teamId": "curacao",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "curacao-2-lopez",
+      "apiId": null,
+      "name": "N. López",
+      "teamId": "curacao",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "curacao-3-khalil",
+      "apiId": null,
+      "name": "F. Khalil",
+      "teamId": "curacao",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "curacao-4-costa",
+      "apiId": null,
+      "name": "N. Costa",
+      "teamId": "curacao",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "curacao-5-dvorak",
+      "apiId": null,
+      "name": "F. Dvořák",
+      "teamId": "curacao",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "curacao-6-saito",
+      "apiId": null,
+      "name": "S. Saitō",
+      "teamId": "curacao",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "curacao-7-greco",
+      "apiId": null,
+      "name": "H. Greco",
+      "teamId": "curacao",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "ecuador-0-nakamura",
+      "apiId": null,
+      "name": "R. Nakamura",
+      "teamId": "ecuador",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ecuador-1-becker",
+      "apiId": null,
+      "name": "E. Becker",
+      "teamId": "ecuador",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ecuador-2-markovic",
+      "apiId": null,
+      "name": "O. Marković",
+      "teamId": "ecuador",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ecuador-3-larsson",
+      "apiId": null,
+      "name": "C. Larsson",
+      "teamId": "ecuador",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ecuador-4-petrov",
+      "apiId": null,
+      "name": "T. Petrov",
+      "teamId": "ecuador",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "ecuador-5-muller",
+      "apiId": null,
+      "name": "J. Müller",
+      "teamId": "ecuador",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "ecuador-6-khalil",
+      "apiId": null,
+      "name": "R. Khalil",
+      "teamId": "ecuador",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "ecuador-7-lopez",
+      "apiId": null,
+      "name": "E. López",
+      "teamId": "ecuador",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "germany-0-garcia",
+      "apiId": null,
+      "name": "D. García",
+      "teamId": "germany",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "germany-1-cerny",
+      "apiId": null,
+      "name": "L. Černý",
+      "teamId": "germany",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "germany-2-diallo",
+      "apiId": null,
+      "name": "F. Diallo",
+      "teamId": "germany",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "germany-3-hassan",
+      "apiId": null,
+      "name": "P. Hassan",
+      "teamId": "germany",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "germany-4-torres",
+      "apiId": null,
+      "name": "B. Torres",
+      "teamId": "germany",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "germany-5-bernard",
+      "apiId": null,
+      "name": "S. Bernard",
+      "teamId": "germany",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "germany-6-schmidt",
+      "apiId": null,
+      "name": "D. Schmidt",
+      "teamId": "germany",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "germany-7-kovac",
+      "apiId": null,
+      "name": "L. Kovač",
+      "teamId": "germany",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "ivory-coast-0-tanaka",
+      "apiId": null,
+      "name": "J. Tanaka",
+      "teamId": "ivory-coast",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ivory-coast-1-romano",
+      "apiId": null,
+      "name": "B. Romano",
+      "teamId": "ivory-coast",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ivory-coast-2-almeida",
+      "apiId": null,
+      "name": "L. Almeida",
+      "teamId": "ivory-coast",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ivory-coast-3-dubois",
+      "apiId": null,
+      "name": "D. Dubois",
+      "teamId": "ivory-coast",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ivory-coast-4-ivanov",
+      "apiId": null,
+      "name": "P. Ivanov",
+      "teamId": "ivory-coast",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "ivory-coast-5-nilsson",
+      "apiId": null,
+      "name": "D. Nilsson",
+      "teamId": "ivory-coast",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "ivory-coast-6-santos",
+      "apiId": null,
+      "name": "P. Santos",
+      "teamId": "ivory-coast",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "ivory-coast-7-novak",
+      "apiId": null,
+      "name": "K. Novák",
+      "teamId": "ivory-coast",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "japan-0-torres",
+      "apiId": null,
+      "name": "J. Torres",
+      "teamId": "japan",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "japan-1-kovac",
+      "apiId": null,
+      "name": "K. Kovač",
+      "teamId": "japan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "japan-2-diallo",
+      "apiId": null,
+      "name": "E. Diallo",
+      "teamId": "japan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "japan-3-bernard",
+      "apiId": null,
+      "name": "R. Bernard",
+      "teamId": "japan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "japan-4-nilsson",
+      "apiId": null,
+      "name": "E. Nilsson",
+      "teamId": "japan",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "japan-5-santos",
+      "apiId": null,
+      "name": "R. Santos",
+      "teamId": "japan",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "japan-6-schmidt",
+      "apiId": null,
+      "name": "C. Schmidt",
+      "teamId": "japan",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "japan-7-ivanov",
+      "apiId": null,
+      "name": "O. Ivanov",
+      "teamId": "japan",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "netherlands-0-saito",
+      "apiId": null,
+      "name": "G. Saitō",
+      "teamId": "netherlands",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "netherlands-1-greco",
+      "apiId": null,
+      "name": "R. Greco",
+      "teamId": "netherlands",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "netherlands-2-costa",
+      "apiId": null,
+      "name": "L. Costa",
+      "teamId": "netherlands",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "netherlands-3-dvorak",
+      "apiId": null,
+      "name": "D. Dvořák",
+      "teamId": "netherlands",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "netherlands-4-lopez",
+      "apiId": null,
+      "name": "L. López",
+      "teamId": "netherlands",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "netherlands-5-khalil",
+      "apiId": null,
+      "name": "D. Khalil",
+      "teamId": "netherlands",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "netherlands-6-okafor",
+      "apiId": null,
+      "name": "J. Okafor",
+      "teamId": "netherlands",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "netherlands-7-martin",
+      "apiId": null,
+      "name": "B. Martin",
+      "teamId": "netherlands",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "sweden-0-diallo",
+      "apiId": null,
+      "name": "J. Diallo",
+      "teamId": "sweden",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "sweden-1-bernard",
+      "apiId": null,
+      "name": "B. Bernard",
+      "teamId": "sweden",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "sweden-2-torres",
+      "apiId": null,
+      "name": "N. Torres",
+      "teamId": "sweden",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "sweden-3-kovac",
+      "apiId": null,
+      "name": "D. Kovač",
+      "teamId": "sweden",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "sweden-4-schmidt",
+      "apiId": null,
+      "name": "P. Schmidt",
+      "teamId": "sweden",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "sweden-5-ivanov",
+      "apiId": null,
+      "name": "H. Ivanov",
+      "teamId": "sweden",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "sweden-6-nilsson",
+      "apiId": null,
+      "name": "J. Nilsson",
+      "teamId": "sweden",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "sweden-7-santos",
+      "apiId": null,
+      "name": "B. Santos",
+      "teamId": "sweden",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "tunisia-0-rossi",
+      "apiId": null,
+      "name": "D. Rossi",
+      "teamId": "tunisia",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "tunisia-1-sokolov",
+      "apiId": null,
+      "name": "L. Sokolov",
+      "teamId": "tunisia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "tunisia-2-dvorak",
+      "apiId": null,
+      "name": "F. Dvořák",
+      "teamId": "tunisia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "tunisia-3-costa",
+      "apiId": null,
+      "name": "N. Costa",
+      "teamId": "tunisia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "tunisia-4-andersson",
+      "apiId": null,
+      "name": "F. Andersson",
+      "teamId": "tunisia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "tunisia-5-silva",
+      "apiId": null,
+      "name": "N. Silva",
+      "teamId": "tunisia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "tunisia-6-wagner",
+      "apiId": null,
+      "name": "H. Wagner",
+      "teamId": "tunisia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "tunisia-7-horvat",
+      "apiId": null,
+      "name": "S. Horvat",
+      "teamId": "tunisia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "belgium-0-kovac",
+      "apiId": null,
+      "name": "B. Kovač",
+      "teamId": "belgium",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "belgium-1-torres",
+      "apiId": null,
+      "name": "J. Torres",
+      "teamId": "belgium",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "belgium-2-ivanov",
+      "apiId": null,
+      "name": "D. Ivanov",
+      "teamId": "belgium",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "belgium-3-schmidt",
+      "apiId": null,
+      "name": "N. Schmidt",
+      "teamId": "belgium",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "belgium-4-santos",
+      "apiId": null,
+      "name": "T. Santos",
+      "teamId": "belgium",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "belgium-5-nilsson",
+      "apiId": null,
+      "name": "P. Nilsson",
+      "teamId": "belgium",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "belgium-6-tanaka",
+      "apiId": null,
+      "name": "B. Tanaka",
+      "teamId": "belgium",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "belgium-7-novak",
+      "apiId": null,
+      "name": "J. Novák",
+      "teamId": "belgium",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "egypt-0-costa",
+      "apiId": null,
+      "name": "R. Costa",
+      "teamId": "egypt",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "egypt-1-rossi",
+      "apiId": null,
+      "name": "E. Rossi",
+      "teamId": "egypt",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "egypt-2-sokolov",
+      "apiId": null,
+      "name": "O. Sokolov",
+      "teamId": "egypt",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "egypt-3-wagner",
+      "apiId": null,
+      "name": "C. Wagner",
+      "teamId": "egypt",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "egypt-4-horvat",
+      "apiId": null,
+      "name": "K. Horvat",
+      "teamId": "egypt",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "egypt-5-andersson",
+      "apiId": null,
+      "name": "A. Andersson",
+      "teamId": "egypt",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "egypt-6-silva",
+      "apiId": null,
+      "name": "H. Silva",
+      "teamId": "egypt",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "egypt-7-mensah",
+      "apiId": null,
+      "name": "E. Mensah",
+      "teamId": "egypt",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "iran-0-sokolov",
+      "apiId": null,
+      "name": "G. Sokolov",
+      "teamId": "iran",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "iran-1-rossi",
+      "apiId": null,
+      "name": "T. Rossi",
+      "teamId": "iran",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "iran-2-costa",
+      "apiId": null,
+      "name": "L. Costa",
+      "teamId": "iran",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "iran-3-dvorak",
+      "apiId": null,
+      "name": "M. Dvořák",
+      "teamId": "iran",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "iran-4-saito",
+      "apiId": null,
+      "name": "E. Saitō",
+      "teamId": "iran",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "iran-5-greco",
+      "apiId": null,
+      "name": "R. Greco",
+      "teamId": "iran",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "iran-6-okafor",
+      "apiId": null,
+      "name": "G. Okafor",
+      "teamId": "iran",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "iran-7-martin",
+      "apiId": null,
+      "name": "T. Martin",
+      "teamId": "iran",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "new-zealand-0-rossi",
+      "apiId": null,
+      "name": "N. Rossi",
+      "teamId": "new-zealand",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "new-zealand-1-costa",
+      "apiId": null,
+      "name": "R. Costa",
+      "teamId": "new-zealand",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "new-zealand-2-dvorak",
+      "apiId": null,
+      "name": "G. Dvořák",
+      "teamId": "new-zealand",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "new-zealand-3-saito",
+      "apiId": null,
+      "name": "T. Saitō",
+      "teamId": "new-zealand",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "new-zealand-4-andersson",
+      "apiId": null,
+      "name": "G. Andersson",
+      "teamId": "new-zealand",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "new-zealand-5-horvat",
+      "apiId": null,
+      "name": "T. Horvat",
+      "teamId": "new-zealand",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "new-zealand-6-wagner",
+      "apiId": null,
+      "name": "L. Wagner",
+      "teamId": "new-zealand",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "new-zealand-7-sokolov",
+      "apiId": null,
+      "name": "B. Sokolov",
+      "teamId": "new-zealand",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "cape-verde-0-mensah",
+      "apiId": null,
+      "name": "L. Mensah",
+      "teamId": "cape-verde",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "cape-verde-1-silva",
+      "apiId": null,
+      "name": "O. Silva",
+      "teamId": "cape-verde",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "cape-verde-2-andersson",
+      "apiId": null,
+      "name": "G. Andersson",
+      "teamId": "cape-verde",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "cape-verde-3-horvat",
+      "apiId": null,
+      "name": "R. Horvat",
+      "teamId": "cape-verde",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "cape-verde-4-wagner",
+      "apiId": null,
+      "name": "J. Wagner",
+      "teamId": "cape-verde",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "cape-verde-5-sokolov",
+      "apiId": null,
+      "name": "B. Sokolov",
+      "teamId": "cape-verde",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "cape-verde-6-rossi",
+      "apiId": null,
+      "name": "L. Rossi",
+      "teamId": "cape-verde",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "cape-verde-7-costa",
+      "apiId": null,
+      "name": "D. Costa",
+      "teamId": "cape-verde",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "saudi-arabia-0-bianchi",
+      "apiId": null,
+      "name": "H. Bianchi",
+      "teamId": "saudi-arabia",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "saudi-arabia-1-nakamura",
+      "apiId": null,
+      "name": "S. Nakamura",
+      "teamId": "saudi-arabia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "saudi-arabia-2-becker",
+      "apiId": null,
+      "name": "F. Becker",
+      "teamId": "saudi-arabia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "saudi-arabia-3-markovic",
+      "apiId": null,
+      "name": "N. Marković",
+      "teamId": "saudi-arabia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "saudi-arabia-4-hassan",
+      "apiId": null,
+      "name": "F. Hassan",
+      "teamId": "saudi-arabia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "saudi-arabia-5-garcia",
+      "apiId": null,
+      "name": "N. García",
+      "teamId": "saudi-arabia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "saudi-arabia-6-cerny",
+      "apiId": null,
+      "name": "D. Černý",
+      "teamId": "saudi-arabia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "saudi-arabia-7-pereira",
+      "apiId": null,
+      "name": "L. Pereira",
+      "teamId": "saudi-arabia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "spain-0-larsson",
+      "apiId": null,
+      "name": "T. Larsson",
+      "teamId": "spain",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "spain-1-petrov",
+      "apiId": null,
+      "name": "G. Petrov",
+      "teamId": "spain",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "spain-2-becker",
+      "apiId": null,
+      "name": "B. Becker",
+      "teamId": "spain",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "spain-3-markovic",
+      "apiId": null,
+      "name": "L. Marković",
+      "teamId": "spain",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "spain-4-bianchi",
+      "apiId": null,
+      "name": "R. Bianchi",
+      "teamId": "spain",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "spain-5-nakamura",
+      "apiId": null,
+      "name": "E. Nakamura",
+      "teamId": "spain",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "spain-6-cerny",
+      "apiId": null,
+      "name": "T. Černý",
+      "teamId": "spain",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "spain-7-pereira",
+      "apiId": null,
+      "name": "G. Pereira",
+      "teamId": "spain",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "uruguay-0-mensah",
+      "apiId": null,
+      "name": "P. Mensah",
+      "teamId": "uruguay",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "uruguay-1-silva",
+      "apiId": null,
+      "name": "H. Silva",
+      "teamId": "uruguay",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "uruguay-2-fernandez",
+      "apiId": null,
+      "name": "N. Fernández",
+      "teamId": "uruguay",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "uruguay-3-mansour",
+      "apiId": null,
+      "name": "F. Mansour",
+      "teamId": "uruguay",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "uruguay-4-almeida",
+      "apiId": null,
+      "name": "L. Almeida",
+      "teamId": "uruguay",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "uruguay-5-dubois",
+      "apiId": null,
+      "name": "B. Dubois",
+      "teamId": "uruguay",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "uruguay-6-tanaka",
+      "apiId": null,
+      "name": "P. Tanaka",
+      "teamId": "uruguay",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "uruguay-7-romano",
+      "apiId": null,
+      "name": "T. Romano",
+      "teamId": "uruguay",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "france-0-pereira",
+      "apiId": null,
+      "name": "D. Pereira",
+      "teamId": "france",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "france-1-bianchi",
+      "apiId": null,
+      "name": "L. Bianchi",
+      "teamId": "france",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "france-2-garcia",
+      "apiId": null,
+      "name": "F. García",
+      "teamId": "france",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "france-3-cerny",
+      "apiId": null,
+      "name": "N. Černý",
+      "teamId": "france",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "france-4-markovic",
+      "apiId": null,
+      "name": "F. Marković",
+      "teamId": "france",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "france-5-larsson",
+      "apiId": null,
+      "name": "N. Larsson",
+      "teamId": "france",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "france-6-nakamura",
+      "apiId": null,
+      "name": "T. Nakamura",
+      "teamId": "france",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "france-7-becker",
+      "apiId": null,
+      "name": "J. Becker",
+      "teamId": "france",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "iraq-0-greco",
+      "apiId": null,
+      "name": "F. Greco",
+      "teamId": "iraq",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "iraq-1-saito",
+      "apiId": null,
+      "name": "N. Saitō",
+      "teamId": "iraq",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "iraq-2-dvorak",
+      "apiId": null,
+      "name": "D. Dvořák",
+      "teamId": "iraq",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "iraq-3-costa",
+      "apiId": null,
+      "name": "L. Costa",
+      "teamId": "iraq",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "iraq-4-rossi",
+      "apiId": null,
+      "name": "T. Rossi",
+      "teamId": "iraq",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "iraq-5-sokolov",
+      "apiId": null,
+      "name": "J. Sokolov",
+      "teamId": "iraq",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "iraq-6-wagner",
+      "apiId": null,
+      "name": "F. Wagner",
+      "teamId": "iraq",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "iraq-7-horvat",
+      "apiId": null,
+      "name": "N. Horvat",
+      "teamId": "iraq",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "norway-0-dvorak",
+      "apiId": null,
+      "name": "L. Dvořák",
+      "teamId": "norway",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "norway-1-saito",
+      "apiId": null,
+      "name": "D. Saitō",
+      "teamId": "norway",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "norway-2-rossi",
+      "apiId": null,
+      "name": "S. Rossi",
+      "teamId": "norway",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "norway-3-costa",
+      "apiId": null,
+      "name": "B. Costa",
+      "teamId": "norway",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "norway-4-wagner",
+      "apiId": null,
+      "name": "P. Wagner",
+      "teamId": "norway",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "norway-5-sokolov",
+      "apiId": null,
+      "name": "F. Sokolov",
+      "teamId": "norway",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "norway-6-andersson",
+      "apiId": null,
+      "name": "L. Andersson",
+      "teamId": "norway",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "norway-7-horvat",
+      "apiId": null,
+      "name": "D. Horvat",
+      "teamId": "norway",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "senegal-0-tanaka",
+      "apiId": null,
+      "name": "O. Tanaka",
+      "teamId": "senegal",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "senegal-1-novak",
+      "apiId": null,
+      "name": "E. Novák",
+      "teamId": "senegal",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "senegal-2-santos",
+      "apiId": null,
+      "name": "B. Santos",
+      "teamId": "senegal",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "senegal-3-nilsson",
+      "apiId": null,
+      "name": "J. Nilsson",
+      "teamId": "senegal",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "senegal-4-fernandez",
+      "apiId": null,
+      "name": "B. Fernández",
+      "teamId": "senegal",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "senegal-5-dubois",
+      "apiId": null,
+      "name": "J. Dubois",
+      "teamId": "senegal",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "senegal-6-almeida",
+      "apiId": null,
+      "name": "T. Almeida",
+      "teamId": "senegal",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "senegal-7-romano",
+      "apiId": null,
+      "name": "G. Romano",
+      "teamId": "senegal",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "algeria-0-diallo",
+      "apiId": null,
+      "name": "D. Diallo",
+      "teamId": "algeria",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "algeria-1-hassan",
+      "apiId": null,
+      "name": "N. Hassan",
+      "teamId": "algeria",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "algeria-2-garcia",
+      "apiId": null,
+      "name": "K. García",
+      "teamId": "algeria",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "algeria-3-cerny",
+      "apiId": null,
+      "name": "S. Černý",
+      "teamId": "algeria",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "algeria-4-schmidt",
+      "apiId": null,
+      "name": "K. Schmidt",
+      "teamId": "algeria",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "algeria-5-kovac",
+      "apiId": null,
+      "name": "S. Kovač",
+      "teamId": "algeria",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "algeria-6-torres",
+      "apiId": null,
+      "name": "H. Torres",
+      "teamId": "algeria",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "algeria-7-bernard",
+      "apiId": null,
+      "name": "P. Bernard",
+      "teamId": "algeria",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "argentina-0-wagner",
+      "apiId": null,
+      "name": "K. Wagner",
+      "teamId": "argentina",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "argentina-1-horvat",
+      "apiId": null,
+      "name": "S. Horvat",
+      "teamId": "argentina",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "argentina-2-rossi",
+      "apiId": null,
+      "name": "D. Rossi",
+      "teamId": "argentina",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "argentina-3-sokolov",
+      "apiId": null,
+      "name": "C. Sokolov",
+      "teamId": "argentina",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "argentina-4-dvorak",
+      "apiId": null,
+      "name": "H. Dvořák",
+      "teamId": "argentina",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "argentina-5-costa",
+      "apiId": null,
+      "name": "P. Costa",
+      "teamId": "argentina",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "argentina-6-greco",
+      "apiId": null,
+      "name": "K. Greco",
+      "teamId": "argentina",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "argentina-7-saito",
+      "apiId": null,
+      "name": "S. Saitō",
+      "teamId": "argentina",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "austria-0-okafor",
+      "apiId": null,
+      "name": "O. Okafor",
+      "teamId": "austria",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "austria-1-greco",
+      "apiId": null,
+      "name": "C. Greco",
+      "teamId": "austria",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "austria-2-saito",
+      "apiId": null,
+      "name": "B. Saitō",
+      "teamId": "austria",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "austria-3-dvorak",
+      "apiId": null,
+      "name": "J. Dvořák",
+      "teamId": "austria",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "austria-4-costa",
+      "apiId": null,
+      "name": "R. Costa",
+      "teamId": "austria",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "austria-5-rossi",
+      "apiId": null,
+      "name": "G. Rossi",
+      "teamId": "austria",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "austria-6-sokolov",
+      "apiId": null,
+      "name": "O. Sokolov",
+      "teamId": "austria",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "austria-7-wagner",
+      "apiId": null,
+      "name": "C. Wagner",
+      "teamId": "austria",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "jordan-0-dvorak",
+      "apiId": null,
+      "name": "G. Dvořák",
+      "teamId": "jordan",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "jordan-1-saito",
+      "apiId": null,
+      "name": "T. Saitō",
+      "teamId": "jordan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "jordan-2-rossi",
+      "apiId": null,
+      "name": "E. Rossi",
+      "teamId": "jordan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "jordan-3-costa",
+      "apiId": null,
+      "name": "R. Costa",
+      "teamId": "jordan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "jordan-4-wagner",
+      "apiId": null,
+      "name": "L. Wagner",
+      "teamId": "jordan",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "jordan-5-sokolov",
+      "apiId": null,
+      "name": "M. Sokolov",
+      "teamId": "jordan",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "jordan-6-andersson",
+      "apiId": null,
+      "name": "G. Andersson",
+      "teamId": "jordan",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "jordan-7-horvat",
+      "apiId": null,
+      "name": "T. Horvat",
+      "teamId": "jordan",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "colombia-0-petrov",
+      "apiId": null,
+      "name": "L. Petrov",
+      "teamId": "colombia",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "colombia-1-larsson",
+      "apiId": null,
+      "name": "D. Larsson",
+      "teamId": "colombia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "colombia-2-khalil",
+      "apiId": null,
+      "name": "J. Khalil",
+      "teamId": "colombia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "colombia-3-muller",
+      "apiId": null,
+      "name": "B. Müller",
+      "teamId": "colombia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "colombia-4-martin",
+      "apiId": null,
+      "name": "G. Martin",
+      "teamId": "colombia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "colombia-5-lopez",
+      "apiId": null,
+      "name": "R. López",
+      "teamId": "colombia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "colombia-6-greco",
+      "apiId": null,
+      "name": "L. Greco",
+      "teamId": "colombia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "colombia-7-okafor",
+      "apiId": null,
+      "name": "O. Okafor",
+      "teamId": "colombia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "dr-congo-0-okafor",
+      "apiId": null,
+      "name": "K. Okafor",
+      "teamId": "dr-congo",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "dr-congo-1-greco",
+      "apiId": null,
+      "name": "J. Greco",
+      "teamId": "dr-congo",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "dr-congo-2-saito",
+      "apiId": null,
+      "name": "R. Saitō",
+      "teamId": "dr-congo",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "dr-congo-3-dvorak",
+      "apiId": null,
+      "name": "E. Dvořák",
+      "teamId": "dr-congo",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "dr-congo-4-muller",
+      "apiId": null,
+      "name": "R. Müller",
+      "teamId": "dr-congo",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "dr-congo-5-khalil",
+      "apiId": null,
+      "name": "E. Khalil",
+      "teamId": "dr-congo",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "dr-congo-6-lopez",
+      "apiId": null,
+      "name": "O. López",
+      "teamId": "dr-congo",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "dr-congo-7-martin",
+      "apiId": null,
+      "name": "C. Martin",
+      "teamId": "dr-congo",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "portugal-0-muller",
+      "apiId": null,
+      "name": "G. Müller",
+      "teamId": "portugal",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "portugal-1-petrov",
+      "apiId": null,
+      "name": "T. Petrov",
+      "teamId": "portugal",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "portugal-2-lopez",
+      "apiId": null,
+      "name": "E. López",
+      "teamId": "portugal",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "portugal-3-khalil",
+      "apiId": null,
+      "name": "R. Khalil",
+      "teamId": "portugal",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "portugal-4-okafor",
+      "apiId": null,
+      "name": "L. Okafor",
+      "teamId": "portugal",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "portugal-5-martin",
+      "apiId": null,
+      "name": "M. Martin",
+      "teamId": "portugal",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "portugal-6-saito",
+      "apiId": null,
+      "name": "G. Saitō",
+      "teamId": "portugal",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "portugal-7-greco",
+      "apiId": null,
+      "name": "T. Greco",
+      "teamId": "portugal",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "uzbekistan-0-nilsson",
+      "apiId": null,
+      "name": "L. Nilsson",
+      "teamId": "uzbekistan",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "uzbekistan-1-santos",
+      "apiId": null,
+      "name": "M. Santos",
+      "teamId": "uzbekistan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "uzbekistan-2-schmidt",
+      "apiId": null,
+      "name": "G. Schmidt",
+      "teamId": "uzbekistan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "uzbekistan-3-ivanov",
+      "apiId": null,
+      "name": "T. Ivanov",
+      "teamId": "uzbekistan",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "uzbekistan-4-romano",
+      "apiId": null,
+      "name": "G. Romano",
+      "teamId": "uzbekistan",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "uzbekistan-5-almeida",
+      "apiId": null,
+      "name": "T. Almeida",
+      "teamId": "uzbekistan",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "uzbekistan-6-novak",
+      "apiId": null,
+      "name": "E. Novák",
+      "teamId": "uzbekistan",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "uzbekistan-7-tanaka",
+      "apiId": null,
+      "name": "R. Tanaka",
+      "teamId": "uzbekistan",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "croatia-0-petrov",
+      "apiId": null,
+      "name": "O. Petrov",
+      "teamId": "croatia",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "croatia-1-muller",
+      "apiId": null,
+      "name": "C. Müller",
+      "teamId": "croatia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "croatia-2-markovic",
+      "apiId": null,
+      "name": "R. Marković",
+      "teamId": "croatia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "croatia-3-larsson",
+      "apiId": null,
+      "name": "G. Larsson",
+      "teamId": "croatia",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "croatia-4-nakamura",
+      "apiId": null,
+      "name": "M. Nakamura",
+      "teamId": "croatia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "croatia-5-becker",
+      "apiId": null,
+      "name": "J. Becker",
+      "teamId": "croatia",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "croatia-6-pereira",
+      "apiId": null,
+      "name": "O. Pereira",
+      "teamId": "croatia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "croatia-7-bianchi",
+      "apiId": null,
+      "name": "C. Bianchi",
+      "teamId": "croatia",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "england-0-hassan",
+      "apiId": null,
+      "name": "B. Hassan",
+      "teamId": "england",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "england-1-garcia",
+      "apiId": null,
+      "name": "J. García",
+      "teamId": "england",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "england-2-bernard",
+      "apiId": null,
+      "name": "D. Bernard",
+      "teamId": "england",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "england-3-diallo",
+      "apiId": null,
+      "name": "L. Diallo",
+      "teamId": "england",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "england-4-bianchi",
+      "apiId": null,
+      "name": "O. Bianchi",
+      "teamId": "england",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "england-5-nakamura",
+      "apiId": null,
+      "name": "L. Nakamura",
+      "teamId": "england",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "england-6-cerny",
+      "apiId": null,
+      "name": "R. Černý",
+      "teamId": "england",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "england-7-pereira",
+      "apiId": null,
+      "name": "G. Pereira",
+      "teamId": "england",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "ghana-0-horvat",
+      "apiId": null,
+      "name": "H. Horvat",
+      "teamId": "ghana",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ghana-1-andersson",
+      "apiId": null,
+      "name": "S. Andersson",
+      "teamId": "ghana",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ghana-2-silva",
+      "apiId": null,
+      "name": "F. Silva",
+      "teamId": "ghana",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ghana-3-mensah",
+      "apiId": null,
+      "name": "N. Mensah",
+      "teamId": "ghana",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "ghana-4-costa",
+      "apiId": null,
+      "name": "F. Costa",
+      "teamId": "ghana",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "ghana-5-rossi",
+      "apiId": null,
+      "name": "C. Rossi",
+      "teamId": "ghana",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "ghana-6-sokolov",
+      "apiId": null,
+      "name": "M. Sokolov",
+      "teamId": "ghana",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "ghana-7-wagner",
+      "apiId": null,
+      "name": "A. Wagner",
+      "teamId": "ghana",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "panama-0-fernandez",
+      "apiId": null,
+      "name": "S. Fernández",
+      "teamId": "panama",
+      "position": "GK",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "panama-1-mansour",
+      "apiId": null,
+      "name": "K. Mansour",
+      "teamId": "panama",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "panama-2-mensah",
+      "apiId": null,
+      "name": "N. Mensah",
+      "teamId": "panama",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "panama-3-silva",
+      "apiId": null,
+      "name": "D. Silva",
+      "teamId": "panama",
+      "position": "DEF",
+      "goalMultiplier": 32
+    },
+    {
+      "id": "panama-4-andersson",
+      "apiId": null,
+      "name": "P. Andersson",
+      "teamId": "panama",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "panama-5-horvat",
+      "apiId": null,
+      "name": "H. Horvat",
+      "teamId": "panama",
+      "position": "MID",
+      "goalMultiplier": 16
+    },
+    {
+      "id": "panama-6-wagner",
+      "apiId": null,
+      "name": "S. Wagner",
+      "teamId": "panama",
+      "position": "FWD",
+      "goalMultiplier": 8
+    },
+    {
+      "id": "panama-7-sokolov",
+      "apiId": null,
+      "name": "K. Sokolov",
+      "teamId": "panama",
+      "position": "FWD",
+      "goalMultiplier": 8
+    }
+  ]
+}
