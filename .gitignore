@@ -10,3 +10,6 @@ dist-ssr
 !.vscode/extensions.json
 coverage
 .tmp
+
+# TS incremental build info
+*.tsbuildinfo
