@@ -1,125 +1,136 @@
 {
-  "updatedAt": "2026-06-13T23:18:01.653Z",
+  "updatedAt": "2026-06-13T23:28:51.351Z",
   "items": [
     {
-      "matchId": "I-6",
-      "winnerTeamId": "iraq",
-      "winnerName": "Iraq",
-      "advice": "Iraq or draw",
+      "matchId": "C-2",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
       "percent": {
-        "home": 27,
-        "draw": 6,
-        "away": 67
+        "home": 33,
+        "draw": 33,
+        "away": 33
       }
     },
     {
-      "matchId": "H-5",
-      "winnerTeamId": "saudi-arabia",
-      "winnerName": "Saudi Arabia",
-      "advice": "Saudi Arabia or draw",
+      "matchId": "D-2",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
       "percent": {
-        "home": 37,
-        "draw": 11,
-        "away": 52
+        "home": 33,
+        "draw": 33,
+        "away": 33
       }
     },
     {
-      "matchId": "H-6",
-      "winnerTeamId": "spain",
-      "winnerName": "Spain",
-      "advice": "Spain or draw",
+      "matchId": "E-1",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
       "percent": {
-        "home": 35,
-        "draw": 15,
+        "home": 33,
+        "draw": 33,
+        "away": 33
+      }
+    },
+    {
+      "matchId": "F-1",
+      "winnerTeamId": "netherlands",
+      "winnerName": "Netherlands",
+      "advice": "Double chance : Netherlands or draw",
+      "percent": {
+        "home": 50,
+        "draw": 50,
+        "away": 0
+      }
+    },
+    {
+      "matchId": "E-2",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
+      "percent": {
+        "home": 33,
+        "draw": 33,
+        "away": 33
+      }
+    },
+    {
+      "matchId": "F-2",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
+      "percent": {
+        "home": 33,
+        "draw": 33,
+        "away": 33
+      }
+    },
+    {
+      "matchId": "H-1",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
+      "percent": {
+        "home": 33,
+        "draw": 33,
+        "away": 33
+      }
+    },
+    {
+      "matchId": "G-1",
+      "winnerTeamId": "belgium",
+      "winnerName": "Belgium",
+      "advice": "Double chance : Belgium or draw",
+      "percent": {
+        "home": 45,
+        "draw": 45,
+        "away": 10
+      }
+    },
+    {
+      "matchId": "H-2",
+      "winnerTeamId": "uruguay",
+      "winnerName": "Uruguay",
+      "advice": "Double chance : draw or Uruguay",
+      "percent": {
+        "home": 0,
+        "draw": 50,
         "away": 50
       }
     },
     {
-      "matchId": "G-5",
-      "winnerTeamId": "egypt",
-      "winnerName": "Egypt",
-      "advice": "Egypt or draw",
+      "matchId": "G-2",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
       "percent": {
-        "home": 49,
-        "draw": 22,
-        "away": 29
+        "home": 33,
+        "draw": 33,
+        "away": 33
       }
     },
     {
-      "matchId": "G-6",
-      "winnerTeamId": "new-zealand",
-      "winnerName": "New Zealand",
-      "advice": "New Zealand or draw",
+      "matchId": "I-1",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
       "percent": {
-        "home": 59,
-        "draw": 25,
-        "away": 16
+        "home": 33,
+        "draw": 33,
+        "away": 33
       }
     },
     {
-      "matchId": "L-5",
-      "winnerTeamId": "panama",
-      "winnerName": "Panama",
-      "advice": "Panama or draw",
+      "matchId": "I-2",
+      "winnerTeamId": null,
+      "winnerName": null,
+      "advice": "No predictions available",
       "percent": {
-        "home": 48,
-        "draw": 24,
-        "away": 28
-      }
-    },
-    {
-      "matchId": "L-6",
-      "winnerTeamId": "ghana",
-      "winnerName": "Ghana",
-      "advice": "Ghana or draw",
-      "percent": {
-        "home": 38,
-        "draw": 15,
-        "away": 47
-      }
-    },
-    {
-      "matchId": "K-5",
-      "winnerTeamId": "portugal",
-      "winnerName": "Portugal",
-      "advice": "Portugal or draw",
-      "percent": {
-        "home": 39,
-        "draw": 15,
-        "away": 46
-      }
-    },
-    {
-      "matchId": "K-6",
-      "winnerTeamId": "dr-congo",
-      "winnerName": "DR Congo",
-      "advice": "DR Congo or draw",
-      "percent": {
-        "home": 64,
-        "draw": 23,
-        "away": 13
-      }
-    },
-    {
-      "matchId": "J-5",
-      "winnerTeamId": "algeria",
-      "winnerName": "Algeria",
-      "advice": "Algeria or draw",
-      "percent": {
-        "home": 61,
-        "draw": 23,
-        "away": 16
-      }
-    },
-    {
-      "matchId": "J-6",
-      "winnerTeamId": "jordan",
-      "winnerName": "Jordan",
-      "advice": "Jordan or draw",
-      "percent": {
-        "home": 62,
-        "draw": 23,
-        "away": 15
+        "home": 33,
+        "draw": 33,
+        "away": 33
       }
     }
   ]
