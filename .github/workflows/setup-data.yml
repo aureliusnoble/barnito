@@ -6,8 +6,8 @@ name: Setup data (one-time)
 # has no API ids yet) and then self-disables. Can also be run manually.
 
 on:
-  push:
-    branches: [main]
+  # NOTE: API-Football's FREE tier has no access to season 2026, so this can't pull real data
+  # on a free key. Kept as manual-only until a data source is settled (paid key, or openfootball).
   workflow_dispatch:
     inputs:
       force:

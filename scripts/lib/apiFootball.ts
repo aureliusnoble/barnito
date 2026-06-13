@@ -16,21 +16,55 @@ export interface ApiResponse<T> {
 let requestCount = 0;
 export const getRequestCount = () => requestCount;
 
-export async function apiGet<T>(path: string, params: Record<string, string | number> = {}): Promise<T[]> {
+// Free tier rate-limits per minute; space requests out and back off on 429.
+const MIN_INTERVAL_MS = Number(process.env.API_FOOTBALL_MIN_INTERVAL_MS ?? 1500);
+const MAX_RETRIES = 4;
+let lastRequestAt = 0;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function apiGetRaw<T>(path: string, params: Record<string, string | number>): Promise<ApiResponse<T>> {
   const key = process.env.API_FOOTBALL_KEY;
   if (!key) throw new Error("API_FOOTBALL_KEY is not set");
   const url = new URL(`${BASE}/${path}`);
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v));
 
-  requestCount++;
-  const res = await fetch(url, { headers: { "x-apisports-key": key } });
-  if (!res.ok) throw new Error(`API ${path} -> HTTP ${res.status}`);
-  const body = (await res.json()) as ApiResponse<T>;
-  const errors = body.errors;
-  if (errors && ((Array.isArray(errors) && errors.length) || (typeof errors === "object" && Object.keys(errors as object).length))) {
-    throw new Error(`API ${path} errors: ${JSON.stringify(errors)}`);
+  for (let attempt = 0; ; attempt++) {
+    const wait = lastRequestAt + MIN_INTERVAL_MS - Date.now();
+    if (wait > 0) await sleep(wait);
+    lastRequestAt = Date.now();
+    requestCount++;
+
+    const res = await fetch(url, { headers: { "x-apisports-key": key } });
+    if (res.status === 429 && attempt < MAX_RETRIES) {
+      const retryAfter = Number(res.headers.get("retry-after")) || 60;
+      console.warn(`  rate-limited (429) on ${path}; waiting ${retryAfter}s…`);
+      await sleep(retryAfter * 1000);
+      continue;
+    }
+    if (!res.ok) throw new Error(`API ${path} -> HTTP ${res.status}`);
+    const body = (await res.json()) as ApiResponse<T>;
+    const errors = body.errors;
+    const hasErrors =
+      errors &&
+      ((Array.isArray(errors) && errors.length) ||
+        (typeof errors === "object" && Object.keys(errors as object).length));
+    if (hasErrors) {
+      // API often signals rate limits via the errors object rather than a 429 status.
+      const txt = JSON.stringify(errors);
+      if (/rate|limit|requests/i.test(txt) && attempt < MAX_RETRIES) {
+        console.warn(`  API rate message on ${path}: ${txt}; waiting 60s…`);
+        await sleep(60_000);
+        continue;
+      }
+      throw new Error(`API ${path} errors: ${txt}`);
+    }
+    return body;
   }
-  return body.response ?? [];
+}
+
+export async function apiGet<T>(path: string, params: Record<string, string | number> = {}): Promise<T[]> {
+  return (await apiGetRaw<T>(path, params)).response ?? [];
 }
 
 /** Fetch every page of a paginated endpoint (used for /players). */
@@ -42,17 +76,6 @@ export async function apiGetAllPages<T>(path: string, params: Record<string, str
     all.push(...next.response);
   }
   return all;
-}
-
-async function apiGetRaw<T>(path: string, params: Record<string, string | number>): Promise<ApiResponse<T>> {
-  const key = process.env.API_FOOTBALL_KEY;
-  if (!key) throw new Error("API_FOOTBALL_KEY is not set");
-  const url = new URL(`${BASE}/${path}`);
-  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v));
-  requestCount++;
-  const res = await fetch(url, { headers: { "x-apisports-key": key } });
-  if (!res.ok) throw new Error(`API ${path} -> HTTP ${res.status}`);
-  return (await res.json()) as ApiResponse<T>;
 }
 
 // --- response shapes we use ------------------------------------------------
