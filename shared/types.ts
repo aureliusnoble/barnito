@@ -17,12 +17,21 @@ export type MatchStatus = "SCHEDULED" | "LIVE" | "HT" | "FINISHED";
 // roster.json
 // ---------------------------------------------------------------------------
 
+export interface Venue {
+  name: string | null;
+  city: string | null;
+  capacity?: number | null;
+  image?: string | null;
+}
+
 export interface Team {
   id: string; // stable slug, e.g. "brazil"
   name: string;
+  code?: string | null; // 3-letter code, e.g. "BRA"
   group: GroupLetter;
   apiId: number | null; // API-Football team id (null until resolved)
-  flag?: string | null; // optional flag image URL
+  logo?: string | null; // crest image URL (api-sports media)
+  venue?: Venue | null;
 }
 
 export interface Player {
@@ -33,6 +42,7 @@ export interface Player {
   position: Position;
   goalMultiplier: GoalMultiplier;
   photo?: string | null;
+  number?: number | null;
 }
 
 export interface Roster {
@@ -54,6 +64,47 @@ export interface GoalEvent {
   ownGoal: boolean;
 }
 
+// Full event for the match timeline (goals already drive scoring via `goals`).
+export type MatchEventType = "GOAL" | "CARD" | "SUBST" | "VAR";
+export interface MatchEvent {
+  minute: number | null;
+  extraMinute?: number | null;
+  teamId: string;
+  type: MatchEventType;
+  detail: string; // "Normal Goal" | "Own Goal" | "Penalty" | "Yellow Card" | "Red Card" | ...
+  playerName: string;
+  playerId: string | null;
+  assistName?: string | null; // goal assist, or the player coming on for a sub
+}
+
+export interface LineupPlayer {
+  playerId: string | null;
+  name: string;
+  number: number | null;
+  pos: string | null; // "G" | "D" | "M" | "F"
+  grid?: string | null; // "row:col" for pitch layout
+}
+export interface Lineup {
+  teamId: string;
+  formation: string | null; // "4-3-3"
+  coach?: string | null;
+  startXI: LineupPlayer[];
+  subs: LineupPlayer[];
+}
+
+export interface TeamStat {
+  teamId: string;
+  items: { type: string; value: string | number | null }[]; // "Ball Possession" -> "57%"
+}
+
+export interface PlayerRating {
+  playerId: string | null;
+  name: string;
+  teamId: string;
+  rating: number | null; // 0..10
+  number?: number | null;
+}
+
 export interface Match {
   id: string; // stable id, e.g. "A-1" (group A, match 1) — also used in predictions
   apiId: number | null;
@@ -61,6 +112,7 @@ export interface Match {
   matchday: number; // 1..3 within the group
   kickoff: string; // ISO UTC
   ground?: string | null;
+  venue?: Venue | null;
   homeTeamId: string;
   awayTeamId: string;
   status: MatchStatus;
@@ -68,6 +120,11 @@ export interface Match {
   homeGoals: number | null;
   awayGoals: number | null;
   goals: GoalEvent[];
+  // rich display data (optional; populated for live/finished matches)
+  events?: MatchEvent[];
+  lineups?: Lineup[];
+  stats?: TeamStat[];
+  ratings?: PlayerRating[];
 }
 
 export interface MatchesFile {
@@ -212,4 +269,63 @@ export interface ScoresFile {
   predictedStandings: PredictedStandings[];
   scorerView: ScorerView[];
   spiciness: SpicyMatch[];
+}
+
+// ---------------------------------------------------------------------------
+// stats.json — tournament leaders (golden boot etc.)
+// ---------------------------------------------------------------------------
+
+export interface PlayerStatLine {
+  playerId: string | null; // roster id if matched (for "picked by you" highlight)
+  apiId: number | null;
+  name: string;
+  teamId: string | null;
+  teamName: string;
+  photo?: string | null;
+  position?: Position | null;
+  value: number; // the headline number (goals / assists / cards)
+  goals?: number;
+  assists?: number;
+  appearances?: number;
+}
+
+export interface StatsFile {
+  updatedAt: string;
+  topScorers: PlayerStatLine[];
+  topAssists: PlayerStatLine[];
+  topCards: PlayerStatLine[];
+}
+
+// ---------------------------------------------------------------------------
+// injuries.json — availability flags for picked players
+// ---------------------------------------------------------------------------
+
+export interface InjuryItem {
+  playerId: string | null;
+  apiId: number | null;
+  name: string;
+  teamId: string | null;
+  teamName: string;
+  type: string; // "Missing Fixture" | "Questionable" ...
+  reason: string;
+}
+export interface InjuriesFile {
+  updatedAt: string;
+  items: InjuryItem[];
+}
+
+// ---------------------------------------------------------------------------
+// forecasts.json — API-Football's model prediction per upcoming match
+// ---------------------------------------------------------------------------
+
+export interface Forecast {
+  matchId: string;
+  winnerTeamId: string | null;
+  winnerName: string | null;
+  advice: string | null;
+  percent: { home: number; draw: number; away: number }; // 0..100
+}
+export interface ForecastsFile {
+  updatedAt: string;
+  items: Forecast[];
 }

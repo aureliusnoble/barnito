@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -14,34 +14,63 @@
     height: 100%;
   }
   body {
-    @apply bg-pitch-950 text-pitch-50 antialiased;
+    @apply bg-pitch-950 font-sans text-pitch-100 antialiased;
     background-image: radial-gradient(
-        ellipse at top,
-        rgba(22, 163, 74, 0.18),
-        transparent 55%
+        110% 80% at 50% -10%,
+        rgba(16, 185, 129, 0.1),
+        transparent 60%
       ),
-      radial-gradient(ellipse at bottom, rgba(6, 43, 22, 0.6), transparent 60%);
+      radial-gradient(90% 60% at 100% 0%, rgba(249, 115, 22, 0.05), transparent 55%);
     background-attachment: fixed;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+  ::selection {
+    @apply bg-accent-500/30 text-white;
+  }
+  /* refined focus ring */
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent-400/70 ring-offset-2 ring-offset-pitch-950;
   }
 }
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-pitch-800/70 bg-pitch-900/60 backdrop-blur-sm shadow-lg;
+    @apply rounded-2xl border border-white/[0.06] bg-pitch-900/70 shadow-card backdrop-blur-xl;
+  }
+  .card-hover {
+    @apply transition duration-200 hover:border-white/[0.12] hover:bg-pitch-900;
   }
   .chip {
     @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold;
   }
-  .tab-active {
-    @apply text-pitch-50;
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg bg-pitch-800/80;
+  }
+  .skeleton::after {
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/[0.06] to-transparent content-[''];
+  }
+  .stat-track {
+    @apply h-1.5 overflow-hidden rounded-full bg-pitch-800;
   }
 }
 
-/* hide scrollbars on horizontal pill rows but keep scrollability */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* slim, unobtrusive scrollbars elsewhere */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-white/10;
 }

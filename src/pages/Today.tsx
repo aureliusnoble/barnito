@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { Trophy, Radio, CalendarDays, ChevronRight } from "lucide-react";
 import { useBarnito } from "../data/store";
 import MatchCard from "../components/MatchCard";
 import { SectionTitle } from "../components/bits";
@@ -37,28 +38,34 @@ export default function Today() {
       {leader && (
         <Link
           to="/leaderboard"
-          className="card flex items-center justify-between gap-3 bg-gradient-to-r from-pitch-800/70 to-pitch-900/70 p-3"
+          className="card card-hover flex items-center justify-between gap-3 bg-gradient-to-br from-accent-500/15 via-pitch-900/60 to-pitch-900/60 p-3.5 ring-1 ring-accent-500/15"
         >
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🏆</span>
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent-500/15 text-accent-300 ring-1 ring-accent-500/25">
+              <Trophy size={20} />
+            </span>
             <div>
-              <div className="text-xs text-pitch-400">Current leader</div>
-              <div className="font-display text-lg font-bold">{leader.name}</div>
+              <div className="text-[11px] uppercase tracking-wide text-pitch-400">Current leader</div>
+              <div className="font-display text-lg font-bold text-white">{leader.name}</div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="font-display text-xl font-extrabold text-pitch-100">{leader.total}</div>
-            <div className="text-[10px] text-pitch-400">points · tap for table</div>
+          <div className="flex items-center gap-1 text-right">
+            <div>
+              <div className="font-display text-xl font-extrabold text-white">{leader.total}</div>
+              <div className="text-[10px] text-pitch-400">points</div>
+            </div>
+            <ChevronRight size={18} className="text-pitch-500" />
           </div>
         </Link>
       )}
 
       {live.length > 0 && (
         <section>
-          <SectionTitle hint="tap a game for predictions">
-            <span className="inline-flex items-center gap-2">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> Live now
-            </span>
+          <SectionTitle
+            icon={<Radio size={18} className="animate-pulse text-red-500" />}
+            hint="tap a game for predictions"
+          >
+            Live now
           </SectionTitle>
           <div className="space-y-2">
             {live.map((m) => (
@@ -70,7 +77,9 @@ export default function Today() {
 
       {todays.length > 0 ? (
         <section>
-          <SectionTitle hint={formatDay(now.toISOString())}>Today's games</SectionTitle>
+          <SectionTitle icon={<CalendarDays size={18} className="text-accent-400" />} hint={formatDay(now.toISOString())}>
+            Today's games
+          </SectionTitle>
           <div className="space-y-2">
             {todays.map((m) => (
               <MatchCard key={m.id} match={m} />
@@ -80,7 +89,9 @@ export default function Today() {
       ) : (
         nextDay.length > 0 && (
           <section>
-            <SectionTitle hint={nextDayLabel}>Next up</SectionTitle>
+            <SectionTitle icon={<CalendarDays size={18} className="text-pitch-400" />} hint={nextDayLabel}>
+              Next up
+            </SectionTitle>
             <p className="mb-2 text-xs text-pitch-400">No games today — here's the next match day.</p>
             <div className="space-y-2">
               {nextDay.map((m) => (

@@ -1,27 +1,27 @@
 {
-  "updatedAt": "2026-06-13T22:17:39.520Z",
+  "updatedAt": "2026-06-13T23:18:02.393Z",
   "leaderboard": [
     {
-      "participantId": "barney",
-      "name": "Barney",
-      "total": 1848,
+      "participantId": "kwame",
+      "name": "Kwame",
+      "total": 1829,
       "breakdown": {
-        "exactScores": 150,
-        "outcomes": 1350,
-        "standings": 300,
-        "scorers": 48,
+        "exactScores": 210,
+        "outcomes": 1320,
+        "standings": 275,
+        "scorers": 24,
         "champion": 0
       },
       "rank": 1
     },
     {
-      "participantId": "kwame",
-      "name": "Kwame",
-      "total": 1805,
+      "participantId": "barney",
+      "name": "Barney",
+      "total": 1800,
       "breakdown": {
-        "exactScores": 210,
-        "outcomes": 1320,
-        "standings": 275,
+        "exactScores": 150,
+        "outcomes": 1350,
+        "standings": 300,
         "scorers": 0,
         "champion": 0
       },
@@ -30,12 +30,12 @@
     {
       "participantId": "priya",
       "name": "Priya",
-      "total": 1767,
+      "total": 1751,
       "breakdown": {
         "exactScores": 195,
         "outcomes": 1290,
         "standings": 250,
-        "scorers": 32,
+        "scorers": 16,
         "champion": 0
       },
       "rank": 3
@@ -43,28 +43,15 @@
     {
       "participantId": "aisha",
       "name": "Aisha",
-      "total": 1760,
+      "total": 1744,
       "breakdown": {
         "exactScores": 150,
         "outcomes": 1320,
         "standings": 250,
-        "scorers": 40,
+        "scorers": 24,
         "champion": 0
       },
       "rank": 4
-    },
-    {
-      "participantId": "yuki",
-      "name": "Yuki",
-      "total": 1653,
-      "breakdown": {
-        "exactScores": 255,
-        "outcomes": 1350,
-        "standings": 0,
-        "scorers": 48,
-        "champion": 0
-      },
-      "rank": 5
     },
     {
       "participantId": "saoirse",
@@ -77,17 +64,30 @@
         "scorers": 24,
         "champion": 0
       },
+      "rank": 5
+    },
+    {
+      "participantId": "yuki",
+      "name": "Yuki",
+      "total": 1605,
+      "breakdown": {
+        "exactScores": 255,
+        "outcomes": 1350,
+        "standings": 0,
+        "scorers": 0,
+        "champion": 0
+      },
       "rank": 6
     },
     {
       "participantId": "tomas",
       "name": "Tomás",
-      "total": 1534,
+      "total": 1510,
       "breakdown": {
         "exactScores": 120,
         "outcomes": 1290,
         "standings": 100,
-        "scorers": 24,
+        "scorers": 0,
         "champion": 0
       },
       "rank": 7
@@ -95,12 +95,12 @@
     {
       "participantId": "lena",
       "name": "Lena",
-      "total": 1532,
+      "total": 1500,
       "breakdown": {
         "exactScores": 150,
         "outcomes": 1200,
         "standings": 150,
-        "scorers": 32,
+        "scorers": 0,
         "champion": 0
       },
       "rank": 8
@@ -108,12 +108,12 @@
     {
       "participantId": "mo",
       "name": "Mo",
-      "total": 1524,
+      "total": 1444,
       "breakdown": {
         "exactScores": 15,
         "outcomes": 1230,
         "standings": 175,
-        "scorers": 104,
+        "scorers": 24,
         "champion": 0
       },
       "rank": 9
@@ -9202,209 +9202,166 @@
       "name": "Barney",
       "picks": [
         {
-          "playerId": "iraq-6-wagner",
-          "playerName": "F. Wagner",
+          "playerId": "mexico-12-yamal",
+          "playerName": "E. Yamal",
+          "teamId": "mexico",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "iraq-6-alvarez",
+          "playerName": "F. Álvarez",
           "teamId": "iraq",
-          "position": "FWD",
-          "multiplier": 8,
+          "position": "DEF",
+          "multiplier": 32,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "saudi-arabia-4-hassan",
-          "playerName": "F. Hassan",
-          "teamId": "saudi-arabia",
+          "playerId": "germany-9-ivanov",
+          "playerName": "J. Ivanov",
+          "teamId": "germany",
           "position": "MID",
           "multiplier": 16,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "morocco-7-dubois",
-          "playerName": "H. Dubois",
-          "teamId": "morocco",
+          "playerId": "norway-13-silva",
+          "playerName": "E. Silva",
+          "teamId": "norway",
           "position": "FWD",
           "multiplier": 8,
-          "goals": 2,
-          "points": 16
-        },
-        {
-          "playerId": "ivory-coast-4-ivanov",
-          "playerName": "P. Ivanov",
-          "teamId": "ivory-coast",
-          "position": "MID",
-          "multiplier": 16,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "portugal-7-greco",
-          "playerName": "T. Greco",
-          "teamId": "portugal",
+          "playerId": "england-11-vinicius",
+          "playerName": "O. Vinícius",
+          "teamId": "england",
           "position": "FWD",
           "multiplier": 8,
-          "goals": 4,
-          "points": 32
+          "goals": 0,
+          "points": 0
         },
         {
-          "playerId": "new-zealand-7-sokolov",
-          "playerName": "B. Sokolov",
-          "teamId": "new-zealand",
-          "position": "FWD",
-          "multiplier": 8,
+          "playerId": "brazil-0-osimhen",
+          "playerName": "S. Osimhen",
+          "teamId": "brazil",
+          "position": "GK",
+          "multiplier": 32,
           "goals": 0,
           "points": 0
         }
       ],
-      "total": 48
+      "total": 0
     },
     {
       "participantId": "mo",
       "name": "Mo",
       "picks": [
         {
-          "playerId": "iraq-1-saito",
-          "playerName": "N. Saitō",
-          "teamId": "iraq",
-          "position": "DEF",
-          "multiplier": 32,
-          "goals": 1,
-          "points": 32
-        },
-        {
-          "playerId": "panama-5-horvat",
-          "playerName": "H. Horvat",
-          "teamId": "panama",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 2,
-          "points": 32
-        },
-        {
-          "playerId": "sweden-4-schmidt",
-          "playerName": "P. Schmidt",
-          "teamId": "sweden",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "mexico-6-mansour",
-          "playerName": "H. Mansour",
-          "teamId": "mexico",
+          "playerId": "algeria-12-haaland",
+          "playerName": "L. Haaland",
+          "teamId": "algeria",
           "position": "FWD",
           "multiplier": 8,
-          "goals": 5,
-          "points": 40
+          "goals": 0,
+          "points": 0
         },
         {
-          "playerId": "ghana-5-rossi",
-          "playerName": "C. Rossi",
-          "teamId": "ghana",
+          "playerId": "morocco-13-costa",
+          "playerName": "G. Costa",
+          "teamId": "morocco",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 1,
+          "points": 8
+        },
+        {
+          "playerId": "germany-11-mbappe",
+          "playerName": "T. Mbappé",
+          "teamId": "germany",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 1,
+          "points": 8
+        },
+        {
+          "playerId": "senegal-11-ivanov",
+          "playerName": "T. Ivanov",
+          "teamId": "senegal",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 1,
+          "points": 8
+        },
+        {
+          "playerId": "south-korea-8-garcia",
+          "playerName": "E. García",
+          "teamId": "south-korea",
           "position": "MID",
           "multiplier": 16,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "switzerland-4-nakamura",
-          "playerName": "F. Nakamura",
-          "teamId": "switzerland",
-          "position": "MID",
-          "multiplier": 16,
+          "playerId": "haiti-0-torres",
+          "playerName": "F. Torres",
+          "teamId": "haiti",
+          "position": "GK",
+          "multiplier": 32,
           "goals": 0,
           "points": 0
         }
       ],
-      "total": 104
+      "total": 24
     },
     {
       "participantId": "priya",
       "name": "Priya",
       "picks": [
         {
-          "playerId": "germany-7-kovac",
-          "playerName": "L. Kovač",
-          "teamId": "germany",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 2,
-          "points": 16
-        },
-        {
-          "playerId": "saudi-arabia-6-cerny",
-          "playerName": "D. Černý",
-          "teamId": "saudi-arabia",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 1,
-          "points": 8
-        },
-        {
-          "playerId": "jordan-6-andersson",
-          "playerName": "G. Andersson",
-          "teamId": "jordan",
+          "playerId": "turkey-13-haaland",
+          "playerName": "L. Haaland",
+          "teamId": "turkey",
           "position": "FWD",
           "multiplier": 8,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "dr-congo-4-muller",
-          "playerName": "R. Müller",
-          "teamId": "dr-congo",
+          "playerId": "uzbekistan-7-osimhen",
+          "playerName": "R. Osimhen",
+          "teamId": "uzbekistan",
           "position": "MID",
           "multiplier": 16,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "france-0-pereira",
-          "playerName": "D. Pereira",
-          "teamId": "france",
-          "position": "GK",
+          "playerId": "morocco-2-garcia",
+          "playerName": "N. García",
+          "teamId": "morocco",
+          "position": "DEF",
           "multiplier": 32,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "uzbekistan-6-novak",
-          "playerName": "E. Novák",
-          "teamId": "uzbekistan",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 1,
-          "points": 8
-        }
-      ],
-      "total": 32
-    },
-    {
-      "participantId": "diego",
-      "name": "Diego",
-      "picks": [
-        {
-          "playerId": "paraguay-6-torres",
-          "playerName": "N. Torres",
-          "teamId": "paraguay",
+          "playerId": "switzerland-12-wagner",
+          "playerName": "P. Wagner",
+          "teamId": "switzerland",
           "position": "FWD",
           "multiplier": 8,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "iran-4-saito",
-          "playerName": "E. Saitō",
-          "teamId": "iran",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "portugal-4-okafor",
-          "playerName": "L. Okafor",
+          "playerId": "portugal-8-diallo",
+          "playerName": "E. Diallo",
           "teamId": "portugal",
           "position": "MID",
           "multiplier": 16,
@@ -9412,8 +9369,60 @@
           "points": 0
         },
         {
-          "playerId": "brazil-7-saito",
-          "playerName": "K. Saitō",
+          "playerId": "portugal-13-diallo",
+          "playerName": "P. Diallo",
+          "teamId": "portugal",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 2,
+          "points": 16
+        }
+      ],
+      "total": 16
+    },
+    {
+      "participantId": "diego",
+      "name": "Diego",
+      "picks": [
+        {
+          "playerId": "ghana-12-greco",
+          "playerName": "P. Greco",
+          "teamId": "ghana",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "czech-republic-13-osimhen",
+          "playerName": "C. Osimhen",
+          "teamId": "czech-republic",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "dr-congo-13-dubois",
+          "playerName": "M. Dubois",
+          "teamId": "dr-congo",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "algeria-12-haaland",
+          "playerName": "L. Haaland",
+          "teamId": "algeria",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "brazil-13-kovac",
+          "playerName": "J. Kovač",
           "teamId": "brazil",
           "position": "FWD",
           "multiplier": 8,
@@ -9421,20 +9430,11 @@
           "points": 0
         },
         {
-          "playerId": "south-korea-1-bianchi",
-          "playerName": "T. Bianchi",
-          "teamId": "south-korea",
-          "position": "DEF",
-          "multiplier": 32,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "spain-6-cerny",
-          "playerName": "T. Černý",
-          "teamId": "spain",
-          "position": "FWD",
-          "multiplier": 8,
+          "playerId": "usa-7-haaland",
+          "playerName": "G. Haaland",
+          "teamId": "usa",
+          "position": "MID",
+          "multiplier": 16,
           "goals": 0,
           "points": 0
         }
@@ -9446,54 +9446,54 @@
       "name": "Saoirse",
       "picks": [
         {
-          "playerId": "jordan-7-horvat",
-          "playerName": "T. Horvat",
-          "teamId": "jordan",
+          "playerId": "saudi-arabia-11-markovic",
+          "playerName": "M. Marković",
+          "teamId": "saudi-arabia",
           "position": "FWD",
           "multiplier": 8,
-          "goals": 0,
-          "points": 0
+          "goals": 1,
+          "points": 8
         },
         {
-          "playerId": "south-africa-4-cerny",
-          "playerName": "A. Černý",
-          "teamId": "south-africa",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "switzerland-4-nakamura",
-          "playerName": "F. Nakamura",
+          "playerId": "switzerland-11-okafor",
+          "playerName": "F. Okafor",
           "teamId": "switzerland",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 1,
+          "points": 8
+        },
+        {
+          "playerId": "bosnia-and-herzegovina-11-mbappe",
+          "playerName": "M. Mbappé",
+          "teamId": "bosnia-and-herzegovina",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "germany-12-petrov",
+          "playerName": "L. Petrov",
+          "teamId": "germany",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 1,
+          "points": 8
+        },
+        {
+          "playerId": "dr-congo-8-vinicius",
+          "playerName": "R. Vinícius",
+          "teamId": "dr-congo",
           "position": "MID",
           "multiplier": 16,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "czech-republic-6-schmidt",
-          "playerName": "C. Schmidt",
-          "teamId": "czech-republic",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 3,
-          "points": 24
-        },
-        {
-          "playerId": "dr-congo-6-lopez",
-          "playerName": "O. López",
-          "teamId": "dr-congo",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "spain-6-cerny",
-          "playerName": "T. Černý",
-          "teamId": "spain",
+          "playerId": "japan-11-fernandez",
+          "playerName": "P. Fernández",
+          "teamId": "japan",
           "position": "FWD",
           "multiplier": 8,
           "goals": 0,
@@ -9507,139 +9507,26 @@
       "name": "Kwame",
       "picks": [
         {
-          "playerId": "algeria-2-garcia",
-          "playerName": "K. García",
-          "teamId": "algeria",
-          "position": "DEF",
-          "multiplier": 32,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "jordan-7-horvat",
-          "playerName": "T. Horvat",
-          "teamId": "jordan",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "ecuador-5-muller",
-          "playerName": "J. Müller",
-          "teamId": "ecuador",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "morocco-5-romano",
-          "playerName": "F. Romano",
+          "playerId": "morocco-10-larsson",
+          "playerName": "B. Larsson",
           "teamId": "morocco",
           "position": "MID",
           "multiplier": 16,
-          "goals": 0,
-          "points": 0
+          "goals": 1,
+          "points": 16
         },
         {
-          "playerId": "new-zealand-7-sokolov",
-          "playerName": "B. Sokolov",
-          "teamId": "new-zealand",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "turkey-2-wagner",
-          "playerName": "P. Wagner",
-          "teamId": "turkey",
-          "position": "DEF",
-          "multiplier": 32,
-          "goals": 0,
-          "points": 0
-        }
-      ],
-      "total": 0
-    },
-    {
-      "participantId": "yuki",
-      "name": "Yuki",
-      "picks": [
-        {
-          "playerId": "australia-4-dubois",
-          "playerName": "E. Dubois",
-          "teamId": "australia",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "germany-4-torres",
-          "playerName": "B. Torres",
-          "teamId": "germany",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "panama-7-sokolov",
-          "playerName": "K. Sokolov",
+          "playerId": "panama-1-mbappe",
+          "playerName": "K. Mbappé",
           "teamId": "panama",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "usa-3-mansour",
-          "playerName": "E. Mansour",
-          "teamId": "usa",
-          "position": "DEF",
+          "position": "GK",
           "multiplier": 32,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "norway-1-saito",
-          "playerName": "D. Saitō",
-          "teamId": "norway",
-          "position": "DEF",
-          "multiplier": 32,
-          "goals": 1,
-          "points": 32
-        },
-        {
-          "playerId": "senegal-5-dubois",
-          "playerName": "J. Dubois",
-          "teamId": "senegal",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 1,
-          "points": 16
-        }
-      ],
-      "total": 48
-    },
-    {
-      "participantId": "lena",
-      "name": "Lena",
-      "picks": [
-        {
-          "playerId": "ecuador-7-lopez",
-          "playerName": "E. López",
-          "teamId": "ecuador",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 2,
-          "points": 16
-        },
-        {
-          "playerId": "canada-6-sokolov",
-          "playerName": "G. Sokolov",
+          "playerId": "canada-11-fernandez",
+          "playerName": "E. Fernández",
           "teamId": "canada",
           "position": "FWD",
           "multiplier": 8,
@@ -9647,99 +9534,29 @@
           "points": 0
         },
         {
-          "playerId": "algeria-0-diallo",
-          "playerName": "D. Diallo",
-          "teamId": "algeria",
-          "position": "GK",
-          "multiplier": 32,
+          "playerId": "colombia-12-almeida",
+          "playerName": "R. Almeida",
+          "teamId": "colombia",
+          "position": "FWD",
+          "multiplier": 8,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "tunisia-6-wagner",
-          "playerName": "H. Wagner",
+          "playerId": "haiti-12-ivanov",
+          "playerName": "G. Ivanov",
+          "teamId": "haiti",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 1,
+          "points": 8
+        },
+        {
+          "playerId": "tunisia-7-saito",
+          "playerName": "S. Saitō",
           "teamId": "tunisia",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 1,
-          "points": 8
-        },
-        {
-          "playerId": "egypt-5-andersson",
-          "playerName": "A. Andersson",
-          "teamId": "egypt",
           "position": "MID",
           "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "saudi-arabia-6-cerny",
-          "playerName": "D. Černý",
-          "teamId": "saudi-arabia",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 1,
-          "points": 8
-        }
-      ],
-      "total": 32
-    },
-    {
-      "participantId": "tomas",
-      "name": "Tomás",
-      "picks": [
-        {
-          "playerId": "austria-6-sokolov",
-          "playerName": "O. Sokolov",
-          "teamId": "austria",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "curacao-1-martin",
-          "playerName": "M. Martin",
-          "teamId": "curacao",
-          "position": "DEF",
-          "multiplier": 32,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "dr-congo-4-muller",
-          "playerName": "R. Müller",
-          "teamId": "dr-congo",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "ivory-coast-7-novak",
-          "playerName": "K. Novák",
-          "teamId": "ivory-coast",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 3,
-          "points": 24
-        },
-        {
-          "playerId": "spain-5-nakamura",
-          "playerName": "E. Nakamura",
-          "teamId": "spain",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "jordan-7-horvat",
-          "playerName": "T. Horvat",
-          "teamId": "jordan",
-          "position": "FWD",
-          "multiplier": 8,
           "goals": 0,
           "points": 0
         }
@@ -9747,65 +9564,248 @@
       "total": 24
     },
     {
-      "participantId": "aisha",
-      "name": "Aisha",
+      "participantId": "yuki",
+      "name": "Yuki",
       "picks": [
         {
-          "playerId": "norway-6-andersson",
-          "playerName": "L. Andersson",
-          "teamId": "norway",
-          "position": "FWD",
-          "multiplier": 8,
-          "goals": 1,
-          "points": 8
-        },
-        {
-          "playerId": "senegal-7-romano",
-          "playerName": "G. Romano",
-          "teamId": "senegal",
+          "playerId": "curacao-12-tanaka",
+          "playerName": "K. Tanaka",
+          "teamId": "curacao",
           "position": "FWD",
           "multiplier": 8,
           "goals": 0,
           "points": 0
         },
         {
-          "playerId": "germany-4-torres",
-          "playerName": "B. Torres",
-          "teamId": "germany",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 0,
-          "points": 0
-        },
-        {
-          "playerId": "brazil-5-okafor",
-          "playerName": "M. Okafor",
-          "teamId": "brazil",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 1,
-          "points": 16
-        },
-        {
-          "playerId": "cape-verde-4-wagner",
-          "playerName": "J. Wagner",
-          "teamId": "cape-verde",
-          "position": "MID",
-          "multiplier": 16,
-          "goals": 1,
-          "points": 16
-        },
-        {
-          "playerId": "colombia-2-khalil",
-          "playerName": "J. Khalil",
-          "teamId": "colombia",
+          "playerId": "argentina-4-schmidt",
+          "playerName": "H. Schmidt",
+          "teamId": "argentina",
           "position": "DEF",
           "multiplier": 32,
           "goals": 0,
           "points": 0
+        },
+        {
+          "playerId": "new-zealand-12-larsson",
+          "playerName": "K. Larsson",
+          "teamId": "new-zealand",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "ivory-coast-10-torres",
+          "playerName": "D. Torres",
+          "teamId": "ivory-coast",
+          "position": "MID",
+          "multiplier": 16,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "czech-republic-4-musiala",
+          "playerName": "P. Musiala",
+          "teamId": "czech-republic",
+          "position": "DEF",
+          "multiplier": 32,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "england-9-alvarez",
+          "playerName": "L. Álvarez",
+          "teamId": "england",
+          "position": "MID",
+          "multiplier": 16,
+          "goals": 0,
+          "points": 0
         }
       ],
-      "total": 40
+      "total": 0
+    },
+    {
+      "participantId": "lena",
+      "name": "Lena",
+      "picks": [
+        {
+          "playerId": "curacao-12-tanaka",
+          "playerName": "K. Tanaka",
+          "teamId": "curacao",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "spain-13-yamal",
+          "playerName": "D. Yamal",
+          "teamId": "spain",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "qatar-11-khalil",
+          "playerName": "R. Khalil",
+          "teamId": "qatar",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "qatar-12-dubois",
+          "playerName": "A. Dubois",
+          "teamId": "qatar",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "australia-13-costa",
+          "playerName": "G. Costa",
+          "teamId": "australia",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "egypt-10-schmidt",
+          "playerName": "P. Schmidt",
+          "teamId": "egypt",
+          "position": "MID",
+          "multiplier": 16,
+          "goals": 0,
+          "points": 0
+        }
+      ],
+      "total": 0
+    },
+    {
+      "participantId": "tomas",
+      "name": "Tomás",
+      "picks": [
+        {
+          "playerId": "qatar-8-torres",
+          "playerName": "F. Torres",
+          "teamId": "qatar",
+          "position": "MID",
+          "multiplier": 16,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "curacao-11-torres",
+          "playerName": "A. Torres",
+          "teamId": "curacao",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "cape-verde-12-khalil",
+          "playerName": "D. Khalil",
+          "teamId": "cape-verde",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "argentina-13-rossi",
+          "playerName": "K. Rossi",
+          "teamId": "argentina",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "germany-2-almeida",
+          "playerName": "F. Almeida",
+          "teamId": "germany",
+          "position": "DEF",
+          "multiplier": 32,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "croatia-13-okafor",
+          "playerName": "D. Okafor",
+          "teamId": "croatia",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        }
+      ],
+      "total": 0
+    },
+    {
+      "participantId": "aisha",
+      "name": "Aisha",
+      "picks": [
+        {
+          "playerId": "uzbekistan-12-horvat",
+          "playerName": "F. Horvat",
+          "teamId": "uzbekistan",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 2,
+          "points": 16
+        },
+        {
+          "playerId": "france-6-garcia",
+          "playerName": "T. García",
+          "teamId": "france",
+          "position": "DEF",
+          "multiplier": 32,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "spain-12-ivanov",
+          "playerName": "N. Ivanov",
+          "teamId": "spain",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "dr-congo-5-andersson",
+          "playerName": "E. Andersson",
+          "teamId": "dr-congo",
+          "position": "DEF",
+          "multiplier": 32,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "egypt-7-dubois",
+          "playerName": "E. Dubois",
+          "teamId": "egypt",
+          "position": "MID",
+          "multiplier": 16,
+          "goals": 0,
+          "points": 0
+        },
+        {
+          "playerId": "germany-13-saito",
+          "playerName": "M. Saitō",
+          "teamId": "germany",
+          "position": "FWD",
+          "multiplier": 8,
+          "goals": 1,
+          "points": 8
+        }
+      ],
+      "total": 24
     }
   ],
   "spiciness": [

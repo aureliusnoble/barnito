@@ -1,33 +1,29 @@
 import type { Match, MatchStatus } from "@shared/types";
 import { useHelpers } from "../data/store";
-import { flagEmoji } from "../lib/format";
+import { Crest } from "./visuals";
 
-export function Flag({ teamId, className = "" }: { teamId: string; className?: string }) {
-  const { teamName } = useHelpers();
-  return (
-    <span className={className} aria-hidden>
-      {flagEmoji(teamName(teamId))}
-    </span>
-  );
-}
+export { Crest } from "./visuals";
 
+/** Crest + team name, optionally reversed for the away side. */
 export function TeamLabel({
   teamId,
   align = "left",
+  size = 22,
   className = "",
 }: {
   teamId: string;
   align?: "left" | "right";
+  size?: number;
   className?: string;
 }) {
   const { teamName } = useHelpers();
   return (
     <span
-      className={`flex min-w-0 items-center gap-1.5 ${
+      className={`flex min-w-0 items-center gap-2 ${
         align === "right" ? "flex-row-reverse text-right" : ""
       } ${className}`}
     >
-      <span className="text-lg leading-none">{flagEmoji(teamName(teamId))}</span>
+      <Crest teamId={teamId} size={size} />
       <span className="truncate">{teamName(teamId)}</span>
     </span>
   );
@@ -35,9 +31,9 @@ export function TeamLabel({
 
 const STATUS_STYLE: Record<MatchStatus, string> = {
   SCHEDULED: "bg-pitch-800 text-pitch-300",
-  LIVE: "bg-red-500/90 text-white",
-  HT: "bg-amber-500/90 text-black",
-  FINISHED: "bg-pitch-700 text-pitch-200",
+  LIVE: "bg-red-500 text-white",
+  HT: "bg-spice-500 text-black",
+  FINISHED: "bg-pitch-700 text-pitch-300",
 };
 
 export function StatusBadge({ match }: { match: Match }) {
@@ -47,12 +43,13 @@ export function StatusBadge({ match }: { match: Match }) {
   if (match.status === "FINISHED") label = "FT";
   if (match.status === "SCHEDULED") label = "—";
   return (
-    <span
-      className={`chip ${STATUS_STYLE[match.status]} ${
-        match.status === "LIVE" ? "animate-pulse" : ""
-      }`}
-    >
-      {match.status === "LIVE" && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+    <span className={`chip tabular-nums ${STATUS_STYLE[match.status]}`}>
+      {match.status === "LIVE" && (
+        <span className="relative flex h-1.5 w-1.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+        </span>
+      )}
       {label}
     </span>
   );
@@ -65,12 +62,11 @@ export function PointsPill({
   points: number;
   provisional?: boolean;
 }) {
-  if (points <= 0)
-    return <span className="chip bg-pitch-800/70 text-pitch-400">0</span>;
+  if (points <= 0) return <span className="chip bg-pitch-800/70 text-pitch-400">0</span>;
   return (
     <span
       className={`chip ${
-        provisional ? "bg-amber-500/20 text-amber-300" : "bg-pitch-600/30 text-pitch-100"
+        provisional ? "bg-spice-500/20 text-spice-300" : "bg-accent-500/20 text-accent-300"
       }`}
       title={provisional ? "Provisional — match still in progress" : undefined}
     >
@@ -81,21 +77,24 @@ export function PointsPill({
 }
 
 export function GroupPill({ group }: { group: string }) {
-  return (
-    <span className="chip bg-pitch-800/80 text-pitch-300">Grp {group}</span>
-  );
+  return <span className="chip bg-pitch-800/80 text-pitch-300">Group {group}</span>;
 }
 
 export function SectionTitle({
   children,
   hint,
+  icon,
 }: {
   children: React.ReactNode;
   hint?: string;
+  icon?: React.ReactNode;
 }) {
   return (
-    <div className="mb-2 mt-1 flex items-baseline justify-between">
-      <h2 className="font-display text-lg font-bold text-pitch-50">{children}</h2>
+    <div className="mb-3 flex items-baseline justify-between">
+      <h2 className="flex items-center gap-2 font-display text-xl font-bold text-white">
+        {icon}
+        {children}
+      </h2>
       {hint && <span className="text-xs text-pitch-400">{hint}</span>}
     </div>
   );

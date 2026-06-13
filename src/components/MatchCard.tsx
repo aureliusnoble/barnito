@@ -1,6 +1,6 @@
 import type { Match } from "@shared/types";
 import { useHelpers } from "../data/store";
-import { Flag, StatusBadge } from "./bits";
+import { StatusBadge, Crest } from "./bits";
 import { useMatchModal } from "./MatchModal";
 import { formatTime } from "../lib/format";
 
@@ -13,25 +13,37 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
   return (
     <button
       onClick={() => open(match.id)}
-      className={`card flex w-full items-center gap-3 p-3 text-left transition hover:border-pitch-600/70 hover:bg-pitch-900/80 ${
-        live ? "ring-1 ring-red-500/40" : ""
+      className={`card card-hover flex w-full items-center gap-3 p-3 text-left ${
+        live ? "ring-1 ring-red-500/30" : ""
       }`}
     >
-      <div className="flex w-10 flex-col items-center gap-0.5">
+      <div className="flex w-11 shrink-0 flex-col items-center gap-1">
         <StatusBadge match={match} />
-        {showGroup && <span className="text-[10px] text-pitch-500">{match.group}</span>}
+        {showGroup && <span className="text-[10px] font-semibold text-pitch-500">Grp {match.group}</span>}
       </div>
 
-      <div className="min-w-0 flex-1 space-y-1">
-        <Row teamId={match.homeTeamId} name={teamName(match.homeTeamId)} goals={match.homeGoals} winner={hasScore && match.homeGoals! > match.awayGoals!} />
-        <Row teamId={match.awayTeamId} name={teamName(match.awayTeamId)} goals={match.awayGoals} winner={hasScore && match.awayGoals! > match.homeGoals!} />
+      <div className="min-w-0 flex-1 space-y-1.5">
+        <Row
+          teamId={match.homeTeamId}
+          name={teamName(match.homeTeamId)}
+          goals={match.homeGoals}
+          winner={hasScore && match.homeGoals! > match.awayGoals!}
+        />
+        <Row
+          teamId={match.awayTeamId}
+          name={teamName(match.awayTeamId)}
+          goals={match.awayGoals}
+          winner={hasScore && match.awayGoals! > match.homeGoals!}
+        />
       </div>
 
       <div className="w-12 shrink-0 text-right">
         {hasScore ? (
-          <span className="text-[10px] text-pitch-500">{match.status === "FINISHED" ? "FT" : `${match.elapsed ?? ""}'`}</span>
+          <span className="text-[10px] font-medium text-pitch-500">
+            {match.status === "FINISHED" ? "Full time" : "Live"}
+          </span>
         ) : (
-          <span className="text-sm font-semibold tabular-nums text-pitch-200">
+          <span className="font-display text-sm font-bold tabular-nums text-pitch-200">
             {formatTime(match.kickoff)}
           </span>
         )}
@@ -52,13 +64,19 @@ function Row({
   winner: boolean;
 }) {
   return (
-    <div className={`flex items-center justify-between gap-2 ${winner ? "font-bold" : ""}`}>
-      <span className="flex min-w-0 items-center gap-1.5">
-        <Flag teamId={teamId} className="text-base leading-none" />
-        <span className="truncate text-sm">{name}</span>
+    <div
+      className={`flex items-center justify-between gap-2 ${
+        winner ? "text-white" : "text-pitch-200"
+      }`}
+    >
+      <span className="flex min-w-0 items-center gap-2">
+        <Crest teamId={teamId} size={20} />
+        <span className={`truncate text-sm ${winner ? "font-bold" : "font-medium"}`}>{name}</span>
       </span>
       {goals != null && (
-        <span className="font-display text-base font-bold tabular-nums">{goals}</span>
+        <span className={`font-display text-base tabular-nums ${winner ? "font-extrabold text-white" : "font-bold"}`}>
+          {goals}
+        </span>
       )}
     </div>
   );

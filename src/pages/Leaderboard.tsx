@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Trophy, ChevronDown } from "lucide-react";
 import { useBarnito } from "../data/store";
 import { SectionTitle } from "../components/bits";
 import type { ScoreBreakdown } from "@shared/types";
@@ -19,7 +20,9 @@ export default function Leaderboard() {
 
   return (
     <div className="space-y-4">
-      <SectionTitle hint={`${scores.leaderboard.length} players`}>Leaderboard</SectionTitle>
+      <SectionTitle icon={<Trophy size={18} className="text-accent-400" />} hint={`${scores.leaderboard.length} players`}>
+        Leaderboard
+      </SectionTitle>
       <div className="space-y-2">
         {scores.leaderboard.map((entry) => {
           const isOpen = open === entry.participantId;
@@ -36,7 +39,7 @@ export default function Leaderboard() {
                 <span className="font-display text-xl font-extrabold tabular-nums text-pitch-100">
                   {entry.total}
                 </span>
-                <span className={`text-pitch-500 transition ${isOpen ? "rotate-180" : ""}`}>▾</span>
+                <ChevronDown size={16} className={`text-pitch-500 transition ${isOpen ? "rotate-180" : ""}`} />
               </button>
               {isOpen && (
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 border-t border-pitch-800/60 bg-pitch-950/40 p-3 text-sm">

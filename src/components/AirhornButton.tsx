@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import confetti from "canvas-confetti";
+import { Megaphone } from "lucide-react";
 
 /**
  * Persistent bottom-left button: plays an MLG airhorn and blasts confetti everywhere.
@@ -141,11 +142,11 @@ export default function AirhornButton() {
           <span className="absolute inset-0 rounded-full bg-spice-500/60 animate-pulse-ring" />
         )}
         <span
-          className={`relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-spice-400 to-spice-600 text-2xl shadow-xl ring-2 ring-white/20 transition active:scale-90 ${
+          className={`relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-spice-400 to-spice-600 text-white shadow-xl ring-2 ring-white/20 transition active:scale-90 ${
             active ? "animate-wiggle" : "hover:scale-105"
           }`}
         >
-          📣
+          <Megaphone size={24} strokeWidth={2.4} />
         </span>
       </span>
     </button>

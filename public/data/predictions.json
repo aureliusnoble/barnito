@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-13T22:17:39.145Z",
+  "updatedAt": "2026-06-13T23:18:02.024Z",
   "participants": [
     {
       "id": "barney",
@@ -367,12 +367,12 @@
         }
       ],
       "topPlayers": [
-        "iraq-6-wagner",
-        "saudi-arabia-4-hassan",
-        "morocco-7-dubois",
-        "ivory-coast-4-ivanov",
-        "portugal-7-greco",
-        "new-zealand-7-sokolov"
+        "mexico-12-yamal",
+        "iraq-6-alvarez",
+        "germany-9-ivanov",
+        "norway-13-silva",
+        "england-11-vinicius",
+        "brazil-0-osimhen"
       ],
       "champion": "argentina"
     },
@@ -742,12 +742,12 @@
         }
       ],
       "topPlayers": [
-        "iraq-1-saito",
-        "panama-5-horvat",
-        "sweden-4-schmidt",
-        "mexico-6-mansour",
-        "ghana-5-rossi",
-        "switzerland-4-nakamura"
+        "algeria-12-haaland",
+        "morocco-13-costa",
+        "germany-11-mbappe",
+        "senegal-11-ivanov",
+        "south-korea-8-garcia",
+        "haiti-0-torres"
       ],
       "champion": "england"
     },
@@ -1117,12 +1117,12 @@
         }
       ],
       "topPlayers": [
-        "germany-7-kovac",
-        "saudi-arabia-6-cerny",
-        "jordan-6-andersson",
-        "dr-congo-4-muller",
-        "france-0-pereira",
-        "uzbekistan-6-novak"
+        "turkey-13-haaland",
+        "uzbekistan-7-osimhen",
+        "morocco-2-garcia",
+        "switzerland-12-wagner",
+        "portugal-8-diallo",
+        "portugal-13-diallo"
       ],
       "champion": "england"
     },
@@ -1492,12 +1492,12 @@
         }
       ],
       "topPlayers": [
-        "paraguay-6-torres",
-        "iran-4-saito",
-        "portugal-4-okafor",
-        "brazil-7-saito",
-        "south-korea-1-bianchi",
-        "spain-6-cerny"
+        "ghana-12-greco",
+        "czech-republic-13-osimhen",
+        "dr-congo-13-dubois",
+        "algeria-12-haaland",
+        "brazil-13-kovac",
+        "usa-7-haaland"
       ],
       "champion": "brazil"
     },
@@ -1867,12 +1867,12 @@
         }
       ],
       "topPlayers": [
-        "jordan-7-horvat",
-        "south-africa-4-cerny",
-        "switzerland-4-nakamura",
-        "czech-republic-6-schmidt",
-        "dr-congo-6-lopez",
-        "spain-6-cerny"
+        "saudi-arabia-11-markovic",
+        "switzerland-11-okafor",
+        "bosnia-and-herzegovina-11-mbappe",
+        "germany-12-petrov",
+        "dr-congo-8-vinicius",
+        "japan-11-fernandez"
       ],
       "champion": "argentina"
     },
@@ -2242,12 +2242,12 @@
         }
       ],
       "topPlayers": [
-        "algeria-2-garcia",
-        "jordan-7-horvat",
-        "ecuador-5-muller",
-        "morocco-5-romano",
-        "new-zealand-7-sokolov",
-        "turkey-2-wagner"
+        "morocco-10-larsson",
+        "panama-1-mbappe",
+        "canada-11-fernandez",
+        "colombia-12-almeida",
+        "haiti-12-ivanov",
+        "tunisia-7-saito"
       ],
       "champion": "france"
     },
@@ -2617,12 +2617,12 @@
         }
       ],
       "topPlayers": [
-        "australia-4-dubois",
-        "germany-4-torres",
-        "panama-7-sokolov",
-        "usa-3-mansour",
-        "norway-1-saito",
-        "senegal-5-dubois"
+        "curacao-12-tanaka",
+        "argentina-4-schmidt",
+        "new-zealand-12-larsson",
+        "ivory-coast-10-torres",
+        "czech-republic-4-musiala",
+        "england-9-alvarez"
       ],
       "champion": "argentina"
     },
@@ -2992,12 +2992,12 @@
         }
       ],
       "topPlayers": [
-        "ecuador-7-lopez",
-        "canada-6-sokolov",
-        "algeria-0-diallo",
-        "tunisia-6-wagner",
-        "egypt-5-andersson",
-        "saudi-arabia-6-cerny"
+        "curacao-12-tanaka",
+        "spain-13-yamal",
+        "qatar-11-khalil",
+        "qatar-12-dubois",
+        "australia-13-costa",
+        "egypt-10-schmidt"
       ],
       "champion": "germany"
     },
@@ -3367,12 +3367,12 @@
         }
       ],
       "topPlayers": [
-        "austria-6-sokolov",
-        "curacao-1-martin",
-        "dr-congo-4-muller",
-        "ivory-coast-7-novak",
-        "spain-5-nakamura",
-        "jordan-7-horvat"
+        "qatar-8-torres",
+        "curacao-11-torres",
+        "cape-verde-12-khalil",
+        "argentina-13-rossi",
+        "germany-2-almeida",
+        "croatia-13-okafor"
       ],
       "champion": "brazil"
     },
@@ -3742,12 +3742,12 @@
         }
       ],
       "topPlayers": [
-        "norway-6-andersson",
-        "senegal-7-romano",
-        "germany-4-torres",
-        "brazil-5-okafor",
-        "cape-verde-4-wagner",
-        "colombia-2-khalil"
+        "uzbekistan-12-horvat",
+        "france-6-garcia",
+        "spain-12-ivanov",
+        "dr-congo-5-andersson",
+        "egypt-7-dubois",
+        "germany-13-saito"
       ],
       "champion": "germany"
     }
