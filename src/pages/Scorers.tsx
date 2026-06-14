@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
-import { Goal, Trophy, Users, AlertTriangle, ChevronDown } from "lucide-react";
+import { Goal, Trophy, Users, AlertTriangle, ChevronDown, Star } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal, type PlayerSeed } from "../components/PlayerModal";
 import { SectionTitle, Crest, CardFlag } from "../components/bits";
 import { Avatar } from "../components/visuals";
+import BestXI from "../components/BestXI";
 import { POSITION_LABEL } from "../lib/format";
 import type { Position, PlayerStatLine } from "@shared/types";
 
@@ -26,7 +27,7 @@ const POS_COLOR: Record<Position, string> = {
   FWD: "bg-spice-500/20 text-spice-300",
 };
 
-type View = "people" | "boot" | "players";
+type View = "people" | "boot" | "players" | "bestxi";
 
 export default function Scorers() {
   const [view, setView] = useState<View>("people");
@@ -35,7 +36,7 @@ export default function Scorers() {
       <SectionTitle icon={<Goal size={18} className="text-accent-400" />} hint="32 DEF/GK · 16 MID · 8 FWD per goal">
         Goal scorers
       </SectionTitle>
-      <div className="flex gap-1.5">
+      <div className="flex flex-wrap gap-1.5">
         <Toggle on={view === "people"} onClick={() => setView("people")} icon={<Users size={14} />}>
           Picks
         </Toggle>
@@ -45,8 +46,11 @@ export default function Scorers() {
         <Toggle on={view === "players"} onClick={() => setView("players")} icon={<Goal size={14} />}>
           Most-picked
         </Toggle>
+        <Toggle on={view === "bestxi"} onClick={() => setView("bestxi")} icon={<Star size={14} />}>
+          Best XI
+        </Toggle>
       </div>
-      {view === "people" ? <ByPerson /> : view === "boot" ? <GoldenBoot /> : <ByPlayer />}
+      {view === "people" ? <ByPerson /> : view === "boot" ? <GoldenBoot /> : view === "players" ? <ByPlayer /> : <BestXI />}
     </div>
   );
 }

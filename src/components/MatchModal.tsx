@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords } from "lucide-react";
+import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal } from "./PlayerModal";
 import { StatusBadge, PointsPill, GroupPill, Crest, ScorerPickTags } from "./bits";
+import { PitchMarkings, lastName } from "./Pitch";
 import { formatFull, ordinal } from "../lib/format";
 import { WC_HISTORY } from "../data/wcHistory";
-import type { Lineup, LineupPlayer, Match, MatchEvent, MatchPredictionResult, TeamStat } from "@shared/types";
+import type { Lineup, LineupPlayer, Match, MatchEvent, MatchPredictionResult, PlayerRating, TeamStat } from "@shared/types";
 
 function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return <div className="flex items-center justify-between text-xs"><span className="text-pitch-400">{label}</span><span className="font-semibold text-pitch-100">{children}</span></div>;
@@ -219,13 +220,14 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
               <TeamInfo match={match} />
               <H2H match={match} />
               {hasLineups && <Lineups match={match} />}
+              <Penalties match={match} />
             </div>
           )}
 
           {active === "match" && (
             <div className="space-y-5">
               {hasStats && <StatBars match={match} stats={match.stats!} />}
-              <TopPerformers match={match} />
+              <PlayerRatings match={match} />
               {events.length > 0 && <Timeline match={match} events={events} />}
             </div>
           )}
@@ -431,8 +433,21 @@ function Timeline({ match, events }: { match: Match; events: MatchEvent[] }) {
   );
 }
 
-// --- live stat bars --------------------------------------------------------
-const SHOWN_STATS = ["Ball Possession", "Total Shots", "Shots on Goal", "Corner Kicks"];
+// --- match stat bars -------------------------------------------------------
+// [api stat type, display label]; labels keep the bars readable.
+const SHOWN_STATS: [string, string][] = [
+  ["Ball Possession", "Possession"],
+  ["expected_goals", "xG"],
+  ["Total Shots", "Shots"],
+  ["Shots on Goal", "On target"],
+  ["Shots insidebox", "Shots in box"],
+  ["Total passes", "Passes"],
+  ["Passes %", "Pass accuracy"],
+  ["Corner Kicks", "Corners"],
+  ["Fouls", "Fouls"],
+  ["Offsides", "Offsides"],
+  ["Goalkeeper Saves", "Saves"],
+];
 function toNum(v: string | number | null): number {
   if (v == null) return 0;
   return typeof v === "number" ? v : Number(String(v).replace("%", "")) || 0;
@@ -447,7 +462,7 @@ function StatBars({ match, stats }: { match: Match; stats: TeamStat[] }) {
     <section>
       <h3 className="mb-2 font-display font-bold text-white">Match stats</h3>
       <div className="space-y-3">
-        {SHOWN_STATS.map((type) => {
+        {SHOWN_STATS.map(([type, label]) => {
           const hv = get(home, type);
           const av = get(away, type);
           if (hv == null && av == null) return null;
@@ -458,7 +473,7 @@ function StatBars({ match, stats }: { match: Match; stats: TeamStat[] }) {
             <div key={type}>
               <div className="mb-1 flex justify-between text-xs">
                 <span className="font-semibold tabular-nums text-pitch-100">{hv ?? 0}</span>
-                <span className="text-pitch-400">{type}</span>
+                <span className="text-pitch-400">{label}</span>
                 <span className="font-semibold tabular-nums text-pitch-100">{av ?? 0}</span>
               </div>
               <div className="flex h-1.5 gap-0.5">
@@ -477,69 +492,122 @@ function StatBars({ match, stats }: { match: Match; stats: TeamStat[] }) {
   );
 }
 
-// --- top performers (ratings) ---------------------------------------------
-function TopPerformers({ match }: { match: Match }) {
-  const ratings = (match.ratings ?? []).filter((r) => r.rating != null);
-  if (ratings.length === 0) return null;
-  const top = [...ratings].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 3);
+// --- player ratings + per-match report cards -------------------------------
+function StatCell({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="rounded-lg bg-white/[0.04] px-2 py-1.5 text-center">
+      <div className="font-display text-sm font-bold tabular-nums text-white">{value}</div>
+      <div className="text-[9px] uppercase tracking-wide text-pitch-500">{label}</div>
+    </div>
+  );
+}
+
+function ReportCard({ r }: { r: PlayerRating }) {
+  const pen = (r.penScored ?? 0) + (r.penMissed ?? 0) + (r.penSaved ?? 0) + (r.penWon ?? 0) + (r.penCommitted ?? 0);
+  // API gives passes.accuracy as the count of accurate passes — turn it into a %.
+  const passPct = r.passes && r.passAcc != null ? Math.round((r.passAcc / r.passes) * 100) : null;
+  return (
+    <div className="grid grid-cols-3 gap-1.5 border-t border-white/[0.06] bg-black/10 p-2.5 sm:grid-cols-4">
+      {r.minutes != null && <StatCell label="Mins" value={r.minutes} />}
+      {!!r.goals && <StatCell label="Goals" value={r.goals} />}
+      {!!r.assists && <StatCell label="Assists" value={r.assists} />}
+      <StatCell label="Shots" value={`${r.shotsOn ?? 0}/${r.shotsTotal ?? 0}`} />
+      <StatCell label="Passes" value={passPct != null ? `${r.passes} · ${passPct}%` : (r.passes ?? 0)} />
+      {!!r.keyPasses && <StatCell label="Key passes" value={r.keyPasses} />}
+      <StatCell label="Duels" value={`${r.duelsWon ?? 0}/${r.duelsTotal ?? 0}`} />
+      {!!r.dribbleAtt && <StatCell label="Dribbles" value={`${r.dribbleSucc ?? 0}/${r.dribbleAtt}`} />}
+      <StatCell label="Tackles" value={r.tackles ?? 0} />
+      {!!r.interceptions && <StatCell label="Intercept." value={r.interceptions} />}
+      <StatCell label="Fouls" value={`${r.foulsCommitted ?? 0}`} />
+      {pen > 0 && <StatCell label="Pens (S/M)" value={`${r.penScored ?? 0}/${r.penMissed ?? 0}`} />}
+    </div>
+  );
+}
+
+function PlayerRatings({ match }: { match: Match }) {
+  const { open } = usePlayerModal();
+  const [openKey, setOpenKey] = useState<string | null>(null);
+  const ranked = (match.ratings ?? []).filter((r) => r.rating != null).sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+  if (ranked.length === 0) return null;
+  const ratingTint = (v: number) => (v >= 7.5 ? "bg-accent-500/25 text-accent-200" : v >= 6.5 ? "bg-white/10 text-pitch-100" : "bg-pitch-800 text-pitch-300");
+
   return (
     <section>
       <h3 className="mb-2 flex items-center gap-1.5 font-display font-bold text-white">
-        <Star size={15} className="text-spice-400" /> Top performers
+        <Star size={15} className="text-spice-400" /> Player ratings
       </h3>
-      <div className="flex gap-2">
-        {top.map((r, i) => (
-          <div key={i} className="card flex flex-1 items-center gap-2 p-2">
-            <Crest teamId={r.teamId} size={16} />
-            <span className="min-w-0 flex-1 truncate text-xs text-pitch-100">{r.name}</span>
-            <span className="chip bg-accent-500/20 font-bold text-accent-300">{r.rating?.toFixed(1)}</span>
-          </div>
-        ))}
+      <div className="overflow-hidden rounded-xl border border-white/[0.06]">
+        {ranked.map((r, i) => {
+          const key = r.playerId ?? `${r.teamId}-${i}`;
+          const isOpen = openKey === key;
+          return (
+            <div key={key} className="border-b border-white/[0.05] last:border-0">
+              <div className="flex items-center gap-2 px-2.5 py-2">
+                <span className="w-4 text-center text-[11px] font-bold text-pitch-600">{i + 1}</span>
+                <Crest teamId={r.teamId} size={15} />
+                <button
+                  type="button"
+                  onClick={() => r.playerId && open(r.playerId)}
+                  className={`min-w-0 flex-1 truncate text-left text-sm text-pitch-100 ${r.playerId ? "hover:text-white" : ""}`}
+                >
+                  {r.name}{r.captain ? " (C)" : ""}
+                </button>
+                <span className={`chip font-bold tabular-nums ${ratingTint(r.rating ?? 0)}`}>{r.rating?.toFixed(1)}</span>
+                <button
+                  type="button"
+                  onClick={() => setOpenKey(isOpen ? null : key)}
+                  className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-pitch-500 hover:bg-white/5 hover:text-white"
+                  aria-label="Toggle report card"
+                >
+                  <ChevronDown size={15} className={`transition ${isOpen ? "rotate-180" : ""}`} />
+                </button>
+              </div>
+              {isOpen && <ReportCard r={r} />}
+            </div>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-// --- lineups (combined formation pitch) ------------------------------------
-const lastName = (name: string) => {
-  const parts = name.replace(/^[A-Z]\.\s*/, "").split(/\s+/).filter(Boolean);
-  return parts[parts.length - 1] ?? name;
-};
-
-type Side = "home" | "away";
-
-/** Pitch markings — vertical full pitch, viewBox in metres (68×105), brand palette. */
-function PitchMarkings() {
-  const line = { fill: "none", stroke: "#eafff4", strokeWidth: 0.35, strokeOpacity: 0.32 } as const;
-  const spot = { fill: "#eafff4", fillOpacity: 0.32 } as const;
+// --- penalties (this match) ------------------------------------------------
+function Penalties({ match }: { match: Match }) {
+  // In-play penalties from the event feed, plus any keeper saves from the per-player line.
+  const taken = (match.events ?? [])
+    .filter((e) => e.type === "GOAL" && /penalt/i.test(e.detail))
+    .map((e) => ({ name: e.playerName, teamId: e.teamId, minute: e.minute, scored: !/missed/i.test(e.detail) }));
+  const saves = (match.ratings ?? []).filter((r) => (r.penSaved ?? 0) > 0);
+  if (taken.length === 0 && saves.length === 0) return null;
   return (
-    <svg viewBox="0 0 68 105" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden>
-      {/* mown grass stripes */}
-      {Array.from({ length: 7 }).map((_, i) => (
-        <rect key={i} x="0" y={(i * 105) / 7} width="68" height={105 / 7} fill={i % 2 ? "#135230" : "#0f4527"} />
-      ))}
-      <rect x="0.9" y="0.9" width="66.2" height="103.2" rx="0.6" {...line} />
-      <line x1="0.9" y1="52.5" x2="67.1" y2="52.5" {...line} />
-      <circle cx="34" cy="52.5" r="9.15" {...line} />
-      <circle cx="34" cy="52.5" r="0.5" {...spot} />
-      {/* corner arcs */}
-      <path d="M0.9 2.4 A1.5 1.5 0 0 0 2.4 0.9" {...line} />
-      <path d="M65.6 0.9 A1.5 1.5 0 0 0 67.1 2.4" {...line} />
-      <path d="M2.4 104.1 A1.5 1.5 0 0 0 0.9 102.6" {...line} />
-      <path d="M67.1 102.6 A1.5 1.5 0 0 0 65.6 104.1" {...line} />
-      {/* bottom goal (home end) */}
-      <rect x="13.84" y="87.7" width="40.32" height="16.4" {...line} />
-      <rect x="24.84" y="98.6" width="18.32" height="5.5" {...line} />
-      <circle cx="34" cy="93.2" r="0.5" {...spot} />
-      <path d="M26.8 87.7 A 9.15 9.15 0 0 1 41.2 87.7" {...line} />
-      {/* top goal (away end) */}
-      <rect x="13.84" y="0.9" width="40.32" height="16.4" {...line} />
-      <rect x="24.84" y="0.9" width="18.32" height="5.5" {...line} />
-      <circle cx="34" cy="11.8" r="0.5" {...spot} />
-      <path d="M26.8 17.3 A 9.15 9.15 0 0 0 41.2 17.3" {...line} />
-    </svg>
+    <section>
+      <h3 className="mb-2 font-display font-bold text-white">Penalties</h3>
+      <ul className="space-y-1.5 text-[13px]">
+        {taken.map((t, i) => (
+          <li key={i} className="flex items-center gap-2">
+            <span className="w-9 shrink-0 text-center font-mono text-xs text-pitch-500">{t.minute != null ? `${t.minute}'` : ""}</span>
+            <Crest teamId={t.teamId} size={15} />
+            <span className="min-w-0 flex-1 truncate text-pitch-100">{t.name}</span>
+            <span className={`chip ${t.scored ? "bg-accent-500/20 text-accent-300" : "bg-red-500/20 text-red-300"}`}>
+              {t.scored ? "Scored" : "Missed"}
+            </span>
+          </li>
+        ))}
+        {saves.map((r, i) => (
+          <li key={`s${i}`} className="flex items-center gap-2">
+            <span className="w-9 shrink-0" />
+            <Crest teamId={r.teamId} size={15} />
+            <span className="min-w-0 flex-1 truncate text-pitch-100">{r.name}</span>
+            <span className="chip bg-sky-500/20 text-sky-300">Saved {(r.penSaved ?? 0) > 1 ? `×${r.penSaved}` : ""}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
+
+// --- lineups (combined formation pitch) ------------------------------------
+type Side = "home" | "away";
 
 function PitchToken({ p, x, y, side, card }: { p: LineupPlayer; x: number; y: number; side: Side; card?: "yellow" | "red" }) {
   const { open } = usePlayerModal();

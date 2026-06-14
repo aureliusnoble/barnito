@@ -87,9 +87,21 @@ export interface ApiLineup {
   coach?: { id: number; name: string } | null;
 }
 export interface ApiStatistics { team: { id: number }; statistics: { type: string; value: string | number | null }[] }
+export interface ApiFixturePlayerStat {
+  games: { number: number | null; position: string | null; rating: string | null; minutes: number | null; captain: boolean | null };
+  shots: { total: number | null; on: number | null };
+  goals: { total: number | null; conceded: number | null; assists: number | null; saves: number | null };
+  passes: { total: number | null; key: number | null; accuracy: string | number | null };
+  tackles: { total: number | null; blocks: number | null; interceptions: number | null };
+  duels: { total: number | null; won: number | null };
+  dribbles: { attempts: number | null; success: number | null; past: number | null };
+  fouls: { drawn: number | null; committed: number | null };
+  cards: { yellow: number | null; red: number | null };
+  penalty: { won: number | null; commited: number | null; scored: number | null; missed: number | null; saved: number | null };
+}
 export interface ApiFixturePlayers {
   team: { id: number };
-  players: { player: { id: number; name: string }; statistics: { games: { number: number | null; position: string | null; rating: string | null } }[] }[];
+  players: { player: { id: number; name: string }; statistics: ApiFixturePlayerStat[] }[];
 }
 export interface ApiFixtureDetailed extends ApiFixture {
   events?: ApiEvent[]; lineups?: ApiLineup[]; statistics?: ApiStatistics[]; players?: ApiFixturePlayers[];
