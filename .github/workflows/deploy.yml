@@ -1,9 +1,12 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Manual-only during the Supabase migration: the new frontend needs the Supabase backend live, so
-  # we don't want to auto-replace the working site before `supabase-setup.sh` has run. After setup,
-  # run this workflow (Actions → Deploy to GitHub Pages → Run workflow) to publish the new build.
+  # Auto-publish when the default branch updates (the github-pages environment only allows the
+  # default branch, so pushes to other branches are intentionally not built here). Manual runs are
+  # still available via Actions → Deploy to GitHub Pages → Run workflow.
+  push:
+    branches:
+      - claude/barnito-world-cup-tracker-0fjkzn
   workflow_dispatch:
 
 permissions:
