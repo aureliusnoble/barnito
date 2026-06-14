@@ -360,6 +360,53 @@ async function refreshExtras(st: State) {
       teamId: st.teamByApi.get(i.team.id)?.id ?? null, teamName: i.team.name, type: i.type, reason: i.reason })) });
 }
 
+// --- player club backfill --------------------------------------------------
+// API-Football has no club field on a national-team squad call, so look up each player's domestic
+// club individually (1 request each). That's far too many for the whole roster, so only fill the
+// players people actually open: their six-scorer picks and anyone who has scored. A few per run,
+// throttled; club null = not looked up, {} = looked up but none found.
+const CLUB_SEASONS = [2025, 2024];
+interface ApiPlayerProfile {
+  player: { id: number };
+  statistics: {
+    team: { id: number; name: string; logo: string | null };
+    league: { id: number; name: string; country: string | null };
+    games: { appearences: number | null };
+  }[];
+}
+// The player's club = the team they made the most appearances for in a *domestic* competition.
+// API-Football marks international comps (national team, Champions League, friendlies) with
+// league.country === "World"; a real country means a club league. league.type is unreliable (null).
+function pickClub(stats: ApiPlayerProfile["statistics"]) {
+  const domestic = stats.filter((s) => s.league?.country && s.league.country !== "World" && s.team?.name);
+  if (!domestic.length) return null;
+  const byTeam = new Map<string, { name: string; logo: string | null; apps: number }>();
+  for (const s of domestic) {
+    const cur = byTeam.get(s.team.name) ?? { name: s.team.name, logo: s.team.logo ?? null, apps: 0 };
+    cur.apps += s.games?.appearences ?? 0;
+    byTeam.set(s.team.name, cur);
+  }
+  return [...byTeam.values()].sort((a, b) => b.apps - a.apps)[0];
+}
+async function backfillClubs(st: State, priority: Set<string>, limit = 10) {
+  const candidates = st.players.filter((p) => priority.has(p.id as string) && p.api_id && p.club == null);
+  let done = 0;
+  for (const p of candidates) {
+    if (done >= limit) break;
+    try {
+      let club: { name: string; logo: string | null } | Record<string, never> = {};
+      for (const season of CLUB_SEASONS) {
+        const res = await apiGet<ApiPlayerProfile>("players", { id: p.api_id as number, season });
+        const c = pickClub(res[0]?.statistics ?? []);
+        if (c) { club = { name: c.name, logo: c.logo }; break; }
+      }
+      await supa.from("players").update({ club }).eq("id", p.id as string);
+      done++;
+    } catch (_) { /* non-fatal */ }
+  }
+  return done;
+}
+
 // ---------------------------------------------------------------------------
 Deno.serve(async (req) => {
   try {
@@ -450,6 +497,14 @@ Deno.serve(async (req) => {
     // recompute scores from the freshest rows
     st = await loadState();
     await recomputeAndStore(st, st.matchRows);
+
+    // backfill clubs for the players people open (picks + scorers), a few per full reconcile
+    if (forceFull) {
+      const priority = new Set<string>();
+      for (const part of st.participants) for (const pid of ((part.top_players as string[]) ?? [])) priority.add(pid);
+      for (const r of st.matchRows) for (const g of ((r.goals as { playerId: string | null }[]) ?? [])) if (g.playerId) priority.add(g.playerId);
+      try { await backfillClubs(st, priority); } catch (_) { /* non-fatal */ }
+    }
     await setDoc("_meta", meta);
 
     return Response.json({ ok: true, full: forceFull, live: live.length, requests: requestCount() });
