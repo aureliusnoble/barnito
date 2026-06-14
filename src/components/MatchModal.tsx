@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { StatusBadge, PointsPill, GroupPill, Crest, ScorerPickTags } from "./bits";
@@ -6,27 +6,12 @@ import { formatFull, ordinal } from "../lib/format";
 import { WC_HISTORY } from "../data/wcHistory";
 import type { Match, MatchEvent, MatchPredictionResult, TeamStat } from "@shared/types";
 
-type FormResult = "W" | "D" | "L";
-function FormRow({ form }: { form: FormResult[] }) {
-  const c = { W: "bg-accent-500", D: "bg-pitch-500", L: "bg-red-500" };
-  if (form.length === 0) return <span className="text-pitch-600">—</span>;
-  return <span className="flex gap-0.5">{form.slice(-4).map((r, i) => <span key={i} className={`h-1.5 w-1.5 rounded-full ${c[r]}`} title={r} />)}</span>;
-}
 function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return <div className="flex items-center justify-between text-xs"><span className="text-pitch-400">{label}</span><span className="font-semibold text-pitch-100">{children}</span></div>;
 }
 
 function TeamInfo({ match }: { match: Match }) {
-  const { teamById, standings, matches } = useBarnito();
-  const form = useMemo(() => {
-    const map = new Map<string, FormResult[]>();
-    for (const m of matches.matches.filter((m) => m.status === "FINISHED" && m.homeGoals != null && m.awayGoals != null).sort((a, b) => a.kickoff.localeCompare(b.kickoff))) {
-      const hr: FormResult = m.homeGoals! > m.awayGoals! ? "W" : m.homeGoals! < m.awayGoals! ? "L" : "D";
-      (map.get(m.homeTeamId) ?? map.set(m.homeTeamId, []).get(m.homeTeamId)!).push(hr);
-      (map.get(m.awayTeamId) ?? map.set(m.awayTeamId, []).get(m.awayTeamId)!).push(hr === "W" ? "L" : hr === "L" ? "W" : "D");
-    }
-    return map;
-  }, [matches]);
+  const { teamById, standings } = useBarnito();
   const rows = standings.groups.find((g) => g.group === match.group)?.rows ?? [];
   const pos = (id: string) => rows.find((r) => r.teamId === id)?.pos;
   const coach = new Map((match.lineups ?? []).map((l) => [l.teamId, l.coach]));
@@ -46,7 +31,6 @@ function TeamInfo({ match }: { match: Match }) {
               <InfoRow label="FIFA rank">{t.fifaRank ? `#${t.fifaRank}` : "—"}</InfoRow>
               <InfoRow label="Group">{p ? `${ordinal(p)} · ${match.group}` : (match.group as string) !== "?" ? `Group ${match.group}` : "—"}</InfoRow>
               {coach.get(id) && <InfoRow label="Coach">{coach.get(id)}</InfoRow>}
-              <div className="flex items-center justify-between text-xs"><span className="text-pitch-400">Form</span><FormRow form={form.get(id) ?? []} /></div>
               {wc && (
                 <div className="space-y-0.5 border-t border-white/[0.06] pt-1.5 text-[11px] leading-tight">
                   <div className="text-pitch-500">World Cup best <span className="block text-pitch-200">{wc.best}</span></div>
