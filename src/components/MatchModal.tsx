@@ -498,26 +498,54 @@ const lastName = (name: string) => {
   return parts[parts.length - 1] ?? name;
 };
 
-function PlayerDot({ p }: { p: LineupPlayer }) {
+/** Pitch markings drawn in the brand palette (viewBox in metres, 68×105 full pitch). */
+function PitchMarkings() {
+  const line = { fill: "none", stroke: "#dffbe9", strokeWidth: 0.4, strokeOpacity: 0.28 } as const;
+  const spot = { fill: "#dffbe9", fillOpacity: 0.28 } as const;
+  return (
+    <svg viewBox="0 0 68 105" className="absolute inset-0 h-full w-full" aria-hidden>
+      {Array.from({ length: 6 }).map((_, i) => (
+        <rect key={i} x="0" y={i * 17.5} width="68" height="17.5" fill={i % 2 ? "#0e3a21" : "#0c321c"} />
+      ))}
+      <rect x="0.8" y="0.8" width="66.4" height="103.4" {...line} />
+      <line x1="0.8" y1="52.5" x2="67.2" y2="52.5" {...line} />
+      <circle cx="34" cy="52.5" r="9.15" {...line} />
+      <circle cx="34" cy="52.5" r="0.5" {...spot} />
+      {/* bottom goal */}
+      <rect x="13.84" y="87.7" width="40.32" height="16.5" {...line} />
+      <rect x="24.84" y="98.7" width="18.32" height="5.5" {...line} />
+      <circle cx="34" cy="93.2" r="0.5" {...spot} />
+      <path d="M27 87.7 A 9.15 9.15 0 0 1 41 87.7" {...line} />
+      {/* top goal */}
+      <rect x="13.84" y="0.8" width="40.32" height="16.5" {...line} />
+      <rect x="24.84" y="0.8" width="18.32" height="5.5" {...line} />
+      <circle cx="34" cy="11.8" r="0.5" {...spot} />
+      <path d="M27 17.3 A 9.15 9.15 0 0 0 41 17.3" {...line} />
+    </svg>
+  );
+}
+
+function PitchToken({ p, x, y }: { p: LineupPlayer; x: number; y: number }) {
   const { open } = usePlayerModal();
-  const color = POS_DOT[(p.pos ?? "").toUpperCase()] ?? "bg-pitch-600 ring-white/20";
+  const color = POS_DOT[(p.pos ?? "").toUpperCase()] ?? "bg-pitch-600 ring-white/25";
   return (
     <button
       type="button"
       disabled={!p.playerId}
       onClick={() => p.playerId && open(p.playerId)}
-      className={`flex w-12 flex-col items-center gap-0.5 ${p.playerId ? "cursor-pointer" : "cursor-default"}`}
+      style={{ left: `${x}%`, top: `${y}%` }}
+      className={`absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-0.5 ${p.playerId ? "cursor-pointer" : "cursor-default"}`}
       title={p.name}
     >
-      <span className={`grid h-6 w-6 place-items-center rounded-full text-[10px] font-bold text-white ring-2 ${color}`}>
+      <span className={`grid h-6 w-6 place-items-center rounded-full text-[9px] font-bold text-white shadow-md ring-2 ${color}`}>
         {p.number ?? ""}
       </span>
-      <span className="max-w-[3.25rem] truncate text-[9px] leading-tight text-pitch-100">{lastName(p.name)}</span>
+      <span className="max-w-[3.2rem] truncate rounded bg-pitch-950/55 px-1 text-[8px] leading-tight text-white">{lastName(p.name)}</span>
     </button>
   );
 }
 
-/** Render a starting XI on a mini pitch using API-Football grid ("row:col"); GK at the bottom. */
+/** Render a starting XI on a pitch using API-Football grid ("row:col"); GK at the bottom. */
 function FormationPitch({ lineup }: { lineup: Lineup }) {
   const byRow = new Map<number, LineupPlayer[]>();
   for (const p of lineup.startXI) {
@@ -526,13 +554,17 @@ function FormationPitch({ lineup }: { lineup: Lineup }) {
   }
   const rows = [...byRow.entries()].sort((a, b) => a[0] - b[0]);
   for (const [, ps] of rows) ps.sort((a, b) => Number(a.grid?.split(":")[1] ?? 0) - Number(b.grid?.split(":")[1] ?? 0));
+  const nRows = rows.length;
   return (
-    <div className="flex flex-col-reverse justify-between gap-3 rounded-xl bg-gradient-to-b from-pitch-600/30 to-pitch-800/50 p-2 py-3 ring-1 ring-white/[0.07]">
-      {rows.map(([row, ps]) => (
-        <div key={row} className="flex justify-around gap-1">
-          {ps.map((p, i) => <PlayerDot key={p.playerId ?? `${row}-${i}`} p={p} />)}
-        </div>
-      ))}
+    <div className="relative w-full overflow-hidden rounded-lg ring-1 ring-white/[0.08]" style={{ aspectRatio: "68 / 105" }}>
+      <PitchMarkings />
+      {rows.flatMap(([row, ps], r) =>
+        ps.map((p, i) => {
+          const y = nRows <= 1 ? 50 : 90 - (r / (nRows - 1)) * 80; // GK (r=0) at the bottom
+          const x = 8 + ((i + 0.5) / ps.length) * 84;
+          return <PitchToken key={p.playerId ?? `${row}-${i}`} p={p} x={x} y={y} />;
+        }),
+      )}
     </div>
   );
 }
