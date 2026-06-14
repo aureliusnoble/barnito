@@ -44,6 +44,9 @@ export interface Player {
   goalMultiplier: GoalMultiplier;
   photo?: string | null;
   number?: number | null;
+  // Domestic club the player normally plays for. Backfilled lazily from API-Football for picked /
+  // goalscoring players. null = not looked up yet; {} (no name) = looked up, none found.
+  club?: { name: string | null; logo: string | null } | null;
 }
 
 export interface Roster {

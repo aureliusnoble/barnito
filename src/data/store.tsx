@@ -42,6 +42,7 @@ const rowToPlayer = (r: Row): Player => ({
   id: r.id as string, apiId: (r.api_id as number) ?? null, name: r.name as string, teamId: r.team_id as string,
   position: (r.position as Position) ?? "FWD", goalMultiplier: (r.goal_multiplier as GoalMultiplier) ?? 8,
   photo: (r.photo as string) ?? null, number: (r.number as number) ?? null,
+  club: (r.club as Player["club"]) ?? null,
 });
 const rowToMatch = (r: Row): Match => ({
   id: r.id as string, apiId: (r.api_id as number) ?? null,

@@ -58,6 +58,7 @@ function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void
   const team = teamId ? teamName(teamId) : seed.teamName ?? null;
   const position: Position | null = p?.position ?? seed.position ?? null;
   const multiplier = p?.goalMultiplier ?? (position ? GOAL_MULTIPLIER[position] : null);
+  const club = p?.club ?? null;
 
   // Per-player stats only exist for matched roster ids; otherwise use the seed's headline numbers.
   const rosterStats = seed.playerId ? playerStats.players[seed.playerId] : undefined;
@@ -76,6 +77,12 @@ function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void
           {(teamId || team) && (
             <div className="flex items-center gap-1.5 text-sm text-pitch-300">
               {teamId && <Crest teamId={teamId} size={16} />} {team}{position ? ` · ${POSITION_LABEL[position]}` : ""}
+            </div>
+          )}
+          {club?.name && (
+            <div className="flex items-center gap-1.5 text-xs text-pitch-400" title="Club side">
+              {club.logo && <img src={club.logo} alt="" width={14} height={14} className="inline-block object-contain" />}
+              {club.name}
             </div>
           )}
         </div>
