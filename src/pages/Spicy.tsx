@@ -17,6 +17,36 @@ function HeatBar({ score, max }: { score: number; max: number }) {
   );
 }
 
+/**
+ * A "hot take" = exactly one participant predicts a different *outcome* (win/draw/loss, ignoring the
+ * scoreline) while everyone else agrees on a single outcome. Needs ≥3 predictions.
+ */
+function HotTakeBadge({ matchId }: { matchId: string }) {
+  const { scores, matchById } = useBarnito();
+  const { teamName } = useHelpers();
+  const pm = scores.perMatch.find((p) => p.matchId === matchId);
+  const m = matchById.get(matchId);
+  if (!pm || !m) return null;
+
+  const made = pm.predictions.filter((p) => p.predHome != null && p.predAway != null);
+  if (made.length < 3) return null;
+  const outcome = (p: (typeof made)[number]) => Math.sign((p.predHome as number) - (p.predAway as number));
+  const groups = new Map<number, typeof made>();
+  for (const p of made) (groups.get(outcome(p)) ?? groups.set(outcome(p), []).get(outcome(p))!).push(p);
+  if (groups.size !== 2) return null; // a consensus + a single dissenter, no more
+  let lone: { name: string; o: number } | null = null;
+  for (const [o, ps] of groups) if (ps.length === 1) lone = { name: ps[0].name, o };
+  if (!lone) return null;
+
+  const label = lone.o > 0 ? teamName(m.homeTeamId) : lone.o < 0 ? teamName(m.awayTeamId) : "a draw";
+  const verb = lone.o === 0 ? "tips" : "backs";
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-spice-500/15 px-2 py-0.5 text-[10px] font-semibold text-spice-300">
+      <Flame size={10} className="fill-spice-500 text-spice-500" /> Hot take · {lone.name} alone {verb} {label}
+    </span>
+  );
+}
+
 export default function Spicy() {
   const { scores, matchById } = useBarnito();
   const { teamName } = useHelpers();
@@ -72,6 +102,9 @@ export default function Spicy() {
                 <div className="mt-1.5 flex items-center justify-center gap-1.5 text-sm font-semibold text-spice-300">
                   <span className="text-pitch-400">spice rating</span> <SpiceRating score={hero.score} max={max} size={16} />
                 </div>
+              </div>
+              <div className="mt-2 flex justify-center">
+                <HotTakeBadge matchId={hero.matchId} />
               </div>
             </button>
           )}
@@ -132,9 +165,10 @@ function SpicyRow({
         <div className="mt-1 text-[11px] text-pitch-400">
           {formatDay(m.kickoff)} · {formatTime(m.kickoff)} · {relativeKickoff(m.kickoff)}
         </div>
-        <div className="mt-1.5 flex items-center gap-2">
+        <div className="mt-1.5 flex flex-wrap items-center gap-2">
           <div className="w-24"><HeatBar score={s.score} max={max} /></div>
           <SpiceRating score={s.score} max={max} size={12} />
+          <HotTakeBadge matchId={s.matchId} />
         </div>
       </div>
       <ChevronRight size={16} className="shrink-0 text-pitch-600" />
