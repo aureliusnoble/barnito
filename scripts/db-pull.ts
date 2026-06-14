@@ -12,13 +12,15 @@ const key = process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_OPp3qRTTno8kyl
 const supa = createClient(url, key, { auth: { persistSession: false } });
 
 // PostgREST caps a response at 1000 rows; the players table (~2300) exceeds that, so page through.
-async function selectAll(table: string): Promise<Record<string, unknown>[]> {
-  const out: Record<string, unknown>[] = [];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function selectAll(table: string): Promise<any[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const out: any[] = [];
   const size = 1000;
   for (let from = 0; ; from += size) {
     const { data, error } = await supa.from(table).select("*").range(from, from + size - 1);
     if (error) throw error;
-    const rows = (data ?? []) as Record<string, unknown>[];
+    const rows = data ?? [];
     out.push(...rows);
     if (rows.length < size) break;
   }

@@ -1,4 +1,5 @@
 import type { Match } from "@shared/types";
+import { ChevronRight } from "lucide-react";
 import { useHelpers } from "../data/store";
 import { StatusBadge, Crest, ScorerPickTags } from "./bits";
 import { useMatchModal } from "./MatchModal";
@@ -47,6 +48,7 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
             </span>
           )}
         </div>
+        <ChevronRight size={16} className="-ml-1 shrink-0 self-center text-pitch-600" />
       </div>
 
       {match.status !== "FINISHED" && (
