@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { supabase } from "./supabase";
 import type {
   Roster, MatchesFile, PredictionsFile, StandingsFile, ScoresFile,
-  StatsFile, InjuriesFile, ForecastsFile, BracketFile,
-  Team, Player, Match, Participant, InjuryItem, Forecast,
+  StatsFile, InjuriesFile, BracketFile, PlayerStatsFile, ScoreHistoryPoint,
+  Team, Player, Match, Participant, InjuryItem, GroupLetter, GoalEvent, MatchEvent,
+  Lineup, TeamStat, PlayerRating, Position, GoalMultiplier,
 } from "@shared/types";
 
 export interface BarnitoData {
@@ -13,126 +15,160 @@ export interface BarnitoData {
   scores: ScoresFile;
   stats: StatsFile;
   injuries: InjuriesFile;
-  forecasts: ForecastsFile;
   bracket: BracketFile;
+  playerStats: PlayerStatsFile;
+  scoreHistory: ScoreHistoryPoint[];
   // lookups
   teamById: Map<string, Team>;
   playerById: Map<string, Player>;
   matchById: Map<string, Match>;
   participantById: Map<string, Participant>;
   injuryByPlayerId: Map<string, InjuryItem>;
-  forecastByMatchId: Map<string, Forecast>;
 }
 
-interface State {
-  data: BarnitoData | null;
-  loading: boolean;
-  error: string | null;
-}
-
+interface State { data: BarnitoData | null; loading: boolean; error: string | null }
 const Ctx = createContext<State>({ data: null, loading: true, error: null });
 
-// Data is read straight from the repo's raw URL so a cron commit is visible immediately
-// (no rebuild/redeploy needed). Falls back to the copy bundled with the deploy if raw is
-// unreachable. Override the source with VITE_DATA_URL at build time.
-const RAW_BASE =
-  import.meta.env.VITE_DATA_URL ||
-  "https://raw.githubusercontent.com/aureliusnoble/barnito/main/public/data";
-const BUNDLED_BASE = `${import.meta.env.BASE_URL}data`;
+type Row = Record<string, unknown>;
 
-async function getJson<T>(file: string, bust: number, fallback?: T): Promise<T> {
-  for (const base of [RAW_BASE, BUNDLED_BASE]) {
-    try {
-      const res = await fetch(`${base}/${file}?v=${bust}`);
-      if (res.ok) return (await res.json()) as T;
-    } catch {
-      /* try the next source */
-    }
-  }
-  if (fallback !== undefined) return fallback;
-  throw new Error(`Failed to load ${file}`);
-}
+// --- row → type mappers ----------------------------------------------------
+const rowToTeam = (r: Row): Team => ({
+  id: r.id as string, name: r.name as string, code: (r.code as string) ?? null,
+  group: (r.group_letter as GroupLetter) ?? ("?" as GroupLetter), apiId: (r.api_id as number) ?? null,
+  logo: (r.logo as string) ?? null, venue: (r.venue as Team["venue"]) ?? null,
+  fifaRank: (r.fifa_rank as number) ?? null,
+});
+const rowToPlayer = (r: Row): Player => ({
+  id: r.id as string, apiId: (r.api_id as number) ?? null, name: r.name as string, teamId: r.team_id as string,
+  position: (r.position as Position) ?? "FWD", goalMultiplier: (r.goal_multiplier as GoalMultiplier) ?? 8,
+  photo: (r.photo as string) ?? null, number: (r.number as number) ?? null,
+});
+const rowToMatch = (r: Row): Match => ({
+  id: r.id as string, apiId: (r.api_id as number) ?? null,
+  group: (r.group_letter as GroupLetter) ?? ("?" as GroupLetter), matchday: (r.matchday as number) ?? 1,
+  kickoff: r.kickoff as string, ground: (r.ground as string) ?? null, venue: (r.venue as Match["venue"]) ?? null,
+  homeTeamId: r.home_team_id as string, awayTeamId: r.away_team_id as string,
+  status: (r.status as Match["status"]) ?? "SCHEDULED", elapsed: (r.elapsed as number) ?? null,
+  homeGoals: (r.home_goals as number) ?? null, awayGoals: (r.away_goals as number) ?? null,
+  goals: (r.goals as GoalEvent[]) ?? [], events: (r.events as MatchEvent[]) ?? undefined,
+  lineups: (r.lineups as Lineup[]) ?? undefined, stats: (r.stats as TeamStat[]) ?? undefined,
+  ratings: (r.ratings as PlayerRating[]) ?? undefined, h2h: (r.h2h as Match["h2h"]) ?? undefined,
+});
+const rowToParticipant = (r: Row): Participant => ({
+  id: r.id as string, name: r.name as string, matchScores: (r.match_scores as Participant["matchScores"]) ?? [],
+  topPlayers: (r.top_players as string[]) ?? [], champion: (r.champion as string) ?? "",
+});
 
-const fetchJson = <T,>(file: string, bust: number) => getJson<T>(file, bust);
-const fetchOptional = <T,>(file: string, fallback: T, bust: number) => getJson<T>(file, bust, fallback);
-
-async function loadAll(bust: number): Promise<BarnitoData> {
-  const [roster, matches, predictions, standings, scores, stats, injuries, forecasts, bracket] =
-    await Promise.all([
-      fetchJson<Roster>("roster.json", bust),
-      fetchJson<MatchesFile>("matches.json", bust),
-      fetchJson<PredictionsFile>("predictions.json", bust),
-      fetchJson<StandingsFile>("standings.json", bust),
-      fetchJson<ScoresFile>("scores.json", bust),
-      fetchOptional<StatsFile>("stats.json", { updatedAt: "", topScorers: [], topAssists: [], topCards: [] }, bust),
-      fetchOptional<InjuriesFile>("injuries.json", { updatedAt: "", items: [] }, bust),
-      fetchOptional<ForecastsFile>("forecasts.json", { updatedAt: "", items: [] }, bust),
-      fetchOptional<BracketFile>("bracket.json", { updatedAt: "", rounds: [] }, bust),
-    ]);
-  return {
-    roster, matches, predictions, standings, scores, stats, injuries, forecasts, bracket,
-    teamById: new Map(roster.teams.map((t) => [t.id, t])),
-    playerById: new Map(roster.players.map((p) => [p.id, p])),
-    matchById: new Map(matches.matches.map((m) => [m.id, m])),
-    participantById: new Map(predictions.participants.map((p) => [p.id, p])),
-    injuryByPlayerId: new Map(injuries.items.filter((i) => i.playerId).map((i) => [i.playerId as string, i])),
-    forecastByMatchId: new Map(forecasts.items.map((f) => [f.matchId, f])),
-  };
-}
-
-const hasLive = (d: BarnitoData) =>
-  d.matches.matches.some((m) => m.status === "LIVE" || m.status === "HT");
+const EMPTY_SCORES: ScoresFile = { updatedAt: "", leaderboard: [], perMatch: [], predictedStandings: [], scorerView: [], spiciness: [] };
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<State>({ data: null, loading: true, error: null });
+  const [teamRows, setTeamRows] = useState<Row[]>([]);
+  const [playerRows, setPlayerRows] = useState<Row[]>([]);
+  const [matchRows, setMatchRows] = useState<Row[]>([]);
+  const [participantRows, setParticipantRows] = useState<Row[]>([]);
+  const [docs, setDocs] = useState<Record<string, unknown>>({});
+  const [history, setHistory] = useState<ScoreHistoryPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    let timer: number | undefined;
-
-    const run = async (bust: number) => {
+    (async () => {
       try {
-        const data = await loadAll(bust);
+        const [t, p, m, pa, d, h] = await Promise.all([
+          supabase.from("teams").select("*"),
+          supabase.from("players").select("*"),
+          supabase.from("matches").select("*"),
+          supabase.from("participants").select("*"),
+          supabase.from("documents").select("key,data"),
+          supabase.from("score_history").select("participant_id,at,total").order("at", { ascending: true }),
+        ]);
+        const firstErr = [t, p, m, pa, d, h].find((r) => r.error)?.error;
+        if (firstErr) throw firstErr;
         if (cancelled) return;
-        setState({ data, loading: false, error: null });
-        // While a match is live, re-poll the raw data every 30s (cache-busted) for near-live scores.
-        window.clearTimeout(timer);
-        if (hasLive(data)) timer = window.setTimeout(() => run(Date.now()), 30_000);
+        setTeamRows(t.data ?? []);
+        setPlayerRows(p.data ?? []);
+        setMatchRows(m.data ?? []);
+        setParticipantRows(pa.data ?? []);
+        setDocs(Object.fromEntries((d.data ?? []).map((row: Row) => [row.key as string, row.data])));
+        setHistory((h.data ?? []).map((r: Row) => ({ participantId: r.participant_id as string, at: r.at as string, total: r.total as number })));
+        setLoading(false);
       } catch (e) {
-        if (cancelled) return;
-        setState((s) => (s.data ? s : { data: null, loading: false, error: (e as Error).message }));
+        if (!cancelled) { setError((e as Error).message); setLoading(false); }
       }
+    })();
+
+    const upsertRow = (setter: typeof setMatchRows) => (payload: { eventType: string; new: Row; old: Row }) => {
+      setter((prev) => {
+        if (payload.eventType === "DELETE") return prev.filter((r) => r.id !== (payload.old as Row).id);
+        const row = payload.new;
+        const i = prev.findIndex((r) => r.id === row.id);
+        if (i === -1) return [...prev, row];
+        const next = prev.slice(); next[i] = row; return next;
+      });
     };
 
-    run(Math.floor(Date.now() / (5 * 60 * 1000)));
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-    };
+    const channel = supabase
+      .channel("barnito")
+      .on("postgres_changes", { event: "*", schema: "public", table: "matches" }, (p) => upsertRow(setMatchRows)(p as never))
+      .on("postgres_changes", { event: "*", schema: "public", table: "teams" }, (p) => upsertRow(setTeamRows)(p as never))
+      .on("postgres_changes", { event: "*", schema: "public", table: "participants" }, (p) => upsertRow(setParticipantRows)(p as never))
+      .on("postgres_changes", { event: "*", schema: "public", table: "documents" }, (p) => {
+        const row = (p as { new: Row }).new;
+        if (row?.key) setDocs((prev) => ({ ...prev, [row.key as string]: row.data }));
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "score_history" }, (p) => {
+        const r = (p as { new: Row }).new;
+        setHistory((prev) => [...prev, { participantId: r.participant_id as string, at: r.at as string, total: r.total as number }]);
+      })
+      .subscribe();
+
+    return () => { cancelled = true; supabase.removeChannel(channel); };
   }, []);
 
-  return <Ctx.Provider value={state}>{children}</Ctx.Provider>;
+  const data = useMemo<BarnitoData | null>(() => {
+    if (loading || error) return null;
+    const teams = teamRows.map(rowToTeam);
+    const players = playerRows.map(rowToPlayer);
+    const matches = matchRows.map(rowToMatch).sort((a, b) => a.kickoff.localeCompare(b.kickoff) || a.id.localeCompare(b.id));
+    const participants = participantRows.map(rowToParticipant);
+    const meta = (docs._meta as { tournamentComplete?: boolean; championTeamId?: string | null }) ?? {};
+    const injuries = (docs.injuries as InjuriesFile) ?? { updatedAt: "", items: [] };
+    return {
+      roster: { updatedAt: "", teams, players },
+      matches: { updatedAt: "", tournamentComplete: meta.tournamentComplete ?? false, championTeamId: meta.championTeamId ?? null, matches },
+      predictions: { updatedAt: "", participants },
+      standings: (docs.standings as StandingsFile) ?? { updatedAt: "", groups: [] },
+      scores: (docs.scores as ScoresFile) ?? EMPTY_SCORES,
+      stats: (docs.stats as StatsFile) ?? { updatedAt: "", topScorers: [], topAssists: [], topCards: [] },
+      injuries,
+      bracket: (docs.bracket as BracketFile) ?? { updatedAt: "", rounds: [] },
+      playerStats: (docs.playerStats as PlayerStatsFile) ?? { updatedAt: "", players: {} },
+      scoreHistory: history,
+      teamById: new Map(teams.map((t) => [t.id, t])),
+      playerById: new Map(players.map((p) => [p.id, p])),
+      matchById: new Map(matches.map((m) => [m.id, m])),
+      participantById: new Map(participants.map((p) => [p.id, p])),
+      injuryByPlayerId: new Map(injuries.items.filter((i) => i.playerId).map((i) => [i.playerId as string, i])),
+    };
+  }, [loading, error, teamRows, playerRows, matchRows, participantRows, docs, history]);
+
+  return <Ctx.Provider value={{ data, loading, error }}>{children}</Ctx.Provider>;
 }
 
-/** Access loaded data. Throws if used before data is ready — guard with the loading screen in App. */
 export function useBarnito(): BarnitoData {
   const { data } = useContext(Ctx);
   if (!data) throw new Error("Barnito data not loaded");
   return data;
 }
+export function useDataState(): State { return useContext(Ctx); }
 
-export function useDataState(): State {
-  return useContext(Ctx);
-}
-
-/** Common derived helpers shared across pages. */
 export function useHelpers() {
   const d = useBarnito();
-  return useMemo(() => {
-    const teamName = (id: string) => d.teamById.get(id)?.name ?? id;
-    const teamGroup = (id: string) => d.teamById.get(id)?.group ?? "?";
-    const playerName = (id: string) => d.playerById.get(id)?.name ?? id;
-    const participantName = (id: string) => d.participantById.get(id)?.name ?? id;
-    return { teamName, teamGroup, playerName, participantName };
-  }, [d]);
+  return useMemo(() => ({
+    teamName: (id: string) => d.teamById.get(id)?.name ?? id,
+    teamGroup: (id: string) => d.teamById.get(id)?.group ?? "?",
+    playerName: (id: string) => d.playerById.get(id)?.name ?? id,
+    participantName: (id: string) => d.participantById.get(id)?.name ?? id,
+  }), [d]);
 }

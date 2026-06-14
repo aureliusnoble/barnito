@@ -32,6 +32,7 @@ export interface Team {
   apiId: number | null; // API-Football team id (null until resolved)
   logo?: string | null; // crest image URL (api-sports media)
   venue?: Venue | null;
+  fifaRank?: number | null; // seeded; not from API-Football
 }
 
 export interface Player {
@@ -105,6 +106,15 @@ export interface PlayerRating {
   number?: number | null;
 }
 
+export interface H2HMatch {
+  date: string; // ISO
+  homeName: string;
+  awayName: string;
+  homeGoals: number | null;
+  awayGoals: number | null;
+  league: string;
+}
+
 export interface Match {
   id: string; // stable id, e.g. "A-1" (group A, match 1) — also used in predictions
   apiId: number | null;
@@ -125,6 +135,7 @@ export interface Match {
   lineups?: Lineup[];
   stats?: TeamStat[];
   ratings?: PlayerRating[];
+  h2h?: H2HMatch[]; // recent meetings between the two teams (mainly shown pre-match)
 }
 
 export interface MatchesFile {
@@ -357,4 +368,25 @@ export interface BracketRound {
 export interface BracketFile {
   updatedAt: string;
   rounds: BracketRound[];
+}
+
+// ---------------------------------------------------------------------------
+// playerStats (per-player goals/cards/appearances) + score history
+// ---------------------------------------------------------------------------
+
+export interface PlayerCardStats {
+  goals: number;
+  yellow: number;
+  red: number;
+  apps: number;
+}
+export interface PlayerStatsFile {
+  updatedAt: string;
+  players: Record<string, PlayerCardStats>; // keyed by player id
+}
+
+export interface ScoreHistoryPoint {
+  participantId: string;
+  at: string; // ISO
+  total: number;
 }

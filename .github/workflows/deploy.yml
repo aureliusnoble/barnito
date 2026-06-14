@@ -1,17 +1,9 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    # The current repo default branch is the working branch; the github-pages environment only
-    # allows its default branch to deploy. We list both so the latest deploys regardless — once
-    # you set the default branch to `main`, the working-branch line can be removed.
-    branches: [main, claude/barnito-world-cup-tracker-0fjkzn]
-    # Only re-deploy on CODE/asset changes — the app reads live data straight from the repo raw URL,
-    # so data commits don't need a rebuild.
-    paths-ignore:
-      - "TODO.md"
-      - "README.md"
-      - "public/data/**"
+  # Manual-only during the Supabase migration: the new frontend needs the Supabase backend live, so
+  # we don't want to auto-replace the working site before `supabase-setup.sh` has run. After setup,
+  # run this workflow (Actions → Deploy to GitHub Pages → Run workflow) to publish the new build.
   workflow_dispatch:
 
 permissions:

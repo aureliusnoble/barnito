@@ -69,7 +69,7 @@ export interface ApiPlayerEntry {
 }
 export interface ApiFixture {
   fixture: { id: number; date: string; status: { short: string; elapsed: number | null }; venue: { name: string | null; city?: string | null } };
-  league: { id: number; round: string };
+  league: { id: number; name?: string; round: string };
   teams: { home: { id: number; name: string }; away: { id: number; name: string } };
   goals: { home: number | null; away: number | null };
 }

@@ -4,6 +4,7 @@ import { Radio, CalendarDays, Trophy, Table2, Goal, Flame } from "lucide-react";
 import { useBarnito } from "../data/store";
 import AirhornButton from "./AirhornButton";
 import { MatchModalProvider } from "./MatchModal";
+import { PlayerModalProvider } from "./PlayerModal";
 
 const NAV = [
   { to: "/", icon: Radio, label: "Now", end: true },
@@ -68,9 +69,11 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       <main className="flex-1 px-3 pb-28 pt-5 sm:px-4">
         <MatchModalProvider>
-          <div key={loc.pathname} className="animate-slide-up">
-            {children}
-          </div>
+          <PlayerModalProvider>
+            <div key={loc.pathname} className="animate-slide-up">
+              {children}
+            </div>
+          </PlayerModalProvider>
         </MatchModalProvider>
       </main>
 

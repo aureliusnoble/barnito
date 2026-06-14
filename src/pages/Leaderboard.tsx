@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Trophy, ChevronDown, Target, CircleCheck, Goal, Table2, Crown, Medal } from "lucide-react";
+import { Trophy, ChevronDown, Target, CircleCheck, Goal, Table2, Crown, Medal, LineChart } from "lucide-react";
 import { useBarnito } from "../data/store";
-import { SectionTitle } from "../components/bits";
+import ScoreChart from "../components/ScoreChart";
 import type { ScoreBreakdown } from "@shared/types";
 
 const BREAKDOWN: {
@@ -41,13 +41,27 @@ function RankBadge({ rank }: { rank: number }) {
 export default function Leaderboard() {
   const { scores } = useBarnito();
   const [open, setOpen] = useState<string | null>(scores.leaderboard[0]?.participantId ?? null);
+  const [chart, setChart] = useState(false);
   const top = scores.leaderboard[0]?.total || 1;
 
   return (
     <div className="space-y-4">
-      <SectionTitle icon={<Trophy size={18} className="text-accent-400" />} hint={`${scores.leaderboard.length} players`}>
-        Leaderboard
-      </SectionTitle>
+      <div className="mb-1 flex items-center justify-between">
+        <h2 className="flex items-center gap-2 font-display text-xl font-bold text-white">
+          <Trophy size={18} className="text-accent-400" /> Leaderboard
+        </h2>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-pitch-400">{scores.leaderboard.length} players</span>
+          <button
+            onClick={() => setChart(true)}
+            title="Points over time"
+            className="grid h-9 w-9 place-items-center rounded-full bg-pitch-800 text-pitch-300 ring-1 ring-white/10 transition hover:text-accent-300"
+          >
+            <LineChart size={17} />
+          </button>
+        </div>
+      </div>
+      {chart && <ScoreChart onClose={() => setChart(false)} />}
       <div className="space-y-2">
         {scores.leaderboard.map((entry) => {
           const isOpen = open === entry.participantId;

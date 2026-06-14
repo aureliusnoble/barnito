@@ -20,7 +20,9 @@
     "score": "tsx scripts/score.ts",
     "update": "tsx scripts/fetch-data.ts && tsx scripts/score.ts",
     "template": "tsx scripts/make-template.ts",
-    "sync:edge": "tsx scripts/sync-edge-shared.ts"
+    "sync:edge": "tsx scripts/sync-edge-shared.ts",
+    "db:pull": "tsx scripts/db-pull.ts",
+    "predictions:upload": "tsx scripts/upload-predictions.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.1",

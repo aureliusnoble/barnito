@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Goal, Trophy, Users, AlertTriangle } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
+import { usePlayerModal } from "../components/PlayerModal";
 import { SectionTitle, Crest } from "../components/bits";
 import { Avatar } from "../components/visuals";
 import { POSITION_LABEL } from "../lib/format";
@@ -72,6 +73,7 @@ function PosChip({ position }: { position: Position }) {
 
 function ByPerson() {
   const { scores, participantById, playerById, injuryByPlayerId } = useBarnito();
+  const { open } = usePlayerModal();
   const { teamName } = useHelpers();
   const ordered = [...scores.scorerView].sort((a, b) => b.total - a.total);
 
@@ -99,7 +101,7 @@ function ByPerson() {
                 const player = playerById.get(p.playerId);
                 const injury = injuryByPlayerId.get(p.playerId);
                 return (
-                  <li key={p.playerId} className="flex items-center gap-2.5 px-3 py-2 text-sm">
+                  <li key={p.playerId} onClick={() => open(p.playerId)} className="flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm transition hover:bg-white/[0.03]">
                     <Avatar photo={player?.photo} name={p.playerName} position={p.position} size={30} />
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1.5">
@@ -133,6 +135,7 @@ function ByPerson() {
 
 function GoldenBoot() {
   const { stats, scores } = useBarnito();
+  const { open } = usePlayerModal();
   const pickedIds = useMemo(() => {
     const s = new Set<string>();
     for (const sv of scores.scorerView) for (const p of sv.picks) s.add(p.playerId);
@@ -154,7 +157,7 @@ function GoldenBoot() {
     <div className="space-y-3">
       <div className="grid grid-cols-3 gap-2">
         {podium.map((p, i) => (
-          <div key={p.apiId ?? p.name} className="card flex flex-col items-center gap-1.5 p-3 text-center">
+          <div key={p.apiId ?? p.name} onClick={() => p.playerId && open(p.playerId)} className={`card flex flex-col items-center gap-1.5 p-3 text-center ${p.playerId ? "cursor-pointer card-hover" : ""}`}>
             <Trophy size={16} className={medal[i]} />
             <Avatar photo={p.photo} name={p.name} position={p.position ?? null} size={44} />
             <span className="truncate text-xs font-semibold text-white" title={p.name}>{p.name}</span>
@@ -172,7 +175,7 @@ function GoldenBoot() {
       </div>
       <ul className="card divide-y divide-white/[0.04] overflow-hidden">
         {rest.map((p, i) => (
-          <li key={p.apiId ?? p.name} className="flex items-center gap-2.5 px-3 py-2 text-sm">
+          <li key={p.apiId ?? p.name} onClick={() => p.playerId && open(p.playerId)} className={`flex items-center gap-2.5 px-3 py-2 text-sm ${p.playerId ? "cursor-pointer transition hover:bg-white/[0.03]" : ""}`}>
             <span className="w-5 text-center font-mono text-xs text-pitch-500">{i + 4}</span>
             <Avatar photo={p.photo} name={p.name} position={p.position ?? null} size={26} />
             <span className="min-w-0 flex-1 truncate text-pitch-100">{p.name}</span>
@@ -198,6 +201,7 @@ interface Agg {
 
 function ByPlayer() {
   const { scores, playerById } = useBarnito();
+  const { open } = usePlayerModal();
   const { teamName } = useHelpers();
 
   const aggregated = useMemo(() => {
@@ -226,7 +230,7 @@ function ByPlayer() {
       {aggregated.map((a) => {
         const player = playerById.get(a.playerId);
         return (
-          <div key={a.playerId} className="card flex items-center gap-2.5 p-3 text-sm">
+          <div key={a.playerId} onClick={() => open(a.playerId)} className="card card-hover flex cursor-pointer items-center gap-2.5 p-3 text-sm">
             <Avatar photo={player?.photo} name={a.playerName} position={a.position} size={32} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">

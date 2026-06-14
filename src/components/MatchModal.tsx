@@ -1,9 +1,81 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
-import { X, MapPin, ArrowLeftRight, Star, Sparkles } from "lucide-react";
+import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { X, MapPin, ArrowLeftRight, Star, Sparkles, ChevronDown, Swords } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { StatusBadge, PointsPill, GroupPill, Crest } from "./bits";
-import { formatFull } from "../lib/format";
+import { formatFull, ordinal } from "../lib/format";
 import type { Match, MatchEvent, TeamStat } from "@shared/types";
+
+type FormResult = "W" | "D" | "L";
+function FormRow({ form }: { form: FormResult[] }) {
+  const c = { W: "bg-accent-500", D: "bg-pitch-500", L: "bg-red-500" };
+  if (form.length === 0) return <span className="text-pitch-600">—</span>;
+  return <span className="flex gap-0.5">{form.slice(-4).map((r, i) => <span key={i} className={`h-1.5 w-1.5 rounded-full ${c[r]}`} title={r} />)}</span>;
+}
+function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div className="flex items-center justify-between text-xs"><span className="text-pitch-400">{label}</span><span className="font-semibold text-pitch-100">{children}</span></div>;
+}
+
+function TeamInfo({ match }: { match: Match }) {
+  const { teamById, standings, matches } = useBarnito();
+  const form = useMemo(() => {
+    const map = new Map<string, FormResult[]>();
+    for (const m of matches.matches.filter((m) => m.status === "FINISHED" && m.homeGoals != null && m.awayGoals != null).sort((a, b) => a.kickoff.localeCompare(b.kickoff))) {
+      const hr: FormResult = m.homeGoals! > m.awayGoals! ? "W" : m.homeGoals! < m.awayGoals! ? "L" : "D";
+      (map.get(m.homeTeamId) ?? map.set(m.homeTeamId, []).get(m.homeTeamId)!).push(hr);
+      (map.get(m.awayTeamId) ?? map.set(m.awayTeamId, []).get(m.awayTeamId)!).push(hr === "W" ? "L" : hr === "L" ? "W" : "D");
+    }
+    return map;
+  }, [matches]);
+  const rows = standings.groups.find((g) => g.group === match.group)?.rows ?? [];
+  const pos = (id: string) => rows.find((r) => r.teamId === id)?.pos;
+  const coach = new Map((match.lineups ?? []).map((l) => [l.teamId, l.coach]));
+
+  return (
+    <section>
+      <h3 className="mb-2 font-display font-bold text-white">Team info</h3>
+      <div className="grid grid-cols-2 gap-3">
+        {[match.homeTeamId, match.awayTeamId].map((id) => {
+          const t = teamById.get(id);
+          if (!t) return <div key={id} />;
+          const p = pos(id);
+          return (
+            <div key={id} className="card space-y-1.5 p-3">
+              <div className="flex items-center gap-1.5"><Crest teamId={id} size={18} /><span className="truncate text-sm font-semibold text-white">{t.name}</span></div>
+              <InfoRow label="FIFA rank">{t.fifaRank ? `#${t.fifaRank}` : "—"}</InfoRow>
+              <InfoRow label="Group">{p ? `${ordinal(p)} · ${match.group}` : (match.group as string) !== "?" ? `Group ${match.group}` : "—"}</InfoRow>
+              {coach.get(id) && <InfoRow label="Coach">{coach.get(id)}</InfoRow>}
+              <div className="flex items-center justify-between text-xs"><span className="text-pitch-400">Form</span><FormRow form={form.get(id) ?? []} /></div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function H2H({ match }: { match: Match }) {
+  const [open, setOpen] = useState(match.status === "SCHEDULED");
+  if (!match.h2h || match.h2h.length === 0) return null;
+  return (
+    <section>
+      <button onClick={() => setOpen(!open)} className="flex w-full items-center justify-between">
+        <h3 className="flex items-center gap-1.5 font-display font-bold text-white"><Swords size={15} className="text-pitch-400" /> Head-to-head</h3>
+        <ChevronDown size={16} className={`text-pitch-500 transition ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <ul className="mt-2 space-y-1.5">
+          {match.h2h.map((h, i) => (
+            <li key={i} className="flex items-center justify-between gap-2 text-[13px]">
+              <span className="w-16 shrink-0 text-[11px] text-pitch-500">{h.date.slice(0, 10)}</span>
+              <span className="min-w-0 flex-1 truncate text-pitch-200">{h.homeName} <span className="font-bold tabular-nums text-white">{h.homeGoals}–{h.awayGoals}</span> {h.awayName}</span>
+              <span className="hidden shrink-0 truncate text-[10px] text-pitch-600 sm:block" style={{ maxWidth: "8rem" }}>{h.league}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
 
 interface ModalCtx {
   open: (matchId: string) => void;
@@ -91,6 +163,8 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
         </div>
 
         <div className="space-y-5 p-4">
+          <TeamInfo match={match} />
+          <H2H match={match} />
           {match.status === "SCHEDULED" && (
             <PredictionSplit
               preds={predicted}

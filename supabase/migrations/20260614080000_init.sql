@@ -60,6 +60,7 @@ create table if not exists public.matches (
   lineups      jsonb,
   stats        jsonb,
   ratings      jsonb,
+  h2h          jsonb,                          -- recent head-to-head results between the two teams
   round        text,                          -- raw API round (for knockout bracket)
   updated_at   timestamptz not null default now()
 );

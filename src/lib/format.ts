@@ -65,6 +65,25 @@ export function relativeKickoff(iso: string, now: Date = new Date()): string {
   return `in ${Math.round(hours / 24)}d`;
 }
 
+// London (Europe/London, BST-aware) offset from UTC, in ms, at a given instant.
+function londonOffsetMs(at: number): number {
+  const p = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23",
+  }).formatToParts(new Date(at));
+  const g = (t: string) => Number(p.find((x) => x.type === t)!.value);
+  return Date.UTC(g("year"), g("month") - 1, g("day"), g("hour"), g("minute"), g("second")) - at;
+}
+
+/** Instant of **noon UK on the day after today (UK)** — the upper bound of "today's" matches, so
+ *  late North-American kickoffs (early-AM UK) still count as today. */
+export function ukSlateCutoffMs(now: number = Date.now()): number {
+  const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date(now));
+  const g = (t: string) => Number(p.find((x) => x.type === t)!.value);
+  const guess = Date.UTC(g("year"), g("month") - 1, g("day") + 1, 12, 0, 0); // tomorrow 12:00 as if UTC
+  return guess - londonOffsetMs(guess);
+}
+
 export function ordinal(n: number): string {
   const s = ["th", "st", "nd", "rd"];
   const v = n % 100;

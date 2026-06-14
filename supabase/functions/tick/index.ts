@@ -52,7 +52,7 @@ function rowToMatch(r: Record<string, unknown>): Match {
     homeGoals: (r.home_goals as number) ?? null, awayGoals: (r.away_goals as number) ?? null,
     goals: (r.goals as GoalEvent[]) ?? [], events: (r.events as MatchEvent[]) ?? undefined,
     lineups: (r.lineups as Lineup[]) ?? undefined, stats: (r.stats as TeamStat[]) ?? undefined,
-    ratings: (r.ratings as PlayerRating[]) ?? undefined,
+    ratings: (r.ratings as PlayerRating[]) ?? undefined, h2h: (r.h2h as Match["h2h"]) ?? undefined,
   };
 }
 function matchToRow(m: Match, round?: string) {
@@ -61,7 +61,8 @@ function matchToRow(m: Match, round?: string) {
     kickoff: m.kickoff, status: m.status, elapsed: m.elapsed, home_team_id: m.homeTeamId,
     away_team_id: m.awayTeamId, home_goals: m.homeGoals, away_goals: m.awayGoals, ground: m.ground,
     venue: m.venue, goals: m.goals, events: m.events ?? null, lineups: m.lineups ?? null,
-    stats: m.stats ?? null, ratings: m.ratings ?? null, round: round ?? null, updated_at: new Date().toISOString(),
+    stats: m.stats ?? null, ratings: m.ratings ?? null, h2h: m.h2h ?? null, round: round ?? null,
+    updated_at: new Date().toISOString(),
   };
 }
 
@@ -131,6 +132,7 @@ function buildMatch(f: ApiFixture, id: string, st: State, details?: ReturnType<t
     lineups: details?.lineups ?? (played ? carry?.lineups : undefined),
     stats: played ? (details?.stats ?? carry?.stats) : undefined,
     ratings: played ? (details?.ratings ?? carry?.ratings) : undefined,
+    h2h: carry?.h2h, // preserved; fetched separately (historical)
   };
 }
 
@@ -367,6 +369,19 @@ Deno.serve(async (req) => {
         updated.set(idg.id, buildMatch(f, idg.id, st, details.get(f.fixture.id), updated.get(idg.id)));
       }
       await setDoc("bracket", buildBracket(fixtures, st));
+
+      // head-to-head (historical → fetch a few per run for matches that still lack it)
+      const needH2H = [...updated.values()].filter((m) => m.group !== "?" && !m.h2h).slice(0, 6);
+      for (const m of needH2H) {
+        const fx = fixtures.find((f) => ids.get(f.fixture.id)?.id === m.id);
+        if (!fx) continue;
+        try {
+          const h2h = await apiGet<ApiFixture>("fixtures/headtohead", { h2h: `${fx.teams.home.id}-${fx.teams.away.id}`, last: 6 });
+          m.h2h = h2h.map((f) => ({ date: f.fixture.date, homeName: f.teams.home.name, awayName: f.teams.away.name,
+            homeGoals: f.goals.home, awayGoals: f.goals.away, league: f.league.name ?? f.league.round }));
+          updated.set(m.id, m);
+        } catch (_) { /* non-fatal */ }
+      }
       meta.lastFull = new Date().toISOString();
     }
 
