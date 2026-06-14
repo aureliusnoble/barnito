@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { X, Goal } from "lucide-react";
+import { X, Goal, CalendarClock } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { Avatar } from "./visuals";
-import { Crest } from "./bits";
-import { POSITION_LABEL } from "../lib/format";
+import { Crest, CardFlag } from "./bits";
+import { POSITION_LABEL, formatDay, formatTime } from "../lib/format";
 import { GOAL_MULTIPLIER } from "@shared/constants";
 import type { Position } from "@shared/types";
 
@@ -47,7 +47,7 @@ function Stat({ label, value, accent }: { label: string; value: React.ReactNode;
 }
 
 function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void }) {
-  const { playerById, playerStats } = useBarnito();
+  const { playerById, playerStats, matches } = useBarnito();
   const { teamName } = useHelpers();
   const p = seed.playerId ? playerById.get(seed.playerId) : undefined;
 
@@ -64,6 +64,15 @@ function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void
   const rosterStats = seed.playerId ? playerStats.players[seed.playerId] : undefined;
   const s = rosterStats ?? { goals: seed.goals ?? 0, yellow: 0, red: 0, apps: seed.apps ?? 0 };
   const points = multiplier ? s.goals * multiplier : 0;
+
+  // The team's next scheduled fixture.
+  const cutoff = Date.now() - 3 * 3600_000;
+  const next = teamId
+    ? matches.matches
+        .filter((m) => (m.homeTeamId === teamId || m.awayTeamId === teamId) && m.status === "SCHEDULED" && Date.parse(m.kickoff) > cutoff)
+        .sort((a, b) => a.kickoff.localeCompare(b.kickoff))[0]
+    : undefined;
+  const opponentId = next ? (next.homeTeamId === teamId ? next.awayTeamId : next.homeTeamId) : null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm animate-fade-in sm:items-center" onClick={onClose}>
@@ -93,13 +102,35 @@ function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void
           <Stat label="Goals" value={s.goals} accent="text-accent-300" />
           <Stat label="Apps" value={s.apps} />
           <Stat label="Points" value={points} accent="text-accent-300" />
-          <Stat label="Yellow" value={s.yellow} accent="text-yellow-400" />
-          <Stat label="Red" value={s.red} accent="text-red-400" />
-          <div className="card flex flex-col items-center justify-center gap-0.5 p-3">
+        </div>
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <div className="card flex flex-col items-center justify-center gap-1 p-3">
+            {s.red > 0 || s.yellow > 0 ? (
+              <>
+                <CardFlag yellow={s.yellow > 0} red={s.red > 0} size={20} />
+                <span className="text-[10px] uppercase tracking-wide text-pitch-400">{s.red > 0 ? "Red card" : "Booked"}</span>
+              </>
+            ) : (
+              <>
+                <span className="font-display text-sm font-bold text-pitch-300">Clean</span>
+                <span className="text-[10px] uppercase tracking-wide text-pitch-400">No cards</span>
+              </>
+            )}
+          </div>
+          <div className="card flex flex-col items-center justify-center gap-1 p-3">
             <Goal size={18} className="text-pitch-400" />
-            <span className="text-[10px] uppercase tracking-wide text-pitch-400">{multiplier ? `×${multiplier}/goal` : ""}</span>
+            <span className="text-[10px] uppercase tracking-wide text-pitch-400">{multiplier ? `×${multiplier} / goal` : ""}</span>
           </div>
         </div>
+        {next && opponentId && (
+          <div className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-white/[0.04] px-3 py-2 text-xs text-pitch-300">
+            <CalendarClock size={13} className="text-pitch-400" />
+            <span className="text-pitch-400">Next</span>
+            <Crest teamId={opponentId} size={15} />
+            <span className="font-semibold text-pitch-100">{teamName(opponentId)}</span>
+            <span className="text-pitch-500">· {formatDay(next.kickoff)} {formatTime(next.kickoff)}</span>
+          </div>
+        )}
         <p className="mt-3 text-center text-[11px] text-pitch-500">Goal points = goals × {multiplier ?? "?"}{position ? ` (${POSITION_LABEL[position]})` : ""}.</p>
       </div>
     </div>

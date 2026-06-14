@@ -541,7 +541,7 @@ function PitchMarkings() {
   );
 }
 
-function PitchToken({ p, x, y, side }: { p: LineupPlayer; x: number; y: number; side: Side }) {
+function PitchToken({ p, x, y, side, card }: { p: LineupPlayer; x: number; y: number; side: Side; card?: "yellow" | "red" }) {
   const { open } = usePlayerModal();
   const fill = side === "home" ? "bg-sky-500" : "bg-spice-500";
   return (
@@ -551,10 +551,13 @@ function PitchToken({ p, x, y, side }: { p: LineupPlayer; x: number; y: number; 
       onClick={() => p.playerId && open(p.playerId)}
       style={{ left: `${x}%`, top: `${y}%` }}
       className={`absolute flex w-[18%] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-0.5 ${p.playerId ? "cursor-pointer" : "cursor-default"}`}
-      title={p.name}
+      title={card ? `${p.name} · ${card === "red" ? "sent off" : "booked"}` : p.name}
     >
-      <span className={`grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-white shadow-md ring-2 ring-white/85 ${fill}`}>
+      <span className={`relative grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-white shadow-md ring-2 ring-white/85 ${fill}`}>
         {p.number ?? ""}
+        {card && (
+          <span className={`absolute -right-1 -top-1 h-2.5 w-[7px] rounded-[1px] ring-1 ring-pitch-950/70 ${card === "red" ? "bg-red-500" : "bg-yellow-400"}`} />
+        )}
       </span>
       <span className="max-w-full truncate rounded-sm bg-pitch-950/70 px-1 text-[8.5px] font-medium leading-tight text-white">
         {lastName(p.name)}
@@ -597,7 +600,25 @@ function EndLabel({ teamId, formation, side }: { teamId: string; formation: stri
   );
 }
 
-function CombinedPitch({ home, away }: { home?: Lineup; away?: Lineup }) {
+/** Who is carrying a card in THIS match (from the timeline): two yellows or a red ⇒ red. */
+function matchCards(match: Match) {
+  const yellow = new Map<string, number>();
+  const red = new Set<string>();
+  for (const e of match.events ?? []) {
+    if (e.type !== "CARD" || !e.playerId) continue;
+    if (/red/i.test(e.detail)) red.add(e.playerId);
+    else yellow.set(e.playerId, (yellow.get(e.playerId) ?? 0) + 1);
+  }
+  return (pid: string | null): "yellow" | "red" | undefined => {
+    if (!pid) return undefined;
+    if (red.has(pid) || (yellow.get(pid) ?? 0) >= 2) return "red";
+    if ((yellow.get(pid) ?? 0) >= 1) return "yellow";
+    return undefined;
+  };
+}
+
+function CombinedPitch({ home, away, match }: { home?: Lineup; away?: Lineup; match: Match }) {
+  const cardOf = matchCards(match);
   const tokens = [
     ...(home ? placeTeam(home, "home").map((t) => ({ ...t, side: "home" as Side })) : []),
     ...(away ? placeTeam(away, "away").map((t) => ({ ...t, side: "away" as Side })) : []),
@@ -611,7 +632,7 @@ function CombinedPitch({ home, away }: { home?: Lineup; away?: Lineup }) {
       {away && <EndLabel teamId={away.teamId} formation={away.formation} side="away" />}
       {home && <EndLabel teamId={home.teamId} formation={home.formation} side="home" />}
       {tokens.map((t, i) => (
-        <PitchToken key={t.p.playerId ?? i} p={t.p} x={t.x} y={t.y} side={t.side} />
+        <PitchToken key={t.p.playerId ?? i} p={t.p} x={t.x} y={t.y} side={t.side} card={cardOf(t.p.playerId)} />
       ))}
     </div>
   );
@@ -622,11 +643,18 @@ function SubsList({ l, side }: { l: Lineup; side: Side }) {
   const dot = side === "home" ? "bg-sky-400" : "bg-spice-400";
   return (
     <div className="min-w-0">
-      <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-pitch-300">
+      <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold text-pitch-300">
         <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
-        <Crest teamId={l.teamId} size={13} /> Subs
+        <Crest teamId={l.teamId} size={13} /> Bench
       </div>
-      <p className="text-[10px] leading-snug text-pitch-500">{l.subs.map((p) => lastName(p.name)).join(", ")}</p>
+      <div className="flex flex-wrap gap-1">
+        {l.subs.map((p, i) => (
+          <span key={i} className="inline-flex items-center gap-1 rounded-md bg-white/[0.05] px-1.5 py-0.5 text-[10px] text-pitch-200">
+            <span className="font-mono text-[9px] text-pitch-500">{p.number ?? "–"}</span>
+            {lastName(p.name)}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -642,7 +670,7 @@ function Lineups({ match }: { match: Match }) {
       <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
       {hasGrid ? (
         <>
-          <CombinedPitch home={home} away={away} />
+          <CombinedPitch home={home} away={away} match={match} />
           <div className="mt-3 grid grid-cols-2 gap-3">
             {home && <SubsList l={home} side="home" />}
             {away && <SubsList l={away} side="away" />}
