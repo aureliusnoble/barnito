@@ -1,7 +1,7 @@
 import { Flame, ChevronRight } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { useMatchModal } from "../components/MatchModal";
-import { SectionTitle, Crest } from "../components/bits";
+import { SectionTitle, Crest, SpiceRating } from "../components/bits";
 import { formatDay, formatTime, relativeKickoff } from "../lib/format";
 import type { SpicyMatch } from "@shared/types";
 
@@ -70,7 +70,7 @@ export default function Spicy() {
               <div className="mx-auto mt-3 max-w-xs">
                 <HeatBar score={hero.score} max={max} />
                 <div className="mt-1.5 flex items-center justify-center gap-1.5 text-sm font-semibold text-spice-300">
-                  <Flame size={14} className="fill-spice-500 text-spice-500" /> spice rating {hero.score.toFixed(1)}
+                  <span className="text-pitch-400">spice rating</span> <SpiceRating score={hero.score} max={max} size={16} />
                 </div>
               </div>
             </button>
@@ -134,9 +134,7 @@ function SpicyRow({
         </div>
         <div className="mt-1.5 flex items-center gap-2">
           <div className="w-24"><HeatBar score={s.score} max={max} /></div>
-          <span className="text-[11px] text-spice-400">
-            spice <span className="font-semibold">{s.score.toFixed(1)}</span>
-          </span>
+          <SpiceRating score={s.score} max={max} size={12} />
         </div>
       </div>
       <ChevronRight size={16} className="shrink-0 text-pitch-600" />

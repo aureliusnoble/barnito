@@ -1,11 +1,23 @@
 import { useMemo, useState } from "react";
 import { Goal, Trophy, Users, AlertTriangle } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
-import { usePlayerModal } from "../components/PlayerModal";
+import { usePlayerModal, type PlayerSeed } from "../components/PlayerModal";
 import { SectionTitle, Crest } from "../components/bits";
 import { Avatar } from "../components/visuals";
 import { POSITION_LABEL } from "../lib/format";
-import type { Position } from "@shared/types";
+import type { Position, PlayerStatLine } from "@shared/types";
+
+/** Build a player-modal seed from a Golden Boot stat line so even unmatched scorers open. */
+const seedFromStat = (p: PlayerStatLine): PlayerSeed => ({
+  playerId: p.playerId,
+  name: p.name,
+  photo: p.photo,
+  teamId: p.teamId,
+  teamName: p.teamName,
+  position: p.position ?? null,
+  goals: p.value,
+  apps: p.appearances,
+});
 
 const POS_COLOR: Record<Position, string> = {
   GK: "bg-purple-500/20 text-purple-300",
@@ -157,7 +169,7 @@ function GoldenBoot() {
     <div className="space-y-3">
       <div className="grid grid-cols-3 gap-2">
         {podium.map((p, i) => (
-          <div key={p.apiId ?? p.name} onClick={() => p.playerId && open(p.playerId)} className={`card flex flex-col items-center gap-1.5 p-3 text-center ${p.playerId ? "cursor-pointer card-hover" : ""}`}>
+          <div key={p.apiId ?? p.name} onClick={() => open(seedFromStat(p))} className="card flex cursor-pointer flex-col items-center gap-1.5 p-3 text-center card-hover">
             <Trophy size={16} className={medal[i]} />
             <Avatar photo={p.photo} name={p.name} position={p.position ?? null} size={44} />
             <span className="truncate text-xs font-semibold text-white" title={p.name}>{p.name}</span>
@@ -175,7 +187,7 @@ function GoldenBoot() {
       </div>
       <ul className="card divide-y divide-white/[0.04] overflow-hidden">
         {rest.map((p, i) => (
-          <li key={p.apiId ?? p.name} onClick={() => p.playerId && open(p.playerId)} className={`flex items-center gap-2.5 px-3 py-2 text-sm ${p.playerId ? "cursor-pointer transition hover:bg-white/[0.03]" : ""}`}>
+          <li key={p.apiId ?? p.name} onClick={() => open(seedFromStat(p))} className="flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm transition hover:bg-white/[0.03]">
             <span className="w-5 text-center font-mono text-xs text-pitch-500">{i + 4}</span>
             <Avatar photo={p.photo} name={p.name} position={p.position ?? null} size={26} />
             <span className="min-w-0 flex-1 truncate text-pitch-100">{p.name}</span>

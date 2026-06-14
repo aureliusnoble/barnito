@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Trophy, ChevronRight, Goal, Flame, Radio, History } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import MatchCard from "../components/MatchCard";
-import { SectionTitle, Crest } from "../components/bits";
+import { SectionTitle, Crest, SpiceRating } from "../components/bits";
 import { ukSlateCutoffMs } from "../lib/format";
 
 export default function Today() {
@@ -32,6 +32,7 @@ export default function Today() {
   const topScorer = stats.topScorers[0];
   const spicy = scores.spiciness.find((s) => Date.parse(s.kickoff) <= now + 7 * 86400_000) ?? scores.spiciness[0];
   const spicyMatch = spicy && matchById.get(spicy.matchId);
+  const spiceMax = useMemo(() => Math.max(0, ...scores.spiciness.map((s) => s.score)), [scores]);
   const { teamName } = useHelpers();
 
   return (
@@ -76,7 +77,7 @@ export default function Today() {
                 <span className="text-pitch-600">v</span>
                 <Crest teamId={spicyMatch.awayTeamId} size={16} /><span className="truncate text-sm">{teamName(spicyMatch.awayTeamId)}</span>
               </span>
-              <span className="text-xs text-spice-400">spice {spicy!.score.toFixed(1)}</span>
+              <SpiceRating score={spicy!.score} max={spiceMax} size={13} />
             </>
           ) : <span className="text-sm text-pitch-500">Nothing upcoming</span>}
         </Link>

@@ -73,25 +73,39 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
+    // PostgREST returns at most 1000 rows per request; the players table (~2300) and score_history
+    // (grows over time) exceed that, so page through them in full or the UI silently drops data.
+    const selectAll = async (table: string, columns = "*", orderCol?: string): Promise<Row[]> => {
+      const rows: Row[] = [];
+      const size = 1000;
+      for (let from = 0; ; from += size) {
+        let qb = supabase.from(table).select(columns).range(from, from + size - 1);
+        if (orderCol) qb = qb.order(orderCol, { ascending: true });
+        const { data, error } = await qb;
+        if (error) throw error;
+        const d = (data ?? []) as unknown as Row[];
+        rows.push(...d);
+        if (d.length < size) break;
+      }
+      return rows;
+    };
     (async () => {
       try {
-        const [t, p, m, pa, d, h] = await Promise.all([
-          supabase.from("teams").select("*"),
-          supabase.from("players").select("*"),
-          supabase.from("matches").select("*"),
-          supabase.from("participants").select("*"),
-          supabase.from("documents").select("key,data"),
-          supabase.from("score_history").select("participant_id,at,total").order("at", { ascending: true }),
+        const [teams, players, matches, participants, docs, hist] = await Promise.all([
+          selectAll("teams"),
+          selectAll("players"),
+          selectAll("matches"),
+          selectAll("participants"),
+          selectAll("documents", "key,data"),
+          selectAll("score_history", "participant_id,at,total", "at"),
         ]);
-        const firstErr = [t, p, m, pa, d, h].find((r) => r.error)?.error;
-        if (firstErr) throw firstErr;
         if (cancelled) return;
-        setTeamRows(t.data ?? []);
-        setPlayerRows(p.data ?? []);
-        setMatchRows(m.data ?? []);
-        setParticipantRows(pa.data ?? []);
-        setDocs(Object.fromEntries((d.data ?? []).map((row: Row) => [row.key as string, row.data])));
-        setHistory((h.data ?? []).map((r: Row) => ({ participantId: r.participant_id as string, at: r.at as string, total: r.total as number })));
+        setTeamRows(teams);
+        setPlayerRows(players);
+        setMatchRows(matches);
+        setParticipantRows(participants);
+        setDocs(Object.fromEntries(docs.map((row: Row) => [row.key as string, row.data])));
+        setHistory(hist.map((r: Row) => ({ participantId: r.participant_id as string, at: r.at as string, total: r.total as number })));
         setLoading(false);
       } catch (e) {
         if (!cancelled) { setError((e as Error).message); setLoading(false); }

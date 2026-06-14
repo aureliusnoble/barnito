@@ -34,6 +34,21 @@ const slug = (s: string) =>
   s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
     .replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
+// PostgREST caps a single response at 1000 rows, but the players table is ~2300 rows. Page through
+// the whole table so player matching (events, scorers, lineups) and scoring see every player.
+async function selectAll(table: string, columns = "*"): Promise<Record<string, unknown>[]> {
+  const out: Record<string, unknown>[] = [];
+  const size = 1000;
+  for (let from = 0; ; from += size) {
+    const { data, error } = await supa.from(table).select(columns).range(from, from + size - 1);
+    if (error) throw error;
+    const rows = (data ?? []) as Record<string, unknown>[];
+    out.push(...rows);
+    if (rows.length < size) break;
+  }
+  return out;
+}
+
 // ---------------------------------------------------------------------------
 async function getMeta() {
   const { data } = await supa.from("documents").select("data").eq("key", "_meta").maybeSingle();
@@ -69,11 +84,11 @@ function matchToRow(m: Match, round?: string) {
 // ---------------------------------------------------------------------------
 // lookup state from DB
 async function loadState() {
-  const [{ data: teams }, { data: players }, { data: participants }, { data: matches }] = await Promise.all([
-    supa.from("teams").select("*"),
-    supa.from("players").select("*"),
-    supa.from("participants").select("*"),
-    supa.from("matches").select("*"),
+  const [teams, players, participants, matches] = await Promise.all([
+    selectAll("teams"),
+    selectAll("players"),
+    selectAll("participants"),
+    selectAll("matches"),
   ]);
   const teamByApi = new Map<number, { id: string; group: GroupLetter | null }>();
   for (const t of teams ?? []) if (t.api_id) teamByApi.set(t.api_id, { id: t.id, group: t.group_letter });
@@ -290,8 +305,8 @@ async function buildRoster(force = false) {
   // edge function's wall-clock limit in one invocation, so skip teams that already have players
   // (unless ?force) — re-running ?mode=roster then resumes and fills the remainder.
   const { data: teams } = await supa.from("teams").select("id,api_id");
-  const { data: havePlayers } = await supa.from("players").select("team_id");
-  const haveSet = new Set((havePlayers ?? []).map((p) => p.team_id as string));
+  const havePlayers = await selectAll("players", "team_id");
+  const haveSet = new Set(havePlayers.map((p) => p.team_id as string));
   const used = new Set<string>();
   let processed = 0; let skipped = 0;
   for (const t of teams ?? []) {
