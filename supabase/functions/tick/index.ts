@@ -274,7 +274,7 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
 }
 
 // ---------------------------------------------------------------------------
-async function buildRoster() {
+async function buildRoster(force = false) {
   const standings = await apiGet<{ league: { standings: ApiStandingRow[][] } }>("standings", { league: WC_LEAGUE, season: WC_SEASON });
   const groups = standings[0]?.league.standings ?? [];
   await reconcileTeams(groups, []);
@@ -286,23 +286,41 @@ async function buildRoster() {
       venue: e.venue ? { name: e.venue.name, city: e.venue.city, capacity: e.venue.capacity ?? null, image: e.venue.image ?? null } : null,
     }).eq("api_id", e.team.id);
   }
-  // players per team
+  // players per team. The player fetch is throttled (1.2s/call) and ~48 squads can exceed the
+  // edge function's wall-clock limit in one invocation, so skip teams that already have players
+  // (unless ?force) — re-running ?mode=roster then resumes and fills the remainder.
   const { data: teams } = await supa.from("teams").select("id,api_id");
+  const { data: havePlayers } = await supa.from("players").select("team_id");
+  const haveSet = new Set((havePlayers ?? []).map((p) => p.team_id as string));
   const used = new Set<string>();
+  let processed = 0; let skipped = 0;
   for (const t of teams ?? []) {
     if (!t.api_id) continue;
+    if (!force && haveSet.has(t.id)) { skipped++; continue; }
     const entries = await apiGetAllPages<ApiPlayerEntry>("players", { team: t.api_id, season: WC_SEASON });
-    const rows = entries.map((e) => {
-      const pos = mapPosition(e.statistics.find((s) => s.games?.position)?.games.position ?? e.player.position);
-      let id = `${t.id}-${slug(e.player.name)}`; let n = 2;
-      while (used.has(id)) id = `${t.id}-${slug(e.player.name)}-${n++}`;
+    // Normalize to {id,name,photo,position,number}. World Cup debutants (e.g. Cape Verde) have no
+    // per-season `players` stats yet, so fall back to the `players/squads` endpoint for the roster.
+    let normalized = entries.map((e) => ({
+      id: e.player.id, name: e.player.name, photo: e.player.photo ?? null,
+      position: e.statistics.find((s) => s.games?.position)?.games.position ?? e.player.position ?? null,
+      number: null as number | null,
+    }));
+    if (!normalized.length) {
+      const sq = await apiGet<{ players: { id: number; name: string; number: number | null; position: string | null; photo: string | null }[] }>("players/squads", { team: t.api_id });
+      normalized = (sq[0]?.players ?? []).map((p) => ({ id: p.id, name: p.name, photo: p.photo ?? null, position: p.position, number: p.number ?? null }));
+    }
+    const rows = normalized.map((e) => {
+      const pos = mapPosition(e.position);
+      let id = `${t.id}-${slug(e.name)}`; let n = 2;
+      while (used.has(id)) id = `${t.id}-${slug(e.name)}-${n++}`;
       used.add(id);
-      return { id, api_id: e.player.id, name: e.player.name, team_id: t.id, position: pos,
-        goal_multiplier: GOAL_MULTIPLIER[pos], photo: e.player.photo ?? null, updated_at: new Date().toISOString() };
+      return { id, api_id: e.id, name: e.name, team_id: t.id, position: pos,
+        goal_multiplier: GOAL_MULTIPLIER[pos], photo: e.photo, number: e.number, updated_at: new Date().toISOString() };
     });
     if (rows.length) await supa.from("players").upsert(rows, { onConflict: "id" });
+    processed++;
   }
-  return { teams: teams?.length ?? 0 };
+  return { teams: teams?.length ?? 0, processed, skipped, remaining: (teams?.length ?? 0) - haveSet.size - processed };
 }
 
 async function refreshExtras(st: State) {
@@ -332,7 +350,8 @@ Deno.serve(async (req) => {
   try {
     const mode = new URL(req.url).searchParams.get("mode");
     if (mode === "roster") {
-      const r = await buildRoster();
+      const force = new URL(req.url).searchParams.get("force") === "1";
+      const r = await buildRoster(force);
       return Response.json({ ok: true, mode, ...r, requests: requestCount() });
     }
 
