@@ -46,6 +46,20 @@ function TeamInfo({ match }: { match: Match }) {
   );
 }
 
+function CompTag({ league }: { league: string }) {
+  const friendly = /friendl/i.test(league || "");
+  return (
+    <span
+      title={league}
+      className={`chip max-w-[6.5rem] shrink-0 truncate text-[9px] ${
+        friendly ? "bg-pitch-800 text-pitch-400" : "bg-accent-500/15 text-accent-300"
+      }`}
+    >
+      {friendly ? "Friendly" : league}
+    </span>
+  );
+}
+
 function H2H({ match }: { match: Match }) {
   if (!match.h2h || match.h2h.length === 0) return null;
   return (
@@ -53,10 +67,10 @@ function H2H({ match }: { match: Match }) {
       <h3 className="mb-2 flex items-center gap-1.5 font-display font-bold text-white"><Swords size={15} className="text-pitch-400" /> Head-to-head</h3>
       <ul className="space-y-1.5">
         {match.h2h.map((h, i) => (
-          <li key={i} className="flex items-center justify-between gap-2 text-[13px]">
-            <span className="w-16 shrink-0 text-[11px] text-pitch-500">{h.date.slice(0, 10)}</span>
+          <li key={i} className="flex items-center gap-2 text-[13px]">
+            <span className="w-14 shrink-0 text-[11px] text-pitch-500">{h.date.slice(0, 7)}</span>
             <span className="min-w-0 flex-1 truncate text-pitch-200">{h.homeName} <span className="font-bold tabular-nums text-white">{h.homeGoals}–{h.awayGoals}</span> {h.awayName}</span>
-            <span className="hidden shrink-0 truncate text-[10px] text-pitch-600 sm:block" style={{ maxWidth: "8rem" }}>{h.league}</span>
+            <CompTag league={h.league} />
           </li>
         ))}
       </ul>
