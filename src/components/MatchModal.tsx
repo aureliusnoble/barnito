@@ -224,9 +224,9 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
 
           {active === "match" && (
             <div className="space-y-5">
-              {events.length > 0 && <Timeline match={match} events={events} />}
               {hasStats && <StatBars match={match} stats={match.stats!} />}
               <TopPerformers match={match} />
+              {events.length > 0 && <Timeline match={match} events={events} />}
             </div>
           )}
         </div>
