@@ -11,10 +11,24 @@ const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "https:
 const key = process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_OPp3qRTTno8kyl2ZCMtOLg_sLiK0J2b";
 const supa = createClient(url, key, { auth: { persistSession: false } });
 
-const [{ data: teams }, { data: players }, { data: matches }] = await Promise.all([
-  supa.from("teams").select("*"),
-  supa.from("players").select("*"),
-  supa.from("matches").select("*"),
+// PostgREST caps a response at 1000 rows; the players table (~2300) exceeds that, so page through.
+async function selectAll(table: string): Promise<Record<string, unknown>[]> {
+  const out: Record<string, unknown>[] = [];
+  const size = 1000;
+  for (let from = 0; ; from += size) {
+    const { data, error } = await supa.from(table).select("*").range(from, from + size - 1);
+    if (error) throw error;
+    const rows = (data ?? []) as Record<string, unknown>[];
+    out.push(...rows);
+    if (rows.length < size) break;
+  }
+  return out;
+}
+
+const [teams, players, matches] = await Promise.all([
+  selectAll("teams"),
+  selectAll("players"),
+  selectAll("matches"),
 ]);
 
 const roster: Roster = {
