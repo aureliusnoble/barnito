@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T05:14:46.439Z",
+  "updatedAt": "2026-06-14T05:16:04.772Z",
   "tournamentComplete": false,
   "championTeamId": null,
   "matches": [
@@ -3580,7 +3580,7 @@
       "homeTeamId": "australia",
       "awayTeamId": "turkiye",
       "status": "LIVE",
-      "elapsed": 54,
+      "elapsed": 56,
       "homeGoals": 1,
       "awayGoals": 0,
       "goals": [
@@ -4041,7 +4041,7 @@
             },
             {
               "type": "Ball Possession",
-              "value": "30%"
+              "value": "31%"
             },
             {
               "type": "Yellow Cards",
@@ -4057,15 +4057,15 @@
             },
             {
               "type": "Total passes",
-              "value": 171
+              "value": 182
             },
             {
               "type": "Passes accurate",
-              "value": 135
+              "value": 145
             },
             {
               "type": "Passes %",
-              "value": "79%"
+              "value": "80%"
             },
             {
               "type": "expected_goals",
@@ -4090,11 +4090,11 @@
             },
             {
               "type": "Total Shots",
-              "value": 13
+              "value": 14
             },
             {
               "type": "Blocked Shots",
-              "value": 5
+              "value": 6
             },
             {
               "type": "Shots insidebox",
@@ -4102,11 +4102,11 @@
             },
             {
               "type": "Shots outsidebox",
-              "value": 7
+              "value": 8
             },
             {
               "type": "Fouls",
-              "value": 1
+              "value": 2
             },
             {
               "type": "Corner Kicks",
@@ -4118,7 +4118,7 @@
             },
             {
               "type": "Ball Possession",
-              "value": "70%"
+              "value": "69%"
             },
             {
               "type": "Yellow Cards",
@@ -4134,19 +4134,19 @@
             },
             {
               "type": "Total passes",
-              "value": 416
+              "value": 419
             },
             {
               "type": "Passes accurate",
-              "value": 377
+              "value": 378
             },
             {
               "type": "Passes %",
-              "value": "91%"
+              "value": "90%"
             },
             {
               "type": "expected_goals",
-              "value": "0.54"
+              "value": "0.58"
             },
             {
               "type": "goals_prevented",
@@ -4181,7 +4181,7 @@
           "playerId": "australia-h-souttar",
           "name": "Harry Souttar",
           "teamId": "australia",
-          "rating": 7.2,
+          "rating": 7.3,
           "number": 19
         },
         {
@@ -4195,7 +4195,7 @@
           "playerId": "australia-j-bos",
           "name": "Jordan Bos",
           "teamId": "australia",
-          "rating": 6.7,
+          "rating": 6.6,
           "number": 5
         },
         {
@@ -4216,7 +4216,7 @@
           "playerId": "australia-paul-michael-junior-okon-engstler",
           "name": "Paul Okon-Engstler",
           "teamId": "australia",
-          "rating": 7,
+          "rating": 7.2,
           "number": 24
         },
         {
@@ -4230,7 +4230,7 @@
           "playerId": "australia-m-toure",
           "name": "Mohamed Touré",
           "teamId": "australia",
-          "rating": 6.2,
+          "rating": 6.5,
           "number": 9
         },
         {
@@ -4349,14 +4349,14 @@
           "playerId": "turkiye-z-celik",
           "name": "Zeki Çelik",
           "teamId": "turkiye",
-          "rating": 6.5,
+          "rating": 6.3,
           "number": 2
         },
         {
           "playerId": "turkiye-m-demiral",
           "name": "Merih Demiral",
           "teamId": "turkiye",
-          "rating": 7,
+          "rating": 6.9,
           "number": 3
         },
         {
@@ -4370,28 +4370,28 @@
           "playerId": null,
           "name": "Ferdi Kadıoğlu",
           "teamId": "turkiye",
-          "rating": 6.6,
+          "rating": 6.9,
           "number": 20
         },
         {
           "playerId": "turkiye-i-yuksek",
           "name": "İsmail Yüksek",
           "teamId": "turkiye",
-          "rating": 7.2,
+          "rating": 7.3,
           "number": 16
         },
         {
           "playerId": "turkiye-h-calhanoglu",
           "name": "Hakan Çalhanoğlu",
           "teamId": "turkiye",
-          "rating": 6.6,
+          "rating": 6.9,
           "number": 10
         },
         {
           "playerId": "turkiye-a-guler",
           "name": "Arda Güler",
           "teamId": "turkiye",
-          "rating": 6.5,
+          "rating": 6.2,
           "number": 8
         },
         {
@@ -4419,7 +4419,7 @@
           "playerId": null,
           "name": "Kenan Yıldız",
           "teamId": "turkiye",
-          "rating": null,
+          "rating": 6.7,
           "number": 11
         },
         {
