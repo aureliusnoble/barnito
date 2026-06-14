@@ -189,23 +189,51 @@ function ByPerson() {
 }
 
 function GoldenBoot() {
-  const { stats, scores } = useBarnito();
+  const { stats, scores, playerStats, playerById } = useBarnito();
   const { open } = usePlayerModal();
+  const { teamName } = useHelpers();
   const pickedIds = useMemo(() => {
     const s = new Set<string>();
     for (const sv of scores.scorerView) for (const p of sv.picks) s.add(p.playerId);
     return s;
   }, [scores]);
 
-  if (stats.topScorers.length === 0) {
+  // Drive the boot from our own goal events (real-time) so a just-scored goal shows immediately,
+  // then merge API-Football's topscorers (which lags post-match) for any extra coverage.
+  const scorers = useMemo<PlayerStatLine[]>(() => {
+    const map = new Map<string, PlayerStatLine>();
+    for (const [pid, s] of Object.entries(playerStats.players)) {
+      if (!s.goals) continue;
+      const pl = playerById.get(pid);
+      map.set(pid, {
+        playerId: pid, apiId: pl?.apiId ?? null, name: pl?.name ?? pid,
+        teamId: pl?.teamId ?? null, teamName: pl ? teamName(pl.teamId) : "",
+        photo: pl?.photo ?? null, position: pl?.position ?? null,
+        value: s.goals, goals: s.goals, assists: s.assists ?? 0,
+      });
+    }
+    for (const e of stats.topScorers) {
+      const existing = e.playerId ? map.get(e.playerId) : undefined;
+      if (existing) {
+        existing.value = Math.max(existing.value, e.value);
+        existing.goals = Math.max(existing.goals ?? 0, e.goals ?? e.value);
+        existing.photo ??= e.photo ?? null;
+      } else {
+        map.set(e.playerId ?? `api:${e.apiId}`, e);
+      }
+    }
+    return [...map.values()].filter((p) => p.value > 0).sort((a, b) => b.value - a.value || (b.goals ?? 0) - (a.goals ?? 0));
+  }, [playerStats, playerById, stats, teamName]);
+
+  if (scorers.length === 0) {
     return (
       <p className="card p-6 text-center text-sm text-pitch-400">
         The tournament top-scorer race appears once live data is flowing.
       </p>
     );
   }
-  const podium = stats.topScorers.slice(0, 3);
-  const rest = stats.topScorers.slice(3);
+  const podium = scorers.slice(0, 3);
+  const rest = scorers.slice(3);
   const medal = ["text-yellow-400", "text-pitch-300", "text-spice-400"];
 
   return (
