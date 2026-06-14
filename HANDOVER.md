@@ -105,6 +105,31 @@ excluded), each correct final group position = 25 (locked when the group finishe
 tournament end). **Live matches award no points until FINISHED**; while live the modal highlights "on the
 score"/"on the result". Standings derived from predicted scorelines (tiebreak points→GD→GF→H2H→alpha).
 
+## Further requests (next iteration — after the deploy works)
+These are new UI/data asks from the user. For the data ones, **only add if API-Football actually
+supports it**; otherwise use a small maintained static fallback (like `_shared/fifaRanks.ts`) and say so.
+
+1. **Match detail: team's most-recent + best World Cup result.** Show, per team, their *most recent*
+   World Cup result and their *best-ever* World Cup finish.
+   - *Most recent*: likely derivable from API-Football historical seasons (Pro covers all seasons),
+     e.g. `/fixtures?team={id}&league=1&season=2022&last=1` (or the latest season the team appears in).
+   - *Best-ever finish* (e.g. "Winners 1966", "Semi-finals 2018"): **not a direct API field** — would
+     need historical bracket analysis or, more practically, a **maintained static map** (team → best
+     finish). Check feasibility; fall back to static if needed.
+2. **Player card: the club the player normally plays for.** API-Football can give this via the player's
+   domestic stats (`/players?id={id}&season={current}` → `statistics[].team` for a club league) or
+   `/transfers?player={id}` (latest `in` club). The national-team season's `statistics.team` is the
+   country, so you must pull club info separately. Add a `club` (name + logo) to `players` (and the
+   `playerStats`/player modal) if supported; otherwise skip.
+3. **Clean redesign of the match detail (the modal opened from a MatchCard).** It's getting cluttered
+   (team info, H2H, donut, timeline, stats, performers, lineups, predictions all stacked). Goal:
+   - **Header = summary only** (crests, score/status + live minute, kickoff, group/venue).
+   - **The predictions table is THE focus** — make it sleek, beautiful, and UX-led: easy to scan who's
+     on the exact score vs the result while live, clear points at full time, sensible sorting, good
+     density on mobile. Consider it the primary content, with everything else (team info, H2H, timeline,
+     stats, lineups) demoted to secondary/collapsible sections below or behind tabs.
+   - Keep the dark/emerald + lucide language. This is a focused redesign of `src/components/MatchModal.tsx`.
+
 ## Known limitations / notes
 - FIFA ranks are **seeded estimates** in `_shared/fifaRanks.ts` (the API has no ranking endpoint).
 - The previous sandbox couldn't take browser screenshots — verify the UI on a phone after deploy.
