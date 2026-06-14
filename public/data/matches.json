@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T05:16:04.772Z",
+  "updatedAt": "2026-06-14T05:17:23.246Z",
   "tournamentComplete": false,
   "championTeamId": null,
   "matches": [
@@ -3580,7 +3580,7 @@
       "homeTeamId": "australia",
       "awayTeamId": "turkiye",
       "status": "LIVE",
-      "elapsed": 56,
+      "elapsed": 57,
       "homeGoals": 1,
       "awayGoals": 0,
       "goals": [
@@ -4005,15 +4005,15 @@
           "items": [
             {
               "type": "Shots on Goal",
-              "value": 2
-            },
-            {
-              "type": "Shots off Goal",
               "value": 3
             },
             {
+              "type": "Shots off Goal",
+              "value": 4
+            },
+            {
               "type": "Total Shots",
-              "value": 6
+              "value": 8
             },
             {
               "type": "Blocked Shots",
@@ -4021,7 +4021,7 @@
             },
             {
               "type": "Shots insidebox",
-              "value": 4
+              "value": 6
             },
             {
               "type": "Shots outsidebox",
@@ -4029,19 +4029,19 @@
             },
             {
               "type": "Fouls",
-              "value": 6
+              "value": 7
             },
             {
               "type": "Corner Kicks",
-              "value": 3
+              "value": 4
             },
             {
               "type": "Offsides",
-              "value": 0
+              "value": 1
             },
             {
               "type": "Ball Possession",
-              "value": "31%"
+              "value": "33%"
             },
             {
               "type": "Yellow Cards",
@@ -4057,23 +4057,23 @@
             },
             {
               "type": "Total passes",
-              "value": 182
+              "value": 200
             },
             {
               "type": "Passes accurate",
-              "value": 145
+              "value": 161
             },
             {
               "type": "Passes %",
-              "value": "80%"
+              "value": "81%"
             },
             {
               "type": "expected_goals",
-              "value": "0.66"
+              "value": "0.78"
             },
             {
               "type": "goals_prevented",
-              "value": "-0.21"
+              "value": "-0.14"
             }
           ]
         },
@@ -4118,7 +4118,7 @@
             },
             {
               "type": "Ball Possession",
-              "value": "69%"
+              "value": "67%"
             },
             {
               "type": "Yellow Cards",
@@ -4130,15 +4130,15 @@
             },
             {
               "type": "Goalkeeper Saves",
-              "value": 1
+              "value": 2
             },
             {
               "type": "Total passes",
-              "value": 419
+              "value": 422
             },
             {
               "type": "Passes accurate",
-              "value": 378
+              "value": 380
             },
             {
               "type": "Passes %",
@@ -4150,7 +4150,7 @@
             },
             {
               "type": "goals_prevented",
-              "value": "-0.21"
+              "value": "-0.14"
             }
           ]
         }
@@ -4181,7 +4181,7 @@
           "playerId": "australia-h-souttar",
           "name": "Harry Souttar",
           "teamId": "australia",
-          "rating": 7.3,
+          "rating": 7.2,
           "number": 19
         },
         {
@@ -4209,28 +4209,28 @@
           "playerId": "australia-a-oandapos-neill",
           "name": "Aiden O'Neill",
           "teamId": "australia",
-          "rating": 6.6,
+          "rating": 7,
           "number": 13
         },
         {
           "playerId": "australia-paul-michael-junior-okon-engstler",
           "name": "Paul Okon-Engstler",
           "teamId": "australia",
-          "rating": 7.2,
+          "rating": 6.9,
           "number": 24
         },
         {
           "playerId": "australia-n-irankunda",
           "name": "Nestory Irankunda",
           "teamId": "australia",
-          "rating": 7.5,
+          "rating": 7.2,
           "number": 17
         },
         {
           "playerId": "australia-m-toure",
           "name": "Mohamed Touré",
           "teamId": "australia",
-          "rating": 6.5,
+          "rating": 6.2,
           "number": 9
         },
         {
@@ -4342,7 +4342,7 @@
           "playerId": "turkiye-u-cak-r",
           "name": "Uğurcan Çakır",
           "teamId": "turkiye",
-          "rating": 6.7,
+          "rating": 6.6,
           "number": 23
         },
         {
@@ -4356,7 +4356,7 @@
           "playerId": "turkiye-m-demiral",
           "name": "Merih Demiral",
           "teamId": "turkiye",
-          "rating": 6.9,
+          "rating": 7,
           "number": 3
         },
         {
@@ -4370,21 +4370,21 @@
           "playerId": null,
           "name": "Ferdi Kadıoğlu",
           "teamId": "turkiye",
-          "rating": 6.9,
+          "rating": 6.6,
           "number": 20
         },
         {
           "playerId": "turkiye-i-yuksek",
           "name": "İsmail Yüksek",
           "teamId": "turkiye",
-          "rating": 7.3,
+          "rating": 7.2,
           "number": 16
         },
         {
           "playerId": "turkiye-h-calhanoglu",
           "name": "Hakan Çalhanoğlu",
           "teamId": "turkiye",
-          "rating": 6.9,
+          "rating": 6.6,
           "number": 10
         },
         {
@@ -4419,7 +4419,7 @@
           "playerId": null,
           "name": "Kenan Yıldız",
           "teamId": "turkiye",
-          "rating": 6.7,
+          "rating": 6.6,
           "number": 11
         },
         {
