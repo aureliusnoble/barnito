@@ -107,8 +107,8 @@ and `championTeamId` after the final to release the +250s.
 
 ## The airhorn 📣
 
-Bottom-left button: plays an MLG-style airhorn (synthesised with the Web Audio API — no asset, works
-offline) and blasts confetti everywhere. Drop a clip at `public/airhorn.mp3` to use a real sample.
+Bottom-left button: plays a real MLG airhorn (`public/airhorn.mp3`) and blasts confetti everywhere.
+Falls back to a Web-Audio synth if the file ever fails to load.
 
 ## Notes & limitations
 

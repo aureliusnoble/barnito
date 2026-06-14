@@ -69,8 +69,8 @@ export default function Spicy() {
               </div>
               <div className="mx-auto mt-3 max-w-xs">
                 <HeatBar score={hero.score} max={max} />
-                <div className="mt-1.5 text-center text-sm font-semibold text-spice-300">
-                  could swing up to {hero.maxSwing} pts
+                <div className="mt-1.5 flex items-center justify-center gap-1.5 text-sm font-semibold text-spice-300">
+                  <Flame size={14} className="fill-spice-500 text-spice-500" /> spice rating {hero.score.toFixed(1)}
                 </div>
               </div>
             </button>
@@ -135,7 +135,7 @@ function SpicyRow({
         <div className="mt-1.5 flex items-center gap-2">
           <div className="w-24"><HeatBar score={s.score} max={max} /></div>
           <span className="text-[11px] text-spice-400">
-            up to <span className="font-semibold">{s.maxSwing}</span> pts swing
+            spice <span className="font-semibold">{s.score.toFixed(1)}</span>
           </span>
         </div>
       </div>

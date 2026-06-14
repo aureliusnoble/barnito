@@ -19,8 +19,7 @@
     "fetch": "tsx scripts/fetch-data.ts",
     "score": "tsx scripts/score.ts",
     "update": "tsx scripts/fetch-data.ts && tsx scripts/score.ts",
-    "template": "tsx scripts/make-template.ts",
-    "airhorn": "tsx scripts/make-airhorn.ts"
+    "template": "tsx scripts/make-template.ts"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.3",

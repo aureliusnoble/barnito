@@ -94,7 +94,7 @@ export default function Today() {
                 <Crest teamId={spicyMatch.awayTeamId} size={16} />
                 <span className="truncate text-sm">{teamName(spicyMatch.awayTeamId)}</span>
               </span>
-              <span className="text-xs text-spice-400">up to {spicy!.maxSwing} pts swing</span>
+              <span className="text-xs text-spice-400">spice {spicy!.score.toFixed(1)}</span>
             </>
           ) : (
             <span className="text-sm text-pitch-500">Nothing upcoming</span>
