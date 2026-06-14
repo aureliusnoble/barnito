@@ -233,15 +233,45 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
             </div>
           )}
 
-          {active === "match" && (
-            <div className="space-y-5">
-              {hasStats && <StatBars match={match} stats={match.stats!} />}
-              <PlayerRatings match={match} />
-              {events.length > 0 && <Timeline match={match} events={events} />}
-            </div>
-          )}
+          {active === "match" && <MatchSections match={match} events={events} hasStats={hasStats} />}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** The "Match" tab's secondary sections: Overview (stats) / Players (ratings) / Timeline. */
+function MatchSections({ match, events, hasStats }: { match: Match; events: MatchEvent[]; hasStats: boolean }) {
+  const hasRatings = (match.ratings ?? []).some((r) => r.rating != null);
+  const subs: { key: string; label: string }[] = [];
+  if (hasStats) subs.push({ key: "overview", label: "Overview" });
+  if (hasRatings) subs.push({ key: "players", label: "Players" });
+  if (events.length > 0) subs.push({ key: "timeline", label: "Timeline" });
+  const [sub, setSub] = useState(subs[0]?.key ?? "overview");
+  const active = subs.some((s) => s.key === sub) ? sub : subs[0]?.key;
+  if (subs.length === 0) {
+    return <p className="card p-4 text-center text-sm text-pitch-400">Match detail appears once the game is under way.</p>;
+  }
+  return (
+    <div className="space-y-4">
+      {subs.length > 1 && (
+        <div className="flex gap-5 border-b border-white/[0.08]">
+          {subs.map((s) => (
+            <button
+              key={s.key}
+              onClick={() => setSub(s.key)}
+              className={`-mb-px border-b-2 pb-2 text-sm font-semibold transition ${
+                active === s.key ? "border-accent-500 text-white" : "border-transparent text-pitch-400 hover:text-white"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {active === "overview" && hasStats && <StatBars match={match} stats={match.stats!} />}
+      {active === "players" && <PlayerRatings match={match} />}
+      {active === "timeline" && events.length > 0 && <Timeline match={match} events={events} />}
     </div>
   );
 }
