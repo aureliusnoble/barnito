@@ -138,7 +138,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
       })
       .subscribe();
 
-    return () => { cancelled = true; supabase.removeChannel(channel); };
+    // Realtime can silently drop — most commonly when a mobile tab is backgrounded (the websocket
+    // closes), so the score/minute is frozen on return. Re-pull the live-changing tables when the
+    // tab regains focus, and on a slow interval as a backstop if realtime is quiet.
+    const refreshLive = async () => {
+      try {
+        const [m, d, h] = await Promise.all([
+          selectAll("matches"),
+          selectAll("documents", "key,data"),
+          selectAll("score_history", "participant_id,at,total", "at"),
+        ]);
+        if (cancelled) return;
+        setMatchRows(m);
+        setDocs(Object.fromEntries(d.map((row: Row) => [row.key as string, row.data])));
+        setHistory(h.map((r: Row) => ({ participantId: r.participant_id as string, at: r.at as string, total: r.total as number })));
+      } catch { /* keep last good data */ }
+    };
+    const onVisible = () => { if (document.visibilityState === "visible") refreshLive(); };
+    document.addEventListener("visibilitychange", onVisible);
+    const pollId = window.setInterval(() => { if (document.visibilityState === "visible") refreshLive(); }, 30_000);
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.clearInterval(pollId);
+    };
   }, []);
 
   const data = useMemo<BarnitoData | null>(() => {
