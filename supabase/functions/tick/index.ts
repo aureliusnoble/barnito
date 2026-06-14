@@ -184,6 +184,9 @@ async function reconcileTeams(standings: ApiStandingRow[][], fixtures: ApiFixtur
   const rows = new Map<number, { id: string; api_id: number; name: string; group_letter: string | null }>();
   for (const group of standings) for (const r of group) {
     const letter = groupLetterFrom(r.group);
+    // The API returns a phantom "Group Stage" aggregate (no letter) alongside the real A–L groups;
+    // skip it so it can't overwrite a team's real group with null.
+    if (!letter) continue;
     rows.set(r.team.id, { id: slug(r.team.name), api_id: r.team.id, name: r.team.name, group_letter: letter });
   }
   // never drop a fixture: ensure both teams exist even if not in standings
@@ -380,13 +383,16 @@ interface ApiPlayerProfile {
 function pickClub(stats: ApiPlayerProfile["statistics"]) {
   const domestic = stats.filter((s) => s.league?.country && s.league.country !== "World" && s.team?.name);
   if (!domestic.length) return null;
-  const byTeam = new Map<string, { name: string; logo: string | null; apps: number }>();
+  const byTeam = new Map<string, { name: string; logo: string | null; apps: number; league: string | null; leagueApps: number }>();
   for (const s of domestic) {
-    const cur = byTeam.get(s.team.name) ?? { name: s.team.name, logo: s.team.logo ?? null, apps: 0 };
-    cur.apps += s.games?.appearences ?? 0;
+    const apps = s.games?.appearences ?? 0;
+    const cur = byTeam.get(s.team.name) ?? { name: s.team.name, logo: s.team.logo ?? null, apps: 0, league: null, leagueApps: -1 };
+    cur.apps += apps;
+    if (apps > cur.leagueApps) { cur.leagueApps = apps; cur.league = s.league.name ?? null; } // their main domestic league
     byTeam.set(s.team.name, cur);
   }
-  return [...byTeam.values()].sort((a, b) => b.apps - a.apps)[0];
+  const best = [...byTeam.values()].sort((a, b) => b.apps - a.apps)[0];
+  return { name: best.name, logo: best.logo, league: best.league };
 }
 async function backfillClubs(st: State, priority: Set<string>, limit = 10) {
   const candidates = st.players.filter((p) => priority.has(p.id as string) && p.api_id && p.club == null);
@@ -394,11 +400,11 @@ async function backfillClubs(st: State, priority: Set<string>, limit = 10) {
   for (const p of candidates) {
     if (done >= limit) break;
     try {
-      let club: { name: string; logo: string | null } | Record<string, never> = {};
+      let club: { name: string; logo: string | null; league: string | null } | Record<string, never> = {};
       for (const season of CLUB_SEASONS) {
         const res = await apiGet<ApiPlayerProfile>("players", { id: p.api_id as number, season });
         const c = pickClub(res[0]?.statistics ?? []);
-        if (c) { club = { name: c.name, logo: c.logo }; break; }
+        if (c) { club = { name: c.name, logo: c.logo, league: c.league }; break; }
       }
       await supa.from("players").update({ club }).eq("id", p.id as string);
       done++;

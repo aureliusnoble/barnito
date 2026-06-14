@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Goal, Trophy, Users, AlertTriangle } from "lucide-react";
+import { Goal, Trophy, Users, AlertTriangle, ChevronDown } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal, type PlayerSeed } from "../components/PlayerModal";
 import { SectionTitle, Crest } from "../components/bits";
@@ -87,60 +87,97 @@ function ByPerson() {
   const { scores, participantById, playerById, injuryByPlayerId } = useBarnito();
   const { open } = usePlayerModal();
   const { teamName } = useHelpers();
-  const ordered = [...scores.scorerView].sort((a, b) => b.total - a.total);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const ordered = useMemo(() => [...scores.scorerView].sort((a, b) => b.total - a.total), [scores]);
+
+  if (ordered.length === 0) {
+    return (
+      <p className="card p-6 text-center text-sm text-pitch-400">
+        Everyone's six scorers appear here once predictions are uploaded.
+      </p>
+    );
+  }
+
+  const leader = ordered[0];
+  const totalGoals = ordered.reduce((n, sv) => n + sv.picks.reduce((g, p) => g + p.goals, 0), 0);
 
   return (
     <div className="space-y-3">
-      {ordered.map((sv) => {
-        const champ = participantById.get(sv.participantId)?.champion;
-        return (
-          <div key={sv.participantId} className="card overflow-hidden">
-            <div className="flex items-center justify-between border-b border-white/[0.06] px-3 py-2.5">
-              <div className="flex items-center gap-2">
-                <span className="font-display font-bold text-white">{sv.name}</span>
-                {champ && (
-                  <span className="chip gap-1 bg-pitch-800/70 text-pitch-300" title="Champion pick">
-                    👑 <Crest teamId={champ} size={13} />
+      {/* headline */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="card flex flex-col gap-0.5 p-3">
+          <span className="text-[11px] uppercase tracking-wide text-pitch-400">Leading hauler</span>
+          <span className="truncate font-display font-bold text-white">{leader.name}</span>
+          <span className="text-xs text-accent-300">{leader.total} pts from scorers</span>
+        </div>
+        <div className="card flex flex-col gap-0.5 p-3">
+          <span className="text-[11px] uppercase tracking-wide text-pitch-400">Goals from all picks</span>
+          <span className="font-display text-2xl font-extrabold text-white">{totalGoals}</span>
+          <span className="text-xs text-pitch-500">across {ordered.length} {ordered.length === 1 ? "player" : "players"}</span>
+        </div>
+      </div>
+
+      {/* ranked — tap to dive into a player's six scorers */}
+      <div className="space-y-2">
+        {ordered.map((sv, i) => {
+          const champ = participantById.get(sv.participantId)?.champion;
+          const goals = sv.picks.reduce((n, p) => n + p.goals, 0);
+          const isOpen = openId === sv.participantId;
+          return (
+            <div key={sv.participantId} className="card overflow-hidden">
+              <button
+                onClick={() => setOpenId(isOpen ? null : sv.participantId)}
+                className="flex w-full items-center gap-3 px-3 py-2.5 text-left"
+              >
+                <span className="w-5 shrink-0 text-center font-display font-bold text-pitch-500">{i + 1}</span>
+                <div className="min-w-0 flex-1">
+                  <span className="flex items-center gap-1.5">
+                    <span className="truncate font-display font-bold text-white">{sv.name}</span>
+                    {champ && <span title="Champion pick"><Crest teamId={champ} size={14} /></span>}
                   </span>
-                )}
-              </div>
-              <span className="font-display text-lg font-extrabold tabular-nums text-white">
-                {sv.total}
-              </span>
-            </div>
-            <ul className="divide-y divide-white/[0.04]">
-              {sv.picks.map((p) => {
-                const player = playerById.get(p.playerId);
-                const injury = injuryByPlayerId.get(p.playerId);
-                return (
-                  <li key={p.playerId} onClick={() => open(p.playerId)} className="flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm transition hover:bg-white/[0.03]">
-                    <Avatar photo={player?.photo} name={p.playerName} position={p.position} size={30} />
-                    <span className="min-w-0 flex-1">
-                      <span className="flex items-center gap-1.5">
-                        <span className="truncate text-pitch-100">{p.playerName}</span>
-                        {injury && (
-                          <span title={`${injury.type}: ${injury.reason}`} className="shrink-0">
-                            <AlertTriangle size={13} className="text-spice-400" />
+                  <span className="text-[11px] text-pitch-400">
+                    {goals} {goals === 1 ? "goal" : "goals"} · {sv.picks.length} picks
+                  </span>
+                </div>
+                <span className="font-display text-lg font-extrabold tabular-nums text-white">{sv.total}</span>
+                <ChevronDown size={16} className={`shrink-0 text-pitch-500 transition ${isOpen ? "rotate-180" : ""}`} />
+              </button>
+              {isOpen && (
+                <ul className="divide-y divide-white/[0.04] border-t border-white/[0.06]">
+                  {sv.picks.map((p) => {
+                    const player = playerById.get(p.playerId);
+                    const injury = injuryByPlayerId.get(p.playerId);
+                    return (
+                      <li key={p.playerId} onClick={() => open(p.playerId)} className="flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm transition hover:bg-white/[0.03]">
+                        <Avatar photo={player?.photo} name={p.playerName} position={p.position} size={30} />
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-center gap-1.5">
+                            <span className="truncate text-pitch-100">{p.playerName}</span>
+                            {injury && (
+                              <span title={`${injury.type}: ${injury.reason}`} className="shrink-0">
+                                <AlertTriangle size={13} className="text-spice-400" />
+                              </span>
+                            )}
                           </span>
-                        )}
-                      </span>
-                      <span className="flex items-center gap-1 text-[11px] text-pitch-500">
-                        <Crest teamId={p.teamId} size={11} /> {teamName(p.teamId)}
-                      </span>
-                    </span>
-                    <PosChip position={p.position} />
-                    <span className="w-9 text-right text-pitch-300">
-                      {p.goals}
-                      <span className="text-[10px] text-pitch-500"> gl</span>
-                    </span>
-                    <span className="w-10 text-right font-bold tabular-nums text-white">{p.points}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        );
-      })}
+                          <span className="flex items-center gap-1 text-[11px] text-pitch-500">
+                            <Crest teamId={p.teamId} size={11} /> {teamName(p.teamId)}
+                          </span>
+                        </span>
+                        <PosChip position={p.position} />
+                        <span className="w-9 text-right text-pitch-300">
+                          {p.goals}
+                          <span className="text-[10px] text-pitch-500"> gl</span>
+                        </span>
+                        <span className="w-10 text-right font-bold tabular-nums text-white">{p.points}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
