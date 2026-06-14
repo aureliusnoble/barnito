@@ -217,8 +217,8 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
           {active === "info" && (
             <div className="space-y-5">
               <TeamInfo match={match} />
-              {hasLineups && <Lineups match={match} />}
               <H2H match={match} />
+              {hasLineups && <Lineups match={match} />}
             </div>
           )}
 
