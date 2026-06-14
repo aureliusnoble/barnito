@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Goal, Trophy, Users, AlertTriangle, ChevronDown } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal, type PlayerSeed } from "../components/PlayerModal";
-import { SectionTitle, Crest } from "../components/bits";
+import { SectionTitle, Crest, CardFlag } from "../components/bits";
 import { Avatar } from "../components/visuals";
 import { POSITION_LABEL } from "../lib/format";
 import type { Position, PlayerStatLine } from "@shared/types";
@@ -84,7 +84,7 @@ function PosChip({ position }: { position: Position }) {
 }
 
 function ByPerson() {
-  const { scores, participantById, playerById, injuryByPlayerId } = useBarnito();
+  const { scores, participantById, playerById, injuryByPlayerId, playerStats } = useBarnito();
   const { open } = usePlayerModal();
   const { teamName } = useHelpers();
   const [openId, setOpenId] = useState<string | null>(null);
@@ -147,12 +147,14 @@ function ByPerson() {
                   {sv.picks.map((p) => {
                     const player = playerById.get(p.playerId);
                     const injury = injuryByPlayerId.get(p.playerId);
+                    const cs = playerStats.players[p.playerId];
                     return (
                       <li key={p.playerId} onClick={() => open(p.playerId)} className="flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm transition hover:bg-white/[0.03]">
                         <Avatar photo={player?.photo} name={p.playerName} position={p.position} size={30} />
                         <span className="min-w-0 flex-1">
                           <span className="flex items-center gap-1.5">
                             <span className="truncate text-pitch-100">{p.playerName}</span>
+                            {cs && <CardFlag yellow={cs.yellow > 0} red={cs.red > 0} size={12} />}
                             {injury && (
                               <span title={`${injury.type}: ${injury.reason}`} className="shrink-0">
                                 <AlertTriangle size={13} className="text-spice-400" />

@@ -6,6 +6,18 @@ import { Crest } from "./visuals";
 
 export { Crest } from "./visuals";
 
+/** A booking flag: red card takes precedence over a yellow; renders nothing if the player is clean. */
+export function CardFlag({ yellow, red, size = 13 }: { yellow?: boolean; red?: boolean; size?: number }) {
+  if (!red && !yellow) return null;
+  return (
+    <span
+      title={red ? "Carrying a red (suspended)" : "Carrying a booking"}
+      className={`inline-block shrink-0 rounded-[2px] ${red ? "bg-red-500" : "bg-yellow-400"}`}
+      style={{ width: size * 0.72, height: size }}
+    />
+  );
+}
+
 /** Map a raw spiciness score to a 1–5 rating, relative to the hottest upcoming game. */
 export function spiceRating(score: number, max: number): number {
   if (max <= 0 || score <= 0) return 1;
