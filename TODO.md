@@ -127,3 +127,17 @@ See the approved plan for the full design. This file tracks status, decisions, a
 - GitHub unauthenticated API rate-limited in this container; using raw.githubusercontent.com instead.
 - No live API key available in dev container → roster positions + live scores can't be fetched here;
   `build-roster.ts`/`fetch-data.ts` are validated by structure, real run happens in the Action.
+
+## v4 — Supabase realtime rebuild (in progress)
+Fix stuck-live + missing-match bugs (windowed polling on unreliable GitHub cron) → Supabase
+(Postgres + Realtime + Edge Function + pg_cron ~30s). Keep scoring engine + look; rebuild UI on realtime.
+Plus: Now=today-only (noon-next-day UK), Recent tab (18h), player detail (cards), match team-info
+(FIFA rank), leaderboard scores-over-time chart.
+- [x] Supabase CLI + @supabase/supabase-js; supabase init
+- [x] migrations: schema + RLS + realtime (20260614080000_init.sql); cron (20260614080100_cron.sql)
+- [x] sync:edge (single source of truth → supabase/functions/_shared/*)
+- [x] edge fn `tick` (reconcile-all + live poll + score + playerStats + history) + Deno apiFootball + FIFA ranks
+- [ ] link + db push + deploy fn + secrets (NEEDS: access token, DB password, API key)
+- [ ] frontend: supabase client + store rewrite (realtime), keep useBarnito API
+- [ ] new UI: Now/Recent, player detail, team info, scores-over-time chart
+- [ ] predictions parser → Supabase; remove old GitHub data workflows; deploy w/ VITE_SUPABASE_*

@@ -1,0 +1,411 @@
+// Barnito ingester + scorer. Runs on a pg_cron schedule (~30s). Self-throttles:
+//  - every run: poll live fixtures (cheap) and update them with embedded events/lineups/stats/ratings
+//  - every ~5 min (or first run): reconcile ALL fixtures so finished games always transition and no
+//    fixture is ever dropped (the two production bugs)
+//  - recompute scores/standings/playerStats and append score_history
+// Query modes: ?mode=roster (one-off: teams+players+fifa), ?mode=full (force a reconcile).
+import { createClient } from "jsr:@supabase/supabase-js@2";
+import {
+  apiGet, apiGetAllPages, requestCount, mapStatus, mapPosition, mapEventType, groupLetterFrom,
+  GOAL_MULTIPLIER, WC_LEAGUE, WC_SEASON,
+  type ApiFixture, type ApiFixtureDetailed, type ApiStandingRow, type ApiTeamEntry,
+  type ApiPlayerEntry, type ApiPlayerStat, type ApiInjury,
+} from "../_shared/apiFootball.ts";
+import { computeScores } from "../_shared/scoring.ts";
+import { computeGroupTable, type GroupResult } from "../_shared/standings.ts";
+import type {
+  Team, Player, Match, GoalEvent, MatchEvent, Lineup, TeamStat, PlayerRating, GroupLetter,
+  Participant, StandingsFile,
+} from "../_shared/types.ts";
+import { MATCHES_PER_GROUP } from "../_shared/constants.ts";
+import { FIFA_RANKS } from "../_shared/fifaRanks.ts";
+
+const FULL_INTERVAL_MS = 5 * 60 * 1000;
+const STATS_INTERVAL_MS = 20 * 60 * 1000;
+const STALE_LIVE_MS = 3 * 60 * 60 * 1000;
+
+const supa = createClient(
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  { auth: { persistSession: false } },
+);
+
+const slug = (s: string) =>
+  s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+    .replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+
+// ---------------------------------------------------------------------------
+async function getMeta() {
+  const { data } = await supa.from("documents").select("data").eq("key", "_meta").maybeSingle();
+  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string };
+}
+async function setDoc(key: string, data: unknown) {
+  await supa.from("documents").upsert({ key, data, updated_at: new Date().toISOString() });
+}
+
+function rowToMatch(r: Record<string, unknown>): Match {
+  return {
+    id: r.id as string, apiId: (r.api_id as number) ?? null, group: (r.group_letter as GroupLetter) ?? ("?" as GroupLetter),
+    matchday: (r.matchday as number) ?? 1, kickoff: r.kickoff as string, ground: (r.ground as string) ?? null,
+    venue: (r.venue as Match["venue"]) ?? null, homeTeamId: r.home_team_id as string, awayTeamId: r.away_team_id as string,
+    status: r.status as Match["status"], elapsed: (r.elapsed as number) ?? null,
+    homeGoals: (r.home_goals as number) ?? null, awayGoals: (r.away_goals as number) ?? null,
+    goals: (r.goals as GoalEvent[]) ?? [], events: (r.events as MatchEvent[]) ?? undefined,
+    lineups: (r.lineups as Lineup[]) ?? undefined, stats: (r.stats as TeamStat[]) ?? undefined,
+    ratings: (r.ratings as PlayerRating[]) ?? undefined,
+  };
+}
+function matchToRow(m: Match, round?: string) {
+  return {
+    id: m.id, api_id: m.apiId, group_letter: m.group === "?" ? null : m.group, matchday: m.matchday,
+    kickoff: m.kickoff, status: m.status, elapsed: m.elapsed, home_team_id: m.homeTeamId,
+    away_team_id: m.awayTeamId, home_goals: m.homeGoals, away_goals: m.awayGoals, ground: m.ground,
+    venue: m.venue, goals: m.goals, events: m.events ?? null, lineups: m.lineups ?? null,
+    stats: m.stats ?? null, ratings: m.ratings ?? null, round: round ?? null, updated_at: new Date().toISOString(),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// lookup state from DB
+async function loadState() {
+  const [{ data: teams }, { data: players }, { data: participants }, { data: matches }] = await Promise.all([
+    supa.from("teams").select("*"),
+    supa.from("players").select("*"),
+    supa.from("participants").select("*"),
+    supa.from("matches").select("*"),
+  ]);
+  const teamByApi = new Map<number, { id: string; group: GroupLetter | null }>();
+  for (const t of teams ?? []) if (t.api_id) teamByApi.set(t.api_id, { id: t.id, group: t.group_letter });
+  const playerByApi = new Map<number, string>();
+  for (const p of players ?? []) if (p.api_id) playerByApi.set(p.api_id, p.id);
+  return {
+    teams: (teams ?? []) as Record<string, unknown>[],
+    players: (players ?? []) as Record<string, unknown>[],
+    participants: (participants ?? []) as Record<string, unknown>[],
+    matchRows: (matches ?? []) as Record<string, unknown>[],
+    teamByApi, playerByApi,
+  };
+}
+
+type State = Awaited<ReturnType<typeof loadState>>;
+
+function mapDetails(f: ApiFixtureDetailed, st: State) {
+  const tid = (id: number) => st.teamByApi.get(id)?.id ?? "";
+  const pid = (id: number | null) => (id ? st.playerByApi.get(id) ?? null : null);
+  const events: MatchEvent[] = (f.events ?? []).map((e) => ({
+    minute: e.time.elapsed, extraMinute: e.time.extra ?? null, teamId: tid(e.team.id),
+    type: mapEventType(e.type), detail: e.detail, playerName: e.player.name ?? "Unknown",
+    playerId: pid(e.player.id), assistName: e.assist?.name ?? null,
+  }));
+  const goals: GoalEvent[] = (f.events ?? []).filter((e) => e.type.toLowerCase() === "goal" && e.detail !== "Missed Penalty")
+    .map((e) => ({ playerId: pid(e.player.id), apiPlayerId: e.player.id, playerName: e.player.name ?? "Unknown",
+      minute: e.time.elapsed, teamId: tid(e.team.id), ownGoal: e.detail === "Own Goal" }));
+  const lineups: Lineup[] = (f.lineups ?? []).map((l) => ({
+    teamId: tid(l.team.id), formation: l.formation, coach: l.coach?.name ?? null,
+    startXI: l.startXI.map((p) => ({ playerId: pid(p.player.id), name: p.player.name, number: p.player.number, pos: p.player.pos, grid: p.player.grid })),
+    subs: l.substitutes.map((p) => ({ playerId: pid(p.player.id), name: p.player.name, number: p.player.number, pos: p.player.pos, grid: p.player.grid })),
+  }));
+  const stats: TeamStat[] = (f.statistics ?? []).map((s) => ({ teamId: tid(s.team.id), items: s.statistics }));
+  const ratings: PlayerRating[] = (f.players ?? []).flatMap((tp) => tp.players.map((pl) => ({
+    playerId: pid(pl.player.id), name: pl.player.name, teamId: tid(tp.team.id),
+    rating: pl.statistics[0]?.games.rating ? Number(pl.statistics[0].games.rating) : null,
+    number: pl.statistics[0]?.games.number ?? null,
+  })));
+  return { goals, events, lineups, stats, ratings };
+}
+
+function buildMatch(f: ApiFixture, id: string, st: State, details?: ReturnType<typeof mapDetails>, carry?: Match): Match {
+  const home = st.teamByApi.get(f.teams.home.id);
+  const away = st.teamByApi.get(f.teams.away.id);
+  const md = f.league.round.match(/(\d+)\s*$/);
+  const status = mapStatus(f.fixture.status.short);
+  const played = status === "LIVE" || status === "HT" || status === "FINISHED";
+  const v = f.fixture.venue;
+  return {
+    id, apiId: f.fixture.id, group: (home?.group ?? "?") as GroupLetter, matchday: md ? Number(md[1]) : 1,
+    kickoff: f.fixture.date, ground: v?.name ?? null, venue: v?.name ? { name: v.name, city: v.city ?? null } : null,
+    homeTeamId: home?.id ?? slug(f.teams.home.name), awayTeamId: away?.id ?? slug(f.teams.away.name),
+    status, elapsed: f.fixture.status.elapsed, homeGoals: f.goals.home, awayGoals: f.goals.away,
+    goals: played ? (details?.goals ?? carry?.goals ?? []) : [],
+    events: played ? (details?.events ?? carry?.events) : undefined,
+    lineups: details?.lineups ?? (played ? carry?.lineups : undefined),
+    stats: played ? (details?.stats ?? carry?.stats) : undefined,
+    ratings: played ? (details?.ratings ?? carry?.ratings) : undefined,
+  };
+}
+
+async function fetchDetails(ids: number[], st: State) {
+  const map = new Map<number, ReturnType<typeof mapDetails>>();
+  for (let i = 0; i < ids.length; i += 20) {
+    const chunk = ids.slice(i, i + 20);
+    const res = await apiGet<ApiFixtureDetailed>("fixtures", { ids: chunk.join("-") });
+    for (const f of res) map.set(f.fixture.id, mapDetails(f, st));
+  }
+  return map;
+}
+
+function groupIds(fixtures: ApiFixture[], st: State): Map<number, { id: string; group: GroupLetter | null }> {
+  // group-stage fixtures get stable ids "<Group>-<n>" by kickoff order; non-group → bracket only
+  const byGroup = new Map<string, ApiFixture[]>();
+  const out = new Map<number, { id: string; group: GroupLetter | null }>();
+  for (const f of fixtures) {
+    if (!/^Group/i.test(f.league.round)) continue;
+    const g = st.teamByApi.get(f.teams.home.id)?.group ?? st.teamByApi.get(f.teams.away.id)?.group ?? null;
+    const key = g ?? `x-${f.fixture.id}`;
+    (byGroup.get(key) ?? byGroup.set(key, []).get(key)!).push(f);
+  }
+  for (const [key, fs] of byGroup) {
+    if (key.startsWith("x-")) { for (const f of fs) out.set(f.fixture.id, { id: `x-${f.fixture.id}`, group: null }); continue; }
+    fs.sort((a, b) => a.fixture.date.localeCompare(b.fixture.date) || a.fixture.id - b.fixture.id);
+    fs.forEach((f, i) => out.set(f.fixture.id, { id: `${key}-${i + 1}`, group: key as GroupLetter }));
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+async function reconcileTeams(standings: ApiStandingRow[][], fixtures: ApiFixture[]) {
+  const rows = new Map<number, { id: string; api_id: number; name: string; group_letter: string | null }>();
+  for (const group of standings) for (const r of group) {
+    const letter = groupLetterFrom(r.group);
+    rows.set(r.team.id, { id: slug(r.team.name), api_id: r.team.id, name: r.team.name, group_letter: letter });
+  }
+  // never drop a fixture: ensure both teams exist even if not in standings
+  for (const f of fixtures) for (const t of [f.teams.home, f.teams.away]) {
+    if (!rows.has(t.id)) rows.set(t.id, { id: slug(t.name), api_id: t.id, name: t.name, group_letter: null });
+  }
+  const upserts = [...rows.values()].map((t) => ({ ...t, fifa_rank: FIFA_RANKS[t.id] ?? null, updated_at: new Date().toISOString() }));
+  if (upserts.length) await supa.from("teams").upsert(upserts, { onConflict: "api_id" });
+}
+
+function buildBracket(fixtures: ApiFixture[], st: State) {
+  const order: Record<string, number> = { "Round of 32": 1, "Round of 16": 2, "Quarter-finals": 3, "Semi-finals": 4, "3rd Place Final": 5, Final: 6 };
+  const byRound = new Map<string, unknown[]>();
+  for (const f of fixtures) {
+    if (/^Group/i.test(f.league.round)) continue;
+    const home = st.teamByApi.get(f.teams.home.id);
+    const away = st.teamByApi.get(f.teams.away.id);
+    const bm = {
+      apiId: f.fixture.id, round: f.league.round, kickoff: f.fixture.date, ground: f.fixture.venue?.name ?? null,
+      homeTeamId: home?.id ?? null, awayTeamId: away?.id ?? null,
+      homeName: home ? null : f.teams.home.name, awayName: away ? null : f.teams.away.name,
+      status: mapStatus(f.fixture.status.short), homeGoals: f.goals.home, awayGoals: f.goals.away,
+    };
+    (byRound.get(f.league.round) ?? byRound.set(f.league.round, []).get(f.league.round)!).push(bm);
+  }
+  const rounds = [...byRound.entries()].map(([name, matches]) => ({ name, order: order[name] ?? 99, matches }))
+    .sort((a, b) => a.order - b.order);
+  return { updatedAt: new Date().toISOString(), rounds };
+}
+
+// ---------------------------------------------------------------------------
+async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]) {
+  const teamName = new Map((st.teams).map((t) => [t.id as string, t.name as string]));
+  const teams: Team[] = st.teams.map((t) => ({
+    id: t.id as string, name: t.name as string, code: (t.code as string) ?? null, group: (t.group_letter as GroupLetter) ?? ("?" as GroupLetter),
+    apiId: (t.api_id as number) ?? null, logo: (t.logo as string) ?? null, venue: (t.venue as Team["venue"]) ?? null,
+  }));
+  const players: Player[] = st.players.map((p) => ({
+    id: p.id as string, apiId: (p.api_id as number) ?? null, name: p.name as string, teamId: p.team_id as string,
+    position: (p.position as Player["position"]) ?? "FWD", goalMultiplier: (p.goal_multiplier as Player["goalMultiplier"]) ?? 8,
+    photo: (p.photo as string) ?? null, number: (p.number as number) ?? null,
+  }));
+  const matches: Match[] = matchRows.map(rowToMatch);
+  const participants: Participant[] = st.participants.map((p) => ({
+    id: p.id as string, name: p.name as string, matchScores: (p.match_scores as Participant["matchScores"]) ?? [],
+    topPlayers: (p.top_players as string[]) ?? [], champion: (p.champion as string) ?? "",
+  }));
+
+  // standings (actual) computed locally from finished matches
+  const groups = [...new Set(teams.map((t) => t.group).filter((g) => g !== "?"))].sort();
+  const standings: StandingsFile = {
+    updatedAt: new Date().toISOString(),
+    groups: groups.map((group) => {
+      const gm = matches.filter((m) => m.group === group);
+      const results: GroupResult[] = gm.filter((m) => m.status === "FINISHED" && m.homeGoals !== null && m.awayGoals !== null)
+        .map((m) => ({ homeTeamId: m.homeTeamId, awayTeamId: m.awayTeamId, homeGoals: m.homeGoals!, awayGoals: m.awayGoals! }));
+      const teamIds = teams.filter((t) => t.group === group).map((t) => t.id);
+      const rows = computeGroupTable(teamIds, results, (id) => teamName.get(id) ?? id);
+      const final = gm.length === MATCHES_PER_GROUP && gm.every((m) => m.status === "FINISHED");
+      return { group, rows, final };
+    }),
+  };
+
+  const scores = computeScores({
+    roster: { updatedAt: "", teams, players },
+    matches: { updatedAt: "", tournamentComplete: false, championTeamId: null, matches },
+    predictions: { updatedAt: "", participants },
+    standings,
+  });
+
+  // playerStats: goals + cards + appearances aggregated from events (FINISHED + live)
+  const ps: Record<string, { goals: number; yellow: number; red: number; apps: number }> = {};
+  const seenApp: Record<string, Set<string>> = {};
+  for (const m of matches) {
+    for (const e of m.events ?? []) {
+      if (!e.playerId) continue;
+      ps[e.playerId] ??= { goals: 0, yellow: 0, red: 0, apps: 0 };
+      if (e.type === "GOAL" && !/own/i.test(e.detail)) ps[e.playerId].goals++;
+      if (e.type === "CARD" && /yellow/i.test(e.detail)) ps[e.playerId].yellow++;
+      if (e.type === "CARD" && /red/i.test(e.detail)) ps[e.playerId].red++;
+    }
+    for (const l of m.lineups ?? []) for (const p of [...l.startXI, ...l.subs]) {
+      if (!p.playerId) continue;
+      (seenApp[p.playerId] ??= new Set()).add(m.id);
+    }
+  }
+  for (const [pid, s] of Object.entries(seenApp)) { ps[pid] ??= { goals: 0, yellow: 0, red: 0, apps: 0 }; ps[pid].apps = s.size; }
+
+  await Promise.all([
+    setDoc("scores", scores),
+    setDoc("standings", standings),
+    setDoc("playerStats", { updatedAt: new Date().toISOString(), players: ps }),
+  ]);
+
+  // score_history: append when a participant's total changed since last snapshot
+  const { data: lastRows } = await supa.from("score_history").select("participant_id,total,at").order("at", { ascending: false }).limit(participants.length * 2);
+  const lastTotal = new Map<string, number>();
+  for (const r of lastRows ?? []) if (!lastTotal.has(r.participant_id)) lastTotal.set(r.participant_id, r.total);
+  const at = new Date().toISOString();
+  const hist = scores.leaderboard.filter((e) => lastTotal.get(e.participantId) !== e.total)
+    .map((e) => ({ participant_id: e.participantId, at, total: e.total }));
+  if (hist.length) await supa.from("score_history").upsert(hist);
+}
+
+// ---------------------------------------------------------------------------
+async function buildRoster() {
+  const standings = await apiGet<{ league: { standings: ApiStandingRow[][] } }>("standings", { league: WC_LEAGUE, season: WC_SEASON });
+  const groups = standings[0]?.league.standings ?? [];
+  await reconcileTeams(groups, []);
+  // enrich teams with logo/code/venue
+  const teamEntries = await apiGet<ApiTeamEntry>("teams", { league: WC_LEAGUE, season: WC_SEASON });
+  for (const e of teamEntries) {
+    await supa.from("teams").update({
+      logo: e.team.logo ?? null, code: e.team.code ?? null,
+      venue: e.venue ? { name: e.venue.name, city: e.venue.city, capacity: e.venue.capacity ?? null, image: e.venue.image ?? null } : null,
+    }).eq("api_id", e.team.id);
+  }
+  // players per team
+  const { data: teams } = await supa.from("teams").select("id,api_id");
+  const used = new Set<string>();
+  for (const t of teams ?? []) {
+    if (!t.api_id) continue;
+    const entries = await apiGetAllPages<ApiPlayerEntry>("players", { team: t.api_id, season: WC_SEASON });
+    const rows = entries.map((e) => {
+      const pos = mapPosition(e.statistics.find((s) => s.games?.position)?.games.position ?? e.player.position);
+      let id = `${t.id}-${slug(e.player.name)}`; let n = 2;
+      while (used.has(id)) id = `${t.id}-${slug(e.player.name)}-${n++}`;
+      used.add(id);
+      return { id, api_id: e.player.id, name: e.player.name, team_id: t.id, position: pos,
+        goal_multiplier: GOAL_MULTIPLIER[pos], photo: e.player.photo ?? null, updated_at: new Date().toISOString() };
+    });
+    if (rows.length) await supa.from("players").upsert(rows, { onConflict: "id" });
+  }
+  return { teams: teams?.length ?? 0 };
+}
+
+async function refreshExtras(st: State) {
+  const toLine = (s: ApiPlayerStat, v: number | null) => {
+    const x = s.statistics[0];
+    return { playerId: st.playerByApi.get(s.player.id) ?? null, apiId: s.player.id, name: s.player.name,
+      teamId: x ? st.teamByApi.get(x.team.id)?.id ?? null : null, teamName: x?.team.name ?? "", photo: s.player.photo ?? null,
+      position: x ? mapPosition(x.games.position) : null, value: v ?? 0, goals: x?.goals.total ?? 0, assists: x?.goals.assists ?? 0, appearances: x?.games.appearences ?? 0 };
+  };
+  const [sc, as, cd, inj] = await Promise.all([
+    apiGet<ApiPlayerStat>("players/topscorers", { league: WC_LEAGUE, season: WC_SEASON }),
+    apiGet<ApiPlayerStat>("players/topassists", { league: WC_LEAGUE, season: WC_SEASON }),
+    apiGet<ApiPlayerStat>("players/topyellowcards", { league: WC_LEAGUE, season: WC_SEASON }),
+    apiGet<ApiInjury>("injuries", { league: WC_LEAGUE, season: WC_SEASON }),
+  ]);
+  await setDoc("stats", { updatedAt: new Date().toISOString(),
+    topScorers: sc.map((s) => toLine(s, s.statistics[0]?.goals.total ?? 0)),
+    topAssists: as.map((s) => toLine(s, s.statistics[0]?.goals.assists ?? 0)),
+    topCards: cd.map((s) => toLine(s, s.statistics[0]?.cards.yellow ?? 0)) });
+  await setDoc("injuries", { updatedAt: new Date().toISOString(),
+    items: inj.map((i) => ({ playerId: st.playerByApi.get(i.player.id) ?? null, apiId: i.player.id, name: i.player.name,
+      teamId: st.teamByApi.get(i.team.id)?.id ?? null, teamName: i.team.name, type: i.type, reason: i.reason })) });
+}
+
+// ---------------------------------------------------------------------------
+Deno.serve(async (req) => {
+  try {
+    const mode = new URL(req.url).searchParams.get("mode");
+    if (mode === "roster") {
+      const r = await buildRoster();
+      return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
+
+    const meta = await getMeta();
+    const now = Date.now();
+    const forceFull = mode === "full" || !meta.lastFull || now - Date.parse(meta.lastFull) > FULL_INTERVAL_MS;
+
+    let st = await loadState();
+    const updated = new Map<string, Match>(); // our match id -> Match (for the upsert + scoring)
+    for (const r of st.matchRows) updated.set(r.id as string, rowToMatch(r));
+
+    // ----- full reconcile: every fixture's status/score, teams, bracket -----
+    if (forceFull) {
+      const fixtures = await apiGet<ApiFixture>("fixtures", { league: WC_LEAGUE, season: WC_SEASON });
+      const standings = await apiGet<{ league: { standings: ApiStandingRow[][] } }>("standings", { league: WC_LEAGUE, season: WC_SEASON });
+      await reconcileTeams(standings[0]?.league.standings ?? [], fixtures);
+      st = await loadState(); // refresh team→group after upsert
+      const ids = groupIds(fixtures, st);
+      // fetch details for played group matches that changed or lack events
+      const need: number[] = [];
+      for (const f of fixtures) {
+        const idg = ids.get(f.fixture.id);
+        if (!idg) continue;
+        const status = mapStatus(f.fixture.status.short);
+        const cur = updated.get(idg.id);
+        const played = status === "LIVE" || status === "HT" || status === "FINISHED";
+        const goalChanged = !cur || (cur.homeGoals ?? 0) + (cur.awayGoals ?? 0) !== (f.goals.home ?? 0) + (f.goals.away ?? 0) || !cur.events;
+        if (played && goalChanged) need.push(f.fixture.id);
+      }
+      const details = await fetchDetails(need.slice(0, 60), st);
+      for (const f of fixtures) {
+        const idg = ids.get(f.fixture.id);
+        if (!idg) continue;
+        updated.set(idg.id, buildMatch(f, idg.id, st, details.get(f.fixture.id), updated.get(idg.id)));
+      }
+      await setDoc("bracket", buildBracket(fixtures, st));
+      meta.lastFull = new Date().toISOString();
+    }
+
+    // ----- live poll: fast path for in-progress matches ----------------------
+    const live = (await apiGet<ApiFixture>("fixtures", { live: "all" })).filter((f) => f.league.id === WC_LEAGUE);
+    const liveIds = new Set<number>(live.map((f) => f.fixture.id));
+    // also force-reconcile any of OUR matches stuck LIVE past a sane window
+    for (const m of updated.values()) {
+      if (m.apiId && m.status !== "FINISHED" && m.status !== "SCHEDULED" && Date.now() - Date.parse(m.kickoff) > STALE_LIVE_MS) liveIds.add(m.apiId);
+    }
+    if (liveIds.size) {
+      const details = await fetchDetails([...liveIds], st);
+      const liveById = new Map(live.map((f) => [f.fixture.id, f]));
+      for (const m of updated.values()) {
+        if (!m.apiId) continue;
+        const f = liveById.get(m.apiId);
+        const d = details.get(m.apiId);
+        if (f) updated.set(m.id, buildMatch(f, m.id, st, d, m));
+      }
+    }
+
+    // upsert all changed matches
+    const rows = [...updated.values()].map((m) => matchToRow(m));
+    if (rows.length) await supa.from("matches").upsert(rows, { onConflict: "id" });
+
+    // occasional extras
+    if (!meta.lastStats || now - Date.parse(meta.lastStats) > STATS_INTERVAL_MS) {
+      st = await loadState();
+      try { await refreshExtras(st); meta.lastStats = new Date().toISOString(); } catch (_) { /* non-fatal */ }
+    }
+
+    // recompute scores from the freshest rows
+    st = await loadState();
+    await recomputeAndStore(st, st.matchRows);
+    await setDoc("_meta", meta);
+
+    return Response.json({ ok: true, full: forceFull, live: live.length, requests: requestCount() });
+  } catch (e) {
+    console.error(e);
+    return new Response(JSON.stringify({ ok: false, error: String(e) }), { status: 500 });
+  }
+});
