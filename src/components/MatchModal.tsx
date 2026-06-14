@@ -1,9 +1,33 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { X, MapPin, ArrowLeftRight, Star, Sparkles, ChevronDown, Swords } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
-import { StatusBadge, PointsPill, GroupPill, Crest } from "./bits";
+import { StatusBadge, PointsPill, GroupPill, Crest, ScorerPickTags } from "./bits";
 import { formatFull, ordinal } from "../lib/format";
 import type { Match, MatchEvent, TeamStat } from "@shared/types";
+
+/** Section that starts collapsed; used for the secondary detail blocks in the match modal. */
+function Collapsible({
+  title,
+  icon,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  icon?: React.ReactNode;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <section>
+      <button onClick={() => setOpen(!open)} className="flex w-full items-center justify-between">
+        <h3 className="flex items-center gap-1.5 font-display font-bold text-white">{icon}{title}</h3>
+        <ChevronDown size={16} className={`text-pitch-500 transition ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && <div className="mt-2">{children}</div>}
+    </section>
+  );
+}
 
 type FormResult = "W" | "D" | "L";
 function FormRow({ form }: { form: FormResult[] }) {
@@ -160,6 +184,9 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
               </>
             )}
           </div>
+          {match.status !== "FINISHED" && (
+            <ScorerPickTags match={match} className="mt-2 justify-center" />
+          )}
         </div>
 
         <div className="space-y-5 p-4">
@@ -338,8 +365,7 @@ function eventGlyph(e: MatchEvent) {
 
 function Timeline({ match, events }: { match: Match; events: MatchEvent[] }) {
   return (
-    <section>
-      <h3 className="mb-2 font-display font-bold text-white">Timeline</h3>
+    <Collapsible title="Timeline">
       <ul className="space-y-2">
         {events.map((e, i) => {
           const home = e.teamId === match.homeTeamId;
@@ -370,7 +396,7 @@ function Timeline({ match, events }: { match: Match; events: MatchEvent[] }) {
           );
         })}
       </ul>
-    </section>
+    </Collapsible>
   );
 }
 
@@ -387,8 +413,7 @@ function StatBars({ match, stats }: { match: Match; stats: TeamStat[] }) {
   const get = (s: TeamStat, type: string) => s.items.find((i) => i.type === type)?.value ?? null;
 
   return (
-    <section>
-      <h3 className="mb-2 font-display font-bold text-white">Match stats</h3>
+    <Collapsible title="Match stats">
       <div className="space-y-3">
         {SHOWN_STATS.map((type) => {
           const hv = get(home, type);
@@ -416,7 +441,7 @@ function StatBars({ match, stats }: { match: Match; stats: TeamStat[] }) {
           );
         })}
       </div>
-    </section>
+    </Collapsible>
   );
 }
 
@@ -426,10 +451,7 @@ function TopPerformers({ match }: { match: Match }) {
   if (ratings.length === 0) return null;
   const top = [...ratings].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 3);
   return (
-    <section>
-      <h3 className="mb-2 flex items-center gap-1.5 font-display font-bold text-white">
-        <Star size={15} className="text-spice-400" /> Top performers
-      </h3>
+    <Collapsible title="Top performers" icon={<Star size={15} className="text-spice-400" />}>
       <div className="flex gap-2">
         {top.map((r, i) => (
           <div key={i} className="card flex flex-1 items-center gap-2 p-2">
@@ -439,7 +461,7 @@ function TopPerformers({ match }: { match: Match }) {
           </div>
         ))}
       </div>
-    </section>
+    </Collapsible>
   );
 }
 
@@ -449,8 +471,7 @@ function Lineups({ match }: { match: Match }) {
   const away = match.lineups?.find((l) => l.teamId === match.awayTeamId);
   if (!home && !away) return null;
   return (
-    <section>
-      <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
+    <Collapsible title="Lineups">
       <div className="grid grid-cols-2 gap-3">
         {[home, away].map((l, idx) =>
           l ? (
@@ -475,6 +496,6 @@ function Lineups({ match }: { match: Match }) {
           ),
         )}
       </div>
-    </section>
+    </Collapsible>
   );
 }

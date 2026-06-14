@@ -1,6 +1,6 @@
 import type { Match } from "@shared/types";
 import { useHelpers } from "../data/store";
-import { StatusBadge, Crest } from "./bits";
+import { StatusBadge, Crest, ScorerPickTags } from "./bits";
 import { useMatchModal } from "./MatchModal";
 import { formatTime } from "../lib/format";
 
@@ -13,41 +13,45 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
   return (
     <button
       onClick={() => open(match.id)}
-      className={`card card-hover flex w-full items-center gap-3 p-3 text-left ${
-        live ? "ring-1 ring-red-500/30" : ""
-      }`}
+      className={`card card-hover w-full p-3 text-left ${live ? "ring-1 ring-red-500/30" : ""}`}
     >
-      <div className="flex w-11 shrink-0 flex-col items-center gap-1">
-        <StatusBadge match={match} />
-        {showGroup && <span className="text-[10px] font-semibold text-pitch-500">Grp {match.group}</span>}
+      <div className="flex items-center gap-3">
+        <div className="flex w-11 shrink-0 flex-col items-center gap-1">
+          <StatusBadge match={match} />
+          {showGroup && <span className="text-[10px] font-semibold text-pitch-500">Grp {match.group}</span>}
+        </div>
+
+        <div className="min-w-0 flex-1 space-y-1.5">
+          <Row
+            teamId={match.homeTeamId}
+            name={teamName(match.homeTeamId)}
+            goals={match.homeGoals}
+            winner={hasScore && match.homeGoals! > match.awayGoals!}
+          />
+          <Row
+            teamId={match.awayTeamId}
+            name={teamName(match.awayTeamId)}
+            goals={match.awayGoals}
+            winner={hasScore && match.awayGoals! > match.homeGoals!}
+          />
+        </div>
+
+        <div className="w-12 shrink-0 text-right">
+          {hasScore ? (
+            <span className="text-[10px] font-medium text-pitch-500">
+              {match.status === "FINISHED" ? "Full time" : "Live"}
+            </span>
+          ) : (
+            <span className="font-display text-sm font-bold tabular-nums text-pitch-200">
+              {formatTime(match.kickoff)}
+            </span>
+          )}
+        </div>
       </div>
 
-      <div className="min-w-0 flex-1 space-y-1.5">
-        <Row
-          teamId={match.homeTeamId}
-          name={teamName(match.homeTeamId)}
-          goals={match.homeGoals}
-          winner={hasScore && match.homeGoals! > match.awayGoals!}
-        />
-        <Row
-          teamId={match.awayTeamId}
-          name={teamName(match.awayTeamId)}
-          goals={match.awayGoals}
-          winner={hasScore && match.awayGoals! > match.homeGoals!}
-        />
-      </div>
-
-      <div className="w-12 shrink-0 text-right">
-        {hasScore ? (
-          <span className="text-[10px] font-medium text-pitch-500">
-            {match.status === "FINISHED" ? "Full time" : "Live"}
-          </span>
-        ) : (
-          <span className="font-display text-sm font-bold tabular-nums text-pitch-200">
-            {formatTime(match.kickoff)}
-          </span>
-        )}
-      </div>
+      {match.status !== "FINISHED" && (
+        <ScorerPickTags match={match} className="mt-2 border-t border-white/[0.05] pt-2" />
+      )}
     </button>
   );
 }

@@ -30,9 +30,14 @@ const rows: Record<string, unknown[]> = {
 
 function query(table: string) {
   const result = { data: rows[table] ?? [], error: null };
-  const p = Promise.resolve(result) as Promise<typeof result> & { order: () => Promise<typeof result> };
-  p.order = () => Promise.resolve(result);
-  return p;
+  // Chainable thenable: store pages via .range(...).order(...) and awaits the same builder.
+  const builder = Promise.resolve(result) as Promise<typeof result> & {
+    order: () => typeof builder;
+    range: () => typeof builder;
+  };
+  builder.order = () => builder;
+  builder.range = () => builder;
+  return builder;
 }
 const channel = { on() { return channel; }, subscribe() { return channel; } };
 vi.mock("./data/supabase", () => ({
