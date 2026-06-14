@@ -475,7 +475,10 @@ Deno.serve(async (req) => {
         const cur = updated.get(idg.id);
         const played = status === "LIVE" || status === "HT" || status === "FINISHED";
         const goalChanged = !cur || (cur.homeGoals ?? 0) + (cur.awayGoals ?? 0) !== (f.goals.home ?? 0) + (f.goals.away ?? 0) || !cur.events;
-        if (played && goalChanged) need.push(f.fixture.id);
+        // pull lineups pre-match: imminent kickoff (next ~75 min) and we don't have them yet
+        const toKo = Date.parse(f.fixture.date) - Date.now();
+        const imminentNoLineup = status === "SCHEDULED" && toKo < 75 * 60 * 1000 && toKo > -3 * 60 * 60 * 1000 && !(cur?.lineups && cur.lineups.length > 0);
+        if ((played && goalChanged) || imminentNoLineup) need.push(f.fixture.id);
       }
       const details = await fetchDetails(need.slice(0, 60), st);
       for (const f of fixtures) {
