@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T05:17:23.246Z",
+  "updatedAt": "2026-06-14T21:32:35.235Z",
   "tournamentComplete": false,
   "championTeamId": null,
   "matches": [
@@ -11,8 +11,8 @@
       "kickoff": "2026-06-11T19:00:00+00:00",
       "ground": "Estadio Azteca",
       "venue": {
-        "name": "Estadio Azteca",
-        "city": "Mexico City"
+        "city": "Mexico City",
+        "name": "Estadio Azteca"
       },
       "homeTeamId": "mexico",
       "awayTeamId": "south-africa",
@@ -22,454 +22,20 @@
       "awayGoals": 0,
       "goals": [
         {
-          "playerId": "mexico-11-ivanov",
-          "apiPlayerId": null,
-          "playerName": "M. Ivanov",
-          "minute": 45,
+          "minute": 9,
           "teamId": "mexico",
-          "ownGoal": false
+          "ownGoal": false,
+          "playerId": "mexico-j-quinones",
+          "playerName": "J. Quinones",
+          "apiPlayerId": 35532
         },
         {
-          "playerId": "mexico-11-ivanov",
-          "apiPlayerId": null,
-          "playerName": "M. Ivanov",
-          "minute": 84,
+          "minute": 67,
           "teamId": "mexico",
-          "ownGoal": false
-        }
-      ],
-      "events": [
-        {
-          "minute": 45,
-          "teamId": "mexico",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "M. Ivanov",
-          "playerId": "mexico-11-ivanov",
-          "assistName": null
-        },
-        {
-          "minute": 66,
-          "teamId": "south-africa",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "C. Larsson",
-          "playerId": "south-africa-8-larsson",
-          "assistName": "A. Martin"
-        },
-        {
-          "minute": 84,
-          "teamId": "mexico",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "M. Ivanov",
-          "playerId": "mexico-11-ivanov",
-          "assistName": null
-        },
-        {
-          "minute": 85,
-          "teamId": "mexico",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "A. Dubois",
-          "playerId": "mexico-10-dubois",
-          "assistName": "O. Costa"
-        }
-      ],
-      "lineups": [
-        {
-          "teamId": "mexico",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "mexico-0-wagner",
-              "name": "H. Wagner",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "mexico-1-okafor",
-              "name": "P. Okafor",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "mexico-2-bianchi",
-              "name": "B. Bianchi",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "mexico-3-musiala",
-              "name": "A. Musiala",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "mexico-4-dubois",
-              "name": "F. Dubois",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "mexico-5-khalil",
-              "name": "N. Khalil",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "mexico-6-yamal",
-              "name": "H. Yamal",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "mexico-7-ivanov",
-              "name": "P. Ivanov",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "mexico-8-mensah",
-              "name": "K. Mensah",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "mexico-9-costa",
-              "name": "S. Costa",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "mexico-10-dubois",
-              "name": "A. Dubois",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "mexico-11-ivanov",
-              "name": "M. Ivanov",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "mexico-12-yamal",
-              "name": "E. Yamal",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "mexico-13-costa",
-              "name": "O. Costa",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        },
-        {
-          "teamId": "south-africa",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "south-africa-0-lopez",
-              "name": "E. López",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "south-africa-1-vinicius",
-              "name": "H. Vinícius",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "south-africa-2-almeida",
-              "name": "C. Almeida",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-africa-3-nakamura",
-              "name": "O. Nakamura",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-africa-4-alvarez",
-              "name": "A. Álvarez",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-africa-5-horvat",
-              "name": "K. Horvat",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-africa-6-novak",
-              "name": "P. Novák",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-africa-7-bernard",
-              "name": "H. Bernard",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "south-africa-8-larsson",
-              "name": "C. Larsson",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "south-africa-9-greco",
-              "name": "O. Greco",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "south-africa-10-sokolov",
-              "name": "D. Sokolov",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "south-africa-11-martin",
-              "name": "A. Martin",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "south-africa-12-pereira",
-              "name": "F. Pereira",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "south-africa-13-kovac",
-              "name": "N. Kovač",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        }
-      ],
-      "stats": [
-        {
-          "teamId": "mexico",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "51%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 7
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 6
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 3
-            },
-            {
-              "type": "Fouls",
-              "value": 10
-            }
-          ]
-        },
-        {
-          "teamId": "south-africa",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "49%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 13
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 4
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 5
-            },
-            {
-              "type": "Fouls",
-              "value": 13
-            }
-          ]
-        }
-      ],
-      "ratings": [
-        {
-          "playerId": "mexico-0-wagner",
-          "name": "H. Wagner",
-          "teamId": "mexico",
-          "number": 1,
-          "rating": 7.4
-        },
-        {
-          "playerId": "mexico-1-okafor",
-          "name": "P. Okafor",
-          "teamId": "mexico",
-          "number": 2,
-          "rating": 6.7
-        },
-        {
-          "playerId": "mexico-2-bianchi",
-          "name": "B. Bianchi",
-          "teamId": "mexico",
-          "number": 3,
-          "rating": 7.2
-        },
-        {
-          "playerId": "mexico-3-musiala",
-          "name": "A. Musiala",
-          "teamId": "mexico",
-          "number": 4,
-          "rating": 8
-        },
-        {
-          "playerId": "mexico-4-dubois",
-          "name": "F. Dubois",
-          "teamId": "mexico",
-          "number": 5,
-          "rating": 8.5
-        },
-        {
-          "playerId": "mexico-5-khalil",
-          "name": "N. Khalil",
-          "teamId": "mexico",
-          "number": 6,
-          "rating": 8.3
-        },
-        {
-          "playerId": "mexico-6-yamal",
-          "name": "H. Yamal",
-          "teamId": "mexico",
-          "number": 7,
-          "rating": 6.3
-        },
-        {
-          "playerId": "mexico-7-ivanov",
-          "name": "P. Ivanov",
-          "teamId": "mexico",
-          "number": 8,
-          "rating": 6.1
-        },
-        {
-          "playerId": "mexico-8-mensah",
-          "name": "K. Mensah",
-          "teamId": "mexico",
-          "number": 9,
-          "rating": 8.1
-        },
-        {
-          "playerId": "mexico-9-costa",
-          "name": "S. Costa",
-          "teamId": "mexico",
-          "number": 10,
-          "rating": 8.3
-        },
-        {
-          "playerId": "mexico-10-dubois",
-          "name": "A. Dubois",
-          "teamId": "mexico",
-          "number": 11,
-          "rating": 7.4
-        },
-        {
-          "playerId": "south-africa-0-lopez",
-          "name": "E. López",
-          "teamId": "south-africa",
-          "number": 1,
-          "rating": 7.6
-        },
-        {
-          "playerId": "south-africa-1-vinicius",
-          "name": "H. Vinícius",
-          "teamId": "south-africa",
-          "number": 2,
-          "rating": 7.4
-        },
-        {
-          "playerId": "south-africa-2-almeida",
-          "name": "C. Almeida",
-          "teamId": "south-africa",
-          "number": 3,
-          "rating": 7.5
-        },
-        {
-          "playerId": "south-africa-3-nakamura",
-          "name": "O. Nakamura",
-          "teamId": "south-africa",
-          "number": 4,
-          "rating": 6
-        },
-        {
-          "playerId": "south-africa-4-alvarez",
-          "name": "A. Álvarez",
-          "teamId": "south-africa",
-          "number": 5,
-          "rating": 8.4
-        },
-        {
-          "playerId": "south-africa-5-horvat",
-          "name": "K. Horvat",
-          "teamId": "south-africa",
-          "number": 6,
-          "rating": 8.3
-        },
-        {
-          "playerId": "south-africa-6-novak",
-          "name": "P. Novák",
-          "teamId": "south-africa",
-          "number": 7,
-          "rating": 6.3
-        },
-        {
-          "playerId": "south-africa-7-bernard",
-          "name": "H. Bernard",
-          "teamId": "south-africa",
-          "number": 8,
-          "rating": 8.1
-        },
-        {
-          "playerId": "south-africa-8-larsson",
-          "name": "C. Larsson",
-          "teamId": "south-africa",
-          "number": 9,
-          "rating": 7.4
-        },
-        {
-          "playerId": "south-africa-9-greco",
-          "name": "O. Greco",
-          "teamId": "south-africa",
-          "number": 10,
-          "rating": 8.3
-        },
-        {
-          "playerId": "south-africa-10-sokolov",
-          "name": "D. Sokolov",
-          "teamId": "south-africa",
-          "number": 11,
-          "rating": 8
+          "ownGoal": false,
+          "playerId": "mexico-r-jimenez",
+          "playerName": "R. Jimenez",
+          "apiPlayerId": 2887
         }
       ]
     },
@@ -481,8 +47,8 @@
       "kickoff": "2026-06-12T02:00:00+00:00",
       "ground": "Estadio Akron",
       "venue": {
-        "name": "Estadio Akron",
-        "city": "Guadalajara"
+        "city": "Guadalajara",
+        "name": "Estadio Akron"
       },
       "homeTeamId": "south-korea",
       "awayTeamId": "czechia",
@@ -492,487 +58,28 @@
       "awayGoals": 1,
       "goals": [
         {
-          "playerId": "south-korea-11-torres",
-          "apiPlayerId": null,
-          "playerName": "C. Torres",
-          "minute": 6,
+          "minute": 59,
+          "teamId": "czechia",
+          "ownGoal": false,
+          "playerId": "czechia-l-krejci",
+          "playerName": "L. Krejci",
+          "apiPlayerId": 66407
+        },
+        {
+          "minute": 67,
           "teamId": "south-korea",
-          "ownGoal": false
+          "ownGoal": false,
+          "playerId": "south-korea-hwang-in-beom",
+          "playerName": "Hwang In-Beom",
+          "apiPlayerId": 2901
         },
         {
-          "playerId": "south-korea-11-torres",
-          "apiPlayerId": null,
-          "playerName": "C. Torres",
-          "minute": 45,
+          "minute": 80,
           "teamId": "south-korea",
-          "ownGoal": false
-        },
-        {
-          "playerId": "czech-republic-5-bianchi",
-          "apiPlayerId": null,
-          "playerName": "H. Bianchi",
-          "minute": 42,
-          "teamId": "czech-republic",
-          "ownGoal": false
-        }
-      ],
-      "events": [
-        {
-          "minute": 6,
-          "teamId": "south-korea",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "C. Torres",
-          "playerId": "south-korea-11-torres",
-          "assistName": null
-        },
-        {
-          "minute": 42,
-          "teamId": "czech-republic",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "H. Bianchi",
-          "playerId": "czech-republic-5-bianchi",
-          "assistName": null
-        },
-        {
-          "minute": 45,
-          "teamId": "south-korea",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "C. Torres",
-          "playerId": "south-korea-11-torres",
-          "assistName": null
-        },
-        {
-          "minute": 50,
-          "teamId": "south-korea",
-          "type": "CARD",
-          "detail": "Yellow Card",
-          "playerName": "R. Larsson",
-          "playerId": "south-korea-9-larsson"
-        },
-        {
-          "minute": 50,
-          "teamId": "south-korea",
-          "type": "CARD",
-          "detail": "Yellow Card",
-          "playerName": "R. Larsson",
-          "playerId": "south-korea-9-larsson"
-        },
-        {
-          "minute": 68,
-          "teamId": "south-korea",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "E. García",
-          "playerId": "south-korea-8-garcia",
-          "assistName": "C. Torres"
-        },
-        {
-          "minute": 83,
-          "teamId": "czech-republic",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "T. Romano",
-          "playerId": "czech-republic-10-romano",
-          "assistName": "C. Osimhen"
-        }
-      ],
-      "lineups": [
-        {
-          "teamId": "south-korea",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "south-korea-0-nakamura",
-              "name": "G. Nakamura",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "south-korea-1-lopez",
-              "name": "T. López",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "south-korea-2-vinicius",
-              "name": "L. Vinícius",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-korea-3-schmidt",
-              "name": "B. Schmidt",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-korea-4-cerny",
-              "name": "E. Černý",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-korea-5-rossi",
-              "name": "R. Rossi",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-korea-6-mansour",
-              "name": "G. Mansour",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "south-korea-7-mbappe",
-              "name": "T. Mbappé",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "south-korea-8-garcia",
-              "name": "E. García",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "south-korea-9-larsson",
-              "name": "R. Larsson",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "south-korea-10-okafor",
-              "name": "M. Okafor",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "south-korea-11-torres",
-              "name": "C. Torres",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "south-korea-12-tanaka",
-              "name": "T. Tanaka",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "south-korea-13-silva",
-              "name": "G. Silva",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        },
-        {
-          "teamId": "czech-republic",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "czech-republic-0-tanaka",
-              "name": "A. Tanaka",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "czech-republic-1-torres",
-              "name": "K. Torres",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "czech-republic-2-markovic",
-              "name": "P. Marković",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "czech-republic-3-silva",
-              "name": "H. Silva",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "czech-republic-4-musiala",
-              "name": "P. Musiala",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "czech-republic-5-bianchi",
-              "name": "H. Bianchi",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "czech-republic-6-okafor",
-              "name": "C. Okafor",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "czech-republic-7-wagner",
-              "name": "O. Wagner",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "czech-republic-8-ivanov",
-              "name": "C. Ivanov",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "czech-republic-9-yamal",
-              "name": "M. Yamal",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "czech-republic-10-romano",
-              "name": "T. Romano",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "czech-republic-11-andersson",
-              "name": "G. Andersson",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "czech-republic-12-martin",
-              "name": "M. Martin",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "czech-republic-13-osimhen",
-              "name": "C. Osimhen",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        }
-      ],
-      "stats": [
-        {
-          "teamId": "south-korea",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "35%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 12
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 8
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 5
-            },
-            {
-              "type": "Fouls",
-              "value": 16
-            }
-          ]
-        },
-        {
-          "teamId": "czech-republic",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "65%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 12
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 1
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 5
-            },
-            {
-              "type": "Fouls",
-              "value": 13
-            }
-          ]
-        }
-      ],
-      "ratings": [
-        {
-          "playerId": "south-korea-0-nakamura",
-          "name": "G. Nakamura",
-          "teamId": "south-korea",
-          "number": 1,
-          "rating": 7.3
-        },
-        {
-          "playerId": "south-korea-1-lopez",
-          "name": "T. López",
-          "teamId": "south-korea",
-          "number": 2,
-          "rating": 6.6
-        },
-        {
-          "playerId": "south-korea-2-vinicius",
-          "name": "L. Vinícius",
-          "teamId": "south-korea",
-          "number": 3,
-          "rating": 6.3
-        },
-        {
-          "playerId": "south-korea-3-schmidt",
-          "name": "B. Schmidt",
-          "teamId": "south-korea",
-          "number": 4,
-          "rating": 8.3
-        },
-        {
-          "playerId": "south-korea-4-cerny",
-          "name": "E. Černý",
-          "teamId": "south-korea",
-          "number": 5,
-          "rating": 6
-        },
-        {
-          "playerId": "south-korea-5-rossi",
-          "name": "R. Rossi",
-          "teamId": "south-korea",
-          "number": 6,
-          "rating": 6.9
-        },
-        {
-          "playerId": "south-korea-6-mansour",
-          "name": "G. Mansour",
-          "teamId": "south-korea",
-          "number": 7,
-          "rating": 7.9
-        },
-        {
-          "playerId": "south-korea-7-mbappe",
-          "name": "T. Mbappé",
-          "teamId": "south-korea",
-          "number": 8,
-          "rating": 6.7
-        },
-        {
-          "playerId": "south-korea-8-garcia",
-          "name": "E. García",
-          "teamId": "south-korea",
-          "number": 9,
-          "rating": 6.9
-        },
-        {
-          "playerId": "south-korea-9-larsson",
-          "name": "R. Larsson",
-          "teamId": "south-korea",
-          "number": 10,
-          "rating": 6.3
-        },
-        {
-          "playerId": "south-korea-10-okafor",
-          "name": "M. Okafor",
-          "teamId": "south-korea",
-          "number": 11,
-          "rating": 8.5
-        },
-        {
-          "playerId": "czech-republic-0-tanaka",
-          "name": "A. Tanaka",
-          "teamId": "czech-republic",
-          "number": 1,
-          "rating": 8.5
-        },
-        {
-          "playerId": "czech-republic-1-torres",
-          "name": "K. Torres",
-          "teamId": "czech-republic",
-          "number": 2,
-          "rating": 6.1
-        },
-        {
-          "playerId": "czech-republic-2-markovic",
-          "name": "P. Marković",
-          "teamId": "czech-republic",
-          "number": 3,
-          "rating": 6.6
-        },
-        {
-          "playerId": "czech-republic-3-silva",
-          "name": "H. Silva",
-          "teamId": "czech-republic",
-          "number": 4,
-          "rating": 7.7
-        },
-        {
-          "playerId": "czech-republic-4-musiala",
-          "name": "P. Musiala",
-          "teamId": "czech-republic",
-          "number": 5,
-          "rating": 6.3
-        },
-        {
-          "playerId": "czech-republic-5-bianchi",
-          "name": "H. Bianchi",
-          "teamId": "czech-republic",
-          "number": 6,
-          "rating": 7.9
-        },
-        {
-          "playerId": "czech-republic-6-okafor",
-          "name": "C. Okafor",
-          "teamId": "czech-republic",
-          "number": 7,
-          "rating": 8
-        },
-        {
-          "playerId": "czech-republic-7-wagner",
-          "name": "O. Wagner",
-          "teamId": "czech-republic",
-          "number": 8,
-          "rating": 7.7
-        },
-        {
-          "playerId": "czech-republic-8-ivanov",
-          "name": "C. Ivanov",
-          "teamId": "czech-republic",
-          "number": 9,
-          "rating": 7.5
-        },
-        {
-          "playerId": "czech-republic-9-yamal",
-          "name": "M. Yamal",
-          "teamId": "czech-republic",
-          "number": 10,
-          "rating": 6
-        },
-        {
-          "playerId": "czech-republic-10-romano",
-          "name": "T. Romano",
-          "teamId": "czech-republic",
-          "number": 11,
-          "rating": 8.6
+          "ownGoal": false,
+          "playerId": "south-korea-oh-hyeon-gyu",
+          "playerName": "Oh Hyeon-Gyu",
+          "apiPlayerId": 34710
         }
       ]
     },
@@ -984,8 +91,8 @@
       "kickoff": "2026-06-12T19:00:00+00:00",
       "ground": "BMO Field",
       "venue": {
-        "name": "BMO Field",
-        "city": "Toronto"
+        "city": "Toronto",
+        "name": "BMO Field"
       },
       "homeTeamId": "canada",
       "awayTeamId": "bosnia-and-herzegovina",
@@ -995,470 +102,20 @@
       "awayGoals": 1,
       "goals": [
         {
-          "playerId": "canada-12-dvorak",
-          "apiPlayerId": null,
-          "playerName": "T. Dvořák",
-          "minute": 55,
-          "teamId": "canada",
-          "ownGoal": false
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-8-fernandez",
-          "apiPlayerId": null,
-          "playerName": "O. Fernández",
-          "minute": 29,
+          "minute": 21,
           "teamId": "bosnia-and-herzegovina",
-          "ownGoal": false
-        }
-      ],
-      "events": [
-        {
-          "minute": 29,
-          "teamId": "bosnia-and-herzegovina",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "O. Fernández",
-          "playerId": "bosnia-and-herzegovina-8-fernandez",
-          "assistName": null
-        },
-        {
-          "minute": 55,
-          "teamId": "canada",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "T. Dvořák",
-          "playerId": "canada-12-dvorak",
-          "assistName": null
-        },
-        {
-          "minute": 71,
-          "teamId": "canada",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "R. Sokolov",
-          "playerId": "canada-9-sokolov",
-          "assistName": "T. Dvořák"
-        },
-        {
-          "minute": 72,
-          "teamId": "bosnia-and-herzegovina",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "N. Bellingham",
-          "playerId": "bosnia-and-herzegovina-9-bellingham",
-          "assistName": "S. Černý"
+          "ownGoal": false,
+          "playerId": "bosnia-and-herzegovina-j-lukic",
+          "playerName": "J. Lukic",
+          "apiPlayerId": 77037
         },
         {
           "minute": 78,
           "teamId": "canada",
-          "type": "CARD",
-          "detail": "Yellow Card",
-          "playerName": "J. Müller",
-          "playerId": "canada-13-muller"
-        },
-        {
-          "minute": 78,
-          "teamId": "canada",
-          "type": "CARD",
-          "detail": "Yellow Card",
-          "playerName": "J. Müller",
-          "playerId": "canada-13-muller"
-        }
-      ],
-      "lineups": [
-        {
-          "teamId": "canada",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "canada-0-petrov",
-              "name": "N. Petrov",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "canada-1-saito",
-              "name": "O. Saitō",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "canada-2-mansour",
-              "name": "J. Mansour",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "canada-3-mbappe",
-              "name": "B. Mbappé",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "canada-4-becker",
-              "name": "J. Becker",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "canada-5-andersson",
-              "name": "B. Andersson",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "canada-6-santos",
-              "name": "G. Santos",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "canada-7-diallo",
-              "name": "T. Diallo",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "canada-8-martin",
-              "name": "G. Martin",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "canada-9-sokolov",
-              "name": "R. Sokolov",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "canada-10-nilsson",
-              "name": "R. Nilsson",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "canada-11-fernandez",
-              "name": "E. Fernández",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "canada-12-dvorak",
-              "name": "T. Dvořák",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "canada-13-muller",
-              "name": "J. Müller",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        },
-        {
-          "teamId": "bosnia-and-herzegovina",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "bosnia-and-herzegovina-0-andersson",
-              "name": "B. Andersson",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-1-becker",
-              "name": "L. Becker",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-2-diallo",
-              "name": "T. Diallo",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-3-santos",
-              "name": "G. Santos",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-4-sokolov",
-              "name": "T. Sokolov",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-5-martin",
-              "name": "G. Martin",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-6-osimhen",
-              "name": "R. Osimhen",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-7-romano",
-              "name": "E. Romano",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-8-fernandez",
-              "name": "O. Fernández",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-9-bellingham",
-              "name": "N. Bellingham",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-10-mansour",
-              "name": "A. Mansour",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "bosnia-and-herzegovina-11-mbappe",
-              "name": "M. Mbappé",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-12-cerny",
-              "name": "S. Černý",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "bosnia-and-herzegovina-13-rossi",
-              "name": "K. Rossi",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        }
-      ],
-      "stats": [
-        {
-          "teamId": "canada",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "62%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 12
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 7
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 5
-            },
-            {
-              "type": "Fouls",
-              "value": 6
-            }
-          ]
-        },
-        {
-          "teamId": "bosnia-and-herzegovina",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "38%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 5
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 4
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 1
-            },
-            {
-              "type": "Fouls",
-              "value": 5
-            }
-          ]
-        }
-      ],
-      "ratings": [
-        {
-          "playerId": "canada-0-petrov",
-          "name": "N. Petrov",
-          "teamId": "canada",
-          "number": 1,
-          "rating": 8.5
-        },
-        {
-          "playerId": "canada-1-saito",
-          "name": "O. Saitō",
-          "teamId": "canada",
-          "number": 2,
-          "rating": 6.4
-        },
-        {
-          "playerId": "canada-2-mansour",
-          "name": "J. Mansour",
-          "teamId": "canada",
-          "number": 3,
-          "rating": 7.5
-        },
-        {
-          "playerId": "canada-3-mbappe",
-          "name": "B. Mbappé",
-          "teamId": "canada",
-          "number": 4,
-          "rating": 7.3
-        },
-        {
-          "playerId": "canada-4-becker",
-          "name": "J. Becker",
-          "teamId": "canada",
-          "number": 5,
-          "rating": 6.1
-        },
-        {
-          "playerId": "canada-5-andersson",
-          "name": "B. Andersson",
-          "teamId": "canada",
-          "number": 6,
-          "rating": 7.5
-        },
-        {
-          "playerId": "canada-6-santos",
-          "name": "G. Santos",
-          "teamId": "canada",
-          "number": 7,
-          "rating": 6.6
-        },
-        {
-          "playerId": "canada-7-diallo",
-          "name": "T. Diallo",
-          "teamId": "canada",
-          "number": 8,
-          "rating": 7.7
-        },
-        {
-          "playerId": "canada-8-martin",
-          "name": "G. Martin",
-          "teamId": "canada",
-          "number": 9,
-          "rating": 7.9
-        },
-        {
-          "playerId": "canada-9-sokolov",
-          "name": "R. Sokolov",
-          "teamId": "canada",
-          "number": 10,
-          "rating": 6.6
-        },
-        {
-          "playerId": "canada-10-nilsson",
-          "name": "R. Nilsson",
-          "teamId": "canada",
-          "number": 11,
-          "rating": 6
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-0-andersson",
-          "name": "B. Andersson",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 1,
-          "rating": 8.1
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-1-becker",
-          "name": "L. Becker",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 2,
-          "rating": 7.3
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-2-diallo",
-          "name": "T. Diallo",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 3,
-          "rating": 7.1
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-3-santos",
-          "name": "G. Santos",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 4,
-          "rating": 8
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-4-sokolov",
-          "name": "T. Sokolov",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 5,
-          "rating": 7.7
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-5-martin",
-          "name": "G. Martin",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 6,
-          "rating": 7.8
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-6-osimhen",
-          "name": "R. Osimhen",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 7,
-          "rating": 7.4
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-7-romano",
-          "name": "E. Romano",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 8,
-          "rating": 7.1
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-8-fernandez",
-          "name": "O. Fernández",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 9,
-          "rating": 7
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-9-bellingham",
-          "name": "N. Bellingham",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 10,
-          "rating": 6.8
-        },
-        {
-          "playerId": "bosnia-and-herzegovina-10-mansour",
-          "name": "A. Mansour",
-          "teamId": "bosnia-and-herzegovina",
-          "number": 11,
-          "rating": 7.3
+          "ownGoal": false,
+          "playerId": "canada-c-larin",
+          "playerName": "C. Larin",
+          "apiPlayerId": 2001
         }
       ]
     },
@@ -1470,8 +127,8 @@
       "kickoff": "2026-06-13T01:00:00+00:00",
       "ground": "SoFi Stadium",
       "venue": {
-        "name": "SoFi Stadium",
-        "city": "Inglewood"
+        "city": "Inglewood",
+        "name": "SoFi Stadium"
       },
       "homeTeamId": "usa",
       "awayTeamId": "paraguay",
@@ -1481,505 +138,44 @@
       "awayGoals": 1,
       "goals": [
         {
-          "playerId": "usa-12-wagner",
-          "apiPlayerId": null,
-          "playerName": "P. Wagner",
-          "minute": 24,
+          "minute": 7,
           "teamId": "usa",
-          "ownGoal": false
+          "ownGoal": true,
+          "playerId": "paraguay-d-bobadilla",
+          "playerName": "D. Bobadilla",
+          "apiPlayerId": 195107
         },
         {
-          "playerId": "usa-12-wagner",
-          "apiPlayerId": null,
-          "playerName": "P. Wagner",
-          "minute": 65,
+          "minute": 31,
           "teamId": "usa",
-          "ownGoal": false
+          "ownGoal": false,
+          "playerId": "usa-f-balogun",
+          "playerName": "F. Balogun",
+          "apiPlayerId": 138835
         },
         {
-          "playerId": "usa-12-wagner",
-          "apiPlayerId": null,
-          "playerName": "P. Wagner",
-          "minute": 81,
+          "minute": 45,
           "teamId": "usa",
-          "ownGoal": false
+          "ownGoal": false,
+          "playerId": "usa-f-balogun",
+          "playerName": "F. Balogun",
+          "apiPlayerId": 138835
         },
         {
-          "playerId": "usa-12-wagner",
-          "apiPlayerId": null,
-          "playerName": "P. Wagner",
-          "minute": 88,
-          "teamId": "usa",
-          "ownGoal": false
-        },
-        {
-          "playerId": "paraguay-8-fernandez",
-          "apiPlayerId": null,
-          "playerName": "P. Fernández",
-          "minute": 9,
+          "minute": 73,
           "teamId": "paraguay",
-          "ownGoal": false
-        }
-      ],
-      "events": [
-        {
-          "minute": 9,
-          "teamId": "paraguay",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "P. Fernández",
-          "playerId": "paraguay-8-fernandez",
-          "assistName": null
+          "ownGoal": false,
+          "playerId": "paraguay-mauricio",
+          "playerName": "Mauricio",
+          "apiPlayerId": 106485
         },
         {
-          "minute": 24,
+          "minute": 90,
           "teamId": "usa",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "P. Wagner",
-          "playerId": "usa-12-wagner",
-          "assistName": null
-        },
-        {
-          "minute": 65,
-          "teamId": "usa",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "P. Wagner",
-          "playerId": "usa-12-wagner",
-          "assistName": null
-        },
-        {
-          "minute": 71,
-          "teamId": "usa",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "E. Müller",
-          "playerId": "usa-9-muller",
-          "assistName": "P. Wagner"
-        },
-        {
-          "minute": 77,
-          "teamId": "paraguay",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "H. Fernández",
-          "playerId": "paraguay-10-fernandez",
-          "assistName": "N. Kovač"
-        },
-        {
-          "minute": 81,
-          "teamId": "usa",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "P. Wagner",
-          "playerId": "usa-12-wagner",
-          "assistName": null
-        },
-        {
-          "minute": 88,
-          "teamId": "usa",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "P. Wagner",
-          "playerId": "usa-12-wagner",
-          "assistName": null
-        }
-      ],
-      "lineups": [
-        {
-          "teamId": "usa",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "usa-0-almeida",
-              "name": "T. Almeida",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "usa-1-horvat",
-              "name": "G. Horvat",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "usa-2-alvarez",
-              "name": "R. Álvarez",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "usa-3-bernard",
-              "name": "E. Bernard",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "usa-4-novak",
-              "name": "B. Novák",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "usa-5-greco",
-              "name": "L. Greco",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "usa-6-larsson",
-              "name": "T. Larsson",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "usa-7-haaland",
-              "name": "G. Haaland",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "usa-8-dvorak",
-              "name": "R. Dvořák",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "usa-9-muller",
-              "name": "E. Müller",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "usa-10-bianchi",
-              "name": "A. Bianchi",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "usa-11-khalil",
-              "name": "B. Khalil",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "usa-12-wagner",
-              "name": "P. Wagner",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "usa-13-musiala",
-              "name": "H. Musiala",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        },
-        {
-          "teamId": "paraguay",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "paraguay-0-andersson",
-              "name": "N. Andersson",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "paraguay-1-romano",
-              "name": "F. Romano",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "paraguay-2-osimhen",
-              "name": "S. Osimhen",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "paraguay-3-martin",
-              "name": "H. Martin",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "paraguay-4-sokolov",
-              "name": "A. Sokolov",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "paraguay-5-kovac",
-              "name": "M. Kovač",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "paraguay-6-pereira",
-              "name": "N. Pereira",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "paraguay-7-bellingham",
-              "name": "F. Bellingham",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "paraguay-8-fernandez",
-              "name": "P. Fernández",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "paraguay-9-nilsson",
-              "name": "H. Nilsson",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "paraguay-10-fernandez",
-              "name": "H. Fernández",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "paraguay-11-bellingham",
-              "name": "S. Bellingham",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "paraguay-12-pereira",
-              "name": "F. Pereira",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "paraguay-13-kovac",
-              "name": "N. Kovač",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        }
-      ],
-      "stats": [
-        {
-          "teamId": "usa",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "62%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 11
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 7
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 4
-            },
-            {
-              "type": "Fouls",
-              "value": 8
-            }
-          ]
-        },
-        {
-          "teamId": "paraguay",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "38%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 14
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 3
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 8
-            },
-            {
-              "type": "Fouls",
-              "value": 6
-            }
-          ]
-        }
-      ],
-      "ratings": [
-        {
-          "playerId": "usa-0-almeida",
-          "name": "T. Almeida",
-          "teamId": "usa",
-          "number": 1,
-          "rating": 8.5
-        },
-        {
-          "playerId": "usa-1-horvat",
-          "name": "G. Horvat",
-          "teamId": "usa",
-          "number": 2,
-          "rating": 8.5
-        },
-        {
-          "playerId": "usa-2-alvarez",
-          "name": "R. Álvarez",
-          "teamId": "usa",
-          "number": 3,
-          "rating": 7.6
-        },
-        {
-          "playerId": "usa-3-bernard",
-          "name": "E. Bernard",
-          "teamId": "usa",
-          "number": 4,
-          "rating": 7.3
-        },
-        {
-          "playerId": "usa-4-novak",
-          "name": "B. Novák",
-          "teamId": "usa",
-          "number": 5,
-          "rating": 8.1
-        },
-        {
-          "playerId": "usa-5-greco",
-          "name": "L. Greco",
-          "teamId": "usa",
-          "number": 6,
-          "rating": 7.2
-        },
-        {
-          "playerId": "usa-6-larsson",
-          "name": "T. Larsson",
-          "teamId": "usa",
-          "number": 7,
-          "rating": 8.7
-        },
-        {
-          "playerId": "usa-7-haaland",
-          "name": "G. Haaland",
-          "teamId": "usa",
-          "number": 8,
-          "rating": 6.8
-        },
-        {
-          "playerId": "usa-8-dvorak",
-          "name": "R. Dvořák",
-          "teamId": "usa",
-          "number": 9,
-          "rating": 7.8
-        },
-        {
-          "playerId": "usa-9-muller",
-          "name": "E. Müller",
-          "teamId": "usa",
-          "number": 10,
-          "rating": 8.1
-        },
-        {
-          "playerId": "usa-10-bianchi",
-          "name": "A. Bianchi",
-          "teamId": "usa",
-          "number": 11,
-          "rating": 8.3
-        },
-        {
-          "playerId": "paraguay-0-andersson",
-          "name": "N. Andersson",
-          "teamId": "paraguay",
-          "number": 1,
-          "rating": 7.5
-        },
-        {
-          "playerId": "paraguay-1-romano",
-          "name": "F. Romano",
-          "teamId": "paraguay",
-          "number": 2,
-          "rating": 6.2
-        },
-        {
-          "playerId": "paraguay-2-osimhen",
-          "name": "S. Osimhen",
-          "teamId": "paraguay",
-          "number": 3,
-          "rating": 6.2
-        },
-        {
-          "playerId": "paraguay-3-martin",
-          "name": "H. Martin",
-          "teamId": "paraguay",
-          "number": 4,
-          "rating": 6.9
-        },
-        {
-          "playerId": "paraguay-4-sokolov",
-          "name": "A. Sokolov",
-          "teamId": "paraguay",
-          "number": 5,
-          "rating": 6.3
-        },
-        {
-          "playerId": "paraguay-5-kovac",
-          "name": "M. Kovač",
-          "teamId": "paraguay",
-          "number": 6,
-          "rating": 6
-        },
-        {
-          "playerId": "paraguay-6-pereira",
-          "name": "N. Pereira",
-          "teamId": "paraguay",
-          "number": 7,
-          "rating": 6.7
-        },
-        {
-          "playerId": "paraguay-7-bellingham",
-          "name": "F. Bellingham",
-          "teamId": "paraguay",
-          "number": 8,
-          "rating": 7.4
-        },
-        {
-          "playerId": "paraguay-8-fernandez",
-          "name": "P. Fernández",
-          "teamId": "paraguay",
-          "number": 9,
-          "rating": 7.3
-        },
-        {
-          "playerId": "paraguay-9-nilsson",
-          "name": "H. Nilsson",
-          "teamId": "paraguay",
-          "number": 10,
-          "rating": 7.2
-        },
-        {
-          "playerId": "paraguay-10-fernandez",
-          "name": "H. Fernández",
-          "teamId": "paraguay",
-          "number": 11,
-          "rating": 8.1
+          "ownGoal": false,
+          "playerId": "usa-g-reyna",
+          "playerName": "G. Reyna",
+          "apiPlayerId": 161921
         }
       ]
     },
@@ -1991,8 +187,8 @@
       "kickoff": "2026-06-13T19:00:00+00:00",
       "ground": "Levi's Stadium",
       "venue": {
-        "name": "Levi's Stadium",
-        "city": "Santa Clara"
+        "city": "Santa Clara",
+        "name": "Levi's Stadium"
       },
       "homeTeamId": "qatar",
       "awayTeamId": "switzerland",
@@ -2002,1078 +198,20 @@
       "awayGoals": 1,
       "goals": [
         {
-          "playerId": "switzerland-b-embolo",
-          "apiPlayerId": 421,
-          "playerName": "B. Embolo",
           "minute": 17,
           "teamId": "switzerland",
-          "ownGoal": false
-        },
-        {
-          "playerId": "switzerland-m-muheim",
-          "apiPlayerId": 48489,
-          "playerName": "M. Muheim",
-          "minute": 90,
-          "teamId": "qatar",
-          "ownGoal": true
-        }
-      ],
-      "events": [
-        {
-          "minute": 16,
-          "extraMinute": null,
-          "teamId": "qatar",
-          "type": "CARD",
-          "detail": "Yellow Card",
-          "playerName": "M. Abunada",
-          "playerId": "qatar-mahmud-abunada",
-          "assistName": null
-        },
-        {
-          "minute": 17,
-          "extraMinute": null,
-          "teamId": "switzerland",
-          "type": "GOAL",
-          "detail": "Penalty",
-          "playerName": "B. Embolo",
+          "ownGoal": false,
           "playerId": "switzerland-b-embolo",
-          "assistName": null
-        },
-        {
-          "minute": 23,
-          "extraMinute": null,
-          "teamId": "qatar",
-          "type": "CARD",
-          "detail": "Yellow Card",
-          "playerName": "J. Gaber",
-          "playerId": "qatar-jassem-gaber",
-          "assistName": null
-        },
-        {
-          "minute": 42,
-          "extraMinute": null,
-          "teamId": "switzerland",
-          "type": "CARD",
-          "detail": "Yellow Card",
-          "playerName": "D. Zakaria",
-          "playerId": "switzerland-d-zakaria",
-          "assistName": null
-        },
-        {
-          "minute": 60,
-          "extraMinute": null,
-          "teamId": "qatar",
-          "type": "SUBST",
-          "detail": "Substitution 1",
-          "playerName": "A. Al Oui",
-          "playerId": null,
-          "assistName": "A. Fathi"
-        },
-        {
-          "minute": 60,
-          "extraMinute": null,
-          "teamId": "qatar",
-          "type": "SUBST",
-          "detail": "Substitution 2",
-          "playerName": "J. Gaber",
-          "playerId": "qatar-jassem-gaber",
-          "assistName": "K. Boudiaf"
-        },
-        {
-          "minute": 60,
-          "extraMinute": null,
-          "teamId": "qatar",
-          "type": "SUBST",
-          "detail": "Substitution 3",
-          "playerName": "Y. Abdurisag",
-          "playerId": "qatar-y-abdurisag",
-          "assistName": "A. Alaaeldin"
-        },
-        {
-          "minute": 65,
-          "extraMinute": null,
-          "teamId": "switzerland",
-          "type": "SUBST",
-          "detail": "Substitution 1",
-          "playerName": "D. Ndoye",
-          "playerId": "switzerland-d-ndoye",
-          "assistName": "J. Manzambi"
-        },
-        {
-          "minute": 65,
-          "extraMinute": null,
-          "teamId": "switzerland",
-          "type": "SUBST",
-          "detail": "Substitution 2",
-          "playerName": "M. Aebischer",
-          "playerId": "switzerland-m-aebischer",
-          "assistName": "F. Rieder"
-        },
-        {
-          "minute": 79,
-          "extraMinute": null,
-          "teamId": "qatar",
-          "type": "SUBST",
-          "detail": "Substitution 4",
-          "playerName": "A. O. Madibo",
-          "playerId": "qatar-assim-madibo",
-          "assistName": "M. Al Mannai"
-        },
-        {
-          "minute": 79,
-          "extraMinute": null,
-          "teamId": "switzerland",
-          "type": "SUBST",
-          "detail": "Substitution 3",
-          "playerName": "R. Vargas",
-          "playerId": "switzerland-r-vargas",
-          "assistName": "Z. Amdouni"
-        },
-        {
-          "minute": 88,
-          "extraMinute": null,
-          "teamId": "qatar",
-          "type": "SUBST",
-          "detail": "Substitution 5",
-          "playerName": "Edmilson Junior",
-          "playerId": "qatar-edmilson-junior",
-          "assistName": "H. Al Haydos"
-        },
-        {
-          "minute": 89,
-          "extraMinute": null,
-          "teamId": "switzerland",
-          "type": "SUBST",
-          "detail": "Substitution 4",
-          "playerName": "R. Rodriguez",
-          "playerId": "switzerland-r-rodriguez",
-          "assistName": "M. Muheim"
-        },
-        {
-          "minute": 89,
-          "extraMinute": null,
-          "teamId": "switzerland",
-          "type": "SUBST",
-          "detail": "Substitution 5",
-          "playerName": "R. Freuler",
-          "playerId": "switzerland-r-freuler",
-          "assistName": "A. Jashari"
+          "playerName": "Breel Embolo",
+          "apiPlayerId": 421
         },
         {
           "minute": 90,
-          "extraMinute": 4,
           "teamId": "qatar",
-          "type": "GOAL",
-          "detail": "Own Goal",
-          "playerName": "M. Muheim",
-          "playerId": "switzerland-m-muheim",
-          "assistName": null
-        }
-      ],
-      "lineups": [
-        {
-          "teamId": "qatar",
-          "formation": "4-3-3",
-          "coach": "Julen Lopetegui",
-          "startXI": [
-            {
-              "playerId": "qatar-mahmud-abunada",
-              "name": "Mahmud Abunad",
-              "number": 1,
-              "pos": "G",
-              "grid": "1:1"
-            },
-            {
-              "playerId": "qatar-ayoub-al-oui",
-              "name": "Ayoub Al Oui",
-              "number": 13,
-              "pos": "D",
-              "grid": "2:4"
-            },
-            {
-              "playerId": "qatar-pedro-miguel",
-              "name": "Pedro Miguel",
-              "number": 2,
-              "pos": "D",
-              "grid": "2:3"
-            },
-            {
-              "playerId": "qatar-boualem-khoukhi",
-              "name": "Boualem Khoukhi",
-              "number": 16,
-              "pos": "D",
-              "grid": "2:2"
-            },
-            {
-              "playerId": "qatar-homam-ahmed",
-              "name": "Homam Al-Amin",
-              "number": 14,
-              "pos": "D",
-              "grid": "2:1"
-            },
-            {
-              "playerId": "qatar-jassem-gaber",
-              "name": "Jassem Gaber Abdulsallam",
-              "number": 5,
-              "pos": "M",
-              "grid": "3:3"
-            },
-            {
-              "playerId": "qatar-assim-madibo",
-              "name": "Assim Madibo",
-              "number": 23,
-              "pos": "M",
-              "grid": "3:2"
-            },
-            {
-              "playerId": "qatar-gueye-laye",
-              "name": "Issa Laye",
-              "number": 4,
-              "pos": "M",
-              "grid": "3:1"
-            },
-            {
-              "playerId": "qatar-edmilson-junior",
-              "name": "Edmilson Junior",
-              "number": 8,
-              "pos": "F",
-              "grid": "4:3"
-            },
-            {
-              "playerId": "qatar-y-abdurisag",
-              "name": "Yusuf Abdurisag",
-              "number": 15,
-              "pos": "F",
-              "grid": "4:2"
-            },
-            {
-              "playerId": "qatar-akram-afif",
-              "name": "Akram Afif",
-              "number": 11,
-              "pos": "F",
-              "grid": "4:1"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "qatar-ahmed-fathi",
-              "name": "Ahmed Fathi",
-              "number": 20,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-karim-boudiaf",
-              "name": "Karim Boudiaf",
-              "number": 12,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-ahmed-alaa",
-              "name": "Ahmed Alaaeldin",
-              "number": 7,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-mohamed-al-manai",
-              "name": "Mohamed Naceur Almanai",
-              "number": 26,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-hassan-al-haydos",
-              "name": "Hassan Al Haydos",
-              "number": 10,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-meshaal-barsham",
-              "name": "Meshaal Barsham",
-              "number": 22,
-              "pos": "G",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-salah-zakaria",
-              "name": "Salah Zakaria",
-              "number": 21,
-              "pos": "G",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-lucas-mendes",
-              "name": "Lucas Mendes",
-              "number": 3,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-sultan-al-braik",
-              "name": "Sultan Al-Brake",
-              "number": 18,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-al-hashmi-al-hussain",
-              "name": "Al-Hashmi Al-Hussain",
-              "number": 25,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-abdulaziz-hatem",
-              "name": "Abdelaziz Hatem",
-              "number": 6,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-ahmed-al-ganehi",
-              "name": "Ahmed Al-Ganehi",
-              "number": 17,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-almoez-ali",
-              "name": "Almoez Ali",
-              "number": 19,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-mohammed-muntari",
-              "name": "Mohammed Muntari",
-              "number": 9,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "qatar-tahsin-jamshid",
-              "name": "Tahsin Mohammed Jamshid",
-              "number": 24,
-              "pos": "F",
-              "grid": null
-            }
-          ]
-        },
-        {
-          "teamId": "switzerland",
-          "formation": "4-3-3",
-          "coach": "Murat Yakin",
-          "startXI": [
-            {
-              "playerId": "switzerland-g-kobel",
-              "name": "Gregor Kobel",
-              "number": 1,
-              "pos": "G",
-              "grid": "1:1"
-            },
-            {
-              "playerId": "switzerland-d-zakaria",
-              "name": "Denis Zakaria",
-              "number": 6,
-              "pos": "D",
-              "grid": "2:4"
-            },
-            {
-              "playerId": "switzerland-n-elvedi",
-              "name": "Nico Elvedi",
-              "number": 4,
-              "pos": "D",
-              "grid": "2:3"
-            },
-            {
-              "playerId": "switzerland-m-akanji",
-              "name": "Manuel Akanji",
-              "number": 5,
-              "pos": "D",
-              "grid": "2:2"
-            },
-            {
-              "playerId": "switzerland-r-rodriguez",
-              "name": "Ricardo Rodríguez",
-              "number": 13,
-              "pos": "D",
-              "grid": "2:1"
-            },
-            {
-              "playerId": "switzerland-m-aebischer",
-              "name": "Michel Aebischer",
-              "number": 20,
-              "pos": "M",
-              "grid": "3:3"
-            },
-            {
-              "playerId": "switzerland-g-xhaka",
-              "name": "Granit Xhaka",
-              "number": 10,
-              "pos": "M",
-              "grid": "3:2"
-            },
-            {
-              "playerId": "switzerland-r-freuler",
-              "name": "Remo Freuler",
-              "number": 8,
-              "pos": "M",
-              "grid": "3:1"
-            },
-            {
-              "playerId": "switzerland-d-ndoye",
-              "name": "Dan Ndoye",
-              "number": 11,
-              "pos": "F",
-              "grid": "4:3"
-            },
-            {
-              "playerId": "switzerland-b-embolo",
-              "name": "Breel Embolo",
-              "number": 7,
-              "pos": "F",
-              "grid": "4:2"
-            },
-            {
-              "playerId": "switzerland-r-vargas",
-              "name": "Rubén Vargas",
-              "number": 17,
-              "pos": "F",
-              "grid": "4:1"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "switzerland-f-rieder",
-              "name": "Fabian Rieder",
-              "number": 22,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-j-manzambi",
-              "name": "Johan Manzambi",
-              "number": 9,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-z-amdouni",
-              "name": "Zeki Amdouni",
-              "number": 23,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-m-muheim",
-              "name": "Miro Muheim",
-              "number": 2,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-a-jashari",
-              "name": "Ardon Jashari",
-              "number": 14,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-y-mvogo",
-              "name": "Yvon Mvogo",
-              "number": 12,
-              "pos": "G",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-m-keller",
-              "name": "Marvin Keller",
-              "number": 21,
-              "pos": "G",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-l-jaquez",
-              "name": "Luca Jaquez",
-              "number": 25,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-e-comert",
-              "name": "Eray Cömert",
-              "number": 18,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-a-amenda",
-              "name": "Aurèle Amenda",
-              "number": 24,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-d-sow",
-              "name": "Djibril Sow",
-              "number": 15,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-s-widmer",
-              "name": "Silvan Widmer",
-              "number": 3,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-c-fassnacht",
-              "name": "Christian Fassnacht",
-              "number": 16,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-c-itten",
-              "name": "Cédric Itten",
-              "number": 26,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "switzerland-n-okafor",
-              "name": "Noah Okafor",
-              "number": 19,
-              "pos": "F",
-              "grid": null
-            }
-          ]
-        }
-      ],
-      "stats": [
-        {
-          "teamId": "qatar",
-          "items": [
-            {
-              "type": "Shots on Goal",
-              "value": 4
-            },
-            {
-              "type": "Shots off Goal",
-              "value": 3
-            },
-            {
-              "type": "Total Shots",
-              "value": 7
-            },
-            {
-              "type": "Blocked Shots",
-              "value": 0
-            },
-            {
-              "type": "Shots insidebox",
-              "value": 5
-            },
-            {
-              "type": "Shots outsidebox",
-              "value": 2
-            },
-            {
-              "type": "Fouls",
-              "value": 12
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 3
-            },
-            {
-              "type": "Offsides",
-              "value": 0
-            },
-            {
-              "type": "Ball Possession",
-              "value": "32%"
-            },
-            {
-              "type": "Yellow Cards",
-              "value": 2
-            },
-            {
-              "type": "Red Cards",
-              "value": null
-            },
-            {
-              "type": "Goalkeeper Saves",
-              "value": 5
-            },
-            {
-              "type": "Total passes",
-              "value": 275
-            },
-            {
-              "type": "Passes accurate",
-              "value": 196
-            },
-            {
-              "type": "Passes %",
-              "value": "71%"
-            },
-            {
-              "type": "expected_goals",
-              "value": "0.76"
-            },
-            {
-              "type": "goals_prevented",
-              "value": "0.43"
-            }
-          ]
-        },
-        {
-          "teamId": "switzerland",
-          "items": [
-            {
-              "type": "Shots on Goal",
-              "value": 7
-            },
-            {
-              "type": "Shots off Goal",
-              "value": 10
-            },
-            {
-              "type": "Total Shots",
-              "value": 26
-            },
-            {
-              "type": "Blocked Shots",
-              "value": 9
-            },
-            {
-              "type": "Shots insidebox",
-              "value": 18
-            },
-            {
-              "type": "Shots outsidebox",
-              "value": 8
-            },
-            {
-              "type": "Fouls",
-              "value": 11
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 10
-            },
-            {
-              "type": "Offsides",
-              "value": 1
-            },
-            {
-              "type": "Ball Possession",
-              "value": "68%"
-            },
-            {
-              "type": "Yellow Cards",
-              "value": 1
-            },
-            {
-              "type": "Red Cards",
-              "value": null
-            },
-            {
-              "type": "Goalkeeper Saves",
-              "value": 3
-            },
-            {
-              "type": "Total passes",
-              "value": 575
-            },
-            {
-              "type": "Passes accurate",
-              "value": 522
-            },
-            {
-              "type": "Passes %",
-              "value": "91%"
-            },
-            {
-              "type": "expected_goals",
-              "value": "3.24"
-            },
-            {
-              "type": "goals_prevented",
-              "value": "0.43"
-            }
-          ]
-        }
-      ],
-      "ratings": [
-        {
-          "playerId": "qatar-mahmud-abunada",
-          "name": "Mahmud Abunad",
-          "teamId": "qatar",
-          "rating": 6.9,
-          "number": 1
-        },
-        {
-          "playerId": "qatar-ayoub-al-oui",
-          "name": "Ayoub Al Oui",
-          "teamId": "qatar",
-          "rating": 6.2,
-          "number": 13
-        },
-        {
-          "playerId": "qatar-pedro-miguel",
-          "name": "Pedro Miguel",
-          "teamId": "qatar",
-          "rating": 7.2,
-          "number": 2
-        },
-        {
+          "ownGoal": false,
           "playerId": "qatar-boualem-khoukhi",
-          "name": "Boualem Khoukhi",
-          "teamId": "qatar",
-          "rating": 7.2,
-          "number": 16
-        },
-        {
-          "playerId": "qatar-homam-ahmed",
-          "name": "Homam Al-Amin",
-          "teamId": "qatar",
-          "rating": 7.6,
-          "number": 14
-        },
-        {
-          "playerId": "qatar-jassem-gaber",
-          "name": "Jassem Gaber Abdulsallam",
-          "teamId": "qatar",
-          "rating": 6.5,
-          "number": 5
-        },
-        {
-          "playerId": "qatar-assim-madibo",
-          "name": "Assim Madibo",
-          "teamId": "qatar",
-          "rating": 6.2,
-          "number": 23
-        },
-        {
-          "playerId": "qatar-gueye-laye",
-          "name": "Issa Laye",
-          "teamId": "qatar",
-          "rating": 7.2,
-          "number": 4
-        },
-        {
-          "playerId": "qatar-edmilson-junior",
-          "name": "Edmilson Junior",
-          "teamId": "qatar",
-          "rating": 6.3,
-          "number": 8
-        },
-        {
-          "playerId": "qatar-y-abdurisag",
-          "name": "Yusuf Abdurisag",
-          "teamId": "qatar",
-          "rating": 7,
-          "number": 15
-        },
-        {
-          "playerId": "qatar-akram-afif",
-          "name": "Akram Afif",
-          "teamId": "qatar",
-          "rating": 7.2,
-          "number": 11
-        },
-        {
-          "playerId": "qatar-ahmed-fathi",
-          "name": "Ahmed Fathi",
-          "teamId": "qatar",
-          "rating": 6.6,
-          "number": 20
-        },
-        {
-          "playerId": "qatar-karim-boudiaf",
-          "name": "Karim Boudiaf",
-          "teamId": "qatar",
-          "rating": 7,
-          "number": 12
-        },
-        {
-          "playerId": "qatar-ahmed-alaa",
-          "name": "Ahmed Alaaeldin",
-          "teamId": "qatar",
-          "rating": 6.5,
-          "number": 7
-        },
-        {
-          "playerId": "qatar-mohamed-al-manai",
-          "name": "Mohamed Naceur Almanai",
-          "teamId": "qatar",
-          "rating": 6.3,
-          "number": 26
-        },
-        {
-          "playerId": "qatar-hassan-al-haydos",
-          "name": "Hassan Al Haydos",
-          "teamId": "qatar",
-          "rating": 6.3,
-          "number": 10
-        },
-        {
-          "playerId": "qatar-meshaal-barsham",
-          "name": "Meshaal Barsham",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 22
-        },
-        {
-          "playerId": "qatar-salah-zakaria",
-          "name": "Salah Zakaria",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 21
-        },
-        {
-          "playerId": "qatar-lucas-mendes",
-          "name": "Lucas Mendes",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 3
-        },
-        {
-          "playerId": "qatar-sultan-al-braik",
-          "name": "Sultan Al-Brake",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 18
-        },
-        {
-          "playerId": "qatar-al-hashmi-al-hussain",
-          "name": "Al-Hashmi Al-Hussain",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 25
-        },
-        {
-          "playerId": "qatar-abdulaziz-hatem",
-          "name": "Abdelaziz Hatem",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 6
-        },
-        {
-          "playerId": "qatar-ahmed-al-ganehi",
-          "name": "Ahmed Al-Ganehi",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 17
-        },
-        {
-          "playerId": "qatar-almoez-ali",
-          "name": "Almoez Ali",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 19
-        },
-        {
-          "playerId": "qatar-mohammed-muntari",
-          "name": "Mohammed Muntari",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 9
-        },
-        {
-          "playerId": "qatar-tahsin-jamshid",
-          "name": "Tahsin Mohammed Jamshid",
-          "teamId": "qatar",
-          "rating": null,
-          "number": 24
-        },
-        {
-          "playerId": "switzerland-g-kobel",
-          "name": "Gregor Kobel",
-          "teamId": "switzerland",
-          "rating": 7.3,
-          "number": 1
-        },
-        {
-          "playerId": "switzerland-d-zakaria",
-          "name": "Denis Zakaria",
-          "teamId": "switzerland",
-          "rating": 6.5,
-          "number": 6
-        },
-        {
-          "playerId": "switzerland-n-elvedi",
-          "name": "Nico Elvedi",
-          "teamId": "switzerland",
-          "rating": 7.2,
-          "number": 4
-        },
-        {
-          "playerId": "switzerland-m-akanji",
-          "name": "Manuel Akanji",
-          "teamId": "switzerland",
-          "rating": 7.2,
-          "number": 5
-        },
-        {
-          "playerId": "switzerland-r-rodriguez",
-          "name": "Ricardo Rodríguez",
-          "teamId": "switzerland",
-          "rating": 7.7,
-          "number": 13
-        },
-        {
-          "playerId": "switzerland-m-aebischer",
-          "name": "Michel Aebischer",
-          "teamId": "switzerland",
-          "rating": 7.5,
-          "number": 20
-        },
-        {
-          "playerId": "switzerland-g-xhaka",
-          "name": "Granit Xhaka",
-          "teamId": "switzerland",
-          "rating": 7.3,
-          "number": 10
-        },
-        {
-          "playerId": "switzerland-r-freuler",
-          "name": "Remo Freuler",
-          "teamId": "switzerland",
-          "rating": 6.9,
-          "number": 8
-        },
-        {
-          "playerId": "switzerland-d-ndoye",
-          "name": "Dan Ndoye",
-          "teamId": "switzerland",
-          "rating": 6.2,
-          "number": 11
-        },
-        {
-          "playerId": "switzerland-b-embolo",
-          "name": "Breel Embolo",
-          "teamId": "switzerland",
-          "rating": 7,
-          "number": 7
-        },
-        {
-          "playerId": "switzerland-r-vargas",
-          "name": "Rubén Vargas",
-          "teamId": "switzerland",
-          "rating": 7.9,
-          "number": 17
-        },
-        {
-          "playerId": "switzerland-f-rieder",
-          "name": "Fabian Rieder",
-          "teamId": "switzerland",
-          "rating": 6.3,
-          "number": 22
-        },
-        {
-          "playerId": "switzerland-j-manzambi",
-          "name": "Johan Manzambi",
-          "teamId": "switzerland",
-          "rating": 6.2,
-          "number": 9
-        },
-        {
-          "playerId": "switzerland-z-amdouni",
-          "name": "Zeki Amdouni",
-          "teamId": "switzerland",
-          "rating": 6.9,
-          "number": 23
-        },
-        {
-          "playerId": "switzerland-m-muheim",
-          "name": "Miro Muheim",
-          "teamId": "switzerland",
-          "rating": 6.2,
-          "number": 2
-        },
-        {
-          "playerId": "switzerland-a-jashari",
-          "name": "Ardon Jashari",
-          "teamId": "switzerland",
-          "rating": 6.2,
-          "number": 14
-        },
-        {
-          "playerId": "switzerland-y-mvogo",
-          "name": "Yvon Mvogo",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 12
-        },
-        {
-          "playerId": "switzerland-m-keller",
-          "name": "Marvin Keller",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 21
-        },
-        {
-          "playerId": "switzerland-l-jaquez",
-          "name": "Luca Jaquez",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 25
-        },
-        {
-          "playerId": "switzerland-e-comert",
-          "name": "Eray Cömert",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 18
-        },
-        {
-          "playerId": "switzerland-a-amenda",
-          "name": "Aurèle Amenda",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 24
-        },
-        {
-          "playerId": "switzerland-d-sow",
-          "name": "Djibril Sow",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 15
-        },
-        {
-          "playerId": "switzerland-s-widmer",
-          "name": "Silvan Widmer",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 3
-        },
-        {
-          "playerId": "switzerland-c-fassnacht",
-          "name": "Christian Fassnacht",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 16
-        },
-        {
-          "playerId": "switzerland-c-itten",
-          "name": "Cédric Itten",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 26
-        },
-        {
-          "playerId": "switzerland-n-okafor",
-          "name": "Noah Okafor",
-          "teamId": "switzerland",
-          "rating": null,
-          "number": 19
+          "playerName": "Boualem Khoukhi",
+          "apiPlayerId": 2532
         }
       ]
     },
@@ -3085,465 +223,31 @@
       "kickoff": "2026-06-13T22:00:00+00:00",
       "ground": "MetLife Stadium",
       "venue": {
-        "name": "MetLife Stadium",
-        "city": "East Rutherford"
+        "city": "East Rutherford",
+        "name": "MetLife Stadium"
       },
       "homeTeamId": "brazil",
       "awayTeamId": "morocco",
-      "status": "LIVE",
+      "status": "FINISHED",
       "elapsed": 90,
       "homeGoals": 1,
       "awayGoals": 1,
       "goals": [
         {
-          "playerId": "brazil-12-pereira",
-          "apiPlayerId": null,
-          "playerName": "B. Pereira",
-          "minute": 64,
-          "teamId": "brazil",
-          "ownGoal": false
-        },
-        {
-          "playerId": "morocco-13-costa",
-          "apiPlayerId": null,
-          "playerName": "G. Costa",
-          "minute": 82,
+          "minute": 21,
           "teamId": "morocco",
-          "ownGoal": false
-        }
-      ],
-      "events": [
+          "ownGoal": false,
+          "playerId": "morocco-i-saibari",
+          "playerName": "Ismael Saibari",
+          "apiPlayerId": 161897
+        },
         {
-          "minute": 64,
+          "minute": 32,
           "teamId": "brazil",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "B. Pereira",
-          "playerId": "brazil-12-pereira",
-          "assistName": null
-        },
-        {
-          "minute": 64,
-          "teamId": "brazil",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "P. Mbappé",
-          "playerId": "brazil-8-mbappe",
-          "assistName": "G. Martin"
-        },
-        {
-          "minute": 69,
-          "teamId": "morocco",
-          "type": "SUBST",
-          "detail": "Substitution",
-          "playerName": "K. Wagner",
-          "playerId": "morocco-9-wagner",
-          "assistName": "T. Mensah"
-        },
-        {
-          "minute": 82,
-          "teamId": "morocco",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "G. Costa",
-          "playerId": "morocco-13-costa",
-          "assistName": null
-        }
-      ],
-      "lineups": [
-        {
-          "teamId": "brazil",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "brazil-0-osimhen",
-              "name": "S. Osimhen",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "brazil-1-martin",
-              "name": "K. Martin",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "brazil-2-andersson",
-              "name": "E. Andersson",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "brazil-3-romano",
-              "name": "H. Romano",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "brazil-4-diallo",
-              "name": "C. Diallo",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "brazil-5-becker",
-              "name": "M. Becker",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "brazil-6-saito",
-              "name": "S. Saitō",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "brazil-7-santos",
-              "name": "K. Santos",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "brazil-8-mbappe",
-              "name": "P. Mbappé",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "brazil-9-petrov",
-              "name": "H. Petrov",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "brazil-10-sokolov",
-              "name": "T. Sokolov",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "brazil-11-martin",
-              "name": "G. Martin",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "brazil-12-pereira",
-              "name": "B. Pereira",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "brazil-13-kovac",
-              "name": "J. Kovač",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        },
-        {
-          "teamId": "morocco",
-          "formation": "4-4-2",
-          "coach": null,
-          "startXI": [
-            {
-              "playerId": "morocco-0-costa",
-              "name": "A. Costa",
-              "number": 1,
-              "pos": "G"
-            },
-            {
-              "playerId": "morocco-1-mensah",
-              "name": "M. Mensah",
-              "number": 2,
-              "pos": "G"
-            },
-            {
-              "playerId": "morocco-2-garcia",
-              "name": "N. García",
-              "number": 3,
-              "pos": "D"
-            },
-            {
-              "playerId": "morocco-3-larsson",
-              "name": "F. Larsson",
-              "number": 4,
-              "pos": "D"
-            },
-            {
-              "playerId": "morocco-4-khalil",
-              "name": "N. Khalil",
-              "number": 5,
-              "pos": "D"
-            },
-            {
-              "playerId": "morocco-5-dubois",
-              "name": "F. Dubois",
-              "number": 6,
-              "pos": "D"
-            },
-            {
-              "playerId": "morocco-6-ivanov",
-              "name": "S. Ivanov",
-              "number": 7,
-              "pos": "D"
-            },
-            {
-              "playerId": "morocco-7-yamal",
-              "name": "H. Yamal",
-              "number": 8,
-              "pos": "M"
-            },
-            {
-              "playerId": "morocco-8-okafor",
-              "name": "S. Okafor",
-              "number": 9,
-              "pos": "M"
-            },
-            {
-              "playerId": "morocco-9-wagner",
-              "name": "K. Wagner",
-              "number": 10,
-              "pos": "M"
-            },
-            {
-              "playerId": "morocco-10-larsson",
-              "name": "B. Larsson",
-              "number": 11,
-              "pos": "M"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "morocco-11-garcia",
-              "name": "J. García",
-              "number": 12,
-              "pos": "F"
-            },
-            {
-              "playerId": "morocco-12-mensah",
-              "name": "T. Mensah",
-              "number": 13,
-              "pos": "F"
-            },
-            {
-              "playerId": "morocco-13-costa",
-              "name": "G. Costa",
-              "number": 14,
-              "pos": "F"
-            }
-          ]
-        }
-      ],
-      "stats": [
-        {
-          "teamId": "brazil",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "40%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 15
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 4
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 8
-            },
-            {
-              "type": "Fouls",
-              "value": 17
-            }
-          ]
-        },
-        {
-          "teamId": "morocco",
-          "items": [
-            {
-              "type": "Ball Possession",
-              "value": "60%"
-            },
-            {
-              "type": "Total Shots",
-              "value": 8
-            },
-            {
-              "type": "Shots on Goal",
-              "value": 7
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 2
-            },
-            {
-              "type": "Fouls",
-              "value": 5
-            }
-          ]
-        }
-      ],
-      "ratings": [
-        {
-          "playerId": "brazil-0-osimhen",
-          "name": "S. Osimhen",
-          "teamId": "brazil",
-          "number": 1,
-          "rating": 8
-        },
-        {
-          "playerId": "brazil-1-martin",
-          "name": "K. Martin",
-          "teamId": "brazil",
-          "number": 2,
-          "rating": 6.9
-        },
-        {
-          "playerId": "brazil-2-andersson",
-          "name": "E. Andersson",
-          "teamId": "brazil",
-          "number": 3,
-          "rating": 7
-        },
-        {
-          "playerId": "brazil-3-romano",
-          "name": "H. Romano",
-          "teamId": "brazil",
-          "number": 4,
-          "rating": 6.5
-        },
-        {
-          "playerId": "brazil-4-diallo",
-          "name": "C. Diallo",
-          "teamId": "brazil",
-          "number": 5,
-          "rating": 6.7
-        },
-        {
-          "playerId": "brazil-5-becker",
-          "name": "M. Becker",
-          "teamId": "brazil",
-          "number": 6,
-          "rating": 6.4
-        },
-        {
-          "playerId": "brazil-6-saito",
-          "name": "S. Saitō",
-          "teamId": "brazil",
-          "number": 7,
-          "rating": 7.4
-        },
-        {
-          "playerId": "brazil-7-santos",
-          "name": "K. Santos",
-          "teamId": "brazil",
-          "number": 8,
-          "rating": 8
-        },
-        {
-          "playerId": "brazil-8-mbappe",
-          "name": "P. Mbappé",
-          "teamId": "brazil",
-          "number": 9,
-          "rating": 6
-        },
-        {
-          "playerId": "brazil-9-petrov",
-          "name": "H. Petrov",
-          "teamId": "brazil",
-          "number": 10,
-          "rating": 6.9
-        },
-        {
-          "playerId": "brazil-10-sokolov",
-          "name": "T. Sokolov",
-          "teamId": "brazil",
-          "number": 11,
-          "rating": 8.6
-        },
-        {
-          "playerId": "morocco-0-costa",
-          "name": "A. Costa",
-          "teamId": "morocco",
-          "number": 1,
-          "rating": 6
-        },
-        {
-          "playerId": "morocco-1-mensah",
-          "name": "M. Mensah",
-          "teamId": "morocco",
-          "number": 2,
-          "rating": 7.1
-        },
-        {
-          "playerId": "morocco-2-garcia",
-          "name": "N. García",
-          "teamId": "morocco",
-          "number": 3,
-          "rating": 8.6
-        },
-        {
-          "playerId": "morocco-3-larsson",
-          "name": "F. Larsson",
-          "teamId": "morocco",
-          "number": 4,
-          "rating": 8.1
-        },
-        {
-          "playerId": "morocco-4-khalil",
-          "name": "N. Khalil",
-          "teamId": "morocco",
-          "number": 5,
-          "rating": 6.1
-        },
-        {
-          "playerId": "morocco-5-dubois",
-          "name": "F. Dubois",
-          "teamId": "morocco",
-          "number": 6,
-          "rating": 8.3
-        },
-        {
-          "playerId": "morocco-6-ivanov",
-          "name": "S. Ivanov",
-          "teamId": "morocco",
-          "number": 7,
-          "rating": 8.7
-        },
-        {
-          "playerId": "morocco-7-yamal",
-          "name": "H. Yamal",
-          "teamId": "morocco",
-          "number": 8,
-          "rating": 7.7
-        },
-        {
-          "playerId": "morocco-8-okafor",
-          "name": "S. Okafor",
-          "teamId": "morocco",
-          "number": 9,
-          "rating": 7
-        },
-        {
-          "playerId": "morocco-9-wagner",
-          "name": "K. Wagner",
-          "teamId": "morocco",
-          "number": 10,
-          "rating": 6.3
-        },
-        {
-          "playerId": "morocco-10-larsson",
-          "name": "B. Larsson",
-          "teamId": "morocco",
-          "number": 11,
-          "rating": 6.4
+          "ownGoal": false,
+          "playerId": "brazil-vinicius-junior",
+          "playerName": "Vinícius Júnior",
+          "apiPlayerId": 762
         }
       ]
     },
@@ -3555,16 +259,25 @@
       "kickoff": "2026-06-14T01:00:00+00:00",
       "ground": "Gillette Stadium",
       "venue": {
-        "name": "Gillette Stadium",
-        "city": "Boston"
+        "city": "Boston",
+        "name": "Gillette Stadium"
       },
       "homeTeamId": "haiti",
       "awayTeamId": "scotland",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 28,
+          "teamId": "scotland",
+          "ownGoal": false,
+          "playerId": "scotland-j-mcginn",
+          "playerName": "J. McGinn",
+          "apiPlayerId": 19191
+        }
+      ]
     },
     {
       "id": "D-2",
@@ -3574,951 +287,31 @@
       "kickoff": "2026-06-14T04:00:00+00:00",
       "ground": "BC Place",
       "venue": {
-        "name": "BC Place",
-        "city": "Vancouver"
+        "city": "Vancouver",
+        "name": "BC Place"
       },
       "homeTeamId": "australia",
       "awayTeamId": "turkiye",
-      "status": "LIVE",
-      "elapsed": 57,
-      "homeGoals": 1,
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 2,
       "awayGoals": 0,
       "goals": [
         {
-          "playerId": "australia-n-irankunda",
-          "apiPlayerId": 338014,
-          "playerName": "N. Irankunda",
           "minute": 27,
           "teamId": "australia",
-          "ownGoal": false
-        }
-      ],
-      "events": [
-        {
-          "minute": 27,
-          "extraMinute": null,
-          "teamId": "australia",
-          "type": "GOAL",
-          "detail": "Normal Goal",
-          "playerName": "N. Irankunda",
+          "ownGoal": false,
           "playerId": "australia-n-irankunda",
-          "assistName": "P. Okon-Engstler"
+          "playerName": "N. Irankunda",
+          "apiPlayerId": 338014
         },
         {
-          "minute": 46,
-          "extraMinute": null,
-          "teamId": "turkiye",
-          "type": "SUBST",
-          "detail": "Substitution 1",
-          "playerName": "B. Yilmaz",
-          "playerId": "turkiye-b-y-lmaz",
-          "assistName": "K. Yildiz"
-        }
-      ],
-      "lineups": [
-        {
+          "minute": 75,
           "teamId": "australia",
-          "formation": "5-4-1",
-          "coach": "Tony Popovic",
-          "startXI": [
-            {
-              "playerId": "australia-p-beach",
-              "name": "Patrick Beach",
-              "number": 18,
-              "pos": "G",
-              "grid": "1:1"
-            },
-            {
-              "playerId": "australia-j-italiano",
-              "name": "Jacob Italiano",
-              "number": 4,
-              "pos": "D",
-              "grid": "2:5"
-            },
-            {
-              "playerId": "australia-a-circati",
-              "name": "Alessandro Circati",
-              "number": 3,
-              "pos": "D",
-              "grid": "2:4"
-            },
-            {
-              "playerId": "australia-h-souttar",
-              "name": "Harry Souttar",
-              "number": 19,
-              "pos": "D",
-              "grid": "2:3"
-            },
-            {
-              "playerId": "australia-c-burgess",
-              "name": "Cameron Burgess",
-              "number": 21,
-              "pos": "D",
-              "grid": "2:2"
-            },
-            {
-              "playerId": "australia-j-bos",
-              "name": "Jordan Bos",
-              "number": 5,
-              "pos": "D",
-              "grid": "2:1"
-            },
-            {
-              "playerId": "australia-c-metcalfe",
-              "name": "Connor Metcalfe",
-              "number": 8,
-              "pos": "M",
-              "grid": "3:4"
-            },
-            {
-              "playerId": "australia-a-oandapos-neill",
-              "name": "Aiden O'Neill",
-              "number": 13,
-              "pos": "M",
-              "grid": "3:3"
-            },
-            {
-              "playerId": "australia-paul-michael-junior-okon-engstler",
-              "name": "Paul Okon-Engstler",
-              "number": 24,
-              "pos": "M",
-              "grid": "3:2"
-            },
-            {
-              "playerId": "australia-n-irankunda",
-              "name": "Nestory Irankunda",
-              "number": 17,
-              "pos": "M",
-              "grid": "3:1"
-            },
-            {
-              "playerId": "australia-m-toure",
-              "name": "Mohamed Touré",
-              "number": 9,
-              "pos": "F",
-              "grid": "4:1"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "australia-m-ryan",
-              "name": "Mathew Ryan",
-              "number": 1,
-              "pos": "G",
-              "grid": null
-            },
-            {
-              "playerId": "australia-p-izzo",
-              "name": "Paul Izzo",
-              "number": 12,
-              "pos": "G",
-              "grid": null
-            },
-            {
-              "playerId": "australia-m-degenek",
-              "name": "Miloš Degenek",
-              "number": 2,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "australia-j-geria",
-              "name": "Jason Geria",
-              "number": 6,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "australia-a-behich",
-              "name": "Aziz Behich",
-              "number": 16,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "australia-l-herrington",
-              "name": "Lucas Herrington",
-              "number": 25,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "australia-k-trewin",
-              "name": "Kai Trewin",
-              "number": 15,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "australia-c-devlin",
-              "name": "Cameron Devlin",
-              "number": 14,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "australia-j-irvine",
-              "name": "Jackson Irvine",
-              "number": 22,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "australia-m-leckie",
-              "name": "Mathew Leckie",
-              "number": 7,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "australia-a-hrustic",
-              "name": "Ajdin Hrustić",
-              "number": 10,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "australia-a-mabil",
-              "name": "Awer Mabil",
-              "number": 11,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "australia-c-volpato",
-              "name": "Cristian Volpato",
-              "number": 20,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "australia-n-velupillay",
-              "name": "Nishan Velupillay",
-              "number": 23,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "australia-t-yengi",
-              "name": "Tete Yengi",
-              "number": 26,
-              "pos": "F",
-              "grid": null
-            }
-          ]
-        },
-        {
-          "teamId": "turkiye",
-          "formation": "4-2-3-1",
-          "coach": "Vincenzo Montella",
-          "startXI": [
-            {
-              "playerId": "turkiye-u-cak-r",
-              "name": "Uğurcan Çakır",
-              "number": 23,
-              "pos": "G",
-              "grid": "1:1"
-            },
-            {
-              "playerId": "turkiye-z-celik",
-              "name": "Zeki Çelik",
-              "number": 2,
-              "pos": "D",
-              "grid": "2:4"
-            },
-            {
-              "playerId": "turkiye-m-demiral",
-              "name": "Merih Demiral",
-              "number": 3,
-              "pos": "D",
-              "grid": "2:3"
-            },
-            {
-              "playerId": "turkiye-a-bardakc",
-              "name": "Abdülkerim Bardakcı",
-              "number": 14,
-              "pos": "D",
-              "grid": "2:2"
-            },
-            {
-              "playerId": null,
-              "name": "Ferdi Kadıoğlu",
-              "number": 20,
-              "pos": "D",
-              "grid": "2:1"
-            },
-            {
-              "playerId": "turkiye-i-yuksek",
-              "name": "İsmail Yüksek",
-              "number": 16,
-              "pos": "M",
-              "grid": "3:2"
-            },
-            {
-              "playerId": "turkiye-h-calhanoglu",
-              "name": "Hakan Çalhanoğlu",
-              "number": 10,
-              "pos": "M",
-              "grid": "3:1"
-            },
-            {
-              "playerId": "turkiye-a-guler",
-              "name": "Arda Güler",
-              "number": 8,
-              "pos": "M",
-              "grid": "4:3"
-            },
-            {
-              "playerId": "turkiye-o-kokcu",
-              "name": "Orkun Kökçü",
-              "number": 6,
-              "pos": "M",
-              "grid": "4:2"
-            },
-            {
-              "playerId": "turkiye-b-y-lmaz",
-              "name": "Barış Alper Yılmaz",
-              "number": 21,
-              "pos": "M",
-              "grid": "4:1"
-            },
-            {
-              "playerId": "turkiye-k-akturkoglu",
-              "name": "Kerem Aktürkoğlu",
-              "number": 7,
-              "pos": "F",
-              "grid": "5:1"
-            }
-          ],
-          "subs": [
-            {
-              "playerId": "turkiye-m-gunok",
-              "name": "Mert Günok",
-              "number": 1,
-              "pos": "G",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-a-bay-nd-r",
-              "name": "Altay Bayındır",
-              "number": 12,
-              "pos": "G",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-c-soyuncu",
-              "name": "Çağlar Söyüncü",
-              "number": 4,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-e-elmal",
-              "name": "Eren Elmalı",
-              "number": 13,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-o-kabak",
-              "name": "Ozan Kabak",
-              "number": 15,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-m-muldur",
-              "name": "Mert Müldür",
-              "number": 18,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-s-akaydin",
-              "name": "Samet Akaydın",
-              "number": 25,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-k-ayhan",
-              "name": "Kaan Ayhan",
-              "number": 22,
-              "pos": "D",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-s-ozcan",
-              "name": "Salih Özcan",
-              "number": 5,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-i-kahveci",
-              "name": "İrfan Can Kahveci",
-              "number": 17,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-y-akgun",
-              "name": "Yunus Akgün",
-              "number": 19,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-o-ayd-n",
-              "name": "Oğuz Aydın",
-              "number": 24,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-c-uzun",
-              "name": "Can Uzun",
-              "number": 26,
-              "pos": "M",
-              "grid": null
-            },
-            {
-              "playerId": "turkiye-d-gul",
-              "name": "Deniz Gül",
-              "number": 9,
-              "pos": "F",
-              "grid": null
-            },
-            {
-              "playerId": null,
-              "name": "Kenan Yıldız",
-              "number": 11,
-              "pos": "F",
-              "grid": null
-            }
-          ]
-        }
-      ],
-      "stats": [
-        {
-          "teamId": "australia",
-          "items": [
-            {
-              "type": "Shots on Goal",
-              "value": 3
-            },
-            {
-              "type": "Shots off Goal",
-              "value": 4
-            },
-            {
-              "type": "Total Shots",
-              "value": 8
-            },
-            {
-              "type": "Blocked Shots",
-              "value": 1
-            },
-            {
-              "type": "Shots insidebox",
-              "value": 6
-            },
-            {
-              "type": "Shots outsidebox",
-              "value": 2
-            },
-            {
-              "type": "Fouls",
-              "value": 7
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 4
-            },
-            {
-              "type": "Offsides",
-              "value": 1
-            },
-            {
-              "type": "Ball Possession",
-              "value": "33%"
-            },
-            {
-              "type": "Yellow Cards",
-              "value": null
-            },
-            {
-              "type": "Red Cards",
-              "value": null
-            },
-            {
-              "type": "Goalkeeper Saves",
-              "value": 3
-            },
-            {
-              "type": "Total passes",
-              "value": 200
-            },
-            {
-              "type": "Passes accurate",
-              "value": 161
-            },
-            {
-              "type": "Passes %",
-              "value": "81%"
-            },
-            {
-              "type": "expected_goals",
-              "value": "0.78"
-            },
-            {
-              "type": "goals_prevented",
-              "value": "-0.14"
-            }
-          ]
-        },
-        {
-          "teamId": "turkiye",
-          "items": [
-            {
-              "type": "Shots on Goal",
-              "value": 3
-            },
-            {
-              "type": "Shots off Goal",
-              "value": 5
-            },
-            {
-              "type": "Total Shots",
-              "value": 14
-            },
-            {
-              "type": "Blocked Shots",
-              "value": 6
-            },
-            {
-              "type": "Shots insidebox",
-              "value": 6
-            },
-            {
-              "type": "Shots outsidebox",
-              "value": 8
-            },
-            {
-              "type": "Fouls",
-              "value": 2
-            },
-            {
-              "type": "Corner Kicks",
-              "value": 4
-            },
-            {
-              "type": "Offsides",
-              "value": 2
-            },
-            {
-              "type": "Ball Possession",
-              "value": "67%"
-            },
-            {
-              "type": "Yellow Cards",
-              "value": null
-            },
-            {
-              "type": "Red Cards",
-              "value": null
-            },
-            {
-              "type": "Goalkeeper Saves",
-              "value": 2
-            },
-            {
-              "type": "Total passes",
-              "value": 422
-            },
-            {
-              "type": "Passes accurate",
-              "value": 380
-            },
-            {
-              "type": "Passes %",
-              "value": "90%"
-            },
-            {
-              "type": "expected_goals",
-              "value": "0.58"
-            },
-            {
-              "type": "goals_prevented",
-              "value": "-0.14"
-            }
-          ]
-        }
-      ],
-      "ratings": [
-        {
-          "playerId": "australia-p-beach",
-          "name": "Patrick Beach",
-          "teamId": "australia",
-          "rating": 6.9,
-          "number": 18
-        },
-        {
-          "playerId": "australia-j-italiano",
-          "name": "Jacob Italiano",
-          "teamId": "australia",
-          "rating": 6.9,
-          "number": 4
-        },
-        {
-          "playerId": "australia-a-circati",
-          "name": "Alessandro Circati",
-          "teamId": "australia",
-          "rating": 6.9,
-          "number": 3
-        },
-        {
-          "playerId": "australia-h-souttar",
-          "name": "Harry Souttar",
-          "teamId": "australia",
-          "rating": 7.2,
-          "number": 19
-        },
-        {
-          "playerId": "australia-c-burgess",
-          "name": "Cameron Burgess",
-          "teamId": "australia",
-          "rating": 6.9,
-          "number": 21
-        },
-        {
-          "playerId": "australia-j-bos",
-          "name": "Jordan Bos",
-          "teamId": "australia",
-          "rating": 6.6,
-          "number": 5
-        },
-        {
+          "ownGoal": false,
           "playerId": "australia-c-metcalfe",
-          "name": "Connor Metcalfe",
-          "teamId": "australia",
-          "rating": 6.9,
-          "number": 8
-        },
-        {
-          "playerId": "australia-a-oandapos-neill",
-          "name": "Aiden O'Neill",
-          "teamId": "australia",
-          "rating": 7,
-          "number": 13
-        },
-        {
-          "playerId": "australia-paul-michael-junior-okon-engstler",
-          "name": "Paul Okon-Engstler",
-          "teamId": "australia",
-          "rating": 6.9,
-          "number": 24
-        },
-        {
-          "playerId": "australia-n-irankunda",
-          "name": "Nestory Irankunda",
-          "teamId": "australia",
-          "rating": 7.2,
-          "number": 17
-        },
-        {
-          "playerId": "australia-m-toure",
-          "name": "Mohamed Touré",
-          "teamId": "australia",
-          "rating": 6.2,
-          "number": 9
-        },
-        {
-          "playerId": "australia-m-ryan",
-          "name": "Mathew Ryan",
-          "teamId": "australia",
-          "rating": null,
-          "number": 1
-        },
-        {
-          "playerId": "australia-p-izzo",
-          "name": "Paul Izzo",
-          "teamId": "australia",
-          "rating": null,
-          "number": 12
-        },
-        {
-          "playerId": "australia-m-degenek",
-          "name": "Miloš Degenek",
-          "teamId": "australia",
-          "rating": null,
-          "number": 2
-        },
-        {
-          "playerId": "australia-j-geria",
-          "name": "Jason Geria",
-          "teamId": "australia",
-          "rating": null,
-          "number": 6
-        },
-        {
-          "playerId": "australia-a-behich",
-          "name": "Aziz Behich",
-          "teamId": "australia",
-          "rating": null,
-          "number": 16
-        },
-        {
-          "playerId": "australia-l-herrington",
-          "name": "Lucas Herrington",
-          "teamId": "australia",
-          "rating": null,
-          "number": 25
-        },
-        {
-          "playerId": "australia-k-trewin",
-          "name": "Kai Trewin",
-          "teamId": "australia",
-          "rating": null,
-          "number": 15
-        },
-        {
-          "playerId": "australia-c-devlin",
-          "name": "Cameron Devlin",
-          "teamId": "australia",
-          "rating": null,
-          "number": 14
-        },
-        {
-          "playerId": "australia-j-irvine",
-          "name": "Jackson Irvine",
-          "teamId": "australia",
-          "rating": null,
-          "number": 22
-        },
-        {
-          "playerId": "australia-m-leckie",
-          "name": "Mathew Leckie",
-          "teamId": "australia",
-          "rating": null,
-          "number": 7
-        },
-        {
-          "playerId": "australia-a-hrustic",
-          "name": "Ajdin Hrustić",
-          "teamId": "australia",
-          "rating": null,
-          "number": 10
-        },
-        {
-          "playerId": "australia-a-mabil",
-          "name": "Awer Mabil",
-          "teamId": "australia",
-          "rating": null,
-          "number": 11
-        },
-        {
-          "playerId": "australia-c-volpato",
-          "name": "Cristian Volpato",
-          "teamId": "australia",
-          "rating": null,
-          "number": 20
-        },
-        {
-          "playerId": "australia-n-velupillay",
-          "name": "Nishan Velupillay",
-          "teamId": "australia",
-          "rating": null,
-          "number": 23
-        },
-        {
-          "playerId": "australia-t-yengi",
-          "name": "Tete Yengi",
-          "teamId": "australia",
-          "rating": null,
-          "number": 26
-        },
-        {
-          "playerId": "turkiye-u-cak-r",
-          "name": "Uğurcan Çakır",
-          "teamId": "turkiye",
-          "rating": 6.6,
-          "number": 23
-        },
-        {
-          "playerId": "turkiye-z-celik",
-          "name": "Zeki Çelik",
-          "teamId": "turkiye",
-          "rating": 6.3,
-          "number": 2
-        },
-        {
-          "playerId": "turkiye-m-demiral",
-          "name": "Merih Demiral",
-          "teamId": "turkiye",
-          "rating": 7,
-          "number": 3
-        },
-        {
-          "playerId": "turkiye-a-bardakc",
-          "name": "Abdülkerim Bardakcı",
-          "teamId": "turkiye",
-          "rating": 6.9,
-          "number": 14
-        },
-        {
-          "playerId": null,
-          "name": "Ferdi Kadıoğlu",
-          "teamId": "turkiye",
-          "rating": 6.6,
-          "number": 20
-        },
-        {
-          "playerId": "turkiye-i-yuksek",
-          "name": "İsmail Yüksek",
-          "teamId": "turkiye",
-          "rating": 7.2,
-          "number": 16
-        },
-        {
-          "playerId": "turkiye-h-calhanoglu",
-          "name": "Hakan Çalhanoğlu",
-          "teamId": "turkiye",
-          "rating": 6.6,
-          "number": 10
-        },
-        {
-          "playerId": "turkiye-a-guler",
-          "name": "Arda Güler",
-          "teamId": "turkiye",
-          "rating": 6.2,
-          "number": 8
-        },
-        {
-          "playerId": "turkiye-o-kokcu",
-          "name": "Orkun Kökçü",
-          "teamId": "turkiye",
-          "rating": 6.5,
-          "number": 6
-        },
-        {
-          "playerId": "turkiye-b-y-lmaz",
-          "name": "Barış Alper Yılmaz",
-          "teamId": "turkiye",
-          "rating": 6.2,
-          "number": 21
-        },
-        {
-          "playerId": "turkiye-k-akturkoglu",
-          "name": "Kerem Aktürkoğlu",
-          "teamId": "turkiye",
-          "rating": 6.2,
-          "number": 7
-        },
-        {
-          "playerId": null,
-          "name": "Kenan Yıldız",
-          "teamId": "turkiye",
-          "rating": 6.6,
-          "number": 11
-        },
-        {
-          "playerId": "turkiye-m-gunok",
-          "name": "Mert Günok",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 1
-        },
-        {
-          "playerId": "turkiye-a-bay-nd-r",
-          "name": "Altay Bayındır",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 12
-        },
-        {
-          "playerId": "turkiye-c-soyuncu",
-          "name": "Çağlar Söyüncü",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 4
-        },
-        {
-          "playerId": "turkiye-e-elmal",
-          "name": "Eren Elmalı",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 13
-        },
-        {
-          "playerId": "turkiye-o-kabak",
-          "name": "Ozan Kabak",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 15
-        },
-        {
-          "playerId": "turkiye-m-muldur",
-          "name": "Mert Müldür",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 18
-        },
-        {
-          "playerId": "turkiye-s-akaydin",
-          "name": "Samet Akaydın",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 25
-        },
-        {
-          "playerId": "turkiye-k-ayhan",
-          "name": "Kaan Ayhan",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 22
-        },
-        {
-          "playerId": "turkiye-s-ozcan",
-          "name": "Salih Özcan",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 5
-        },
-        {
-          "playerId": "turkiye-i-kahveci",
-          "name": "İrfan Can Kahveci",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 17
-        },
-        {
-          "playerId": "turkiye-y-akgun",
-          "name": "Yunus Akgün",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 19
-        },
-        {
-          "playerId": "turkiye-o-ayd-n",
-          "name": "Oğuz Aydın",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 24
-        },
-        {
-          "playerId": "turkiye-c-uzun",
-          "name": "Can Uzun",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 26
-        },
-        {
-          "playerId": "turkiye-d-gul",
-          "name": "Deniz Gül",
-          "teamId": "turkiye",
-          "rating": null,
-          "number": 9
+          "playerName": "C. Metcalfe",
+          "apiPlayerId": 6904
         }
       ]
     },
@@ -4530,16 +323,81 @@
       "kickoff": "2026-06-14T17:00:00+00:00",
       "ground": "NRG Stadium",
       "venue": {
-        "name": "NRG Stadium",
-        "city": "Houston"
+        "city": "Houston",
+        "name": "NRG Stadium"
       },
       "homeTeamId": "germany",
       "awayTeamId": "curacao",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 7,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 6,
+          "teamId": "germany",
+          "ownGoal": false,
+          "playerId": "germany-f-nmecha",
+          "playerName": "F. Nmecha",
+          "apiPlayerId": 637
+        },
+        {
+          "minute": 21,
+          "teamId": "curacao",
+          "ownGoal": false,
+          "playerId": "curacao-l-comenencia",
+          "playerName": "L. Comenencia",
+          "apiPlayerId": 309763
+        },
+        {
+          "minute": 38,
+          "teamId": "germany",
+          "ownGoal": false,
+          "playerId": "germany-n-schlotterbeck",
+          "playerName": "N. Schlotterbeck",
+          "apiPlayerId": 26243
+        },
+        {
+          "minute": 45,
+          "teamId": "germany",
+          "ownGoal": false,
+          "playerId": "germany-k-havertz",
+          "playerName": "K. Havertz",
+          "apiPlayerId": 978
+        },
+        {
+          "minute": 47,
+          "teamId": "germany",
+          "ownGoal": false,
+          "playerId": "germany-j-musiala",
+          "playerName": "J. Musiala",
+          "apiPlayerId": 181812
+        },
+        {
+          "minute": 68,
+          "teamId": "germany",
+          "ownGoal": false,
+          "playerId": "germany-n-brown",
+          "playerName": "N. Brown",
+          "apiPlayerId": 280074
+        },
+        {
+          "minute": 78,
+          "teamId": "germany",
+          "ownGoal": false,
+          "playerId": "germany-d-undav",
+          "playerName": "D. Undav",
+          "apiPlayerId": 26475
+        },
+        {
+          "minute": 88,
+          "teamId": "germany",
+          "ownGoal": false,
+          "playerId": "germany-k-havertz",
+          "playerName": "K. Havertz",
+          "apiPlayerId": 978
+        }
+      ]
     },
     {
       "id": "F-1",
@@ -4549,16 +407,41 @@
       "kickoff": "2026-06-14T20:00:00+00:00",
       "ground": "AT&T Stadium",
       "venue": {
-        "name": "AT&T Stadium",
-        "city": "Dallas"
+        "city": "Arlington",
+        "name": "AT&T Stadium"
       },
       "homeTeamId": "netherlands",
       "awayTeamId": "japan",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "LIVE",
+      "elapsed": 73,
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 51,
+          "teamId": "netherlands",
+          "ownGoal": false,
+          "playerId": "netherlands-v-van-dijk",
+          "playerName": "V. van Dijk",
+          "apiPlayerId": 290
+        },
+        {
+          "minute": 57,
+          "teamId": "japan",
+          "ownGoal": false,
+          "playerId": "japan-keito-nakamura",
+          "playerName": "K. Nakamura",
+          "apiPlayerId": 33321
+        },
+        {
+          "minute": 64,
+          "teamId": "netherlands",
+          "ownGoal": false,
+          "playerId": "netherlands-c-summerville",
+          "playerName": "C. Summerville",
+          "apiPlayerId": 37724
+        }
+      ]
     },
     {
       "id": "E-2",
@@ -4568,8 +451,8 @@
       "kickoff": "2026-06-14T23:00:00+00:00",
       "ground": "Lincoln Financial Field",
       "venue": {
-        "name": "Lincoln Financial Field",
-        "city": "Philadelphia"
+        "city": "Philadelphia",
+        "name": "Lincoln Financial Field"
       },
       "homeTeamId": "ivory-coast",
       "awayTeamId": "ecuador",
@@ -4587,8 +470,8 @@
       "kickoff": "2026-06-15T02:00:00+00:00",
       "ground": "Estadio BBVA",
       "venue": {
-        "name": "Estadio BBVA",
-        "city": "Monterrey"
+        "city": "Monterrey",
+        "name": "Estadio BBVA"
       },
       "homeTeamId": "sweden",
       "awayTeamId": "tunisia",
@@ -4606,8 +489,8 @@
       "kickoff": "2026-06-15T16:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
       "venue": {
-        "name": "Mercedes-Benz Stadium",
-        "city": "Atlanta"
+        "city": "Atlanta",
+        "name": "Mercedes-Benz Stadium"
       },
       "homeTeamId": "spain",
       "awayTeamId": "cape-verde-islands",
@@ -4625,8 +508,8 @@
       "kickoff": "2026-06-15T19:00:00+00:00",
       "ground": "Lumen Field",
       "venue": {
-        "name": "Lumen Field",
-        "city": "Seattle"
+        "city": "Seattle",
+        "name": "Lumen Field"
       },
       "homeTeamId": "belgium",
       "awayTeamId": "egypt",
@@ -4644,8 +527,8 @@
       "kickoff": "2026-06-15T22:00:00+00:00",
       "ground": "Hard Rock Stadium",
       "venue": {
-        "name": "Hard Rock Stadium",
-        "city": "Miami"
+        "city": "Miami",
+        "name": "Hard Rock Stadium"
       },
       "homeTeamId": "saudi-arabia",
       "awayTeamId": "uruguay",
@@ -4663,8 +546,8 @@
       "kickoff": "2026-06-16T01:00:00+00:00",
       "ground": "SoFi Stadium",
       "venue": {
-        "name": "SoFi Stadium",
-        "city": "Los Angeles"
+        "city": "Los Angeles",
+        "name": "SoFi Stadium"
       },
       "homeTeamId": "iran",
       "awayTeamId": "new-zealand",
@@ -4682,8 +565,8 @@
       "kickoff": "2026-06-16T19:00:00+00:00",
       "ground": "MetLife Stadium",
       "venue": {
-        "name": "MetLife Stadium",
-        "city": "New York New Jersey"
+        "city": "New York New Jersey",
+        "name": "MetLife Stadium"
       },
       "homeTeamId": "france",
       "awayTeamId": "senegal",
@@ -4701,8 +584,8 @@
       "kickoff": "2026-06-16T22:00:00+00:00",
       "ground": "Gillette Stadium",
       "venue": {
-        "name": "Gillette Stadium",
-        "city": "Boston"
+        "city": "Boston",
+        "name": "Gillette Stadium"
       },
       "homeTeamId": "iraq",
       "awayTeamId": "norway",
@@ -4720,8 +603,8 @@
       "kickoff": "2026-06-17T01:00:00+00:00",
       "ground": "Arrowhead Stadium",
       "venue": {
-        "name": "Arrowhead Stadium",
-        "city": "Kansas City"
+        "city": "Kansas City",
+        "name": "Arrowhead Stadium"
       },
       "homeTeamId": "argentina",
       "awayTeamId": "algeria",
@@ -4739,8 +622,8 @@
       "kickoff": "2026-06-17T04:00:00+00:00",
       "ground": "Levi's Stadium",
       "venue": {
-        "name": "Levi's Stadium",
-        "city": "San Francisco Bay Area"
+        "city": "San Francisco Bay Area",
+        "name": "Levi's Stadium"
       },
       "homeTeamId": "austria",
       "awayTeamId": "jordan",
@@ -4758,8 +641,8 @@
       "kickoff": "2026-06-17T17:00:00+00:00",
       "ground": "NRG Stadium",
       "venue": {
-        "name": "NRG Stadium",
-        "city": "Houston"
+        "city": "Houston",
+        "name": "NRG Stadium"
       },
       "homeTeamId": "portugal",
       "awayTeamId": "congo-dr",
@@ -4777,8 +660,8 @@
       "kickoff": "2026-06-17T20:00:00+00:00",
       "ground": "AT&T Stadium",
       "venue": {
-        "name": "AT&T Stadium",
-        "city": "Dallas"
+        "city": "Dallas",
+        "name": "AT&T Stadium"
       },
       "homeTeamId": "england",
       "awayTeamId": "croatia",
@@ -4796,8 +679,8 @@
       "kickoff": "2026-06-17T23:00:00+00:00",
       "ground": "BMO Field",
       "venue": {
-        "name": "BMO Field",
-        "city": "Toronto"
+        "city": "Toronto",
+        "name": "BMO Field"
       },
       "homeTeamId": "ghana",
       "awayTeamId": "panama",
@@ -4815,8 +698,8 @@
       "kickoff": "2026-06-18T02:00:00+00:00",
       "ground": "Estadio Azteca",
       "venue": {
-        "name": "Estadio Azteca",
-        "city": "Mexico City"
+        "city": "Mexico City",
+        "name": "Estadio Azteca"
       },
       "homeTeamId": "uzbekistan",
       "awayTeamId": "colombia",
@@ -4834,8 +717,8 @@
       "kickoff": "2026-06-18T16:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
       "venue": {
-        "name": "Mercedes-Benz Stadium",
-        "city": "Atlanta"
+        "city": "Atlanta",
+        "name": "Mercedes-Benz Stadium"
       },
       "homeTeamId": "czechia",
       "awayTeamId": "south-africa",
@@ -4853,8 +736,8 @@
       "kickoff": "2026-06-18T19:00:00+00:00",
       "ground": "SoFi Stadium",
       "venue": {
-        "name": "SoFi Stadium",
-        "city": "Los Angeles"
+        "city": "Los Angeles",
+        "name": "SoFi Stadium"
       },
       "homeTeamId": "switzerland",
       "awayTeamId": "bosnia-and-herzegovina",
@@ -4872,8 +755,8 @@
       "kickoff": "2026-06-18T22:00:00+00:00",
       "ground": "BC Place",
       "venue": {
-        "name": "BC Place",
-        "city": "Vancouver"
+        "city": "Vancouver",
+        "name": "BC Place"
       },
       "homeTeamId": "canada",
       "awayTeamId": "qatar",
@@ -4891,8 +774,8 @@
       "kickoff": "2026-06-19T01:00:00+00:00",
       "ground": "Estadio Akron",
       "venue": {
-        "name": "Estadio Akron",
-        "city": "Guadalajara"
+        "city": "Guadalajara",
+        "name": "Estadio Akron"
       },
       "homeTeamId": "mexico",
       "awayTeamId": "south-korea",
@@ -4910,8 +793,8 @@
       "kickoff": "2026-06-19T19:00:00+00:00",
       "ground": "Lumen Field",
       "venue": {
-        "name": "Lumen Field",
-        "city": "Seattle"
+        "city": "Seattle",
+        "name": "Lumen Field"
       },
       "homeTeamId": "usa",
       "awayTeamId": "australia",
@@ -4929,8 +812,8 @@
       "kickoff": "2026-06-19T22:00:00+00:00",
       "ground": "Gillette Stadium",
       "venue": {
-        "name": "Gillette Stadium",
-        "city": "Boston"
+        "city": "Boston",
+        "name": "Gillette Stadium"
       },
       "homeTeamId": "scotland",
       "awayTeamId": "morocco",
@@ -4948,8 +831,8 @@
       "kickoff": "2026-06-20T00:30:00+00:00",
       "ground": "Lincoln Financial Field",
       "venue": {
-        "name": "Lincoln Financial Field",
-        "city": "Philadelphia"
+        "city": "Philadelphia",
+        "name": "Lincoln Financial Field"
       },
       "homeTeamId": "brazil",
       "awayTeamId": "haiti",
@@ -4967,8 +850,8 @@
       "kickoff": "2026-06-20T03:00:00+00:00",
       "ground": "Levi's Stadium",
       "venue": {
-        "name": "Levi's Stadium",
-        "city": "San Francisco Bay Area"
+        "city": "San Francisco Bay Area",
+        "name": "Levi's Stadium"
       },
       "homeTeamId": "turkiye",
       "awayTeamId": "paraguay",
@@ -4986,8 +869,8 @@
       "kickoff": "2026-06-20T17:00:00+00:00",
       "ground": "NRG Stadium",
       "venue": {
-        "name": "NRG Stadium",
-        "city": "Houston"
+        "city": "Houston",
+        "name": "NRG Stadium"
       },
       "homeTeamId": "netherlands",
       "awayTeamId": "sweden",
@@ -5005,8 +888,8 @@
       "kickoff": "2026-06-20T20:00:00+00:00",
       "ground": "BMO Field",
       "venue": {
-        "name": "BMO Field",
-        "city": "Toronto"
+        "city": "Toronto",
+        "name": "BMO Field"
       },
       "homeTeamId": "germany",
       "awayTeamId": "ivory-coast",
@@ -5024,8 +907,8 @@
       "kickoff": "2026-06-21T00:00:00+00:00",
       "ground": "Arrowhead Stadium",
       "venue": {
-        "name": "Arrowhead Stadium",
-        "city": "Kansas City"
+        "city": "Kansas City",
+        "name": "Arrowhead Stadium"
       },
       "homeTeamId": "ecuador",
       "awayTeamId": "curacao",
@@ -5043,8 +926,8 @@
       "kickoff": "2026-06-21T04:00:00+00:00",
       "ground": "Estadio BBVA",
       "venue": {
-        "name": "Estadio BBVA",
-        "city": "Monterrey"
+        "city": "Monterrey",
+        "name": "Estadio BBVA"
       },
       "homeTeamId": "tunisia",
       "awayTeamId": "japan",
@@ -5062,8 +945,8 @@
       "kickoff": "2026-06-21T16:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
       "venue": {
-        "name": "Mercedes-Benz Stadium",
-        "city": "Atlanta"
+        "city": "Atlanta",
+        "name": "Mercedes-Benz Stadium"
       },
       "homeTeamId": "spain",
       "awayTeamId": "saudi-arabia",
@@ -5081,8 +964,8 @@
       "kickoff": "2026-06-21T19:00:00+00:00",
       "ground": "SoFi Stadium",
       "venue": {
-        "name": "SoFi Stadium",
-        "city": "Los Angeles"
+        "city": "Los Angeles",
+        "name": "SoFi Stadium"
       },
       "homeTeamId": "belgium",
       "awayTeamId": "iran",
@@ -5100,8 +983,8 @@
       "kickoff": "2026-06-21T22:00:00+00:00",
       "ground": "Hard Rock Stadium",
       "venue": {
-        "name": "Hard Rock Stadium",
-        "city": "Miami"
+        "city": "Miami",
+        "name": "Hard Rock Stadium"
       },
       "homeTeamId": "uruguay",
       "awayTeamId": "cape-verde-islands",
@@ -5119,8 +1002,8 @@
       "kickoff": "2026-06-22T01:00:00+00:00",
       "ground": "BC Place",
       "venue": {
-        "name": "BC Place",
-        "city": "Vancouver"
+        "city": "Vancouver",
+        "name": "BC Place"
       },
       "homeTeamId": "new-zealand",
       "awayTeamId": "egypt",
@@ -5138,8 +1021,8 @@
       "kickoff": "2026-06-22T17:00:00+00:00",
       "ground": "AT&T Stadium",
       "venue": {
-        "name": "AT&T Stadium",
-        "city": "Dallas"
+        "city": "Dallas",
+        "name": "AT&T Stadium"
       },
       "homeTeamId": "argentina",
       "awayTeamId": "austria",
@@ -5157,8 +1040,8 @@
       "kickoff": "2026-06-22T21:00:00+00:00",
       "ground": "Lincoln Financial Field",
       "venue": {
-        "name": "Lincoln Financial Field",
-        "city": "Philadelphia"
+        "city": "Philadelphia",
+        "name": "Lincoln Financial Field"
       },
       "homeTeamId": "france",
       "awayTeamId": "iraq",
@@ -5176,8 +1059,8 @@
       "kickoff": "2026-06-23T00:00:00+00:00",
       "ground": "MetLife Stadium",
       "venue": {
-        "name": "MetLife Stadium",
-        "city": "New York New Jersey"
+        "city": "New York New Jersey",
+        "name": "MetLife Stadium"
       },
       "homeTeamId": "norway",
       "awayTeamId": "senegal",
@@ -5195,8 +1078,8 @@
       "kickoff": "2026-06-23T03:00:00+00:00",
       "ground": "Levi's Stadium",
       "venue": {
-        "name": "Levi's Stadium",
-        "city": "San Francisco Bay Area"
+        "city": "San Francisco Bay Area",
+        "name": "Levi's Stadium"
       },
       "homeTeamId": "jordan",
       "awayTeamId": "algeria",
@@ -5214,8 +1097,8 @@
       "kickoff": "2026-06-23T17:00:00+00:00",
       "ground": "NRG Stadium",
       "venue": {
-        "name": "NRG Stadium",
-        "city": "Houston"
+        "city": "Houston",
+        "name": "NRG Stadium"
       },
       "homeTeamId": "portugal",
       "awayTeamId": "uzbekistan",
@@ -5233,8 +1116,8 @@
       "kickoff": "2026-06-23T20:00:00+00:00",
       "ground": "Gillette Stadium",
       "venue": {
-        "name": "Gillette Stadium",
-        "city": "Boston"
+        "city": "Boston",
+        "name": "Gillette Stadium"
       },
       "homeTeamId": "england",
       "awayTeamId": "ghana",
@@ -5252,8 +1135,8 @@
       "kickoff": "2026-06-23T23:00:00+00:00",
       "ground": "BMO Field",
       "venue": {
-        "name": "BMO Field",
-        "city": "Toronto"
+        "city": "Toronto",
+        "name": "BMO Field"
       },
       "homeTeamId": "panama",
       "awayTeamId": "croatia",
@@ -5271,8 +1154,8 @@
       "kickoff": "2026-06-24T02:00:00+00:00",
       "ground": "Estadio Akron",
       "venue": {
-        "name": "Estadio Akron",
-        "city": "Guadalajara"
+        "city": "Guadalajara",
+        "name": "Estadio Akron"
       },
       "homeTeamId": "colombia",
       "awayTeamId": "congo-dr",
@@ -5290,8 +1173,8 @@
       "kickoff": "2026-06-24T19:00:00+00:00",
       "ground": "BC Place",
       "venue": {
-        "name": "BC Place",
-        "city": "Vancouver"
+        "city": "Vancouver",
+        "name": "BC Place"
       },
       "homeTeamId": "switzerland",
       "awayTeamId": "canada",
@@ -5309,8 +1192,8 @@
       "kickoff": "2026-06-24T19:00:00+00:00",
       "ground": "Lumen Field",
       "venue": {
-        "name": "Lumen Field",
-        "city": "Seattle"
+        "city": "Seattle",
+        "name": "Lumen Field"
       },
       "homeTeamId": "bosnia-and-herzegovina",
       "awayTeamId": "qatar",
@@ -5328,8 +1211,8 @@
       "kickoff": "2026-06-24T22:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
       "venue": {
-        "name": "Mercedes-Benz Stadium",
-        "city": "Atlanta"
+        "city": "Atlanta",
+        "name": "Mercedes-Benz Stadium"
       },
       "homeTeamId": "morocco",
       "awayTeamId": "haiti",
@@ -5347,8 +1230,8 @@
       "kickoff": "2026-06-24T22:00:00+00:00",
       "ground": "Hard Rock Stadium",
       "venue": {
-        "name": "Hard Rock Stadium",
-        "city": "Miami"
+        "city": "Miami",
+        "name": "Hard Rock Stadium"
       },
       "homeTeamId": "scotland",
       "awayTeamId": "brazil",
@@ -5366,8 +1249,8 @@
       "kickoff": "2026-06-25T01:00:00+00:00",
       "ground": "Estadio BBVA",
       "venue": {
-        "name": "Estadio BBVA",
-        "city": "Monterrey"
+        "city": "Monterrey",
+        "name": "Estadio BBVA"
       },
       "homeTeamId": "south-africa",
       "awayTeamId": "south-korea",
@@ -5385,30 +1268,11 @@
       "kickoff": "2026-06-25T01:00:00+00:00",
       "ground": "Estadio Azteca",
       "venue": {
-        "name": "Estadio Azteca",
-        "city": "Mexico City"
+        "city": "Mexico City",
+        "name": "Estadio Azteca"
       },
       "homeTeamId": "czechia",
       "awayTeamId": "mexico",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
-    },
-    {
-      "id": "E-5",
-      "apiId": 1489409,
-      "group": "E",
-      "matchday": 3,
-      "kickoff": "2026-06-25T20:00:00+00:00",
-      "ground": "Lincoln Financial Field",
-      "venue": {
-        "name": "Lincoln Financial Field",
-        "city": "Philadelphia"
-      },
-      "homeTeamId": "curacao",
-      "awayTeamId": "ivory-coast",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
@@ -5423,11 +1287,30 @@
       "kickoff": "2026-06-25T20:00:00+00:00",
       "ground": "MetLife Stadium",
       "venue": {
-        "name": "MetLife Stadium",
-        "city": "New York New Jersey"
+        "city": "New York New Jersey",
+        "name": "MetLife Stadium"
       },
       "homeTeamId": "ecuador",
       "awayTeamId": "germany",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "E-5",
+      "apiId": 1489409,
+      "group": "E",
+      "matchday": 3,
+      "kickoff": "2026-06-25T20:00:00+00:00",
+      "ground": "Lincoln Financial Field",
+      "venue": {
+        "city": "Philadelphia",
+        "name": "Lincoln Financial Field"
+      },
+      "homeTeamId": "curacao",
+      "awayTeamId": "ivory-coast",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
@@ -5442,8 +1325,8 @@
       "kickoff": "2026-06-25T23:00:00+00:00",
       "ground": "Arrowhead Stadium",
       "venue": {
-        "name": "Arrowhead Stadium",
-        "city": "Kansas City"
+        "city": "Kansas City",
+        "name": "Arrowhead Stadium"
       },
       "homeTeamId": "tunisia",
       "awayTeamId": "netherlands",
@@ -5461,30 +1344,11 @@
       "kickoff": "2026-06-25T23:00:00+00:00",
       "ground": "AT&T Stadium",
       "venue": {
-        "name": "AT&T Stadium",
-        "city": "Dallas"
+        "city": "Dallas",
+        "name": "AT&T Stadium"
       },
       "homeTeamId": "japan",
       "awayTeamId": "sweden",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
-    },
-    {
-      "id": "D-5",
-      "apiId": 1489411,
-      "group": "D",
-      "matchday": 3,
-      "kickoff": "2026-06-26T02:00:00+00:00",
-      "ground": "Levi's Stadium",
-      "venue": {
-        "name": "Levi's Stadium",
-        "city": "San Francisco Bay Area"
-      },
-      "homeTeamId": "paraguay",
-      "awayTeamId": "australia",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
@@ -5499,11 +1363,30 @@
       "kickoff": "2026-06-26T02:00:00+00:00",
       "ground": "SoFi Stadium",
       "venue": {
-        "name": "SoFi Stadium",
-        "city": "Los Angeles"
+        "city": "Los Angeles",
+        "name": "SoFi Stadium"
       },
       "homeTeamId": "turkiye",
       "awayTeamId": "usa",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "D-5",
+      "apiId": 1489411,
+      "group": "D",
+      "matchday": 3,
+      "kickoff": "2026-06-26T02:00:00+00:00",
+      "ground": "Levi's Stadium",
+      "venue": {
+        "city": "San Francisco Bay Area",
+        "name": "Levi's Stadium"
+      },
+      "homeTeamId": "paraguay",
+      "awayTeamId": "australia",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
@@ -5518,8 +1401,8 @@
       "kickoff": "2026-06-26T19:00:00+00:00",
       "ground": "Gillette Stadium",
       "venue": {
-        "name": "Gillette Stadium",
-        "city": "Boston"
+        "city": "Boston",
+        "name": "Gillette Stadium"
       },
       "homeTeamId": "norway",
       "awayTeamId": "france",
@@ -5537,8 +1420,8 @@
       "kickoff": "2026-06-26T19:00:00+00:00",
       "ground": "BMO Field",
       "venue": {
-        "name": "BMO Field",
-        "city": "Toronto"
+        "city": "Toronto",
+        "name": "BMO Field"
       },
       "homeTeamId": "senegal",
       "awayTeamId": "iraq",
@@ -5556,8 +1439,8 @@
       "kickoff": "2026-06-27T00:00:00+00:00",
       "ground": "NRG Stadium",
       "venue": {
-        "name": "NRG Stadium",
-        "city": "Houston"
+        "city": "Houston",
+        "name": "NRG Stadium"
       },
       "homeTeamId": "cape-verde-islands",
       "awayTeamId": "saudi-arabia",
@@ -5575,30 +1458,11 @@
       "kickoff": "2026-06-27T00:00:00+00:00",
       "ground": "Estadio Akron",
       "venue": {
-        "name": "Estadio Akron",
-        "city": "Guadalajara"
+        "city": "Guadalajara",
+        "name": "Estadio Akron"
       },
       "homeTeamId": "uruguay",
       "awayTeamId": "spain",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
-    },
-    {
-      "id": "G-5",
-      "apiId": 1489414,
-      "group": "G",
-      "matchday": 3,
-      "kickoff": "2026-06-27T03:00:00+00:00",
-      "ground": "Lumen Field",
-      "venue": {
-        "name": "Lumen Field",
-        "city": "Seattle"
-      },
-      "homeTeamId": "egypt",
-      "awayTeamId": "iran",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
@@ -5613,11 +1477,30 @@
       "kickoff": "2026-06-27T03:00:00+00:00",
       "ground": "BC Place",
       "venue": {
-        "name": "BC Place",
-        "city": "Vancouver"
+        "city": "Vancouver",
+        "name": "BC Place"
       },
       "homeTeamId": "new-zealand",
       "awayTeamId": "belgium",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "G-5",
+      "apiId": 1489414,
+      "group": "G",
+      "matchday": 3,
+      "kickoff": "2026-06-27T03:00:00+00:00",
+      "ground": "Lumen Field",
+      "venue": {
+        "city": "Seattle",
+        "name": "Lumen Field"
+      },
+      "homeTeamId": "egypt",
+      "awayTeamId": "iran",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
@@ -5632,8 +1515,8 @@
       "kickoff": "2026-06-27T21:00:00+00:00",
       "ground": "Lincoln Financial Field",
       "venue": {
-        "name": "Lincoln Financial Field",
-        "city": "Philadelphia"
+        "city": "Philadelphia",
+        "name": "Lincoln Financial Field"
       },
       "homeTeamId": "croatia",
       "awayTeamId": "ghana",
@@ -5651,8 +1534,8 @@
       "kickoff": "2026-06-27T21:00:00+00:00",
       "ground": "MetLife Stadium",
       "venue": {
-        "name": "MetLife Stadium",
-        "city": "New York New Jersey"
+        "city": "New York New Jersey",
+        "name": "MetLife Stadium"
       },
       "homeTeamId": "panama",
       "awayTeamId": "england",
@@ -5670,8 +1553,8 @@
       "kickoff": "2026-06-27T23:30:00+00:00",
       "ground": "Hard Rock Stadium",
       "venue": {
-        "name": "Hard Rock Stadium",
-        "city": "Miami"
+        "city": "Miami",
+        "name": "Hard Rock Stadium"
       },
       "homeTeamId": "colombia",
       "awayTeamId": "portugal",
@@ -5689,30 +1572,11 @@
       "kickoff": "2026-06-27T23:30:00+00:00",
       "ground": "Mercedes-Benz Stadium",
       "venue": {
-        "name": "Mercedes-Benz Stadium",
-        "city": "Atlanta"
+        "city": "Atlanta",
+        "name": "Mercedes-Benz Stadium"
       },
       "homeTeamId": "congo-dr",
       "awayTeamId": "uzbekistan",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
-    },
-    {
-      "id": "J-5",
-      "apiId": 1489418,
-      "group": "J",
-      "matchday": 3,
-      "kickoff": "2026-06-28T02:00:00+00:00",
-      "ground": "Arrowhead Stadium",
-      "venue": {
-        "name": "Arrowhead Stadium",
-        "city": "Kansas City"
-      },
-      "homeTeamId": "algeria",
-      "awayTeamId": "austria",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
@@ -5727,11 +1591,30 @@
       "kickoff": "2026-06-28T02:00:00+00:00",
       "ground": "AT&T Stadium",
       "venue": {
-        "name": "AT&T Stadium",
-        "city": "Dallas"
+        "city": "Dallas",
+        "name": "AT&T Stadium"
       },
       "homeTeamId": "jordan",
       "awayTeamId": "argentina",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "J-5",
+      "apiId": 1489418,
+      "group": "J",
+      "matchday": 3,
+      "kickoff": "2026-06-28T02:00:00+00:00",
+      "ground": "Arrowhead Stadium",
+      "venue": {
+        "city": "Kansas City",
+        "name": "Arrowhead Stadium"
+      },
+      "homeTeamId": "algeria",
+      "awayTeamId": "austria",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
