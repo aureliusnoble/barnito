@@ -119,3 +119,37 @@ Falls back to a Web-Audio synth if the file ever fails to load.
 - The free API tier does **not** include season 2026 (confirmed) — the paid Pro plan does. The
   "Verify API key" workflow checks this for you.
 - Knockouts aren't scored yet (group stage only), but the data shapes are built to extend to them.
+
+---
+
+## v4: Supabase realtime backend
+
+The GitHub-Actions/JSON pipeline was replaced by **Supabase** (Postgres + Realtime + an Edge Function
+on pg_cron). This fixes the stuck-"live" and stale-fixture bugs (a server job reconciles **all**
+fixtures every few minutes and polls live games every ~30s) and pushes updates to phones instantly via
+Realtime. The frontend stays static on GitHub Pages and reads from Supabase (publishable key + RLS).
+
+- DB schema/RLS/realtime/cron: `supabase/migrations/*`
+- Ingester + scorer (Deno): `supabase/functions/tick` (reuses the scoring engine via `npm run sync:edge`)
+- Client data layer: `src/data/{supabase,store}.ts` (realtime subscriptions)
+
+### One-time setup (run locally — Supabase isn't reachable from the build sandbox)
+```bash
+export SUPABASE_ACCESS_TOKEN=...        # Account → Access Tokens
+export SUPABASE_DB_PASSWORD=...         # Project Settings → Database
+export SUPABASE_SERVICE_ROLE_KEY=...    # Project Settings → API → service_role
+export API_FOOTBALL_KEY=...
+./supabase-setup.sh                     # link, db push, secrets, deploy fn, first ingest
+```
+Then publish the new frontend: **Actions → Deploy to GitHub Pages → Run workflow**.
+
+### Predictions → DB
+```bash
+npm run db:pull            # roster/fixtures from Supabase → local JSON (for the template/parser)
+npm run template           # generate the Excel template
+npm run predictions        # parse predictions/*.xlsx → predictions.json (validates)
+SUPABASE_SERVICE_ROLE_KEY=... npm run predictions:upload   # → Supabase participants
+```
+
+> FIFA rankings aren't in API-Football — they're seeded from `supabase/functions/_shared/fifaRanks.ts`
+> (estimates; edit to refresh).

@@ -141,3 +141,13 @@ Plus: Now=today-only (noon-next-day UK), Recent tab (18h), player detail (cards)
 - [ ] frontend: supabase client + store rewrite (realtime), keep useBarnito API
 - [ ] new UI: Now/Recent, player detail, team info, scores-over-time chart
 - [ ] predictions parser → Supabase; remove old GitHub data workflows; deploy w/ VITE_SUPABASE_*
+
+### v4 progress (2026-06-14)
+- [x] backend code: migrations, tick edge fn (reconcile-all + 30s live + score + playerStats + history + H2H)
+- [x] frontend on Supabase realtime (same useBarnito API); Now/Recent, player detail, team info+H2H, scores chart
+- [x] scripts: db-pull, upload-predictions; supabase-setup.sh; removed old data workflows; deploy manual-only
+- [x] all typecheck + 21 tests + build green
+- ⚠️ BLOCKER: Supabase hosts (api.supabase.com, *.supabase.co, DB) are blocked by sandbox egress →
+  CANNOT db push / deploy fn / set secrets from here. USER runs supabase-setup.sh locally, OR loosen egress.
+- [ ] run supabase-setup.sh (user) → then run Deploy workflow to publish new frontend
+- [ ] load real predictions (db:pull → template → fill → predictions → predictions:upload)
