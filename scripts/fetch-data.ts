@@ -28,7 +28,7 @@ import {
 const FORCE = !!process.env.FORCE || process.argv.includes("--full");
 const LIVE_LEAD_MS = 45 * 60 * 1000; // start polling ~45 min before kickoff (captures pre-match lineups)
 const LIVE_TAIL_MS = 165 * 60 * 1000;
-const DAILY_CAP = Number(process.env.API_DAILY_CAP ?? 400);
+const DAILY_CAP = Number(process.env.API_DAILY_CAP ?? 2000);
 const STATS_REFRESH_MS = 20 * 60 * 1000; // refresh golden boot/injuries at most every 20 min when live
 const MAX_FORECAST_FETCHES = Number(process.env.MAX_FORECAST_FETCHES ?? 12);
 const USAGE_FILE = "_api-usage.json";

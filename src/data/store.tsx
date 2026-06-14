@@ -32,20 +32,29 @@ interface State {
 
 const Ctx = createContext<State>({ data: null, loading: true, error: null });
 
-async function fetchJson<T>(file: string, bust: number): Promise<T> {
-  const res = await fetch(`${import.meta.env.BASE_URL}data/${file}?v=${bust}`);
-  if (!res.ok) throw new Error(`Failed to load ${file}: ${res.status}`);
-  return (await res.json()) as T;
+// Data is read straight from the repo's raw URL so a cron commit is visible immediately
+// (no rebuild/redeploy needed). Falls back to the copy bundled with the deploy if raw is
+// unreachable. Override the source with VITE_DATA_URL at build time.
+const RAW_BASE =
+  import.meta.env.VITE_DATA_URL ||
+  "https://raw.githubusercontent.com/aureliusnoble/barnito/main/public/data";
+const BUNDLED_BASE = `${import.meta.env.BASE_URL}data`;
+
+async function getJson<T>(file: string, bust: number, fallback?: T): Promise<T> {
+  for (const base of [RAW_BASE, BUNDLED_BASE]) {
+    try {
+      const res = await fetch(`${base}/${file}?v=${bust}`);
+      if (res.ok) return (await res.json()) as T;
+    } catch {
+      /* try the next source */
+    }
+  }
+  if (fallback !== undefined) return fallback;
+  throw new Error(`Failed to load ${file}`);
 }
 
-/** Optional data files — return a fallback if they don't exist yet. */
-async function fetchOptional<T>(file: string, fallback: T, bust: number): Promise<T> {
-  try {
-    return await fetchJson<T>(file, bust);
-  } catch {
-    return fallback;
-  }
-}
+const fetchJson = <T,>(file: string, bust: number) => getJson<T>(file, bust);
+const fetchOptional = <T,>(file: string, fallback: T, bust: number) => getJson<T>(file, bust, fallback);
 
 async function loadAll(bust: number): Promise<BarnitoData> {
   const [roster, matches, predictions, standings, scores, stats, injuries, forecasts, bracket] =
@@ -86,9 +95,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
         const data = await loadAll(bust);
         if (cancelled) return;
         setState({ data, loading: false, error: null });
-        // While a match is live, re-poll every 45s to pick up fresh deploys.
+        // While a match is live, re-poll the raw data every 30s (cache-busted) for near-live scores.
         window.clearTimeout(timer);
-        if (hasLive(data)) timer = window.setTimeout(() => run(Date.now()), 45_000);
+        if (hasLive(data)) timer = window.setTimeout(() => run(Date.now()), 30_000);
       } catch (e) {
         if (cancelled) return;
         setState((s) => (s.data ? s : { data: null, loading: false, error: (e as Error).message }));

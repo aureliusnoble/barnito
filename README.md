@@ -77,10 +77,12 @@ After that, the **`update-data.yml`** cron takes over automatically.
 
 ## Cost & call budget
 
-The cron is deliberately stingy:
+The cron runs every 5 min and is deliberately stingy:
 
-- **Zero API calls** except (a) the one-time setup, and (b) inside a live match window — from 10 min
-  before kickoff until ~2h45 after ("just after"). No live game → no calls.
+- **Zero API calls** except (a) the one-time setup, (b) one lightweight full refresh/day, and (c)
+  inside a live match window (45 min before kickoff → ~2h45 after). No live game → no calls.
+- During a live window the job **loops internally (~every 75s)** and commits to `main`, and the app
+  reads data **straight from the repo's raw URL** (no rebuild needed) — so scores land in ~1–2 min.
 - During a live window it polls every 10 min with **~2 calls**: `/fixtures?live=all`, then one
   batched `/fixtures?ids=…` (up to 20 matches) that returns **events, lineups, live stats and player
   ratings embedded** — so a whole round of simultaneous matches is still ~2 calls.

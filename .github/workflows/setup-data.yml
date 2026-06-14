@@ -27,6 +27,8 @@ jobs:
       needs_setup: ${{ steps.c.outputs.needs_setup }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - id: c
         run: |
           if [ "${{ inputs.force }}" = "true" ]; then
@@ -44,6 +46,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 20

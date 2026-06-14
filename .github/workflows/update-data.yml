@@ -2,9 +2,9 @@ name: Update match data
 
 on:
   schedule:
-    # every 10 minutes — the script self-throttles and makes ZERO API calls
-    # outside live match windows, so this stays well under the free-tier 100/day.
-    - cron: "*/10 * * * *"
+    # every 5 minutes (GitHub's minimum). The job self-throttles to ZERO API calls outside live
+    # windows, and during a live game it loops internally (~every 75s) for near-live updates.
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       force:
@@ -12,7 +12,7 @@ on:
         type: boolean
         default: false
 
-# Don't let runs overlap; let a running commit finish before the next starts.
+# Serialise runs so loop iterations never push over each other.
 concurrency:
   group: update-data
   cancel-in-progress: false
@@ -25,29 +25,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main # data always lives on main, regardless of the default branch
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
       - run: npm ci
 
-      - name: Fetch latest results
+      - name: Poll & commit (loops while a match is live)
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           FORCE: ${{ inputs.force && '1' || '' }}
-        run: npm run fetch
-
-      - name: Recompute scores
-        run: npm run score
-
-      - name: Commit changes if any
         run: |
           git config user.name "barnito-bot"
           git config user.email "actions@github.com"
-          if git diff --quiet -- public/data; then
-            echo "No data changes."
-          else
-            git add public/data
-            git commit -m "data: update results & scores"
-            git push
-          fi
+          END=$((SECONDS + 230)) # stay under the 5-min cron interval
+          while : ; do
+            OUT=$(npm run fetch 2>&1) || true
+            echo "$OUT" | tail -4
+            npm run score >/dev/null 2>&1 || true
+            if ! git diff --quiet -- public/data; then
+              git add public/data
+              git commit -q -m "data: live update"
+              git push -q || (git pull --rebase -q origin main && git push -q)
+              echo "committed + pushed"
+            else
+              echo "no changes"
+            fi
+            # idle (self-throttled) and not forced → one pass is enough
+            if [ -z "$FORCE" ] && echo "$OUT" | grep -q "skipping"; then break; fi
+            [ $SECONDS -ge $END ] && break
+            sleep 75
+          done
