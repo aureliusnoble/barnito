@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Goal, Trophy, Users, AlertTriangle, ChevronDown, Star } from "lucide-react";
+import { Goal, Trophy, Users, AlertTriangle, ChevronDown, ChevronRight, Star } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal, type PlayerSeed } from "../components/PlayerModal";
 import { SectionTitle, Crest, CardFlag } from "../components/bits";
@@ -175,6 +175,7 @@ function ByPerson() {
                           <span className="text-[10px] text-pitch-500"> gl</span>
                         </span>
                         <span className="w-10 text-right font-bold tabular-nums text-white">{p.points}</span>
+                        <ChevronRight size={14} className="shrink-0 text-pitch-600" />
                       </li>
                     );
                   })}
@@ -265,6 +266,7 @@ function GoldenBoot() {
             {p.teamId && <Crest teamId={p.teamId} size={14} />}
             {p.playerId && pickedIds.has(p.playerId) && <span title="Picked">🎯</span>}
             <span className="w-8 text-right font-bold tabular-nums text-white">{p.value}</span>
+            <ChevronRight size={14} className="shrink-0 text-pitch-600" />
           </li>
         ))}
       </ul>
@@ -330,6 +332,7 @@ function ByPlayer() {
                 ×{a.pickedBy.length} {a.pickedBy.length === 1 ? "pick" : "picks"}
               </div>
             </div>
+            <ChevronRight size={14} className="shrink-0 text-pitch-600" />
           </div>
         );
       })}
