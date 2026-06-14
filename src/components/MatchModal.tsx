@@ -486,115 +486,133 @@ function TopPerformers({ match }: { match: Match }) {
   );
 }
 
-// --- lineups (formation pitch) ---------------------------------------------
-const POS_DOT: Record<string, string> = {
-  G: "bg-purple-500/80 ring-purple-300/50",
-  D: "bg-sky-500/80 ring-sky-300/50",
-  M: "bg-accent-500/80 ring-accent-300/50",
-  F: "bg-spice-500/80 ring-spice-300/50",
-};
+// --- lineups (combined formation pitch) ------------------------------------
 const lastName = (name: string) => {
   const parts = name.replace(/^[A-Z]\.\s*/, "").split(/\s+/).filter(Boolean);
   return parts[parts.length - 1] ?? name;
 };
 
-/** Pitch markings drawn in the brand palette (viewBox in metres, 68×105 full pitch). */
+type Side = "home" | "away";
+
+/** Pitch markings — vertical full pitch, viewBox in metres (68×105), brand palette. */
 function PitchMarkings() {
-  const line = { fill: "none", stroke: "#dffbe9", strokeWidth: 0.4, strokeOpacity: 0.28 } as const;
-  const spot = { fill: "#dffbe9", fillOpacity: 0.28 } as const;
+  const line = { fill: "none", stroke: "#eafff4", strokeWidth: 0.35, strokeOpacity: 0.32 } as const;
+  const spot = { fill: "#eafff4", fillOpacity: 0.32 } as const;
   return (
-    <svg viewBox="0 0 68 105" className="absolute inset-0 h-full w-full" aria-hidden>
-      {Array.from({ length: 6 }).map((_, i) => (
-        <rect key={i} x="0" y={i * 17.5} width="68" height="17.5" fill={i % 2 ? "#0e3a21" : "#0c321c"} />
+    <svg viewBox="0 0 68 105" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden>
+      {/* mown grass stripes */}
+      {Array.from({ length: 7 }).map((_, i) => (
+        <rect key={i} x="0" y={(i * 105) / 7} width="68" height={105 / 7} fill={i % 2 ? "#135230" : "#0f4527"} />
       ))}
-      <rect x="0.8" y="0.8" width="66.4" height="103.4" {...line} />
-      <line x1="0.8" y1="52.5" x2="67.2" y2="52.5" {...line} />
+      <rect x="0.9" y="0.9" width="66.2" height="103.2" rx="0.6" {...line} />
+      <line x1="0.9" y1="52.5" x2="67.1" y2="52.5" {...line} />
       <circle cx="34" cy="52.5" r="9.15" {...line} />
       <circle cx="34" cy="52.5" r="0.5" {...spot} />
-      {/* bottom goal */}
-      <rect x="13.84" y="87.7" width="40.32" height="16.5" {...line} />
-      <rect x="24.84" y="98.7" width="18.32" height="5.5" {...line} />
+      {/* corner arcs */}
+      <path d="M0.9 2.4 A1.5 1.5 0 0 0 2.4 0.9" {...line} />
+      <path d="M65.6 0.9 A1.5 1.5 0 0 0 67.1 2.4" {...line} />
+      <path d="M2.4 104.1 A1.5 1.5 0 0 0 0.9 102.6" {...line} />
+      <path d="M67.1 102.6 A1.5 1.5 0 0 0 65.6 104.1" {...line} />
+      {/* bottom goal (home end) */}
+      <rect x="13.84" y="87.7" width="40.32" height="16.4" {...line} />
+      <rect x="24.84" y="98.6" width="18.32" height="5.5" {...line} />
       <circle cx="34" cy="93.2" r="0.5" {...spot} />
-      <path d="M27 87.7 A 9.15 9.15 0 0 1 41 87.7" {...line} />
-      {/* top goal */}
-      <rect x="13.84" y="0.8" width="40.32" height="16.5" {...line} />
-      <rect x="24.84" y="0.8" width="18.32" height="5.5" {...line} />
+      <path d="M26.8 87.7 A 9.15 9.15 0 0 1 41.2 87.7" {...line} />
+      {/* top goal (away end) */}
+      <rect x="13.84" y="0.9" width="40.32" height="16.4" {...line} />
+      <rect x="24.84" y="0.9" width="18.32" height="5.5" {...line} />
       <circle cx="34" cy="11.8" r="0.5" {...spot} />
-      <path d="M27 17.3 A 9.15 9.15 0 0 0 41 17.3" {...line} />
+      <path d="M26.8 17.3 A 9.15 9.15 0 0 0 41.2 17.3" {...line} />
     </svg>
   );
 }
 
-function PitchToken({ p, x, y }: { p: LineupPlayer; x: number; y: number }) {
+function PitchToken({ p, x, y, side }: { p: LineupPlayer; x: number; y: number; side: Side }) {
   const { open } = usePlayerModal();
-  const color = POS_DOT[(p.pos ?? "").toUpperCase()] ?? "bg-pitch-600 ring-white/25";
+  const fill = side === "home" ? "bg-sky-500" : "bg-spice-500";
   return (
     <button
       type="button"
       disabled={!p.playerId}
       onClick={() => p.playerId && open(p.playerId)}
       style={{ left: `${x}%`, top: `${y}%` }}
-      className={`absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-0.5 ${p.playerId ? "cursor-pointer" : "cursor-default"}`}
+      className={`absolute flex w-[18%] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-0.5 ${p.playerId ? "cursor-pointer" : "cursor-default"}`}
       title={p.name}
     >
-      <span className={`grid h-6 w-6 place-items-center rounded-full text-[9px] font-bold text-white shadow-md ring-2 ${color}`}>
+      <span className={`grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-white shadow-md ring-2 ring-white/85 ${fill}`}>
         {p.number ?? ""}
       </span>
-      <span className="max-w-[3.2rem] truncate rounded bg-pitch-950/55 px-1 text-[8px] leading-tight text-white">{lastName(p.name)}</span>
+      <span className="max-w-full truncate rounded-sm bg-pitch-950/70 px-1 text-[8.5px] font-medium leading-tight text-white">
+        {lastName(p.name)}
+      </span>
     </button>
   );
 }
 
-/** Render a starting XI on a pitch using API-Football grid ("row:col"); GK at the bottom. */
-function FormationPitch({ lineup }: { lineup: Lineup }) {
+/** Position one team's XI by grid into its half of the pitch (home bottom, away top, mirrored). */
+function placeTeam(l: Lineup, side: Side): { p: LineupPlayer; x: number; y: number }[] {
   const byRow = new Map<number, LineupPlayer[]>();
-  for (const p of lineup.startXI) {
+  for (const p of l.startXI) {
     const row = p.grid ? Number(p.grid.split(":")[0]) : 0;
     (byRow.get(row) ?? byRow.set(row, []).get(row)!).push(p);
   }
-  const rows = [...byRow.entries()].sort((a, b) => a[0] - b[0]);
+  const rows = [...byRow.entries()].sort((a, b) => a[0] - b[0]); // row 1 = GK first
   for (const [, ps] of rows) ps.sort((a, b) => Number(a.grid?.split(":")[1] ?? 0) - Number(b.grid?.split(":")[1] ?? 0));
-  const nRows = rows.length;
+  const n = rows.length;
+  const out: { p: LineupPlayer; x: number; y: number }[] = [];
+  rows.forEach(([, ps], r) => {
+    const frac = n <= 1 ? 0 : r / (n - 1); // 0 = GK line, 1 = furthest forward
+    const yM = side === "home" ? 101 - frac * 45 : 4 + frac * 45; // metres; stay clear of halfway
+    ps.forEach((p, i) => {
+      const idx = side === "home" ? i : ps.length - 1 - i; // mirror away so both attack the centre
+      const xM = 9 + ((idx + 0.5) / ps.length) * 50;
+      out.push({ p, x: (xM / 68) * 100, y: (yM / 105) * 100 });
+    });
+  });
+  return out;
+}
+
+function EndLabel({ teamId, formation, side }: { teamId: string; formation: string | null; side: Side }) {
+  const dot = side === "home" ? "bg-sky-400" : "bg-spice-400";
   return (
-    <div className="relative w-full overflow-hidden rounded-lg ring-1 ring-white/[0.08]" style={{ aspectRatio: "68 / 105" }}>
-      <PitchMarkings />
-      {rows.flatMap(([row, ps], r) =>
-        ps.map((p, i) => {
-          const y = nRows <= 1 ? 50 : 90 - (r / (nRows - 1)) * 80; // GK (r=0) at the bottom
-          const x = 8 + ((i + 0.5) / ps.length) * 84;
-          return <PitchToken key={p.playerId ?? `${row}-${i}`} p={p} x={x} y={y} />;
-        }),
-      )}
+    <div className={`absolute left-2 ${side === "home" ? "bottom-2" : "top-2"} flex items-center gap-1.5 rounded-full bg-pitch-950/55 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+      <Crest teamId={teamId} size={13} />
+      <span>{formation ?? "XI"}</span>
     </div>
   );
 }
 
-function TeamLineup({ l }: { l: Lineup }) {
-  const hasGrid = l.startXI.some((p) => p.grid);
+function CombinedPitch({ home, away }: { home?: Lineup; away?: Lineup }) {
+  const tokens = [
+    ...(home ? placeTeam(home, "home").map((t) => ({ ...t, side: "home" as Side })) : []),
+    ...(away ? placeTeam(away, "away").map((t) => ({ ...t, side: "away" as Side })) : []),
+  ];
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center gap-1.5 text-xs font-semibold text-pitch-300">
-        <Crest teamId={l.teamId} size={16} />
-        <span className="truncate">{l.formation ?? "XI"}</span>
+    <div
+      className="relative mx-auto w-full max-w-[22rem] overflow-hidden rounded-2xl shadow-[inset_0_0_40px_rgba(0,0,0,0.45)] ring-1 ring-white/10"
+      style={{ aspectRatio: "68 / 105" }}
+    >
+      <PitchMarkings />
+      {away && <EndLabel teamId={away.teamId} formation={away.formation} side="away" />}
+      {home && <EndLabel teamId={home.teamId} formation={home.formation} side="home" />}
+      {tokens.map((t, i) => (
+        <PitchToken key={t.p.playerId ?? i} p={t.p} x={t.x} y={t.y} side={t.side} />
+      ))}
+    </div>
+  );
+}
+
+function SubsList({ l, side }: { l: Lineup; side: Side }) {
+  if (l.subs.length === 0) return null;
+  const dot = side === "home" ? "bg-sky-400" : "bg-spice-400";
+  return (
+    <div className="min-w-0">
+      <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-pitch-300">
+        <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+        <Crest teamId={l.teamId} size={13} /> Subs
       </div>
-      {hasGrid ? (
-        <FormationPitch lineup={l} />
-      ) : (
-        <ul className="space-y-1 text-[13px]">
-          {l.startXI.map((p, i) => (
-            <li key={i} className="flex items-center gap-1.5 text-pitch-200">
-              <span className="w-5 text-right font-mono text-[11px] text-pitch-500">{p.number ?? ""}</span>
-              <span className="truncate">{p.name}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-      {l.subs.length > 0 && (
-        <p className="text-[10px] leading-snug text-pitch-500">
-          <span className="text-pitch-400">Subs: </span>
-          {l.subs.map((p) => lastName(p.name)).join(", ")}
-        </p>
-      )}
+      <p className="text-[10px] leading-snug text-pitch-500">{l.subs.map((p) => lastName(p.name)).join(", ")}</p>
     </div>
   );
 }
@@ -603,12 +621,43 @@ function Lineups({ match }: { match: Match }) {
   const home = match.lineups?.find((l) => l.teamId === match.homeTeamId);
   const away = match.lineups?.find((l) => l.teamId === match.awayTeamId);
   if (!home && !away) return null;
+  const hasGrid = [home, away].some((l) => l?.startXI.some((p) => p.grid));
+
   return (
     <section>
       <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
-      <div className="grid grid-cols-2 gap-3">
-        {[home, away].map((l, idx) => (l ? <TeamLineup key={idx} l={l} /> : <div key={idx} />))}
-      </div>
+      {hasGrid ? (
+        <>
+          <CombinedPitch home={home} away={away} />
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            {home && <SubsList l={home} side="home" />}
+            {away && <SubsList l={away} side="away" />}
+          </div>
+        </>
+      ) : (
+        <div className="grid grid-cols-2 gap-3">
+          {[home, away].map((l, idx) =>
+            l ? (
+              <div key={idx} className="space-y-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-pitch-300">
+                  <Crest teamId={l.teamId} size={16} />
+                  <span className="truncate">{l.formation ?? "XI"}</span>
+                </div>
+                <ul className="space-y-1 text-[13px]">
+                  {l.startXI.map((p, i) => (
+                    <li key={i} className="flex items-center gap-1.5 text-pitch-200">
+                      <span className="w-5 text-right font-mono text-[11px] text-pitch-500">{p.number ?? ""}</span>
+                      <span className="truncate">{p.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div key={idx} />
+            ),
+          )}
+        </div>
+      )}
     </section>
   );
 }
