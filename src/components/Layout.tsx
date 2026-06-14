@@ -68,13 +68,14 @@ export default function Layout({ children }: { children: ReactNode }) {
       </header>
 
       <main className="flex-1 px-3 pb-28 pt-5 sm:px-4">
-        <MatchModalProvider>
-          <PlayerModalProvider>
+        {/* PlayerModal must wrap MatchModal so the match modal's lineup tokens can open player cards */}
+        <PlayerModalProvider>
+          <MatchModalProvider>
             <div key={loc.pathname} className="animate-slide-up">
               {children}
             </div>
-          </PlayerModalProvider>
-        </MatchModalProvider>
+          </MatchModalProvider>
+        </PlayerModalProvider>
       </main>
 
       {/* mobile bottom nav */}
