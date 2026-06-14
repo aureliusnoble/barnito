@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T05:13:26.558Z",
+  "updatedAt": "2026-06-14T05:14:46.439Z",
   "tournamentComplete": false,
   "championTeamId": null,
   "matches": [
@@ -3580,7 +3580,7 @@
       "homeTeamId": "australia",
       "awayTeamId": "turkiye",
       "status": "LIVE",
-      "elapsed": 53,
+      "elapsed": 54,
       "homeGoals": 1,
       "awayGoals": 0,
       "goals": [
@@ -4057,7 +4057,7 @@
             },
             {
               "type": "Total passes",
-              "value": 169
+              "value": 171
             },
             {
               "type": "Passes accurate",
@@ -4065,7 +4065,7 @@
             },
             {
               "type": "Passes %",
-              "value": "80%"
+              "value": "79%"
             },
             {
               "type": "expected_goals",
@@ -4090,19 +4090,19 @@
             },
             {
               "type": "Total Shots",
-              "value": 11
+              "value": 13
             },
             {
               "type": "Blocked Shots",
-              "value": 3
-            },
-            {
-              "type": "Shots insidebox",
               "value": 5
             },
             {
-              "type": "Shots outsidebox",
+              "type": "Shots insidebox",
               "value": 6
+            },
+            {
+              "type": "Shots outsidebox",
+              "value": 7
             },
             {
               "type": "Fouls",
@@ -4110,11 +4110,11 @@
             },
             {
               "type": "Corner Kicks",
-              "value": 2
+              "value": 4
             },
             {
               "type": "Offsides",
-              "value": 1
+              "value": 2
             },
             {
               "type": "Ball Possession",
@@ -4134,11 +4134,11 @@
             },
             {
               "type": "Total passes",
-              "value": 405
+              "value": 416
             },
             {
               "type": "Passes accurate",
-              "value": 367
+              "value": 377
             },
             {
               "type": "Passes %",
@@ -4146,7 +4146,7 @@
             },
             {
               "type": "expected_goals",
-              "value": "0.45"
+              "value": "0.54"
             },
             {
               "type": "goals_prevented",
@@ -4160,7 +4160,7 @@
           "playerId": "australia-p-beach",
           "name": "Patrick Beach",
           "teamId": "australia",
-          "rating": 7,
+          "rating": 6.9,
           "number": 18
         },
         {
@@ -4174,14 +4174,14 @@
           "playerId": "australia-a-circati",
           "name": "Alessandro Circati",
           "teamId": "australia",
-          "rating": 6.6,
+          "rating": 6.9,
           "number": 3
         },
         {
           "playerId": "australia-h-souttar",
           "name": "Harry Souttar",
           "teamId": "australia",
-          "rating": 6.6,
+          "rating": 7.2,
           "number": 19
         },
         {
@@ -4216,7 +4216,7 @@
           "playerId": "australia-paul-michael-junior-okon-engstler",
           "name": "Paul Okon-Engstler",
           "teamId": "australia",
-          "rating": 6.9,
+          "rating": 7,
           "number": 24
         },
         {
@@ -4363,7 +4363,7 @@
           "playerId": "turkiye-a-bardakc",
           "name": "Abdülkerim Bardakcı",
           "teamId": "turkiye",
-          "rating": 7,
+          "rating": 6.9,
           "number": 14
         },
         {
@@ -4384,7 +4384,7 @@
           "playerId": "turkiye-h-calhanoglu",
           "name": "Hakan Çalhanoğlu",
           "teamId": "turkiye",
-          "rating": 6.9,
+          "rating": 6.6,
           "number": 10
         },
         {
