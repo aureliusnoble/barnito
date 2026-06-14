@@ -219,7 +219,16 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
             <div className="space-y-5">
               <TeamInfo match={match} />
               <H2H match={match} />
-              {hasLineups && <Lineups match={match} />}
+              {hasLineups ? (
+                <Lineups match={match} />
+              ) : (
+                <section>
+                  <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
+                  <p className="card p-4 text-center text-sm text-pitch-400">
+                    {match.status === "SCHEDULED" ? "Lineup available shortly before match" : "Lineups not available for this match"}
+                  </p>
+                </section>
+              )}
               <Penalties match={match} />
             </div>
           )}
