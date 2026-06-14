@@ -80,9 +80,12 @@ function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void
             </div>
           )}
           {club?.name && (
-            <div className="flex items-center gap-1.5 text-xs text-pitch-400" title="Club side">
-              {club.logo && <img src={club.logo} alt="" width={14} height={14} className="inline-block object-contain" />}
-              {club.name}
+            <div className="mt-0.5 flex items-center gap-2 rounded-full bg-white/5 px-2.5 py-1" title="Club side">
+              {club.logo && <img src={club.logo} alt="" width={22} height={22} className="inline-block object-contain" />}
+              <span className="text-left leading-tight">
+                <span className="block text-sm font-semibold text-pitch-100">{club.name}</span>
+                {club.league && <span className="block text-[10px] text-pitch-400">{club.league}</span>}
+              </span>
             </div>
           )}
         </div>
