@@ -74,6 +74,16 @@ function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void
     : undefined;
   const opponentId = next ? (next.homeTeamId === teamId ? next.awayTeamId : next.homeTeamId) : null;
 
+  // Penalty record (tournament) — only shown if there's any activity.
+  const pens: [string, number][] = [
+    ["scored", s.penScored ?? 0],
+    ["missed", s.penMissed ?? 0],
+    ["saved", s.penSaved ?? 0],
+    ["won", s.penWon ?? 0],
+    ["conceded", s.penCommitted ?? 0],
+  ];
+  const hasPens = pens.some(([, n]) => n > 0);
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm animate-fade-in sm:items-center" onClick={onClose}>
       <div className="card max-h-[88vh] w-full max-w-sm animate-slide-up overflow-y-auto rounded-b-none rounded-t-4xl border-white/10 p-5 sm:rounded-4xl" onClick={(e) => e.stopPropagation()}>
@@ -122,6 +132,14 @@ function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void
             <span className="text-[10px] uppercase tracking-wide text-pitch-400">{multiplier ? `×${multiplier} / goal` : ""}</span>
           </div>
         </div>
+        {hasPens && (
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-xl bg-white/[0.04] px-3 py-2 text-xs">
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-pitch-400">Penalties</span>
+            {pens.filter(([, n]) => n > 0).map(([label, n]) => (
+              <span key={label} className="text-pitch-200"><span className="font-bold text-white">{n}</span> {label}</span>
+            ))}
+          </div>
+        )}
         {next && opponentId && (
           <div className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-white/[0.04] px-3 py-2 text-xs text-pitch-300">
             <CalendarClock size={13} className="text-pitch-400" />

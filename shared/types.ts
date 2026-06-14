@@ -107,6 +107,31 @@ export interface PlayerRating {
   teamId: string;
   rating: number | null; // 0..10
   number?: number | null;
+  // richer per-match line (optional; populated for played matches with coverage)
+  minutes?: number | null;
+  captain?: boolean;
+  goals?: number;
+  assists?: number;
+  shotsTotal?: number;
+  shotsOn?: number;
+  passes?: number;
+  passAcc?: number | null; // %
+  keyPasses?: number;
+  tackles?: number;
+  interceptions?: number;
+  duelsTotal?: number;
+  duelsWon?: number;
+  dribbleAtt?: number;
+  dribbleSucc?: number;
+  foulsCommitted?: number;
+  foulsDrawn?: number;
+  yellow?: number;
+  red?: number;
+  penScored?: number;
+  penMissed?: number;
+  penWon?: number;
+  penCommitted?: number;
+  penSaved?: number;
 }
 
 export interface H2HMatch {
@@ -382,6 +407,12 @@ export interface PlayerCardStats {
   yellow: number;
   red: number;
   apps: number;
+  assists?: number;
+  penScored?: number;
+  penMissed?: number;
+  penWon?: number;
+  penCommitted?: number;
+  penSaved?: number;
 }
 export interface PlayerStatsFile {
   updatedAt: string;

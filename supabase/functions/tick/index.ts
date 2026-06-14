@@ -122,11 +122,26 @@ function mapDetails(f: ApiFixtureDetailed, st: State) {
     subs: l.substitutes.map((p) => ({ playerId: pid(p.player.id), name: p.player.name, number: p.player.number, pos: p.player.pos, grid: p.player.grid })),
   }));
   const stats: TeamStat[] = (f.statistics ?? []).map((s) => ({ teamId: tid(s.team.id), items: s.statistics }));
-  const ratings: PlayerRating[] = (f.players ?? []).flatMap((tp) => tp.players.map((pl) => ({
-    playerId: pid(pl.player.id), name: pl.player.name, teamId: tid(tp.team.id),
-    rating: pl.statistics[0]?.games.rating ? Number(pl.statistics[0].games.rating) : null,
-    number: pl.statistics[0]?.games.number ?? null,
-  })));
+  const num = (v: string | number | null | undefined) => (v == null ? null : Number(v));
+  const ratings: PlayerRating[] = (f.players ?? []).flatMap((tp) => tp.players.map((pl) => {
+    const x = pl.statistics[0];
+    return {
+      playerId: pid(pl.player.id), name: pl.player.name, teamId: tid(tp.team.id),
+      rating: x?.games.rating ? Number(x.games.rating) : null,
+      number: x?.games.number ?? null,
+      minutes: x?.games.minutes ?? null, captain: x?.games.captain ?? false,
+      goals: x?.goals.total ?? 0, assists: x?.goals.assists ?? 0,
+      shotsTotal: x?.shots.total ?? 0, shotsOn: x?.shots.on ?? 0,
+      passes: x?.passes.total ?? 0, passAcc: num(x?.passes.accuracy), keyPasses: x?.passes.key ?? 0,
+      tackles: x?.tackles.total ?? 0, interceptions: x?.tackles.interceptions ?? 0,
+      duelsTotal: x?.duels.total ?? 0, duelsWon: x?.duels.won ?? 0,
+      dribbleAtt: x?.dribbles.attempts ?? 0, dribbleSucc: x?.dribbles.success ?? 0,
+      foulsCommitted: x?.fouls.committed ?? 0, foulsDrawn: x?.fouls.drawn ?? 0,
+      yellow: x?.cards.yellow ?? 0, red: x?.cards.red ?? 0,
+      penScored: x?.penalty.scored ?? 0, penMissed: x?.penalty.missed ?? 0,
+      penWon: x?.penalty.won ?? 0, penCommitted: x?.penalty.commited ?? 0, penSaved: x?.penalty.saved ?? 0,
+    };
+  }));
   return { goals, events, lineups, stats, ratings };
 }
 
@@ -258,22 +273,35 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
   });
 
   // playerStats: goals + cards + appearances aggregated from events (FINISHED + live)
-  const ps: Record<string, { goals: number; yellow: number; red: number; apps: number }> = {};
+  type PS = { goals: number; yellow: number; red: number; apps: number; assists: number; penScored: number; penMissed: number; penWon: number; penCommitted: number; penSaved: number };
+  const blank = (): PS => ({ goals: 0, yellow: 0, red: 0, apps: 0, assists: 0, penScored: 0, penMissed: 0, penWon: 0, penCommitted: 0, penSaved: 0 });
+  const ps: Record<string, PS> = {};
   const seenApp: Record<string, Set<string>> = {};
   for (const m of matches) {
     for (const e of m.events ?? []) {
       if (!e.playerId) continue;
-      ps[e.playerId] ??= { goals: 0, yellow: 0, red: 0, apps: 0 };
+      ps[e.playerId] ??= blank();
       if (e.type === "GOAL" && !/own/i.test(e.detail)) ps[e.playerId].goals++;
       if (e.type === "CARD" && /yellow/i.test(e.detail)) ps[e.playerId].yellow++;
       if (e.type === "CARD" && /red/i.test(e.detail)) ps[e.playerId].red++;
+    }
+    // assists + penalty tallies come from the per-player match line
+    for (const r of m.ratings ?? []) {
+      if (!r.playerId) continue;
+      const s = (ps[r.playerId] ??= blank());
+      s.assists += r.assists ?? 0;
+      s.penScored += r.penScored ?? 0;
+      s.penMissed += r.penMissed ?? 0;
+      s.penWon += r.penWon ?? 0;
+      s.penCommitted += r.penCommitted ?? 0;
+      s.penSaved += r.penSaved ?? 0;
     }
     for (const l of m.lineups ?? []) for (const p of [...l.startXI, ...l.subs]) {
       if (!p.playerId) continue;
       (seenApp[p.playerId] ??= new Set()).add(m.id);
     }
   }
-  for (const [pid, s] of Object.entries(seenApp)) { ps[pid] ??= { goals: 0, yellow: 0, red: 0, apps: 0 }; ps[pid].apps = s.size; }
+  for (const [pid, s] of Object.entries(seenApp)) { ps[pid] ??= blank(); ps[pid].apps = s.size; }
 
   await Promise.all([
     setDoc("scores", scores),
