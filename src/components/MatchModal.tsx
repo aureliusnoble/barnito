@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
+import { usePlayerModal } from "./PlayerModal";
 import { StatusBadge, PointsPill, GroupPill, Crest, ScorerPickTags } from "./bits";
 import { formatFull, ordinal } from "../lib/format";
 import { WC_HISTORY } from "../data/wcHistory";
-import type { Match, MatchEvent, MatchPredictionResult, TeamStat } from "@shared/types";
+import type { Lineup, LineupPlayer, Match, MatchEvent, MatchPredictionResult, TeamStat } from "@shared/types";
 
 function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return <div className="flex items-center justify-between text-xs"><span className="text-pitch-400">{label}</span><span className="font-semibold text-pitch-100">{children}</span></div>;
@@ -108,7 +109,7 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
   const hasRatings = (match.ratings ?? []).some((r) => r.rating != null);
   const hasStats = !!match.stats && match.stats.length === 2;
   const hasLineups = !!match.lineups && match.lineups.length > 0;
-  const hasMatchDetail = events.length > 0 || hasStats || hasRatings || hasLineups;
+  const hasMatchDetail = events.length > 0 || hasStats || hasRatings;
 
   // Predictions stay the focus (default tab); everything else lives behind tabs to keep it clean.
   const tabs: { key: TabKey; label: string }[] = [
@@ -202,6 +203,7 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
           {active === "info" && (
             <div className="space-y-5">
               <TeamInfo match={match} />
+              {hasLineups && <Lineups match={match} />}
               <H2H match={match} />
             </div>
           )}
@@ -211,7 +213,6 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
               {events.length > 0 && <Timeline match={match} events={events} />}
               {hasStats && <StatBars match={match} stats={match.stats!} />}
               <TopPerformers match={match} />
-              {hasLineups && <Lineups match={match} />}
             </div>
           )}
         </div>
@@ -485,7 +486,87 @@ function TopPerformers({ match }: { match: Match }) {
   );
 }
 
-// --- lineups ---------------------------------------------------------------
+// --- lineups (formation pitch) ---------------------------------------------
+const POS_DOT: Record<string, string> = {
+  G: "bg-purple-500/80 ring-purple-300/50",
+  D: "bg-sky-500/80 ring-sky-300/50",
+  M: "bg-accent-500/80 ring-accent-300/50",
+  F: "bg-spice-500/80 ring-spice-300/50",
+};
+const lastName = (name: string) => {
+  const parts = name.replace(/^[A-Z]\.\s*/, "").split(/\s+/).filter(Boolean);
+  return parts[parts.length - 1] ?? name;
+};
+
+function PlayerDot({ p }: { p: LineupPlayer }) {
+  const { open } = usePlayerModal();
+  const color = POS_DOT[(p.pos ?? "").toUpperCase()] ?? "bg-pitch-600 ring-white/20";
+  return (
+    <button
+      type="button"
+      disabled={!p.playerId}
+      onClick={() => p.playerId && open(p.playerId)}
+      className={`flex w-12 flex-col items-center gap-0.5 ${p.playerId ? "cursor-pointer" : "cursor-default"}`}
+      title={p.name}
+    >
+      <span className={`grid h-6 w-6 place-items-center rounded-full text-[10px] font-bold text-white ring-2 ${color}`}>
+        {p.number ?? ""}
+      </span>
+      <span className="max-w-[3.25rem] truncate text-[9px] leading-tight text-pitch-100">{lastName(p.name)}</span>
+    </button>
+  );
+}
+
+/** Render a starting XI on a mini pitch using API-Football grid ("row:col"); GK at the bottom. */
+function FormationPitch({ lineup }: { lineup: Lineup }) {
+  const byRow = new Map<number, LineupPlayer[]>();
+  for (const p of lineup.startXI) {
+    const row = p.grid ? Number(p.grid.split(":")[0]) : 0;
+    (byRow.get(row) ?? byRow.set(row, []).get(row)!).push(p);
+  }
+  const rows = [...byRow.entries()].sort((a, b) => a[0] - b[0]);
+  for (const [, ps] of rows) ps.sort((a, b) => Number(a.grid?.split(":")[1] ?? 0) - Number(b.grid?.split(":")[1] ?? 0));
+  return (
+    <div className="flex flex-col-reverse justify-between gap-3 rounded-xl bg-gradient-to-b from-pitch-600/30 to-pitch-800/50 p-2 py-3 ring-1 ring-white/[0.07]">
+      {rows.map(([row, ps]) => (
+        <div key={row} className="flex justify-around gap-1">
+          {ps.map((p, i) => <PlayerDot key={p.playerId ?? `${row}-${i}`} p={p} />)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TeamLineup({ l }: { l: Lineup }) {
+  const hasGrid = l.startXI.some((p) => p.grid);
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-1.5 text-xs font-semibold text-pitch-300">
+        <Crest teamId={l.teamId} size={16} />
+        <span className="truncate">{l.formation ?? "XI"}</span>
+      </div>
+      {hasGrid ? (
+        <FormationPitch lineup={l} />
+      ) : (
+        <ul className="space-y-1 text-[13px]">
+          {l.startXI.map((p, i) => (
+            <li key={i} className="flex items-center gap-1.5 text-pitch-200">
+              <span className="w-5 text-right font-mono text-[11px] text-pitch-500">{p.number ?? ""}</span>
+              <span className="truncate">{p.name}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {l.subs.length > 0 && (
+        <p className="text-[10px] leading-snug text-pitch-500">
+          <span className="text-pitch-400">Subs: </span>
+          {l.subs.map((p) => lastName(p.name)).join(", ")}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function Lineups({ match }: { match: Match }) {
   const home = match.lineups?.find((l) => l.teamId === match.homeTeamId);
   const away = match.lineups?.find((l) => l.teamId === match.awayTeamId);
@@ -494,28 +575,7 @@ function Lineups({ match }: { match: Match }) {
     <section>
       <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
       <div className="grid grid-cols-2 gap-3">
-        {[home, away].map((l, idx) =>
-          l ? (
-            <div key={idx}>
-              <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-pitch-300">
-                <Crest teamId={l.teamId} size={16} />
-                <span className="truncate">{l.formation ?? "XI"}</span>
-              </div>
-              <ul className="space-y-1 text-[13px]">
-                {l.startXI.map((p, i) => (
-                  <li key={i} className="flex items-center gap-1.5 text-pitch-200">
-                    <span className="w-5 text-right font-mono text-[11px] text-pitch-500">
-                      {p.number ?? ""}
-                    </span>
-                    <span className="truncate">{p.name}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <div key={idx} />
-          ),
-        )}
+        {[home, away].map((l, idx) => (l ? <TeamLineup key={idx} l={l} /> : <div key={idx} />))}
       </div>
     </section>
   );
