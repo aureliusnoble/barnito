@@ -17,7 +17,8 @@ export function useTick(active: boolean, ms = 12000): void {
  */
 export function liveMinute(elapsed: number | null, dataUpdatedAt: string): string {
   if (elapsed == null) return "LIVE";
-  const sinceMin = Math.max(0, (Date.now() - Date.parse(dataUpdatedAt)) / 60000);
+  const t = Date.parse(dataUpdatedAt);
+  const sinceMin = Number.isFinite(t) ? Math.max(0, (Date.now() - t) / 60000) : 0;
   const cap = elapsed <= 45 ? 45 : 90;
   const m = Math.floor(Math.min(elapsed + sinceMin, cap));
   return m >= cap ? `${cap}+'` : `${m}'`;

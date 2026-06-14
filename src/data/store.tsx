@@ -149,9 +149,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const participants = participantRows.map(rowToParticipant);
     const meta = (docs._meta as { tournamentComplete?: boolean; championTeamId?: string | null }) ?? {};
     const injuries = (docs.injuries as InjuriesFile) ?? { updatedAt: "", items: [] };
+    // Freshest match-row write time — used to tick live clocks forward between snapshots.
+    const matchesUpdatedAt = matchRows.reduce((max, r) => {
+      const u = (r.updated_at as string) ?? "";
+      return u > max ? u : max;
+    }, "");
     return {
       roster: { updatedAt: "", teams, players },
-      matches: { updatedAt: "", tournamentComplete: meta.tournamentComplete ?? false, championTeamId: meta.championTeamId ?? null, matches },
+      matches: { updatedAt: matchesUpdatedAt, tournamentComplete: meta.tournamentComplete ?? false, championTeamId: meta.championTeamId ?? null, matches },
       predictions: { updatedAt: "", participants },
       standings: (docs.standings as StandingsFile) ?? { updatedAt: "", groups: [] },
       scores: (docs.scores as ScoresFile) ?? EMPTY_SCORES,
