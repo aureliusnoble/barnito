@@ -149,6 +149,19 @@ async function main() {
 
   const participants = [...byName.values()];
 
+  // Manual corrections where the Scorito export cell was wrong (confirmed against the player).
+  const MATCH_OVERRIDE: Record<string, Record<string, [number, number]>> = {
+    "Will Guess Football Good": { "C-2": [0, 2] }, // export had 0-1; actual pick was 0-2
+  };
+  for (const p of participants) {
+    const ov = MATCH_OVERRIDE[p.name];
+    if (!ov) continue;
+    for (const [mid, [h, a]] of Object.entries(ov)) {
+      const ms = p.matchScores.find((m) => m.matchId === mid);
+      if (ms) { ms.home = h; ms.away = a; } else p.matchScores.push({ matchId: mid, home: h, away: a } as MatchScorePrediction);
+    }
+  }
+
   // ---- report ----
   console.log(`\n=== PARTICIPANTS (${participants.length}) ===`);
   for (const p of participants) {

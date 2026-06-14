@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T21:38:25.332Z",
+  "updatedAt": "2026-06-14T21:56:28.607Z",
   "participants": [
     {
       "id": "8azil",
@@ -788,7 +788,7 @@
         {
           "matchId": "C-2",
           "home": 0,
-          "away": 1
+          "away": 2
         },
         {
           "matchId": "D-2",

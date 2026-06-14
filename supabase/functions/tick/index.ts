@@ -320,6 +320,15 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
 }
 
 // ---------------------------------------------------------------------------
+// Hand-fixed positions where the data feed mislabels a player (drives the goal multiplier).
+const POSITION_OVERRIDE: Record<string, "GK" | "DEF" | "MID" | "FWD"> = {
+  "brazil-vinicius-junior": "FWD",
+  "spain-lamine-yamal": "FWD",
+  "france-m-olise": "FWD",
+  "brazil-raphinha": "FWD",
+  "belgium-j-doku": "FWD",
+};
+
 async function buildRoster(force = false) {
   const standings = await apiGet<{ league: { standings: ApiStandingRow[][] } }>("standings", { league: WC_LEAGUE, season: WC_SEASON });
   const groups = standings[0]?.league.standings ?? [];
@@ -356,10 +365,10 @@ async function buildRoster(force = false) {
       normalized = (sq[0]?.players ?? []).map((p) => ({ id: p.id, name: p.name, photo: p.photo ?? null, position: p.position, number: p.number ?? null }));
     }
     const rows = normalized.map((e) => {
-      const pos = mapPosition(e.position);
       let id = `${t.id}-${slug(e.name)}`; let n = 2;
       while (used.has(id)) id = `${t.id}-${slug(e.name)}-${n++}`;
       used.add(id);
+      const pos = POSITION_OVERRIDE[id] ?? mapPosition(e.position);
       return { id, api_id: e.id, name: e.name, team_id: t.id, position: pos,
         goal_multiplier: GOAL_MULTIPLIER[pos], photo: e.photo, number: e.number, updated_at: new Date().toISOString() };
     });
