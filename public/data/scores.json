@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-13T23:55:28.039Z",
+  "updatedAt": "2026-06-14T05:13:28.486Z",
   "leaderboard": [
     {
       "participantId": "barney",
@@ -1012,6 +1012,42 @@
       "matchId": "D-2",
       "predictions": [
         {
+          "participantId": "lena",
+          "name": "Lena",
+          "predHome": 3,
+          "predAway": 2,
+          "points": 0,
+          "exact": false,
+          "outcome": false,
+          "live": true,
+          "matchesCurrentScore": false,
+          "matchesCurrentOutcome": true
+        },
+        {
+          "participantId": "mo",
+          "name": "Mo",
+          "predHome": 4,
+          "predAway": 0,
+          "points": 0,
+          "exact": false,
+          "outcome": false,
+          "live": true,
+          "matchesCurrentScore": false,
+          "matchesCurrentOutcome": true
+        },
+        {
+          "participantId": "tomas",
+          "name": "Tomás",
+          "predHome": 2,
+          "predAway": 1,
+          "points": 0,
+          "exact": false,
+          "outcome": false,
+          "live": true,
+          "matchesCurrentScore": false,
+          "matchesCurrentOutcome": true
+        },
+        {
           "participantId": "aisha",
           "name": "Aisha",
           "predHome": 1,
@@ -1019,7 +1055,7 @@
           "points": 0,
           "exact": false,
           "outcome": false,
-          "live": false,
+          "live": true,
           "matchesCurrentScore": false,
           "matchesCurrentOutcome": false
         },
@@ -1031,7 +1067,7 @@
           "points": 0,
           "exact": false,
           "outcome": false,
-          "live": false,
+          "live": true,
           "matchesCurrentScore": false,
           "matchesCurrentOutcome": false
         },
@@ -1043,7 +1079,7 @@
           "points": 0,
           "exact": false,
           "outcome": false,
-          "live": false,
+          "live": true,
           "matchesCurrentScore": false,
           "matchesCurrentOutcome": false
         },
@@ -1055,31 +1091,7 @@
           "points": 0,
           "exact": false,
           "outcome": false,
-          "live": false,
-          "matchesCurrentScore": false,
-          "matchesCurrentOutcome": false
-        },
-        {
-          "participantId": "lena",
-          "name": "Lena",
-          "predHome": 3,
-          "predAway": 2,
-          "points": 0,
-          "exact": false,
-          "outcome": false,
-          "live": false,
-          "matchesCurrentScore": false,
-          "matchesCurrentOutcome": false
-        },
-        {
-          "participantId": "mo",
-          "name": "Mo",
-          "predHome": 4,
-          "predAway": 0,
-          "points": 0,
-          "exact": false,
-          "outcome": false,
-          "live": false,
+          "live": true,
           "matchesCurrentScore": false,
           "matchesCurrentOutcome": false
         },
@@ -1091,7 +1103,7 @@
           "points": 0,
           "exact": false,
           "outcome": false,
-          "live": false,
+          "live": true,
           "matchesCurrentScore": false,
           "matchesCurrentOutcome": false
         },
@@ -1103,19 +1115,7 @@
           "points": 0,
           "exact": false,
           "outcome": false,
-          "live": false,
-          "matchesCurrentScore": false,
-          "matchesCurrentOutcome": false
-        },
-        {
-          "participantId": "tomas",
-          "name": "Tomás",
-          "predHome": 2,
-          "predAway": 1,
-          "points": 0,
-          "exact": false,
-          "outcome": false,
-          "live": false,
+          "live": true,
           "matchesCurrentScore": false,
           "matchesCurrentOutcome": false
         },
@@ -1127,7 +1127,7 @@
           "points": 0,
           "exact": false,
           "outcome": false,
-          "live": false,
+          "live": true,
           "matchesCurrentScore": false,
           "matchesCurrentOutcome": false
         }
@@ -11477,17 +11477,6 @@
       "topOutcome": {
         "home": 0,
         "away": 0,
-        "spread": 45
-      }
-    },
-    {
-      "matchId": "D-2",
-      "kickoff": "2026-06-14T04:00:00+00:00",
-      "score": 8.94,
-      "maxSwing": 45,
-      "topOutcome": {
-        "home": 1,
-        "away": 1,
         "spread": 45
       }
     },

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-13T23:55:06.860Z",
+  "updatedAt": "2026-06-14T05:13:26.558Z",
   "tournamentComplete": false,
   "championTeamId": null,
   "matches": [
@@ -3579,11 +3579,948 @@
       },
       "homeTeamId": "australia",
       "awayTeamId": "turkiye",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "LIVE",
+      "elapsed": 53,
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "goals": [
+        {
+          "playerId": "australia-n-irankunda",
+          "apiPlayerId": 338014,
+          "playerName": "N. Irankunda",
+          "minute": 27,
+          "teamId": "australia",
+          "ownGoal": false
+        }
+      ],
+      "events": [
+        {
+          "minute": 27,
+          "extraMinute": null,
+          "teamId": "australia",
+          "type": "GOAL",
+          "detail": "Normal Goal",
+          "playerName": "N. Irankunda",
+          "playerId": "australia-n-irankunda",
+          "assistName": "P. Okon-Engstler"
+        },
+        {
+          "minute": 46,
+          "extraMinute": null,
+          "teamId": "turkiye",
+          "type": "SUBST",
+          "detail": "Substitution 1",
+          "playerName": "B. Yilmaz",
+          "playerId": "turkiye-b-y-lmaz",
+          "assistName": "K. Yildiz"
+        }
+      ],
+      "lineups": [
+        {
+          "teamId": "australia",
+          "formation": "5-4-1",
+          "coach": "Tony Popovic",
+          "startXI": [
+            {
+              "playerId": "australia-p-beach",
+              "name": "Patrick Beach",
+              "number": 18,
+              "pos": "G",
+              "grid": "1:1"
+            },
+            {
+              "playerId": "australia-j-italiano",
+              "name": "Jacob Italiano",
+              "number": 4,
+              "pos": "D",
+              "grid": "2:5"
+            },
+            {
+              "playerId": "australia-a-circati",
+              "name": "Alessandro Circati",
+              "number": 3,
+              "pos": "D",
+              "grid": "2:4"
+            },
+            {
+              "playerId": "australia-h-souttar",
+              "name": "Harry Souttar",
+              "number": 19,
+              "pos": "D",
+              "grid": "2:3"
+            },
+            {
+              "playerId": "australia-c-burgess",
+              "name": "Cameron Burgess",
+              "number": 21,
+              "pos": "D",
+              "grid": "2:2"
+            },
+            {
+              "playerId": "australia-j-bos",
+              "name": "Jordan Bos",
+              "number": 5,
+              "pos": "D",
+              "grid": "2:1"
+            },
+            {
+              "playerId": "australia-c-metcalfe",
+              "name": "Connor Metcalfe",
+              "number": 8,
+              "pos": "M",
+              "grid": "3:4"
+            },
+            {
+              "playerId": "australia-a-oandapos-neill",
+              "name": "Aiden O'Neill",
+              "number": 13,
+              "pos": "M",
+              "grid": "3:3"
+            },
+            {
+              "playerId": "australia-paul-michael-junior-okon-engstler",
+              "name": "Paul Okon-Engstler",
+              "number": 24,
+              "pos": "M",
+              "grid": "3:2"
+            },
+            {
+              "playerId": "australia-n-irankunda",
+              "name": "Nestory Irankunda",
+              "number": 17,
+              "pos": "M",
+              "grid": "3:1"
+            },
+            {
+              "playerId": "australia-m-toure",
+              "name": "Mohamed Touré",
+              "number": 9,
+              "pos": "F",
+              "grid": "4:1"
+            }
+          ],
+          "subs": [
+            {
+              "playerId": "australia-m-ryan",
+              "name": "Mathew Ryan",
+              "number": 1,
+              "pos": "G",
+              "grid": null
+            },
+            {
+              "playerId": "australia-p-izzo",
+              "name": "Paul Izzo",
+              "number": 12,
+              "pos": "G",
+              "grid": null
+            },
+            {
+              "playerId": "australia-m-degenek",
+              "name": "Miloš Degenek",
+              "number": 2,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "australia-j-geria",
+              "name": "Jason Geria",
+              "number": 6,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "australia-a-behich",
+              "name": "Aziz Behich",
+              "number": 16,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "australia-l-herrington",
+              "name": "Lucas Herrington",
+              "number": 25,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "australia-k-trewin",
+              "name": "Kai Trewin",
+              "number": 15,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "australia-c-devlin",
+              "name": "Cameron Devlin",
+              "number": 14,
+              "pos": "M",
+              "grid": null
+            },
+            {
+              "playerId": "australia-j-irvine",
+              "name": "Jackson Irvine",
+              "number": 22,
+              "pos": "M",
+              "grid": null
+            },
+            {
+              "playerId": "australia-m-leckie",
+              "name": "Mathew Leckie",
+              "number": 7,
+              "pos": "F",
+              "grid": null
+            },
+            {
+              "playerId": "australia-a-hrustic",
+              "name": "Ajdin Hrustić",
+              "number": 10,
+              "pos": "M",
+              "grid": null
+            },
+            {
+              "playerId": "australia-a-mabil",
+              "name": "Awer Mabil",
+              "number": 11,
+              "pos": "M",
+              "grid": null
+            },
+            {
+              "playerId": "australia-c-volpato",
+              "name": "Cristian Volpato",
+              "number": 20,
+              "pos": "M",
+              "grid": null
+            },
+            {
+              "playerId": "australia-n-velupillay",
+              "name": "Nishan Velupillay",
+              "number": 23,
+              "pos": "F",
+              "grid": null
+            },
+            {
+              "playerId": "australia-t-yengi",
+              "name": "Tete Yengi",
+              "number": 26,
+              "pos": "F",
+              "grid": null
+            }
+          ]
+        },
+        {
+          "teamId": "turkiye",
+          "formation": "4-2-3-1",
+          "coach": "Vincenzo Montella",
+          "startXI": [
+            {
+              "playerId": "turkiye-u-cak-r",
+              "name": "Uğurcan Çakır",
+              "number": 23,
+              "pos": "G",
+              "grid": "1:1"
+            },
+            {
+              "playerId": "turkiye-z-celik",
+              "name": "Zeki Çelik",
+              "number": 2,
+              "pos": "D",
+              "grid": "2:4"
+            },
+            {
+              "playerId": "turkiye-m-demiral",
+              "name": "Merih Demiral",
+              "number": 3,
+              "pos": "D",
+              "grid": "2:3"
+            },
+            {
+              "playerId": "turkiye-a-bardakc",
+              "name": "Abdülkerim Bardakcı",
+              "number": 14,
+              "pos": "D",
+              "grid": "2:2"
+            },
+            {
+              "playerId": null,
+              "name": "Ferdi Kadıoğlu",
+              "number": 20,
+              "pos": "D",
+              "grid": "2:1"
+            },
+            {
+              "playerId": "turkiye-i-yuksek",
+              "name": "İsmail Yüksek",
+              "number": 16,
+              "pos": "M",
+              "grid": "3:2"
+            },
+            {
+              "playerId": "turkiye-h-calhanoglu",
+              "name": "Hakan Çalhanoğlu",
+              "number": 10,
+              "pos": "M",
+              "grid": "3:1"
+            },
+            {
+              "playerId": "turkiye-a-guler",
+              "name": "Arda Güler",
+              "number": 8,
+              "pos": "M",
+              "grid": "4:3"
+            },
+            {
+              "playerId": "turkiye-o-kokcu",
+              "name": "Orkun Kökçü",
+              "number": 6,
+              "pos": "M",
+              "grid": "4:2"
+            },
+            {
+              "playerId": "turkiye-b-y-lmaz",
+              "name": "Barış Alper Yılmaz",
+              "number": 21,
+              "pos": "M",
+              "grid": "4:1"
+            },
+            {
+              "playerId": "turkiye-k-akturkoglu",
+              "name": "Kerem Aktürkoğlu",
+              "number": 7,
+              "pos": "F",
+              "grid": "5:1"
+            }
+          ],
+          "subs": [
+            {
+              "playerId": "turkiye-m-gunok",
+              "name": "Mert Günok",
+              "number": 1,
+              "pos": "G",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-a-bay-nd-r",
+              "name": "Altay Bayındır",
+              "number": 12,
+              "pos": "G",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-c-soyuncu",
+              "name": "Çağlar Söyüncü",
+              "number": 4,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-e-elmal",
+              "name": "Eren Elmalı",
+              "number": 13,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-o-kabak",
+              "name": "Ozan Kabak",
+              "number": 15,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-m-muldur",
+              "name": "Mert Müldür",
+              "number": 18,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-s-akaydin",
+              "name": "Samet Akaydın",
+              "number": 25,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-k-ayhan",
+              "name": "Kaan Ayhan",
+              "number": 22,
+              "pos": "D",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-s-ozcan",
+              "name": "Salih Özcan",
+              "number": 5,
+              "pos": "M",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-i-kahveci",
+              "name": "İrfan Can Kahveci",
+              "number": 17,
+              "pos": "M",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-y-akgun",
+              "name": "Yunus Akgün",
+              "number": 19,
+              "pos": "F",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-o-ayd-n",
+              "name": "Oğuz Aydın",
+              "number": 24,
+              "pos": "F",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-c-uzun",
+              "name": "Can Uzun",
+              "number": 26,
+              "pos": "M",
+              "grid": null
+            },
+            {
+              "playerId": "turkiye-d-gul",
+              "name": "Deniz Gül",
+              "number": 9,
+              "pos": "F",
+              "grid": null
+            },
+            {
+              "playerId": null,
+              "name": "Kenan Yıldız",
+              "number": 11,
+              "pos": "F",
+              "grid": null
+            }
+          ]
+        }
+      ],
+      "stats": [
+        {
+          "teamId": "australia",
+          "items": [
+            {
+              "type": "Shots on Goal",
+              "value": 2
+            },
+            {
+              "type": "Shots off Goal",
+              "value": 3
+            },
+            {
+              "type": "Total Shots",
+              "value": 6
+            },
+            {
+              "type": "Blocked Shots",
+              "value": 1
+            },
+            {
+              "type": "Shots insidebox",
+              "value": 4
+            },
+            {
+              "type": "Shots outsidebox",
+              "value": 2
+            },
+            {
+              "type": "Fouls",
+              "value": 6
+            },
+            {
+              "type": "Corner Kicks",
+              "value": 3
+            },
+            {
+              "type": "Offsides",
+              "value": 0
+            },
+            {
+              "type": "Ball Possession",
+              "value": "30%"
+            },
+            {
+              "type": "Yellow Cards",
+              "value": null
+            },
+            {
+              "type": "Red Cards",
+              "value": null
+            },
+            {
+              "type": "Goalkeeper Saves",
+              "value": 3
+            },
+            {
+              "type": "Total passes",
+              "value": 169
+            },
+            {
+              "type": "Passes accurate",
+              "value": 135
+            },
+            {
+              "type": "Passes %",
+              "value": "80%"
+            },
+            {
+              "type": "expected_goals",
+              "value": "0.66"
+            },
+            {
+              "type": "goals_prevented",
+              "value": "-0.21"
+            }
+          ]
+        },
+        {
+          "teamId": "turkiye",
+          "items": [
+            {
+              "type": "Shots on Goal",
+              "value": 3
+            },
+            {
+              "type": "Shots off Goal",
+              "value": 5
+            },
+            {
+              "type": "Total Shots",
+              "value": 11
+            },
+            {
+              "type": "Blocked Shots",
+              "value": 3
+            },
+            {
+              "type": "Shots insidebox",
+              "value": 5
+            },
+            {
+              "type": "Shots outsidebox",
+              "value": 6
+            },
+            {
+              "type": "Fouls",
+              "value": 1
+            },
+            {
+              "type": "Corner Kicks",
+              "value": 2
+            },
+            {
+              "type": "Offsides",
+              "value": 1
+            },
+            {
+              "type": "Ball Possession",
+              "value": "70%"
+            },
+            {
+              "type": "Yellow Cards",
+              "value": null
+            },
+            {
+              "type": "Red Cards",
+              "value": null
+            },
+            {
+              "type": "Goalkeeper Saves",
+              "value": 1
+            },
+            {
+              "type": "Total passes",
+              "value": 405
+            },
+            {
+              "type": "Passes accurate",
+              "value": 367
+            },
+            {
+              "type": "Passes %",
+              "value": "91%"
+            },
+            {
+              "type": "expected_goals",
+              "value": "0.45"
+            },
+            {
+              "type": "goals_prevented",
+              "value": "-0.21"
+            }
+          ]
+        }
+      ],
+      "ratings": [
+        {
+          "playerId": "australia-p-beach",
+          "name": "Patrick Beach",
+          "teamId": "australia",
+          "rating": 7,
+          "number": 18
+        },
+        {
+          "playerId": "australia-j-italiano",
+          "name": "Jacob Italiano",
+          "teamId": "australia",
+          "rating": 6.9,
+          "number": 4
+        },
+        {
+          "playerId": "australia-a-circati",
+          "name": "Alessandro Circati",
+          "teamId": "australia",
+          "rating": 6.6,
+          "number": 3
+        },
+        {
+          "playerId": "australia-h-souttar",
+          "name": "Harry Souttar",
+          "teamId": "australia",
+          "rating": 6.6,
+          "number": 19
+        },
+        {
+          "playerId": "australia-c-burgess",
+          "name": "Cameron Burgess",
+          "teamId": "australia",
+          "rating": 6.9,
+          "number": 21
+        },
+        {
+          "playerId": "australia-j-bos",
+          "name": "Jordan Bos",
+          "teamId": "australia",
+          "rating": 6.7,
+          "number": 5
+        },
+        {
+          "playerId": "australia-c-metcalfe",
+          "name": "Connor Metcalfe",
+          "teamId": "australia",
+          "rating": 6.9,
+          "number": 8
+        },
+        {
+          "playerId": "australia-a-oandapos-neill",
+          "name": "Aiden O'Neill",
+          "teamId": "australia",
+          "rating": 6.6,
+          "number": 13
+        },
+        {
+          "playerId": "australia-paul-michael-junior-okon-engstler",
+          "name": "Paul Okon-Engstler",
+          "teamId": "australia",
+          "rating": 6.9,
+          "number": 24
+        },
+        {
+          "playerId": "australia-n-irankunda",
+          "name": "Nestory Irankunda",
+          "teamId": "australia",
+          "rating": 7.5,
+          "number": 17
+        },
+        {
+          "playerId": "australia-m-toure",
+          "name": "Mohamed Touré",
+          "teamId": "australia",
+          "rating": 6.2,
+          "number": 9
+        },
+        {
+          "playerId": "australia-m-ryan",
+          "name": "Mathew Ryan",
+          "teamId": "australia",
+          "rating": null,
+          "number": 1
+        },
+        {
+          "playerId": "australia-p-izzo",
+          "name": "Paul Izzo",
+          "teamId": "australia",
+          "rating": null,
+          "number": 12
+        },
+        {
+          "playerId": "australia-m-degenek",
+          "name": "Miloš Degenek",
+          "teamId": "australia",
+          "rating": null,
+          "number": 2
+        },
+        {
+          "playerId": "australia-j-geria",
+          "name": "Jason Geria",
+          "teamId": "australia",
+          "rating": null,
+          "number": 6
+        },
+        {
+          "playerId": "australia-a-behich",
+          "name": "Aziz Behich",
+          "teamId": "australia",
+          "rating": null,
+          "number": 16
+        },
+        {
+          "playerId": "australia-l-herrington",
+          "name": "Lucas Herrington",
+          "teamId": "australia",
+          "rating": null,
+          "number": 25
+        },
+        {
+          "playerId": "australia-k-trewin",
+          "name": "Kai Trewin",
+          "teamId": "australia",
+          "rating": null,
+          "number": 15
+        },
+        {
+          "playerId": "australia-c-devlin",
+          "name": "Cameron Devlin",
+          "teamId": "australia",
+          "rating": null,
+          "number": 14
+        },
+        {
+          "playerId": "australia-j-irvine",
+          "name": "Jackson Irvine",
+          "teamId": "australia",
+          "rating": null,
+          "number": 22
+        },
+        {
+          "playerId": "australia-m-leckie",
+          "name": "Mathew Leckie",
+          "teamId": "australia",
+          "rating": null,
+          "number": 7
+        },
+        {
+          "playerId": "australia-a-hrustic",
+          "name": "Ajdin Hrustić",
+          "teamId": "australia",
+          "rating": null,
+          "number": 10
+        },
+        {
+          "playerId": "australia-a-mabil",
+          "name": "Awer Mabil",
+          "teamId": "australia",
+          "rating": null,
+          "number": 11
+        },
+        {
+          "playerId": "australia-c-volpato",
+          "name": "Cristian Volpato",
+          "teamId": "australia",
+          "rating": null,
+          "number": 20
+        },
+        {
+          "playerId": "australia-n-velupillay",
+          "name": "Nishan Velupillay",
+          "teamId": "australia",
+          "rating": null,
+          "number": 23
+        },
+        {
+          "playerId": "australia-t-yengi",
+          "name": "Tete Yengi",
+          "teamId": "australia",
+          "rating": null,
+          "number": 26
+        },
+        {
+          "playerId": "turkiye-u-cak-r",
+          "name": "Uğurcan Çakır",
+          "teamId": "turkiye",
+          "rating": 6.7,
+          "number": 23
+        },
+        {
+          "playerId": "turkiye-z-celik",
+          "name": "Zeki Çelik",
+          "teamId": "turkiye",
+          "rating": 6.5,
+          "number": 2
+        },
+        {
+          "playerId": "turkiye-m-demiral",
+          "name": "Merih Demiral",
+          "teamId": "turkiye",
+          "rating": 7,
+          "number": 3
+        },
+        {
+          "playerId": "turkiye-a-bardakc",
+          "name": "Abdülkerim Bardakcı",
+          "teamId": "turkiye",
+          "rating": 7,
+          "number": 14
+        },
+        {
+          "playerId": null,
+          "name": "Ferdi Kadıoğlu",
+          "teamId": "turkiye",
+          "rating": 6.6,
+          "number": 20
+        },
+        {
+          "playerId": "turkiye-i-yuksek",
+          "name": "İsmail Yüksek",
+          "teamId": "turkiye",
+          "rating": 7.2,
+          "number": 16
+        },
+        {
+          "playerId": "turkiye-h-calhanoglu",
+          "name": "Hakan Çalhanoğlu",
+          "teamId": "turkiye",
+          "rating": 6.9,
+          "number": 10
+        },
+        {
+          "playerId": "turkiye-a-guler",
+          "name": "Arda Güler",
+          "teamId": "turkiye",
+          "rating": 6.5,
+          "number": 8
+        },
+        {
+          "playerId": "turkiye-o-kokcu",
+          "name": "Orkun Kökçü",
+          "teamId": "turkiye",
+          "rating": 6.5,
+          "number": 6
+        },
+        {
+          "playerId": "turkiye-b-y-lmaz",
+          "name": "Barış Alper Yılmaz",
+          "teamId": "turkiye",
+          "rating": 6.2,
+          "number": 21
+        },
+        {
+          "playerId": "turkiye-k-akturkoglu",
+          "name": "Kerem Aktürkoğlu",
+          "teamId": "turkiye",
+          "rating": 6.2,
+          "number": 7
+        },
+        {
+          "playerId": null,
+          "name": "Kenan Yıldız",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 11
+        },
+        {
+          "playerId": "turkiye-m-gunok",
+          "name": "Mert Günok",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 1
+        },
+        {
+          "playerId": "turkiye-a-bay-nd-r",
+          "name": "Altay Bayındır",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 12
+        },
+        {
+          "playerId": "turkiye-c-soyuncu",
+          "name": "Çağlar Söyüncü",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 4
+        },
+        {
+          "playerId": "turkiye-e-elmal",
+          "name": "Eren Elmalı",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 13
+        },
+        {
+          "playerId": "turkiye-o-kabak",
+          "name": "Ozan Kabak",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 15
+        },
+        {
+          "playerId": "turkiye-m-muldur",
+          "name": "Mert Müldür",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 18
+        },
+        {
+          "playerId": "turkiye-s-akaydin",
+          "name": "Samet Akaydın",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 25
+        },
+        {
+          "playerId": "turkiye-k-ayhan",
+          "name": "Kaan Ayhan",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 22
+        },
+        {
+          "playerId": "turkiye-s-ozcan",
+          "name": "Salih Özcan",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 5
+        },
+        {
+          "playerId": "turkiye-i-kahveci",
+          "name": "İrfan Can Kahveci",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 17
+        },
+        {
+          "playerId": "turkiye-y-akgun",
+          "name": "Yunus Akgün",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 19
+        },
+        {
+          "playerId": "turkiye-o-ayd-n",
+          "name": "Oğuz Aydın",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 24
+        },
+        {
+          "playerId": "turkiye-c-uzun",
+          "name": "Can Uzun",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 26
+        },
+        {
+          "playerId": "turkiye-d-gul",
+          "name": "Deniz Gül",
+          "teamId": "turkiye",
+          "rating": null,
+          "number": 9
+        }
+      ]
     },
     {
       "id": "E-1",
