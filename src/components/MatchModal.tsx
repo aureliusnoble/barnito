@@ -1,8 +1,9 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown } from "lucide-react";
+import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, Target } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal } from "./PlayerModal";
-import { StatusBadge, PointsPill, GroupPill, Crest, ScorerPickTags } from "./bits";
+import { StatusBadge, PointsPill, GroupPill, Crest } from "./bits";
+import { Avatar } from "./visuals";
 import { PitchMarkings, lastName } from "./Pitch";
 import { formatFull, ordinal } from "../lib/format";
 import { WC_HISTORY } from "../data/wcHistory";
@@ -178,9 +179,6 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
               </>
             )}
           </div>
-          {match.status !== "FINISHED" && (
-            <ScorerPickTags match={match} className="mt-2 justify-center" />
-          )}
         </div>
 
         <div className="p-4">
@@ -212,6 +210,7 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
                 />
               )}
               <Predictions match={match} predicted={predicted} />
+              <PickedScorers match={match} />
             </div>
           )}
 
@@ -328,6 +327,49 @@ function Predictions({ match, predicted }: { match: Match; predicted: MatchPredi
           })}
         </ul>
       )}
+    </section>
+  );
+}
+
+/** Players from either team that someone picked as a top scorer — who backed them, + goals this game. */
+function PickedScorers({ match }: { match: Match }) {
+  const { predictions, playerById } = useBarnito();
+  const { open } = usePlayerModal();
+  const teamIds = new Set([match.homeTeamId, match.awayTeamId]);
+  const byPlayer = new Map<string, string[]>();
+  for (const part of predictions.participants) {
+    for (const pid of part.topPlayers) {
+      const pl = playerById.get(pid);
+      if (pl && teamIds.has(pl.teamId)) (byPlayer.get(pid) ?? byPlayer.set(pid, []).get(pid)!).push(part.name);
+    }
+  }
+  if (byPlayer.size === 0) return null;
+  const goalsOf = (pid: string) => (match.goals ?? []).filter((g) => g.playerId === pid && !g.ownGoal).length;
+  const rows = [...byPlayer.entries()]
+    .map(([pid, backers]) => ({ pid, p: playerById.get(pid)!, backers, goals: goalsOf(pid) }))
+    .filter((r) => r.p)
+    .sort((a, b) => b.goals - a.goals || b.backers.length - a.backers.length);
+  return (
+    <section>
+      <h3 className="mb-2 flex items-center gap-1.5 font-display font-bold text-white">
+        <Target size={15} className="text-accent-400" /> Picked scorers
+      </h3>
+      <ul className="overflow-hidden rounded-xl border border-white/[0.06]">
+        {rows.map((r) => (
+          <li key={r.pid} onClick={() => open(r.pid)} className="flex cursor-pointer items-center gap-2.5 border-b border-white/[0.05] px-3 py-2 last:border-0 hover:bg-white/[0.03]">
+            <Avatar photo={r.p.photo} name={r.p.name} position={r.p.position} size={30} />
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center gap-1.5">
+                <span className="truncate text-sm text-pitch-100">{r.p.name}</span>
+                <Crest teamId={r.p.teamId} size={12} />
+                {r.goals > 0 && <span className="chip bg-accent-500/20 text-[10px] text-accent-300">{r.goals} ⚽</span>}
+              </span>
+              <span className="block truncate text-[11px] text-pitch-500">Picked by {r.backers.join(", ")}</span>
+            </span>
+            <ChevronRight size={14} className="shrink-0 text-pitch-600" />
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

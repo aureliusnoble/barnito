@@ -1,7 +1,7 @@
 import type { Match } from "@shared/types";
 import { ChevronRight } from "lucide-react";
 import { useHelpers } from "../data/store";
-import { StatusBadge, Crest, ScorerPickTags } from "./bits";
+import { StatusBadge, Crest, ScorerPickTags, HotTakeBadge } from "./bits";
 import { useMatchModal } from "./MatchModal";
 import { formatTime } from "../lib/format";
 
@@ -52,7 +52,10 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
       </div>
 
       {match.status !== "FINISHED" && (
-        <ScorerPickTags match={match} className="mt-2 border-t border-white/[0.05] pt-2" />
+        <div className="mt-2 space-y-1.5 border-t border-white/[0.05] pt-2 empty:hidden">
+          <HotTakeBadge matchId={match.id} />
+          <ScorerPickTags match={match} />
+        </div>
       )}
     </button>
   );
