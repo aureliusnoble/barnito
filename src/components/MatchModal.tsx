@@ -9,6 +9,21 @@ import { formatFull, ordinal } from "../lib/format";
 import { WC_HISTORY } from "../data/wcHistory";
 import type { Lineup, LineupPlayer, Match, MatchEvent, MatchPredictionResult, PlayerRating, TeamStat } from "@shared/types";
 
+/** WMO weather code → emoji. */
+function weatherIcon(code: number): string {
+  if (code === 0) return "☀️";
+  if (code <= 2) return "🌤️";
+  if (code === 3) return "☁️";
+  if (code === 45 || code === 48) return "🌫️";
+  if (code >= 51 && code <= 57) return "🌦️";
+  if (code >= 61 && code <= 67) return "🌧️";
+  if (code >= 71 && code <= 77) return "❄️";
+  if (code >= 80 && code <= 82) return "🌧️";
+  if (code >= 85 && code <= 86) return "🌨️";
+  if (code >= 95) return "⛈️";
+  return "🌡️";
+}
+
 function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return <div className="flex items-center justify-between text-xs"><span className="text-pitch-400">{label}</span><span className="font-semibold text-pitch-100">{children}</span></div>;
 }
@@ -166,7 +181,7 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
             </div>
             <TeamHead teamId={match.awayTeamId} name={teamName(match.awayTeamId)} />
           </div>
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-pitch-400">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs text-pitch-400">
             <span>{formatFull(match.kickoff)}</span>
             {(venue?.name || match.ground) && (
               <>
@@ -175,6 +190,14 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
                 <span className="truncate">
                   {venue?.name ?? match.ground}
                   {venue?.city ? `, ${venue.city}` : ""}
+                </span>
+              </>
+            )}
+            {match.weather && (
+              <>
+                <span className="text-pitch-600">·</span>
+                <span title={`${match.weather.humidity}% humidity · ${match.weather.wind} km/h wind`}>
+                  {weatherIcon(match.weather.code)} {match.weather.temp}° · {match.weather.humidity}%
                 </span>
               </>
             )}

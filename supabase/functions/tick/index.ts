@@ -68,6 +68,7 @@ function rowToMatch(r: Record<string, unknown>): Match {
     goals: (r.goals as GoalEvent[]) ?? [], events: (r.events as MatchEvent[]) ?? undefined,
     lineups: (r.lineups as Lineup[]) ?? undefined, stats: (r.stats as TeamStat[]) ?? undefined,
     ratings: (r.ratings as PlayerRating[]) ?? undefined, h2h: (r.h2h as Match["h2h"]) ?? undefined,
+    weather: (r.weather as Match["weather"]) ?? null,
   };
 }
 function matchToRow(m: Match, round?: string) {
@@ -77,7 +78,7 @@ function matchToRow(m: Match, round?: string) {
     away_team_id: m.awayTeamId, home_goals: m.homeGoals, away_goals: m.awayGoals, ground: m.ground,
     venue: m.venue, goals: m.goals, events: m.events ?? null, lineups: m.lineups ?? null,
     stats: m.stats ?? null, ratings: m.ratings ?? null, h2h: m.h2h ?? null, round: round ?? null,
-    updated_at: new Date().toISOString(),
+    weather: m.weather ?? null, updated_at: new Date().toISOString(),
   };
 }
 
@@ -163,7 +164,59 @@ function buildMatch(f: ApiFixture, id: string, st: State, details?: ReturnType<t
     stats: played ? (details?.stats ?? carry?.stats) : undefined,
     ratings: played ? (details?.ratings ?? carry?.ratings) : undefined,
     h2h: carry?.h2h, // preserved; fetched separately (historical)
+    weather: carry?.weather ?? null, // preserved; refreshed by refreshWeather()
   };
+}
+
+// --- weather (Open-Meteo, free, no key) ------------------------------------
+const geoCache = new Map<string, { lat: number; lon: number } | null>();
+async function geocode(name: string): Promise<{ lat: number; lon: number } | null> {
+  if (geoCache.has(name)) return geoCache.get(name)!;
+  let res: { lat: number; lon: number } | null = null;
+  try {
+    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1`);
+    const g = (await r.json())?.results?.[0];
+    if (g) res = { lat: g.latitude, lon: g.longitude };
+  } catch (_) { /* ignore */ }
+  geoCache.set(name, res);
+  return res;
+}
+type W = { temp: number; humidity: number; code: number; wind: number };
+async function currentWeather(lat: number, lon: number): Promise<W | null> {
+  const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=UTC`);
+  const c = (await r.json())?.current;
+  if (!c) return null;
+  return { temp: Math.round(c.temperature_2m), humidity: Math.round(c.relative_humidity_2m), code: c.weather_code, wind: Math.round(c.wind_speed_10m) };
+}
+async function weatherAt(lat: number, lon: number, kickoff: string): Promise<W | null> {
+  const d = new Date(kickoff);
+  if (isNaN(d.getTime())) return null;
+  const date = d.toISOString().slice(0, 10);
+  const hour = d.toISOString().slice(0, 13) + ":00"; // YYYY-MM-DDTHH:00 (UTC)
+  const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&start_date=${date}&end_date=${date}&timezone=UTC`);
+  const h = (await r.json())?.hourly;
+  if (!h?.time) return null;
+  let i = h.time.indexOf(hour);
+  if (i < 0) i = Math.min(h.time.length - 1, d.getUTCHours());
+  if (i < 0) return null;
+  return { temp: Math.round(h.temperature_2m[i]), humidity: Math.round(h.relative_humidity_2m[i]), code: h.weather_code[i], wind: Math.round(h.wind_speed_10m[i]) };
+}
+const WEATHER_FRESH_MS = 15 * 60 * 1000;
+async function refreshWeather(updated: Map<string, Match>) {
+  const now = Date.now();
+  for (const m of updated.values()) {
+    const place = m.venue?.city || m.venue?.name;
+    if (!place || m.status === "SCHEDULED") continue;
+    const live = m.status === "LIVE" || m.status === "HT";
+    if (!live && m.weather) continue; // finished + already captured → frozen
+    if (live && m.weather && now - Date.parse(m.weather.at) < WEATHER_FRESH_MS) continue; // fresh
+    try {
+      const coords = m.weather?.coords ?? (await geocode(place));
+      if (!coords) continue;
+      const w = live ? await currentWeather(coords.lat, coords.lon) : await weatherAt(coords.lat, coords.lon, m.kickoff);
+      if (w) { m.weather = { ...w, coords, at: new Date().toISOString() }; updated.set(m.id, m); }
+    } catch (_) { /* non-fatal */ }
+  }
 }
 
 async function fetchDetails(ids: number[], st: State) {
@@ -554,6 +607,9 @@ Deno.serve(async (req) => {
         if (f) updated.set(m.id, buildMatch(f, m.id, st, d, m));
       }
     }
+
+    // capture/refresh venue weather (live now; finished games backfilled at kickoff time, then frozen)
+    await refreshWeather(updated);
 
     // upsert all changed matches
     const rows = [...updated.values()].map((m) => matchToRow(m));
