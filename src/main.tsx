@@ -14,3 +14,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </HashRouter>
   </React.StrictMode>,
 );
+
+// Register the service worker so the app is installable to the home screen.
+// Scoped/served under Vite's base (e.g. /barnito/) so it controls the deployed app.
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+  const base = import.meta.env.BASE_URL;
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register(`${base}sw.js`, { scope: base }).catch(() => {
+      /* install-to-home-screen just won't be offered; app still works */
+    });
+  });
+}
