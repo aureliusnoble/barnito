@@ -84,6 +84,16 @@ export function ukSlateCutoffMs(now: number = Date.now()): number {
   return guess - londonOffsetMs(guess);
 }
 
+/** The "football day" a kickoff belongs to (YYYY-MM-DD), where a day runs from 12:00 noon UK to
+ *  noon the next day — so an early-AM UK kickoff is grouped under the previous calendar day.
+ *  Computed as the UK date of the instant 12h before kickoff. */
+export function footballDayKey(iso: string): string {
+  const shifted = new Date(Date.parse(iso) - 12 * 3600_000);
+  const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(shifted);
+  const g = (t: string) => p.find((x) => x.type === t)!.value;
+  return `${g("year")}-${g("month")}-${g("day")}`;
+}
+
 export function ordinal(n: number): string {
   const s = ["th", "st", "nd", "rd"];
   const v = n % 100;
