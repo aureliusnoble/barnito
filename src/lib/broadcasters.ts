@@ -1,8 +1,8 @@
 // UK free-to-air broadcaster for each World Cup 2026 fixture (BBC vs ITV).
 // API-Football carries no UK TV data, so this is a manual map sourced from the published
-// BBC/ITV schedule (live-footballontv.com). Keyed by the two team ids sorted + joined with "|"
-// so home/away order doesn't matter. Only confirmed picks are listed; later group games and
-// knockout ties are chosen nearer the time and simply show no badge until added here.
+// BBC/ITV schedule (live-footballontv.com + ESPN UK TV guide). Keyed by the two team ids sorted
+// + joined with "|" so home/away order doesn't matter. All 72 group-stage fixtures are covered;
+// knockout ties are chosen nearer the time and show no badge until added here.
 export type Broadcaster = "BBC" | "ITV";
 
 const BROADCASTERS: Record<string, Broadcaster> = {
@@ -12,14 +12,17 @@ const BROADCASTERS: Record<string, Broadcaster> = {
   "argentina|austria": "BBC",
   "argentina|jordan": "BBC",
   "australia|paraguay": "ITV",
+  "australia|turkiye": "ITV",
   "australia|usa": "BBC",
   "austria|jordan": "BBC",
   "belgium|egypt": "BBC",
   "belgium|iran": "ITV",
   "belgium|new-zealand": "BBC",
+  "bosnia-and-herzegovina|canada": "BBC",
   "bosnia-and-herzegovina|qatar": "ITV",
   "bosnia-and-herzegovina|switzerland": "ITV",
   "brazil|haiti": "ITV",
+  "brazil|morocco": "BBC",
   "brazil|scotland": "BBC",
   "canada|qatar": "ITV",
   "canada|switzerland": "ITV",
@@ -35,9 +38,11 @@ const BROADCASTERS: Record<string, Broadcaster> = {
   "croatia|ghana": "ITV",
   "croatia|panama": "BBC",
   "curacao|ecuador": "BBC",
+  "curacao|germany": "ITV",
   "curacao|ivory-coast": "BBC",
   "czechia|mexico": "BBC",
   "czechia|south-africa": "BBC",
+  "czechia|south-korea": "ITV",
   "ecuador|germany": "BBC",
   "ecuador|ivory-coast": "BBC",
   "egypt|iran": "BBC",
@@ -50,18 +55,23 @@ const BROADCASTERS: Record<string, Broadcaster> = {
   "germany|ivory-coast": "ITV",
   "ghana|panama": "ITV",
   "haiti|morocco": "BBC",
+  "haiti|scotland": "BBC",
   "iran|new-zealand": "BBC",
   "iraq|norway": "BBC",
   "iraq|senegal": "ITV",
+  "japan|netherlands": "ITV",
   "japan|sweden": "BBC",
   "japan|tunisia": "BBC",
+  "mexico|south-africa": "ITV",
   "mexico|south-korea": "BBC",
   "morocco|scotland": "ITV",
   "netherlands|sweden": "BBC",
   "netherlands|tunisia": "BBC",
   "norway|senegal": "ITV",
   "paraguay|turkiye": "ITV",
+  "paraguay|usa": "BBC",
   "portugal|uzbekistan": "ITV",
+  "qatar|switzerland": "ITV",
   "saudi-arabia|spain": "BBC",
   "saudi-arabia|uruguay": "ITV",
   "south-africa|south-korea": "BBC",
