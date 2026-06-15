@@ -172,6 +172,7 @@ export interface Match {
     wind: number; // km/h
     at: string; // ISO when captured
     coords?: { lat: number; lon: number };
+    forecast?: boolean; // true = pre-match forecast (not yet an observed reading)
   } | null;
 }
 

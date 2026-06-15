@@ -201,20 +201,34 @@ async function weatherAt(lat: number, lon: number, kickoff: string): Promise<W |
   if (i < 0) return null;
   return { temp: Math.round(h.temperature_2m[i]), humidity: Math.round(h.relative_humidity_2m[i]), code: h.weather_code[i], wind: Math.round(h.wind_speed_10m[i]) };
 }
-const WEATHER_FRESH_MS = 15 * 60 * 1000;
+const WEATHER_FRESH_MS = 15 * 60 * 1000; // live refresh cadence
+const FORECAST_FRESH_MS = 60 * 60 * 1000; // pre-match forecast refresh cadence
+const FORECAST_WINDOW_MS = 24 * 60 * 60 * 1000; // start forecasting 24h before kickoff
 async function refreshWeather(updated: Map<string, Match>) {
   const now = Date.now();
   for (const m of updated.values()) {
     const place = m.venue?.city || m.venue?.name;
-    if (!place || m.status === "SCHEDULED") continue;
+    if (!place) continue;
     const live = m.status === "LIVE" || m.status === "HT";
-    if (!live && m.weather) continue; // finished + already captured → frozen
-    if (live && m.weather && now - Date.parse(m.weather.at) < WEATHER_FRESH_MS) continue; // fresh
+    const toKo = Date.parse(m.kickoff) - now;
+    const fresh = (ms: number) => m.weather && now - Date.parse(m.weather.at) < ms;
+
+    // Decide what to fetch: a pre-match forecast, the current reading, or the frozen kickoff reading.
+    let mode: "forecast" | "current" | "observed" | null = null;
+    if (live) {
+      if (!(m.weather && !m.weather.forecast && fresh(WEATHER_FRESH_MS))) mode = "current";
+    } else if (m.status === "SCHEDULED") {
+      if (toKo <= FORECAST_WINDOW_MS && toKo > -60 * 60_000 && !fresh(FORECAST_FRESH_MS)) mode = "forecast";
+    } else if (m.status === "FINISHED") {
+      if (!m.weather || m.weather.forecast) mode = "observed"; // upgrade a forecast to the actual kickoff reading, then freeze
+    }
+    if (!mode) continue;
+
     try {
       const coords = m.weather?.coords ?? (await geocode(place));
       if (!coords) continue;
-      const w = live ? await currentWeather(coords.lat, coords.lon) : await weatherAt(coords.lat, coords.lon, m.kickoff);
-      if (w) { m.weather = { ...w, coords, at: new Date().toISOString() }; updated.set(m.id, m); }
+      const w = mode === "current" ? await currentWeather(coords.lat, coords.lon) : await weatherAt(coords.lat, coords.lon, m.kickoff);
+      if (w) { m.weather = { ...w, coords, at: new Date().toISOString(), forecast: mode === "forecast" }; updated.set(m.id, m); }
     } catch (_) { /* non-fatal */ }
   }
 }
