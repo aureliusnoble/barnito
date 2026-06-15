@@ -1,0 +1,20 @@
+{
+  "name": "Barnito — World Cup 2026",
+  "short_name": "Barnito",
+  "description": "The friend-group World Cup 2026 prediction game. Live scores, leaderboards, and big-swing games.",
+  "id": ".",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#062b16",
+  "theme_color": "#062b16",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

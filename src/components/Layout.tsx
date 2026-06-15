@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { Radio, CalendarDays, Trophy, Table2, Goal, Flame } from "lucide-react";
 import { useBarnito } from "../data/store";
 import AirhornButton from "./AirhornButton";
+import InstallBanner from "./InstallBanner";
 import { MatchModalProvider } from "./MatchModal";
 import { PlayerModalProvider } from "./PlayerModal";
 
@@ -111,6 +112,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </nav>
 
       <AirhornButton />
+      <InstallBanner />
     </div>
   );
 }
