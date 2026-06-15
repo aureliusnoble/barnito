@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { supabase } from "./supabase";
 import type {
   Roster, MatchesFile, PredictionsFile, StandingsFile, ScoresFile,
-  StatsFile, InjuriesFile, BracketFile, PlayerStatsFile, ScoreHistoryPoint,
+  StatsFile, InjuriesFile, BracketFile, PlayerStatsFile, ScoreHistoryPoint, ScoreProgression,
   Team, Player, Match, Participant, InjuryItem, GroupLetter, GoalEvent, MatchEvent,
   Lineup, TeamStat, PlayerRating, Position, GoalMultiplier,
 } from "@shared/types";
@@ -18,6 +18,7 @@ export interface BarnitoData {
   bracket: BracketFile;
   playerStats: PlayerStatsFile;
   scoreHistory: ScoreHistoryPoint[];
+  progression: ScoreProgression;
   // lookups
   teamById: Map<string, Team>;
   playerById: Map<string, Player>;
@@ -190,6 +191,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       bracket: (docs.bracket as BracketFile) ?? { updatedAt: "", rounds: [] },
       playerStats: (docs.playerStats as PlayerStatsFile) ?? { updatedAt: "", players: {} },
       scoreHistory: history,
+      progression: (docs.progression as ScoreProgression) ?? { updatedAt: "", steps: [], totals: {} },
       teamById: new Map(teams.map((t) => [t.id, t])),
       playerById: new Map(players.map((p) => [p.id, p])),
       matchById: new Map(matches.map((m) => [m.id, m])),

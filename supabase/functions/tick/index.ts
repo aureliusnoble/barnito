@@ -252,10 +252,10 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
 
   // standings (actual) computed locally from finished matches
   const groups = [...new Set(teams.map((t) => t.group).filter((g) => g !== "?"))].sort();
-  const standings: StandingsFile = {
+  const buildStandings = (ms: Match[]): StandingsFile => ({
     updatedAt: new Date().toISOString(),
     groups: groups.map((group) => {
-      const gm = matches.filter((m) => m.group === group);
+      const gm = ms.filter((m) => m.group === group);
       const results: GroupResult[] = gm.filter((m) => m.status === "FINISHED" && m.homeGoals !== null && m.awayGoals !== null)
         .map((m) => ({ homeTeamId: m.homeTeamId, awayTeamId: m.awayTeamId, homeGoals: m.homeGoals!, awayGoals: m.awayGoals! }));
       const teamIds = teams.filter((t) => t.group === group).map((t) => t.id);
@@ -263,7 +263,8 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
       const final = gm.length === MATCHES_PER_GROUP && gm.every((m) => m.status === "FINISHED");
       return { group, rows, final };
     }),
-  };
+  });
+  const standings = buildStandings(matches);
 
   const scores = computeScores({
     roster: { updatedAt: "", teams, players },
@@ -271,6 +272,29 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
     predictions: { updatedAt: "", participants },
     standings,
   });
+
+  // progression: each participant's cumulative total after each finished match (in kickoff order),
+  // by re-scoring with only the first i finished matches counted. Powers the points-over-matches chart.
+  const finished = matches
+    .filter((m) => m.status === "FINISHED" && m.homeGoals !== null && m.awayGoals !== null)
+    .sort((a, b) => (a.kickoff ?? "").localeCompare(b.kickoff ?? "") || a.id.localeCompare(b.id));
+  const neutral = (m: Match): Match => ({ ...m, status: "SCHEDULED", elapsed: null, homeGoals: null, awayGoals: null, goals: [], events: undefined, ratings: undefined });
+  const totals: Record<string, number[]> = {};
+  for (const p of participants) totals[p.id] = [];
+  const steps: { n: number; matchId: string; kickoff: string }[] = [];
+  for (let i = 1; i <= finished.length; i++) {
+    const allow = new Set(finished.slice(0, i).map((m) => m.id));
+    const subset = matches.map((m) => (allow.has(m.id) ? m : neutral(m)));
+    const subSc = computeScores({
+      roster: { updatedAt: "", teams, players },
+      matches: { updatedAt: "", tournamentComplete: false, championTeamId: null, matches: subset },
+      predictions: { updatedAt: "", participants },
+      standings: buildStandings(subset),
+    });
+    const byId = new Map(subSc.leaderboard.map((e) => [e.participantId, e.total]));
+    for (const p of participants) totals[p.id].push(byId.get(p.id) ?? 0);
+    steps.push({ n: i, matchId: finished[i - 1].id, kickoff: finished[i - 1].kickoff });
+  }
 
   // playerStats: goals + cards + appearances aggregated from events (FINISHED + live)
   type PS = { goals: number; yellow: number; red: number; apps: number; assists: number; penScored: number; penMissed: number; penWon: number; penCommitted: number; penSaved: number };
@@ -307,6 +331,7 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
     setDoc("scores", scores),
     setDoc("standings", standings),
     setDoc("playerStats", { updatedAt: new Date().toISOString(), players: ps }),
+    setDoc("progression", { updatedAt: new Date().toISOString(), steps, totals }),
   ]);
 
   // score_history: append when a participant's total changed since last snapshot
