@@ -1,7 +1,7 @@
 import type { Match } from "@shared/types";
 import { ChevronRight } from "lucide-react";
 import { useHelpers } from "../data/store";
-import { StatusBadge, Crest, ScorerPickTags, HotTakeBadge } from "./bits";
+import { StatusBadge, Crest, ScorerPickTags, HotTakeBadge, BroadcastBadge } from "./bits";
 import { useMatchModal } from "./MatchModal";
 import { formatTime } from "../lib/format";
 
@@ -20,6 +20,7 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
         <div className="flex w-11 shrink-0 flex-col items-center gap-1">
           <StatusBadge match={match} />
           {showGroup && <span className="text-[10px] font-semibold text-pitch-500">Grp {match.group}</span>}
+          <BroadcastBadge match={match} />
         </div>
 
         <div className="min-w-0 flex-1 space-y-1.5">

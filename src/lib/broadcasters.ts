@@ -1,0 +1,76 @@
+// UK free-to-air broadcaster for each World Cup 2026 fixture (BBC vs ITV).
+// API-Football carries no UK TV data, so this is a manual map sourced from the published
+// BBC/ITV schedule (live-footballontv.com). Keyed by the two team ids sorted + joined with "|"
+// so home/away order doesn't matter. Only confirmed picks are listed; later group games and
+// knockout ties are chosen nearer the time and simply show no badge until added here.
+export type Broadcaster = "BBC" | "ITV";
+
+const BROADCASTERS: Record<string, Broadcaster> = {
+  "algeria|argentina": "ITV",
+  "algeria|austria": "BBC",
+  "algeria|jordan": "ITV",
+  "argentina|austria": "BBC",
+  "argentina|jordan": "BBC",
+  "australia|paraguay": "ITV",
+  "australia|usa": "BBC",
+  "austria|jordan": "BBC",
+  "belgium|egypt": "BBC",
+  "belgium|iran": "ITV",
+  "belgium|new-zealand": "BBC",
+  "bosnia-and-herzegovina|qatar": "ITV",
+  "bosnia-and-herzegovina|switzerland": "ITV",
+  "brazil|haiti": "ITV",
+  "brazil|scotland": "BBC",
+  "canada|qatar": "ITV",
+  "canada|switzerland": "ITV",
+  "cape-verde-islands|saudi-arabia": "ITV",
+  "cape-verde-islands|spain": "ITV",
+  "cape-verde-islands|uruguay": "BBC",
+  "colombia|congo-dr": "ITV",
+  "colombia|portugal": "BBC",
+  "colombia|uzbekistan": "BBC",
+  "congo-dr|portugal": "BBC",
+  "congo-dr|uzbekistan": "BBC",
+  "croatia|england": "ITV",
+  "croatia|ghana": "ITV",
+  "croatia|panama": "BBC",
+  "curacao|ecuador": "BBC",
+  "curacao|ivory-coast": "BBC",
+  "czechia|mexico": "BBC",
+  "czechia|south-africa": "BBC",
+  "ecuador|germany": "BBC",
+  "ecuador|ivory-coast": "BBC",
+  "egypt|iran": "BBC",
+  "egypt|new-zealand": "ITV",
+  "england|ghana": "BBC",
+  "england|panama": "ITV",
+  "france|iraq": "BBC",
+  "france|norway": "ITV",
+  "france|senegal": "BBC",
+  "germany|ivory-coast": "ITV",
+  "ghana|panama": "ITV",
+  "haiti|morocco": "BBC",
+  "iran|new-zealand": "BBC",
+  "iraq|norway": "BBC",
+  "iraq|senegal": "ITV",
+  "japan|sweden": "BBC",
+  "japan|tunisia": "BBC",
+  "mexico|south-korea": "BBC",
+  "morocco|scotland": "ITV",
+  "netherlands|sweden": "BBC",
+  "netherlands|tunisia": "BBC",
+  "norway|senegal": "ITV",
+  "paraguay|turkiye": "ITV",
+  "portugal|uzbekistan": "ITV",
+  "saudi-arabia|spain": "BBC",
+  "saudi-arabia|uruguay": "ITV",
+  "south-africa|south-korea": "BBC",
+  "spain|uruguay": "ITV",
+  "sweden|tunisia": "ITV",
+  "turkiye|usa": "ITV",
+};
+
+/** UK broadcaster for a fixture, or null if not yet confirmed. */
+export function broadcasterFor(homeTeamId: string, awayTeamId: string): Broadcaster | null {
+  return BROADCASTERS[[homeTeamId, awayTeamId].sort().join("|")] ?? null;
+}

@@ -2,7 +2,7 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, Target } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal } from "./PlayerModal";
-import { StatusBadge, PointsPill, GroupPill, Crest, PosBadge, CardFlag } from "./bits";
+import { StatusBadge, PointsPill, GroupPill, Crest, PosBadge, CardFlag, BroadcastBadge } from "./bits";
 import { Avatar } from "./visuals";
 import { PitchMarkings, lastName } from "./Pitch";
 import { formatFull, ordinal } from "../lib/format";
@@ -185,6 +185,7 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
           </div>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs text-pitch-400">
             <span>{formatFull(match.kickoff)}</span>
+            <BroadcastBadge match={match} />
             {(venue?.name || match.ground) && (
               <>
                 <span className="text-pitch-600">·</span>

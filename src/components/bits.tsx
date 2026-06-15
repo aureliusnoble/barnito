@@ -1,11 +1,30 @@
-import { Target, Flame } from "lucide-react";
+import { Target, Flame, Tv } from "lucide-react";
 import type { Match, MatchStatus, Position } from "@shared/types";
 import { useBarnito, useHelpers } from "../data/store";
 import { useTick, liveMinute } from "../lib/clock";
 import { POSITION_LABEL } from "../lib/format";
+import { broadcasterFor } from "../lib/broadcasters";
 import { Crest } from "./visuals";
 
 export { Crest } from "./visuals";
+
+/** UK free-to-air channel chip (BBC / ITV) for a fixture, or nothing if not yet confirmed. */
+export function BroadcastBadge({ match, className = "" }: { match: Match; className?: string }) {
+  const b = broadcasterFor(match.homeTeamId, match.awayTeamId);
+  if (!b) return null;
+  const tone = b === "BBC"
+    ? "bg-sky-500/15 text-sky-300 ring-sky-500/25"
+    : "bg-amber-500/15 text-amber-300 ring-amber-500/25";
+  return (
+    <span
+      title={`Watch on ${b} (UK)`}
+      className={`inline-flex items-center gap-0.5 rounded px-1 py-px text-[9px] font-bold leading-none ring-1 ${tone} ${className}`}
+    >
+      <Tv size={8} strokeWidth={2.5} />
+      {b}
+    </span>
+  );
+}
 
 const POS_LETTER: Record<Position, string> = { GK: "G", DEF: "D", MID: "M", FWD: "F" };
 const POS_BADGE: Record<Position, string> = {
