@@ -91,8 +91,9 @@ export default function BestXI() {
       };
     });
     // Weight the average rating by minutes played on a log curve, so a sustained run of games
-    // outranks a single high-scoring cameo — but with diminishing returns (the most-played player
-    // sets the ceiling at weight 1.0).
+    // outranks a single high-scoring cameo — but with diminishing returns. The most-played player
+    // sets the ceiling at weight 1.0; players whose teams went out early simply have fewer minutes
+    // and naturally fade, which is what we want.
     const maxMin = Math.max(1, ...draft.map((p) => p.minutes));
     const players: XIPlayer[] = draft.map((p) => ({
       ...p,
