@@ -425,3 +425,10 @@ export interface ScoreHistoryPoint {
   at: string; // ISO
   total: number;
 }
+
+// Cumulative points after each finished match (kickoff order) — powers the points-over-matches chart.
+export interface ScoreProgression {
+  updatedAt: string;
+  steps: { n: number; matchId: string; kickoff: string }[];
+  totals: Record<string, number[]>; // participantId -> total after each step (aligned to steps)
+}
