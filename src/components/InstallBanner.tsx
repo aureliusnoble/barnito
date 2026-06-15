@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Download, X } from "lucide-react";
+import { Download, X, Share, Plus } from "lucide-react";
 
 /** Chrome's install prompt event (not in the standard DOM lib types). */
 interface BeforeInstallPromptEvent extends Event {
@@ -9,21 +9,31 @@ interface BeforeInstallPromptEvent extends Event {
 
 const DISMISS_KEY = "barnito-install-dismissed";
 
+const isStandalone = () =>
+  (typeof window.matchMedia === "function" && window.matchMedia("(display-mode: standalone)").matches) ||
+  (navigator as Navigator & { standalone?: boolean }).standalone === true;
+
+/** iOS Safari can't fire beforeinstallprompt; it installs via the Share sheet instead. */
+const isIosSafari = () => {
+  const ua = navigator.userAgent;
+  const iOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const safari = !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua); // other iOS browsers can't add to home screen
+  return iOS && safari;
+};
+
 /**
- * Floating banner inviting Android/Chrome users to install Barnito to their home screen.
- * We capture Chrome's `beforeinstallprompt`, suppress the mini-infobar, and surface our own
- * styled prompt. Hidden once installed, already running standalone, or dismissed by the user.
+ * Floating banner inviting users to install Barnito to their home screen.
+ * Android/Chrome: capture `beforeinstallprompt` and offer a one-tap install.
+ * iOS/Safari: show Share-sheet instructions (Safari has no install API).
+ * Hidden once installed, already standalone, or dismissed.
  */
 export default function InstallBanner() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
+  const [iosHint, setIosHint] = useState(false);
   const [hidden, setHidden] = useState(() => localStorage.getItem(DISMISS_KEY) === "1");
 
   useEffect(() => {
-    // Already launched as an installed app → never show.
-    const standalone =
-      (typeof window.matchMedia === "function" && window.matchMedia("(display-mode: standalone)").matches) ||
-      (navigator as Navigator & { standalone?: boolean }).standalone === true;
-    if (standalone) { setHidden(true); return; }
+    if (isStandalone()) { setHidden(true); return; }
 
     const onPrompt = (e: Event) => {
       e.preventDefault(); // stop Chrome's default mini-infobar; we show our own
@@ -32,23 +42,30 @@ export default function InstallBanner() {
     const onInstalled = () => { setDeferred(null); setHidden(true); };
     window.addEventListener("beforeinstallprompt", onPrompt);
     window.addEventListener("appinstalled", onInstalled);
+
+    // iOS never fires beforeinstallprompt, so surface the manual instructions directly.
+    if (isIosSafari()) setIosHint(true);
+
     return () => {
       window.removeEventListener("beforeinstallprompt", onPrompt);
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);
 
-  if (hidden || !deferred) return null;
+  const dismiss = () => {
+    localStorage.setItem(DISMISS_KEY, "1");
+    setHidden(true);
+  };
+
+  if (hidden) return null;
+  if (!deferred && !iosHint) return null;
 
   const install = async () => {
+    if (!deferred) return;
     await deferred.prompt();
     const { outcome } = await deferred.userChoice;
     setDeferred(null);
     if (outcome === "dismissed") dismiss();
-  };
-  const dismiss = () => {
-    localStorage.setItem(DISMISS_KEY, "1");
-    setHidden(true);
   };
 
   return (
@@ -59,14 +76,27 @@ export default function InstallBanner() {
         </span>
         <div className="min-w-0 flex-1 leading-tight">
           <div className="font-display text-sm font-bold text-white">Install Barnito</div>
-          <div className="text-[11px] text-pitch-300">Add it to your home screen for a full-screen app.</div>
+          {deferred ? (
+            <div className="text-[11px] text-pitch-300">Add it to your home screen for a full-screen app.</div>
+          ) : (
+            <div className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[11px] text-pitch-300">
+              <span>Tap</span>
+              <Share size={12} className="inline text-accent-300" strokeWidth={2.5} />
+              <span>then</span>
+              <span className="inline-flex items-center gap-0.5 font-semibold text-pitch-100">
+                <Plus size={11} strokeWidth={3} /> Add to Home Screen
+              </span>
+            </div>
+          )}
         </div>
-        <button
-          onClick={install}
-          className="flex shrink-0 items-center gap-1.5 rounded-full bg-accent-500 px-3 py-1.5 text-sm font-semibold text-pitch-950 transition active:scale-95"
-        >
-          <Download size={15} strokeWidth={2.5} /> Add
-        </button>
+        {deferred && (
+          <button
+            onClick={install}
+            className="flex shrink-0 items-center gap-1.5 rounded-full bg-accent-500 px-3 py-1.5 text-sm font-semibold text-pitch-950 transition active:scale-95"
+          >
+            <Download size={15} strokeWidth={2.5} /> Add
+          </button>
+        )}
         <button
           onClick={dismiss}
           aria-label="Dismiss"
