@@ -127,11 +127,13 @@ function ScoreOrTime({ match }: { match: Match }) {
 type TabKey = "predictions" | "info" | "match";
 
 function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => void }) {
-  const { matchById, scores } = useBarnito();
+  const { matchById, scores, matches } = useBarnito();
   const { teamName } = useHelpers();
   const match = matchById.get(matchId);
   const [tab, setTab] = useState<TabKey>("predictions");
   if (!match) return null;
+  // Cards each player brings into this match plus any added live (cumulative through this kickoff).
+  const cards = cardsThrough(matches.matches, match);
   const perMatch = scores.perMatch.find((p) => p.matchId === matchId);
   const predicted = (perMatch?.predictions ?? []).filter((p) => p.predHome != null);
   const events = (match.events ?? []).slice().sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0));
@@ -233,7 +235,7 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
                 />
               )}
               <Predictions match={match} predicted={predicted} />
-              <PickedScorers match={match} />
+              <PickedScorers match={match} cards={cards} />
             </div>
           )}
 
@@ -242,7 +244,7 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
               <TeamInfo match={match} />
               <H2H match={match} />
               {hasLineups ? (
-                <Lineups match={match} />
+                <Lineups match={match} cards={cards} />
               ) : (
                 <section>
                   <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
@@ -355,8 +357,8 @@ function Predictions({ match, predicted }: { match: Match; predicted: MatchPredi
 }
 
 /** Players from either team that someone picked as a top scorer — who backed them, + goals this game. */
-function PickedScorers({ match }: { match: Match }) {
-  const { predictions, playerById, playerStats } = useBarnito();
+function PickedScorers({ match, cards }: { match: Match; cards: Map<string, { yellow: number; red: number }> }) {
+  const { predictions, playerById } = useBarnito();
   const { open } = usePlayerModal();
   const teamIds = new Set([match.homeTeamId, match.awayTeamId]);
   const byPlayer = new Map<string, string[]>();
@@ -369,7 +371,7 @@ function PickedScorers({ match }: { match: Match }) {
   if (byPlayer.size === 0) return null;
   const goalsOf = (pid: string) => (match.goals ?? []).filter((g) => g.playerId === pid && !g.ownGoal).length;
   const rows = [...byPlayer.entries()]
-    .map(([pid, backers]) => ({ pid, p: playerById.get(pid)!, backers, goals: goalsOf(pid), cards: playerStats.players[pid] }))
+    .map(([pid, backers]) => ({ pid, p: playerById.get(pid)!, backers, goals: goalsOf(pid), cards: cards.get(pid) }))
     .filter((r) => r.p)
     .sort((a, b) => b.goals - a.goals || b.backers.length - a.backers.length);
   return (
@@ -774,25 +776,46 @@ function EndLabel({ teamId, formation, side }: { teamId: string; formation: stri
   );
 }
 
-/** Who is carrying a card in THIS match (from the timeline): two yellows or a red ⇒ red. */
-function matchCards(match: Match) {
-  const yellow = new Map<string, number>();
-  const red = new Set<string>();
-  for (const e of match.events ?? []) {
-    if (e.type !== "CARD" || !e.playerId) continue;
-    if (/red/i.test(e.detail)) red.add(e.playerId);
-    else yellow.set(e.playerId, (yellow.get(e.playerId) ?? 0) + 1);
+/** Cumulative cards each player carries up to AND including `upto` (by kickoff): the bookings they
+ *  bring into the game plus any added live, without back-dating later cards onto earlier matches.
+ *  Two yellows in a single match ⇒ a red (sending-off). */
+function cardsThrough(allMatches: Match[], upto: Match): Map<string, { yellow: number; red: number }> {
+  const out = new Map<string, { yellow: number; red: number }>();
+  const bump = (pid: string, k: "yellow" | "red", n = 1) => {
+    const c = out.get(pid) ?? { yellow: 0, red: 0 };
+    c[k] += n; out.set(pid, c);
+  };
+  for (const m of allMatches) {
+    // matches kicking off before this one, plus this match itself (parallel games don't count)
+    if (m.id !== upto.id && m.kickoff >= upto.kickoff) continue;
+    const yellow = new Map<string, number>();
+    for (const e of m.events ?? []) {
+      if (e.type !== "CARD" || !e.playerId) continue;
+      if (/red/i.test(e.detail)) bump(e.playerId, "red");
+      else yellow.set(e.playerId, (yellow.get(e.playerId) ?? 0) + 1);
+    }
+    for (const [pid, n] of yellow) {
+      bump(pid, "yellow", n);
+      if (n >= 2) bump(pid, "red"); // second yellow ⇒ sent off
+    }
   }
+  return out;
+}
+
+/** Reduce a cumulative card tally to the single marker shown on a pitch token. */
+function cardMarker(cards: Map<string, { yellow: number; red: number }>) {
   return (pid: string | null): "yellow" | "red" | undefined => {
     if (!pid) return undefined;
-    if (red.has(pid) || (yellow.get(pid) ?? 0) >= 2) return "red";
-    if ((yellow.get(pid) ?? 0) >= 1) return "yellow";
+    const c = cards.get(pid);
+    if (!c) return undefined;
+    if (c.red > 0) return "red";
+    if (c.yellow > 0) return "yellow";
     return undefined;
   };
 }
 
-function CombinedPitch({ home, away, match }: { home?: Lineup; away?: Lineup; match: Match }) {
-  const cardOf = matchCards(match);
+function CombinedPitch({ home, away, cards }: { home?: Lineup; away?: Lineup; cards: Map<string, { yellow: number; red: number }> }) {
+  const cardOf = cardMarker(cards);
   const tokens = [
     ...(home ? placeTeam(home, "home").map((t) => ({ ...t, side: "home" as Side })) : []),
     ...(away ? placeTeam(away, "away").map((t) => ({ ...t, side: "away" as Side })) : []),
@@ -833,7 +856,7 @@ function SubsList({ l, side }: { l: Lineup; side: Side }) {
   );
 }
 
-function Lineups({ match }: { match: Match }) {
+function Lineups({ match, cards }: { match: Match; cards: Map<string, { yellow: number; red: number }> }) {
   const home = match.lineups?.find((l) => l.teamId === match.homeTeamId);
   const away = match.lineups?.find((l) => l.teamId === match.awayTeamId);
   if (!home && !away) return null;
@@ -844,7 +867,7 @@ function Lineups({ match }: { match: Match }) {
       <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
       {hasGrid ? (
         <>
-          <CombinedPitch home={home} away={away} match={match} />
+          <CombinedPitch home={home} away={away} cards={cards} />
           <div className="mt-3 grid grid-cols-2 gap-3">
             {home && <SubsList l={home} side="home" />}
             {away && <SubsList l={away} side="away" />}
