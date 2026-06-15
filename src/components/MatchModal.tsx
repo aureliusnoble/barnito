@@ -2,7 +2,7 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, Target } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal } from "./PlayerModal";
-import { StatusBadge, PointsPill, GroupPill, Crest } from "./bits";
+import { StatusBadge, PointsPill, GroupPill, Crest, PosBadge } from "./bits";
 import { Avatar } from "./visuals";
 import { PitchMarkings, lastName } from "./Pitch";
 import { formatFull, ordinal } from "../lib/format";
@@ -361,6 +361,7 @@ function PickedScorers({ match }: { match: Match }) {
             <span className="min-w-0 flex-1">
               <span className="flex items-center gap-1.5">
                 <span className="truncate text-sm text-pitch-100">{r.p.name}</span>
+                <PosBadge position={r.p.position} />
                 <Crest teamId={r.p.teamId} size={12} />
                 {r.goals > 0 && <span className="chip bg-accent-500/20 text-[10px] text-accent-300">{r.goals} ⚽</span>}
               </span>

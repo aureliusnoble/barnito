@@ -1,10 +1,31 @@
 import { Target, Flame } from "lucide-react";
-import type { Match, MatchStatus } from "@shared/types";
+import type { Match, MatchStatus, Position } from "@shared/types";
 import { useBarnito, useHelpers } from "../data/store";
 import { useTick, liveMinute } from "../lib/clock";
+import { POSITION_LABEL } from "../lib/format";
 import { Crest } from "./visuals";
 
 export { Crest } from "./visuals";
+
+const POS_LETTER: Record<Position, string> = { GK: "G", DEF: "D", MID: "M", FWD: "F" };
+const POS_BADGE: Record<Position, string> = {
+  GK: "bg-purple-500/20 text-purple-300",
+  DEF: "bg-sky-500/20 text-sky-300",
+  MID: "bg-accent-500/20 text-accent-300",
+  FWD: "bg-spice-500/20 text-spice-300",
+};
+/** Compact single-letter position badge (G/D/M/F), colour-coded by position. */
+export function PosBadge({ position, className = "" }: { position?: Position | null; className?: string }) {
+  if (!position) return null;
+  return (
+    <span
+      title={POSITION_LABEL[position]}
+      className={`inline-grid h-4 w-4 shrink-0 place-items-center rounded text-[9px] font-bold leading-none ${POS_BADGE[position]} ${className}`}
+    >
+      {POS_LETTER[position]}
+    </span>
+  );
+}
 
 /**
  * "Hot take": exactly one participant is alone in their predicted *outcome* (win/draw/loss,
