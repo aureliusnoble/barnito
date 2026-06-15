@@ -2,10 +2,9 @@ import { useMemo, useState } from "react";
 import { Goal, Trophy, Users, AlertTriangle, ChevronDown, ChevronRight, Star } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal, type PlayerSeed } from "../components/PlayerModal";
-import { SectionTitle, Crest, CardFlag } from "../components/bits";
+import { SectionTitle, Crest, CardFlag, PosBadge } from "../components/bits";
 import { Avatar } from "../components/visuals";
 import BestXI from "../components/BestXI";
-import { POSITION_LABEL } from "../lib/format";
 import type { Position, PlayerStatLine } from "@shared/types";
 
 /** Build a player-modal seed from a Golden Boot stat line so even unmatched scorers open. */
@@ -19,13 +18,6 @@ const seedFromStat = (p: PlayerStatLine): PlayerSeed => ({
   goals: p.value,
   apps: p.appearances,
 });
-
-const POS_COLOR: Record<Position, string> = {
-  GK: "bg-purple-500/20 text-purple-300",
-  DEF: "bg-sky-500/20 text-sky-300",
-  MID: "bg-accent-500/20 text-accent-300",
-  FWD: "bg-spice-500/20 text-spice-300",
-};
 
 type View = "people" | "boot" | "players" | "bestxi";
 
@@ -76,14 +68,6 @@ function Toggle({
       {icon}
       {children}
     </button>
-  );
-}
-
-function PosChip({ position }: { position: Position }) {
-  return (
-    <span className={`chip ${POS_COLOR[position]}`} title={POSITION_LABEL[position]}>
-      {position}
-    </span>
   );
 }
 
@@ -169,7 +153,7 @@ function ByPerson() {
                             <Crest teamId={p.teamId} size={11} /> {teamName(p.teamId)}
                           </span>
                         </span>
-                        <PosChip position={p.position} />
+                        <PosBadge position={p.position} />
                         <span className="w-9 text-right text-pitch-300">
                           {p.goals}
                           <span className="text-[10px] text-pitch-500"> gl</span>
@@ -244,7 +228,10 @@ function GoldenBoot() {
           <div key={p.apiId ?? p.name} onClick={() => open(seedFromStat(p))} className="card flex cursor-pointer flex-col items-center gap-1.5 p-3 text-center card-hover">
             <Trophy size={16} className={medal[i]} />
             <Avatar photo={p.photo} name={p.name} position={p.position ?? null} size={44} />
-            <span className="truncate text-xs font-semibold text-white" title={p.name}>{p.name}</span>
+            <span className="flex max-w-full items-center gap-1">
+              <span className="truncate text-xs font-semibold text-white" title={p.name}>{p.name}</span>
+              <PosBadge position={p.position} />
+            </span>
             {p.teamId && (
               <span className="flex items-center gap-1 text-[10px] text-pitch-500">
                 <Crest teamId={p.teamId} size={11} /> {p.teamName}
@@ -263,6 +250,7 @@ function GoldenBoot() {
             <span className="w-5 text-center font-mono text-xs text-pitch-500">{i + 4}</span>
             <Avatar photo={p.photo} name={p.name} position={p.position ?? null} size={26} />
             <span className="min-w-0 flex-1 truncate text-pitch-100">{p.name}</span>
+            <PosBadge position={p.position} />
             {p.teamId && <Crest teamId={p.teamId} size={14} />}
             {p.playerId && pickedIds.has(p.playerId) && <span title="Picked">🎯</span>}
             <span className="w-8 text-right font-bold tabular-nums text-white">{p.value}</span>
@@ -320,7 +308,7 @@ function ByPlayer() {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span className="truncate font-semibold text-white">{a.playerName}</span>
-                <PosChip position={a.position} />
+                <PosBadge position={a.position} />
               </div>
               <div className="flex items-center gap-1 truncate text-[11px] text-pitch-400">
                 <Crest teamId={a.teamId} size={11} /> {teamName(a.teamId)} · picked by {a.pickedBy.join(", ")}
