@@ -14,6 +14,7 @@ import type {
   ScorerPick,
   SpicyMatch,
   GroupLetter,
+  Phase,
 } from "./types.ts";
 import {
   POINTS_EXACT,
@@ -21,10 +22,27 @@ import {
   POINTS_CHAMPION,
   POINTS_PER_CORRECT_STANDING,
   SPICY_MAX_GOALS,
+  ROUND_FACTOR,
 } from "./constants.ts";
 import { computeGroupTable, type GroupResult } from "./standings.ts";
 
 const sign = (n: number) => (n > 0 ? 1 : n < 0 ? -1 : 0);
+
+const PHASES: Phase[] = ["group", "r32", "r16", "qf", "sf", "final"];
+/** A match's scoring phase, or null if it isn't scored (3rd-place match). Group matches default in. */
+function phaseOf(m: Match): Phase | null {
+  if (!m.phase) return "group";
+  return m.phase === "none" ? null : m.phase;
+}
+/** Per-match scoring factor (×1 group … ×6 final); 0 for non-scored matches. */
+function factorOf(m: Match): number {
+  const ph = phaseOf(m);
+  return ph ? ROUND_FACTOR[ph] : 0;
+}
+/** A participant's scorer picks for a phase (group falls back to legacy topPlayers). */
+function scorersFor(p: { topPlayers: string[]; scorersByRound?: Partial<Record<Phase, string[]>> }, ph: Phase): string[] {
+  return ph === "group" ? p.scorersByRound?.group ?? p.topPlayers : p.scorersByRound?.[ph] ?? [];
+}
 
 export interface MatchPoints {
   points: number;
@@ -97,6 +115,7 @@ export function computeScores(input: ScoringInput): ScoresFile {
   const perMatch = matches.matches.map((match) => {
     const finished = match.status === "FINISHED" && match.homeGoals !== null && match.awayGoals !== null;
     const live = isScored(match) && !finished;
+    const factor = factorOf(match); // ×1 group … ×6 final, 0 if not scored
     const preds: MatchPredictionResult[] = predictions.participants.map((p) => {
       const pred = predByParticipant.get(p.id)?.get(match.id);
       const base = {
@@ -114,7 +133,7 @@ export function computeScores(input: ScoringInput): ScoresFile {
       if (!pred) return base;
       if (finished) {
         const mp = matchPoints(pred.home, pred.away, match.homeGoals!, match.awayGoals!);
-        return { ...base, points: mp.points, exact: mp.exact, outcome: mp.outcome };
+        return { ...base, points: mp.points * factor, exact: mp.exact, outcome: mp.outcome };
       }
       if (live) {
         const mp = matchPoints(pred.home, pred.away, match.homeGoals!, match.awayGoals!);
@@ -136,32 +155,41 @@ export function computeScores(input: ScoringInput): ScoresFile {
   });
 
   // --- scorer view --------------------------------------------------------
-  // group-stage goals per player (own goals excluded). Only FINISHED matches count toward
-  // participant scorer points — live goals don't contribute until full time.
-  const goalsByPlayer = new Map<string, number>();
+  // Goals per player, per phase. Own goals don't count; shootout goals (no elapsed minute) don't
+  // count; only FINISHED matches contribute. A pick scores only in its own phase's matches.
+  const goalsByPhase = new Map<Phase, Map<string, number>>();
   for (const m of matches.matches) {
     if (m.status !== "FINISHED") continue;
+    const ph = phaseOf(m);
+    if (!ph) continue; // non-scored match (3rd place)
+    const gp = goalsByPhase.get(ph) ?? new Map<string, number>();
+    goalsByPhase.set(ph, gp);
     for (const g of m.goals) {
-      if (g.ownGoal || !g.playerId) continue;
-      goalsByPlayer.set(g.playerId, (goalsByPlayer.get(g.playerId) ?? 0) + 1);
+      if (g.ownGoal || !g.playerId || g.minute == null) continue; // own goal / unmatched / shootout
+      gp.set(g.playerId, (gp.get(g.playerId) ?? 0) + 1);
     }
   }
 
   const scorerView = predictions.participants.map((p) => {
-    const picks: ScorerPick[] = p.topPlayers.map((playerId) => {
-      const player = playerById.get(playerId);
-      const goals = goalsByPlayer.get(playerId) ?? 0;
-      const multiplier = player?.goalMultiplier ?? 8;
-      return {
-        playerId,
-        playerName: player?.name ?? playerId,
-        teamId: player?.teamId ?? "",
-        position: player?.position ?? "FWD",
-        multiplier,
-        goals,
-        points: goals * multiplier,
-      };
-    });
+    const picks: ScorerPick[] = [];
+    for (const ph of PHASES) {
+      const factor = ROUND_FACTOR[ph];
+      for (const playerId of scorersFor(p, ph)) {
+        const player = playerById.get(playerId);
+        const goals = goalsByPhase.get(ph)?.get(playerId) ?? 0;
+        const multiplier = (player?.goalMultiplier ?? 8) * factor;
+        picks.push({
+          playerId,
+          playerName: player?.name ?? playerId,
+          teamId: player?.teamId ?? "",
+          position: player?.position ?? "FWD",
+          phase: ph,
+          multiplier,
+          goals,
+          points: goals * multiplier,
+        });
+      }
+    }
     return {
       participantId: p.id,
       name: p.name,
@@ -280,10 +308,12 @@ export function computeScores(input: ScoringInput): ScoresFile {
   for (const pm of perMatch) {
     const match = matchById.get(pm.matchId);
     if (!match || match.status !== "FINISHED") continue;
+    const factor = factorOf(match);
+    if (!factor) continue; // non-scored match (3rd place)
     for (const r of pm.predictions) {
-      if (r.exact) exactByP.set(r.participantId, (exactByP.get(r.participantId) ?? 0) + POINTS_EXACT);
+      if (r.exact) exactByP.set(r.participantId, (exactByP.get(r.participantId) ?? 0) + POINTS_EXACT * factor);
       if (r.outcome)
-        outcomeByP.set(r.participantId, (outcomeByP.get(r.participantId) ?? 0) + POINTS_OUTCOME);
+        outcomeByP.set(r.participantId, (outcomeByP.get(r.participantId) ?? 0) + POINTS_OUTCOME * factor);
     }
   }
 

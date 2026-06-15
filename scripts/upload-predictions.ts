@@ -20,7 +20,7 @@ const supa = createClient(url, serviceKey, { auth: { persistSession: false } });
 const file = JSON.parse(readFileSync(resolve(DATA_DIR, "predictions.json"), "utf8")) as PredictionsFile;
 const rows = file.participants.map((p) => ({
   id: p.id, name: p.name, match_scores: p.matchScores, top_players: p.topPlayers,
-  champion: p.champion, updated_at: new Date().toISOString(),
+  scorers_by_round: p.scorersByRound ?? null, champion: p.champion, updated_at: new Date().toISOString(),
 }));
 
 const { error } = await supa.from("participants").upsert(rows, { onConflict: "id" });
