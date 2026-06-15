@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Radio, CalendarDays, Trophy, Table2, Goal, Flame } from "lucide-react";
-import { useBarnito } from "../data/store";
 import AirhornButton from "./AirhornButton";
 import InstallBanner from "./InstallBanner";
 import { MatchModalProvider } from "./MatchModal";
@@ -17,8 +16,6 @@ const NAV = [
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
-  const { scores } = useBarnito();
-  const updated = new Date(scores.updatedAt);
   const loc = useLocation();
 
   return (
@@ -37,13 +34,6 @@ export default function Layout({ children }: { children: ReactNode }) {
                 World Cup 2026
               </div>
             </div>
-          </div>
-          <div
-            className="flex items-center gap-1.5 text-[10px] text-pitch-400"
-            title={updated.toLocaleString()}
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-500/80" />
-            updated {updated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </div>
         </div>
         {/* desktop nav */}
