@@ -46,7 +46,7 @@ function XIToken({ p, x, y, onOpen }: { p: XIPlayer; x: number; y: number; onOpe
           {p.avg.toFixed(1)}
         </span>
       </span>
-      <span className="flex max-w-full items-center gap-0.5 truncate rounded-sm bg-pitch-950/70 px-1 text-[8.5px] font-medium text-white">
+      <span className="mt-1 flex max-w-full items-center gap-0.5 truncate rounded-sm bg-pitch-950/70 px-1 text-[8.5px] font-medium text-white">
         <Crest teamId={p.teamId} size={9} />
         {lastName(p.name)}
       </span>
