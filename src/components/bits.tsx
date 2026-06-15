@@ -7,9 +7,8 @@ import { Crest } from "./visuals";
 export { Crest } from "./visuals";
 
 /**
- * "Hot take": exactly one participant backs a different *outcome* (win/draw/loss, ignoring the
- * scoreline) while everyone else agrees on a single outcome. Needs ≥3 predictions. Renders null
- * otherwise.
+ * "Hot take": exactly one participant is alone in their predicted *outcome* (win/draw/loss,
+ * ignoring the scoreline) — no one else backs it, however the rest split. Needs ≥3 predictions.
  */
 export function HotTakeBadge({ matchId }: { matchId: string }) {
   const { scores, matchById } = useBarnito();
@@ -22,10 +21,10 @@ export function HotTakeBadge({ matchId }: { matchId: string }) {
   const outcome = (p: (typeof made)[number]) => Math.sign((p.predHome as number) - (p.predAway as number));
   const groups = new Map<number, typeof made>();
   for (const p of made) (groups.get(outcome(p)) ?? groups.set(outcome(p), []).get(outcome(p))!).push(p);
-  if (groups.size !== 2) return null;
-  let lone: { name: string; o: number } | null = null;
-  for (const [o, ps] of groups) if (ps.length === 1) lone = { name: ps[0].name, o };
-  if (!lone) return null;
+  // a hot take = exactly one participant alone in their outcome (others may split among the rest)
+  const lones = [...groups.entries()].filter(([, ps]) => ps.length === 1);
+  if (lones.length !== 1) return null;
+  const lone = { name: lones[0][1][0].name, o: lones[0][0] };
   const label = lone.o > 0 ? teamName(m.homeTeamId) : lone.o < 0 ? teamName(m.awayTeamId) : "a draw";
   const verb = lone.o === 0 ? "tips" : "backs";
   return (
