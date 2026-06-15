@@ -151,7 +151,7 @@ async function main() {
 
   // Manual corrections where the Scorito export cell was wrong (confirmed against the player).
   const MATCH_OVERRIDE: Record<string, Record<string, [number, number]>> = {
-    "Will Guess Football Good": { "C-2": [0, 2] }, // export had 0-1; actual pick was 0-2
+    "Will Guess Football Good": { "C-2": [0, 2], "G-1": [2, 1] }, // C-2 export 0-1 (pick 0-2); G-1 export 1-1 (pick 2-1)
   };
   for (const p of participants) {
     const ov = MATCH_OVERRIDE[p.name];
