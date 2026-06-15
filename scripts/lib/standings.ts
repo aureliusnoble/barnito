@@ -58,49 +58,42 @@ function headToHead(tiedIds: string[], results: GroupResult[]): Map<string, Tall
 }
 
 /**
- * Compute a fully-ordered group table. Deterministic tiebreakers:
- *   points → goal difference → goals scored → head-to-head (mini points/GD/GF)
- *   → alphabetical by team name (stable final tiebreak so re-runs never reorder).
+ * Compute a fully-ordered group table, strictly matching Scorito's predicted-standings
+ * tiebreakers (for teams level on points, in order):
+ *   head-to-head points → h2h goal difference → h2h goals scored
+ *   → overall goal difference → overall goals scored → FIFA ranking
+ *   → team name (stable final tiebreak so re-runs never reorder).
  *
- * Used both for participants' predicted tables and as a local fallback for the
- * actual table when the API doesn't provide ranks.
+ * Used for participants' predicted tables (the actual final table comes from the official source).
  */
 export function computeGroupTable(
   teamIds: string[],
   results: GroupResult[],
   nameOf: (teamId: string) => string,
+  fifaRankOf: (teamId: string) => number = () => 999,
 ): StandingRow[] {
   const table = applyResults(teamIds, results);
 
-  const sorted = [...teamIds].sort((a, b) => {
-    const ta = table.get(a)!;
-    const tb = table.get(b)!;
-    if (tb.points !== ta.points) return tb.points - ta.points;
-    if (tb.gd !== ta.gd) return tb.gd - ta.gd;
-    if (tb.gf !== ta.gf) return tb.gf - ta.gf;
-    return 0; // resolve remaining ties (incl. head-to-head) in the cluster pass below
-  });
-
-  // Re-rank clusters that are equal on (points, gd, gf) using head-to-head, then name.
-  const keyOf = (id: string) => {
-    const t = table.get(id)!;
-    return `${t.points}|${t.gd}|${t.gf}`;
-  };
+  // Sort by points; teams level on points are separated within their cluster below.
+  const sorted = [...teamIds].sort((a, b) => table.get(b)!.points - table.get(a)!.points);
 
   const result: string[] = [];
   let i = 0;
   while (i < sorted.length) {
     let j = i + 1;
-    while (j < sorted.length && keyOf(sorted[j]) === keyOf(sorted[i])) j++;
+    while (j < sorted.length && table.get(sorted[j])!.points === table.get(sorted[i])!.points) j++;
     const cluster = sorted.slice(i, j);
     if (cluster.length > 1) {
       const h2h = headToHead(cluster, results);
       cluster.sort((a, b) => {
-        const ha = h2h.get(a)!;
-        const hb = h2h.get(b)!;
-        if (hb.points !== ha.points) return hb.points - ha.points;
-        if (hb.gd !== ha.gd) return hb.gd - ha.gd;
-        if (hb.gf !== ha.gf) return hb.gf - ha.gf;
+        const ha = h2h.get(a)!, hb = h2h.get(b)!;
+        if (hb.points !== ha.points) return hb.points - ha.points; // h2h points
+        if (hb.gd !== ha.gd) return hb.gd - ha.gd; // h2h goal difference
+        if (hb.gf !== ha.gf) return hb.gf - ha.gf; // h2h goals scored
+        const ta = table.get(a)!, tb = table.get(b)!;
+        if (tb.gd !== ta.gd) return tb.gd - ta.gd; // overall goal difference
+        if (tb.gf !== ta.gf) return tb.gf - ta.gf; // overall goals scored
+        if (fifaRankOf(a) !== fifaRankOf(b)) return fifaRankOf(a) - fifaRankOf(b); // higher FIFA rank (lower number)
         return nameOf(a).localeCompare(nameOf(b));
       });
     }

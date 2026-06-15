@@ -78,6 +78,7 @@ export interface ScoringInput {
 export function computeScores(input: ScoringInput): ScoresFile {
   const { roster, matches, predictions, standings } = input;
   const teamName = new Map(roster.teams.map((t) => [t.id, t.name]));
+  const fifaRankByTeam = new Map(roster.teams.map((t) => [t.id, t.fifaRank ?? 999]));
   const playerById = new Map<string, Player>(roster.players.map((p) => [p.id, p]));
   const matchById = new Map(matches.matches.map((m) => [m.id, m]));
 
@@ -199,7 +200,7 @@ export function computeScores(input: ScoringInput): ScoresFile {
           awayGoals: pred.away,
         });
       }
-      const predTable = computeGroupTable(teamIds, results, (id) => teamName.get(id) ?? id);
+      const predTable = computeGroupTable(teamIds, results, (id) => teamName.get(id) ?? id, (id) => fifaRankByTeam.get(id) ?? 999);
       const orderedTeamIds = predTable.map((r) => r.teamId);
 
       const actual = actualByGroup.get(group);
