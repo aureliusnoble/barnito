@@ -62,6 +62,7 @@ export default function BestXI() {
     // 1) average match rating per player + 2) which line(s) they've actually started in.
     const agg = new Map<string, { sum: number; n: number; min: number; name: string; teamId: string }>();
     const eligible = new Map<string, Set<Position>>();
+    const lat = new Map<string, { sum: number; n: number }>(); // typical lateral position, 0=left … 1=right
     const formations: string[] = [];
     for (const m of matches.matches) {
       for (const r of m.ratings ?? []) {
@@ -72,9 +73,17 @@ export default function BestXI() {
       }
       for (const l of m.lineups ?? []) {
         if (l.formation) formations.push(l.formation);
+        const rowSize = new Map<number, number>(); // players per grid row, to normalise the column
+        for (const p of l.startXI) if (p.grid) { const r = Number(p.grid.split(":")[0]); rowSize.set(r, (rowSize.get(r) ?? 0) + 1); }
         for (const p of l.startXI) {
           const cat = p.pos ? POS_OF[p.pos] : null;
           if (p.playerId && cat) (eligible.get(p.playerId) ?? eligible.set(p.playerId, new Set()).get(p.playerId)!).add(cat);
+          if (p.playerId && p.grid) {
+            const [r, c] = p.grid.split(":").map(Number);
+            const lateral = (c - 0.5) / (rowSize.get(r) ?? 1); // lower column = left, matching the match pitch
+            const e = lat.get(p.playerId) ?? { sum: 0, n: 0 };
+            e.sum += lateral; e.n += 1; lat.set(p.playerId, e);
+          }
         }
       }
     }
@@ -138,7 +147,11 @@ export default function BestXI() {
     const midRows: XIPlayer[][] = [];
     let mi = 0;
     for (const cnt of midSegs) { midRows.push(mid.slice(mi, mi + cnt)); mi += cnt; }
-    const rows = [filled.GK, filled.DEF, ...midRows, filled.FWD].filter((r) => r.length > 0);
+    // order each line left→right by the players' typical lateral position (players without grid
+    // history sit in the middle), so the back four reads LB-CB-CB-RB rather than by rating.
+    const latOf = (p: XIPlayer) => { const e = lat.get(p.playerId); return e ? e.sum / e.n : 0.5; };
+    const order = (r: XIPlayer[]) => r.slice().sort((a, b) => latOf(a) - latOf(b));
+    const rows = [filled.GK, order(filled.DEF), ...midRows.map(order), order(filled.FWD)].filter((r) => r.length > 0);
     return { rows, label };
   }, [matches, playerById]);
 
