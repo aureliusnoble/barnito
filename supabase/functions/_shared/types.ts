@@ -165,6 +165,15 @@ export interface Match {
   stats?: TeamStat[];
   ratings?: PlayerRating[];
   h2h?: H2HMatch[]; // recent meetings between the two teams (mainly shown pre-match)
+  // Captured at the venue during the match (live) or at kickoff time (backfilled), then frozen.
+  weather?: {
+    temp: number; // °C
+    humidity: number; // %
+    code: number; // WMO weather code
+    wind: number; // km/h
+    at: string; // ISO when captured
+    coords?: { lat: number; lon: number };
+  } | null;
 }
 
 export interface MatchesFile {
