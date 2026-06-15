@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { ArrowUp } from "lucide-react";
 import { useBarnito } from "../data/store";
 import { usePlayerModal } from "./PlayerModal";
 import { Avatar } from "./visuals";
@@ -171,9 +172,16 @@ export default function BestXI() {
         style={{ aspectRatio: "68 / 105" }}
       >
         <PitchMarkings />
+        {/* orientation: keeper defends the bottom, the XI attacks upward */}
+        <div className="absolute top-1.5 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-pitch-950/55 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider text-white/70 backdrop-blur-sm">
+          <ArrowUp size={9} strokeWidth={3} /> Attacking
+        </div>
+        <div className="absolute bottom-1.5 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-pitch-950/55 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider text-white/70 backdrop-blur-sm">
+          Our goal
+        </div>
         {rows.flatMap((line, li) =>
           line.map((p, i) => {
-            const y = 90 - (li / (rows.length - 1)) * 80; // GK (li=0) at the bottom
+            const y = 86 - (li / (rows.length - 1)) * 72; // GK (li=0) near the bottom, striker near the top
             const x = 10 + ((i + 0.5) / line.length) * 80;
             return <XIToken key={p.playerId} p={p} x={x} y={y} onOpen={() => open(p.playerId)} />;
           }),
