@@ -302,6 +302,7 @@ function buildBracket(fixtures: ApiFixture[], st: State) {
 // ---------------------------------------------------------------------------
 async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]) {
   const teamName = new Map((st.teams).map((t) => [t.id as string, t.name as string]));
+  const fifaRankByTeam = new Map((st.teams).map((t) => [t.id as string, (t.fifa_rank as number) ?? 999]));
   const teams: Team[] = st.teams.map((t) => ({
     id: t.id as string, name: t.name as string, code: (t.code as string) ?? null, group: (t.group_letter as GroupLetter) ?? ("?" as GroupLetter),
     apiId: (t.api_id as number) ?? null, logo: (t.logo as string) ?? null, venue: (t.venue as Team["venue"]) ?? null,
@@ -326,7 +327,7 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
       const results: GroupResult[] = gm.filter((m) => m.status === "FINISHED" && m.homeGoals !== null && m.awayGoals !== null)
         .map((m) => ({ homeTeamId: m.homeTeamId, awayTeamId: m.awayTeamId, homeGoals: m.homeGoals!, awayGoals: m.awayGoals! }));
       const teamIds = teams.filter((t) => t.group === group).map((t) => t.id);
-      const rows = computeGroupTable(teamIds, results, (id) => teamName.get(id) ?? id);
+      const rows = computeGroupTable(teamIds, results, (id) => teamName.get(id) ?? id, (id) => fifaRankByTeam.get(id) ?? 999);
       const final = gm.length === MATCHES_PER_GROUP && gm.every((m) => m.status === "FINISHED");
       return { group, rows, final };
     }),

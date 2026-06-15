@@ -16,6 +16,28 @@ export const GOAL_MULTIPLIER: Record<Position, GoalMultiplier> = {
   FWD: 8,
 };
 
+// Scorito scales every reward by the tournament phase. Group stage = base (×1); each knockout
+// round multiplies match points (exact 45→90→135→180→225→270, outcome 30→60→…) and scorer
+// points (the GOAL_MULTIPLIER above) by this factor.
+export type Phase = "group" | "r32" | "r16" | "qf" | "sf" | "final";
+export const ROUND_FACTOR: Record<Phase, number> = {
+  group: 1,
+  r32: 2,
+  r16: 3,
+  qf: 4,
+  sf: 5,
+  final: 6,
+};
+// Knockout rounds each get a fresh set of 4 top-scorer picks; the group stage gets 6.
+export const SCORER_PICKS_BY_PHASE: Record<Phase, number> = {
+  group: 6,
+  r32: 4,
+  r16: 4,
+  qf: 4,
+  sf: 4,
+  final: 4,
+};
+
 // --- Tournament shape ------------------------------------------------------
 export const GROUPS: GroupLetter[] = [
   "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
