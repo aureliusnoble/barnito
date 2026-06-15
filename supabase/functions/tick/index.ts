@@ -315,7 +315,8 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
   const matches: Match[] = matchRows.map(rowToMatch);
   const participants: Participant[] = st.participants.map((p) => ({
     id: p.id as string, name: p.name as string, matchScores: (p.match_scores as Participant["matchScores"]) ?? [],
-    topPlayers: (p.top_players as string[]) ?? [], champion: (p.champion as string) ?? "",
+    topPlayers: (p.top_players as string[]) ?? [], scorersByRound: (p.scorers_by_round as Participant["scorersByRound"]) ?? undefined,
+    champion: (p.champion as string) ?? "",
   }));
 
   // standings (actual) computed locally from finished matches

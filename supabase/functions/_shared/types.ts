@@ -9,6 +9,9 @@ export type GroupLetter =
 
 export type Position = "GK" | "DEF" | "MID" | "FWD";
 
+/** Tournament phase — drives the scoring multiplier and per-round scorer picks. */
+export type Phase = "group" | "r32" | "r16" | "qf" | "sf" | "final";
+
 /** Per-goal multiplier by position (per scoring rules). */
 export type GoalMultiplier = 32 | 16 | 8;
 
@@ -165,6 +168,9 @@ export interface Match {
   stats?: TeamStat[];
   ratings?: PlayerRating[];
   h2h?: H2HMatch[]; // recent meetings between the two teams (mainly shown pre-match)
+  // Scoring phase: undefined ⇒ group stage; "none" ⇒ ingested but not scored (e.g. 3rd-place match).
+  // homeGoals/awayGoals hold the result after extra time; a penalty shootout (if any) does not count.
+  phase?: Phase | "none";
   // Captured at the venue during the match (live) or at kickoff time (backfilled), then frozen.
   weather?: {
     temp: number; // °C
@@ -199,8 +205,9 @@ export interface MatchScorePrediction {
 export interface Participant {
   id: string; // slug from name
   name: string;
-  matchScores: MatchScorePrediction[];
-  topPlayers: string[]; // up to 6 roster player ids
+  matchScores: MatchScorePrediction[]; // per match (group + knockout), keyed by matchId
+  topPlayers: string[]; // group-stage scorers (6); equivalent to scorersByRound.group
+  scorersByRound?: Partial<Record<Phase, string[]>>; // group (6) + each knockout round (4 each)
   champion: string; // team id
 }
 
@@ -294,7 +301,8 @@ export interface ScorerPick {
   playerName: string;
   teamId: string;
   position: Position;
-  multiplier: GoalMultiplier;
+  phase: Phase; // which round this pick belongs to
+  multiplier: number; // per-goal points = GOAL_MULTIPLIER[position] × ROUND_FACTOR[phase]
   goals: number;
   points: number;
 }

@@ -179,6 +179,68 @@ describe("computeScores — live matches award no points", () => {
   });
 });
 
+describe("computeScores — knockout phase multipliers", () => {
+  function koInput(): ScoringInput {
+    const roster: Roster = {
+      updatedAt: "x",
+      teams: [
+        { id: "a", name: "A", group: "A", apiId: null },
+        { id: "b", name: "B", group: "A", apiId: null },
+      ],
+      players: [
+        { id: "d", apiId: 1, name: "D", teamId: "a", position: "DEF", goalMultiplier: 32 },
+        { id: "f", apiId: 2, name: "F", teamId: "b", position: "FWD", goalMultiplier: 8 },
+      ],
+    };
+    const matches: MatchesFile = {
+      updatedAt: "x", tournamentComplete: false, championTeamId: null,
+      matches: [
+        {
+          id: "QF-1", apiId: null, group: "A", matchday: 1, kickoff: "2026-07-01T18:00:00Z",
+          homeTeamId: "a", awayTeamId: "b", status: "FINISHED", elapsed: 120, homeGoals: 2, awayGoals: 1, phase: "qf",
+          goals: [
+            { playerId: "d", apiPlayerId: 1, playerName: "D", minute: 30, teamId: "a", ownGoal: false },
+            { playerId: "f", apiPlayerId: 2, playerName: "F", minute: 118, teamId: "b", ownGoal: false },
+            { playerId: "f", apiPlayerId: 2, playerName: "F", minute: null, teamId: "b", ownGoal: false }, // shootout → excluded
+          ],
+        },
+        {
+          id: "3P-1", apiId: null, group: "A", matchday: 1, kickoff: "2026-07-02T18:00:00Z",
+          homeTeamId: "a", awayTeamId: "b", status: "FINISHED", elapsed: 90, homeGoals: 1, awayGoals: 0, phase: "none",
+          goals: [{ playerId: "d", apiPlayerId: 1, playerName: "D", minute: 10, teamId: "a", ownGoal: false }],
+        },
+      ],
+    };
+    const predictions: PredictionsFile = {
+      updatedAt: "x",
+      participants: [
+        { id: "alice", name: "Alice", matchScores: [{ matchId: "QF-1", home: 2, away: 1 }, { matchId: "3P-1", home: 1, away: 0 }], topPlayers: [], scorersByRound: { qf: ["d", "f"] }, champion: "" },
+      ],
+    };
+    const standings: StandingsFile = { updatedAt: "x", groups: [] };
+    return { roster, matches, predictions, standings };
+  }
+  const out = computeScores(koInput());
+
+  it("scales a QF exact score ×4 (180) and outcome bonus too", () => {
+    const qf = out.perMatch.find((p) => p.matchId === "QF-1")!;
+    expect(qf.predictions[0].points).toBe(180); // 45 × 4
+    const alice = out.leaderboard.find((l) => l.participantId === "alice")!;
+    expect(alice.breakdown.exactScores).toBe(60); // 15 × 4
+    expect(alice.breakdown.outcomes).toBe(120); // 30 × 4
+  });
+
+  it("scales scorer points by phase and excludes shootout goals", () => {
+    const alice = out.scorerView.find((s) => s.participantId === "alice")!;
+    expect(alice.total).toBe(128 + 32); // DEF 32×4 + FWD 8×4 (shootout goal excluded)
+  });
+
+  it("does not score the 3rd-place match", () => {
+    const tp = out.perMatch.find((p) => p.matchId === "3P-1")!;
+    expect(tp.predictions[0].points).toBe(0);
+  });
+});
+
 describe("computeScores — champion awarded at tournament end", () => {
   it("adds 250 when tournamentComplete and pick matches", () => {
     const input = makeInput();

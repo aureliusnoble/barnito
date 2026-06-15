@@ -59,7 +59,8 @@ const rowToMatch = (r: Row): Match => ({
 });
 const rowToParticipant = (r: Row): Participant => ({
   id: r.id as string, name: r.name as string, matchScores: (r.match_scores as Participant["matchScores"]) ?? [],
-  topPlayers: (r.top_players as string[]) ?? [], champion: (r.champion as string) ?? "",
+  topPlayers: (r.top_players as string[]) ?? [], scorersByRound: (r.scorers_by_round as Participant["scorersByRound"]) ?? undefined,
+  champion: (r.champion as string) ?? "",
 });
 
 const EMPTY_SCORES: ScoresFile = { updatedAt: "", leaderboard: [], perMatch: [], predictedStandings: [], scorerView: [], spiciness: [] };

@@ -1,5 +1,5 @@
 // AUTO-GENERATED from the repo source by scripts/sync-edge-shared.ts — do not edit.
-import type { GroupLetter, Position, GoalMultiplier } from "./types.ts";
+import type { GroupLetter, Position, GoalMultiplier, Phase } from "./types.ts";
 
 // --- Scoring rules ---------------------------------------------------------
 export const POINTS_EXACT = 15; // exact scoreline bonus
@@ -19,7 +19,6 @@ export const GOAL_MULTIPLIER: Record<Position, GoalMultiplier> = {
 // Scorito scales every reward by the tournament phase. Group stage = base (×1); each knockout
 // round multiplies match points (exact 45→90→135→180→225→270, outcome 30→60→…) and scorer
 // points (the GOAL_MULTIPLIER above) by this factor.
-export type Phase = "group" | "r32" | "r16" | "qf" | "sf" | "final";
 export const ROUND_FACTOR: Record<Phase, number> = {
   group: 1,
   r32: 2,
