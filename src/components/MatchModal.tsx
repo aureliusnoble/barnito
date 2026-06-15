@@ -197,7 +197,7 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
               <>
                 <span className="text-pitch-600">·</span>
                 <span title={`Temperature ${match.weather.temp}°C · ${match.weather.humidity}% humidity · ${match.weather.wind} km/h wind`}>
-                  {weatherIcon(match.weather.code)} {match.weather.temp}°C · 💧 {match.weather.humidity}% humidity
+                  {match.weather.forecast ? "Forecast · " : ""}{weatherIcon(match.weather.code)} {match.weather.temp}°C · 💧 {match.weather.humidity}% humidity
                 </span>
               </>
             )}
