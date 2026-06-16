@@ -21,7 +21,7 @@ const RI = 7.5, RO = 15.5, THK = RO - RI, RMID = (RI + RO) / 2;
  * share of the flag — with a clear gap between arcs and a country-code label outside each.
  * When everyone agrees on one outcome the whole ring is that flag, marked with a check badge.
  */
-export function PredictionDonut({ matchId, size = 56, labels = true }: { matchId: string; size?: number; labels?: boolean }) {
+export function PredictionDonut({ matchId, size = 84, labels = true }: { matchId: string; size?: number; labels?: boolean }) {
   const { scores, matchById, teamById } = useBarnito();
   const { teamName } = useHelpers();
   const pm = scores.perMatch.find((p) => p.matchId === matchId);
