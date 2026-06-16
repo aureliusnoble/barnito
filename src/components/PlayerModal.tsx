@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { X, Goal, CalendarClock } from "lucide-react";
+import { X, Goal, CalendarClock, Target } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { Avatar } from "./visuals";
 import { Crest, CardFlag } from "./bits";
@@ -47,9 +47,14 @@ function Stat({ label, value, accent }: { label: string; value: React.ReactNode;
 }
 
 function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void }) {
-  const { playerById, playerStats, matches } = useBarnito();
+  const { playerById, playerStats, matches, predictions } = useBarnito();
   const { teamName } = useHelpers();
   const p = seed.playerId ? playerById.get(seed.playerId) : undefined;
+
+  // Everyone who chose this player as one of their scorers.
+  const pickedBy = seed.playerId
+    ? predictions.participants.filter((part) => part.topPlayers.includes(seed.playerId!)).map((part) => part.name)
+    : [];
 
   // Prefer the matched roster player; fall back to whatever the caller knew (the stat line).
   const name = p?.name ?? seed.name ?? seed.playerId ?? "Player";
@@ -132,6 +137,23 @@ function PlayerDetail({ seed, onClose }: { seed: PlayerSeed; onClose: () => void
             <span className="text-[10px] uppercase tracking-wide text-pitch-400">{multiplier ? `×${multiplier} / goal` : ""}</span>
           </div>
         </div>
+        {seed.playerId && (
+          <div className="mt-2 rounded-xl bg-white/[0.04] px-3 py-2.5">
+            <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-pitch-400">
+              <Target size={12} className="text-accent-400" />
+              Picked as scorer{pickedBy.length > 0 ? ` · ${pickedBy.length}` : ""}
+            </div>
+            {pickedBy.length === 0 ? (
+              <p className="text-xs text-pitch-500">No one picked them.</p>
+            ) : (
+              <div className="flex flex-wrap gap-1.5">
+                {pickedBy.map((n) => (
+                  <span key={n} className="chip bg-accent-500/15 px-2 py-0.5 text-[11px] font-medium text-accent-200">{n}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         {hasPens && (
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-xl bg-white/[0.04] px-3 py-2 text-xs">
             <span className="text-[10px] font-semibold uppercase tracking-wide text-pitch-400">Penalties</span>
