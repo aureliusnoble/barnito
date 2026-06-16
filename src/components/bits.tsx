@@ -21,7 +21,7 @@ const RI = 7.5, RO = 15.5, THK = RO - RI, RMID = (RI + RO) / 2;
  * share of the flag — with a clear gap between arcs and a country-code label outside each.
  * When everyone agrees on one outcome the whole ring is that flag, marked with a check badge.
  */
-export function PredictionDonut({ matchId, size = 48, labels = true }: { matchId: string; size?: number; labels?: boolean }) {
+export function PredictionDonut({ matchId, size = 56, labels = true }: { matchId: string; size?: number; labels?: boolean }) {
   const { scores, matchById, teamById } = useBarnito();
   const { teamName } = useHelpers();
   const pm = scores.perMatch.find((p) => p.matchId === matchId);
@@ -43,8 +43,8 @@ export function PredictionDonut({ matchId, size = 48, labels = true }: { matchId
     { n: away, teamId: m.awayTeamId, flag: teamFlag(m.awayTeamId), label: `${teamName(m.awayTeamId)} ${away}` },
   ].filter((s) => s.n > 0);
 
-  const CC = labels ? 23 : 18;          // viewBox centre; extra room for outside labels
-  const RLAB = RO + 3.6;
+  const CC = labels ? 28 : 18;          // viewBox centre; extra room for outside label badges
+  const RLAB = RO + 5.1;                // label-badge radius — clears the ring (RO) so it never overlaps
   const gapFrac = 0.05;                 // angular gap (fraction of circle) between/around arcs
   const arcs: { r: number; color: string; span: number; start: number; w: number }[] = [];
   const tags: { code: string; frac: number }[] = [];
@@ -63,7 +63,7 @@ export function PredictionDonut({ matchId, size = 48, labels = true }: { matchId
       cols.forEach((color, k) => { const piece = usable * (ws[k] / sumW); arcs.push({ r: RMID, color, span: piece, start: start + cum, w: THK }); cum += piece; });
     }
     const code = s.teamId ? teamById.get(s.teamId)?.code : null;
-    if (code && labels) tags.push({ code, frac: start + segFrac / 2 });
+    if (code && labels) tags.push({ code, frac: start + usable / 2 }); // centre of the *drawn* band
     start += segFrac;
   }
   const unanimous = total > 1 && segs.length === 1; // everyone (>1 person) agreed
@@ -89,16 +89,27 @@ export function PredictionDonut({ matchId, size = 48, labels = true }: { matchId
           <circle cx={CC} cy={CC} r={RMID} fill="none" stroke="#1a2320" strokeWidth={THK} />
           {arcs.map(arcEl)}
         </g>
-        {tags.map((t, i) => (
-          <text
-            key={i} x={CC + RLAB * Math.sin(2 * Math.PI * t.frac)} y={CC - RLAB * Math.cos(2 * Math.PI * t.frac)}
-            fontSize="5" textAnchor="middle" dominantBaseline="central" fontWeight="700"
-            fill="#e8eef0" stroke="#0b1512" strokeWidth="1.2" paintOrder="stroke"
-            style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
-          >
-            {t.code}
-          </text>
-        ))}
+        {tags.map((t, i) => {
+          const x = CC + RLAB * Math.sin(2 * Math.PI * t.frac);
+          const y = CC - RLAB * Math.cos(2 * Math.PI * t.frac);
+          const fs = 6;
+          const bw = t.code.length * fs * 0.66 + 3.2; // pill sized to the code
+          const bh = fs + 3;
+          return (
+            <g key={i}>
+              <rect
+                x={x - bw / 2} y={y - bh / 2} width={bw} height={bh} rx={bh / 2}
+                fill="#f4c531" stroke="#0b1512" strokeWidth="0.5"
+              />
+              <text
+                x={x} y={y} fontSize={fs} textAnchor="middle" dominantBaseline="central" fontWeight="800"
+                fill="#1c1606" style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
+              >
+                {t.code}
+              </text>
+            </g>
+          );
+        })}
       </svg>
       {unanimous && (
         <span

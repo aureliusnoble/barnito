@@ -65,7 +65,7 @@ export default function Spicy() {
               </div>
               <div className="flex items-center justify-center gap-4">
                 <TeamMini teamId={heroMatch.homeTeamId} name={teamName(heroMatch.homeTeamId)} />
-                <PredictionDonut matchId={hero.matchId} size={76} />
+                <PredictionDonut matchId={hero.matchId} size={92} />
                 <TeamMini teamId={heroMatch.awayTeamId} name={teamName(heroMatch.awayTeamId)} />
               </div>
               <div className="mt-3 text-center text-xs text-pitch-400">
