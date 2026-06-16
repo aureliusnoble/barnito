@@ -1,4 +1,4 @@
-import { Target, Flame, Tv, Check } from "lucide-react";
+import { Target, Flame, Tv } from "lucide-react";
 import type { Match, MatchStatus, Position } from "@shared/types";
 import { useBarnito, useHelpers } from "../data/store";
 import { useTick, liveMinute } from "../lib/clock";
@@ -16,11 +16,12 @@ const RI = 7.5, RO = 15.5, THK = RO - RI, RMID = (RI + RO) / 2;
 /**
  * Donut of how the group predicted a match: home-win / draw / away-win. Each outcome arc is
  * drawn as that team's flag — stripes run *around* the arc for vertical flags (France) and as
- * *concentric* bands for horizontal flags (Argentina, Germany) — with a clear gap between arcs.
- * When everyone agrees on one outcome the whole ring is that flag, lit with a glow.
+ * *concentric* bands for horizontal flags (Argentina, Germany), sized by each colour's real
+ * share of the flag — with a clear gap between arcs and a country-code label outside each.
+ * When everyone agrees on one outcome the whole ring is that flag, marked with a check badge.
  */
-export function PredictionDonut({ matchId, size = 40 }: { matchId: string; size?: number }) {
-  const { scores, matchById } = useBarnito();
+export function PredictionDonut({ matchId, size = 48, labels = true }: { matchId: string; size?: number; labels?: boolean }) {
+  const { scores, matchById, teamById } = useBarnito();
   const { teamName } = useHelpers();
   const pm = scores.perMatch.find((p) => p.matchId === matchId);
   const m = matchById.get(matchId);
@@ -36,58 +37,74 @@ export function PredictionDonut({ matchId, size = 40 }: { matchId: string; size?
   }
   const drawFlag: Flag = { colors: [DRAW_COLOR], dir: "v" };
   const segs = [
-    { n: home, flag: teamFlag(m.homeTeamId), label: `${teamName(m.homeTeamId)} ${home}` },
-    { n: draw, flag: drawFlag, label: `Draw ${draw}` },
-    { n: away, flag: teamFlag(m.awayTeamId), label: `${teamName(m.awayTeamId)} ${away}` },
+    { n: home, teamId: m.homeTeamId, flag: teamFlag(m.homeTeamId), label: `${teamName(m.homeTeamId)} ${home}` },
+    { n: draw, teamId: null, flag: drawFlag, label: `Draw ${draw}` },
+    { n: away, teamId: m.awayTeamId, flag: teamFlag(m.awayTeamId), label: `${teamName(m.awayTeamId)} ${away}` },
   ].filter((s) => s.n > 0);
 
-  const gapFrac = 0.05; // angular gap (fraction of circle) between/around outcome arcs
-  // build the coloured arcs as {radius, color, spanFrac, startFrac}
+  const CC = labels ? 23 : 18;          // viewBox centre; extra room for outside labels
+  const RLAB = RO + 3.6;
+  const gapFrac = 0.05;                 // angular gap (fraction of circle) between/around arcs
   const arcs: { r: number; color: string; span: number; start: number; w: number }[] = [];
+  const tags: { code: string; frac: number }[] = [];
   let start = 0;
   for (const s of segs) {
     const segFrac = s.n / total;
     const usable = Math.max(0.0001, segFrac - gapFrac);
     const cols = s.flag.colors;
+    const ws = s.flag.weights ?? cols.map(() => 1);
+    const sumW = ws.reduce((a, b) => a + b, 0);
     if (s.flag.dir === "h" && cols.length > 1) {
-      const bw = THK / cols.length; // concentric bands across the ring thickness
-      cols.forEach((color, k) => arcs.push({ r: RI + (k + 0.5) * bw, color, span: usable, start, w: bw }));
+      let cum = 0;
+      cols.forEach((color, k) => { const bw = THK * (ws[k] / sumW); arcs.push({ r: RI + cum + bw / 2, color, span: usable, start, w: bw }); cum += bw; });
     } else {
-      const piece = usable / cols.length; // stripes around the arc
-      cols.forEach((color, k) => arcs.push({ r: RMID, color, span: piece, start: start + k * piece, w: THK }));
+      let cum = 0;
+      cols.forEach((color, k) => { const piece = usable * (ws[k] / sumW); arcs.push({ r: RMID, color, span: piece, start: start + cum, w: THK }); cum += piece; });
     }
+    const code = s.teamId ? teamById.get(s.teamId)?.code : null;
+    if (code && labels) tags.push({ code, frac: start + segFrac / 2 });
     start += segFrac;
   }
-  const unanimous = segs.length === 1;
+  const unanimous = total > 1 && segs.length === 1; // everyone (>1 person) agreed
 
   const arcEl = (a: typeof arcs[number], key: number) => {
     const c = 2 * Math.PI * a.r;
     const dash = a.span * c;
     return (
       <circle
-        key={key} cx="18" cy="18" r={a.r} fill="none" stroke={a.color} strokeWidth={a.w}
+        key={key} cx={CC} cy={CC} r={a.r} fill="none" stroke={a.color} strokeWidth={a.w}
         strokeDasharray={`${dash} ${c - dash}`} strokeDashoffset={-a.start * c} strokeLinecap="butt"
       />
     );
   };
-  const badge = Math.round(size * 0.44);
   return (
     <span className="relative inline-flex shrink-0 align-middle" style={{ width: size, height: size }}>
       <svg
-        viewBox="0 0 36 36" width={size} height={size} className="-rotate-90"
+        viewBox={`0 0 ${CC * 2} ${CC * 2}`} width={size} height={size}
         role="img" aria-label={`Predictions: ${segs.map((s) => s.label).join(", ")}`}
       >
         <title>{segs.map((s) => s.label).join(" · ")}{unanimous ? " (unanimous)" : ""}</title>
-        <circle cx="18" cy="18" r={RMID} fill="none" stroke="#1a2320" strokeWidth={THK} />
-        {arcs.map(arcEl)}
+        <g transform={`rotate(-90 ${CC} ${CC})`}>
+          <circle cx={CC} cy={CC} r={RMID} fill="none" stroke="#1a2320" strokeWidth={THK} />
+          {arcs.map(arcEl)}
+        </g>
+        {tags.map((t, i) => (
+          <text
+            key={i} x={CC + RLAB * Math.sin(2 * Math.PI * t.frac)} y={CC - RLAB * Math.cos(2 * Math.PI * t.frac)}
+            fontSize="5" textAnchor="middle" dominantBaseline="central" fontWeight="700"
+            fill="#e8eef0" stroke="#0b1512" strokeWidth="1.2" paintOrder="stroke"
+            style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
+          >
+            {t.code}
+          </text>
+        ))}
       </svg>
       {unanimous && (
         <span
-          className="absolute -bottom-px -right-px grid place-items-center rounded-full bg-accent-500 text-pitch-950 ring-2 ring-pitch-900"
-          style={{ width: badge, height: badge }}
+          className="absolute -right-1 -top-1 rounded-full bg-accent-500 px-1 py-px text-[8px] font-extrabold leading-none text-pitch-950 ring-2 ring-pitch-900"
           title="Everyone agreed"
         >
-          <Check size={Math.round(badge * 0.7)} strokeWidth={3.5} />
+          100%
         </span>
       )}
     </span>
