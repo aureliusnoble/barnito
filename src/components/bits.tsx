@@ -4,7 +4,7 @@ import { useBarnito, useHelpers } from "../data/store";
 import { useTick, liveMinute } from "../lib/clock";
 import { POSITION_LABEL } from "../lib/format";
 import { broadcasterFor } from "../lib/broadcasters";
-import { teamColor } from "../lib/teamColors";
+import { teamColors } from "../lib/teamColors";
 import { Crest } from "./visuals";
 
 export { Crest } from "./visuals";
@@ -12,8 +12,10 @@ export { Crest } from "./visuals";
 const DRAW_COLOR = "#5a6a63";
 
 /**
- * Tiny donut of how the group predicted a match's outcome: home-win / draw / away-win,
- * coloured by each team's flag colour (grey for draws). Renders nothing if no one predicted.
+ * Tiny donut of how the group predicted a match's outcome: home-win / draw / away-win.
+ * Each outcome arc is split into that team's flag-colour stripes (grey for draws), so the
+ * segment resembles the flag and stays distinguishable even when two teams share a hue.
+ * Renders nothing if no one predicted.
  */
 export function PredictionDonut({ matchId, size = 26 }: { matchId: string; size?: number }) {
   const { scores, matchById } = useBarnito();
@@ -31,14 +33,22 @@ export function PredictionDonut({ matchId, size = 26 }: { matchId: string; size?
     if (d > 0) home++; else if (d < 0) away++; else draw++;
   }
   const segs = [
-    { n: home, color: teamColor(m.homeTeamId), label: `${teamName(m.homeTeamId)} ${home}` },
-    { n: draw, color: DRAW_COLOR, label: `Draw ${draw}` },
-    { n: away, color: teamColor(m.awayTeamId), label: `${teamName(m.awayTeamId)} ${away}` },
+    { n: home, colors: teamColors(m.homeTeamId), label: `${teamName(m.homeTeamId)} ${home}` },
+    { n: draw, colors: [DRAW_COLOR], label: `Draw ${draw}` },
+    { n: away, colors: teamColors(m.awayTeamId), label: `${teamName(m.awayTeamId)} ${away}` },
   ].filter((s) => s.n > 0);
 
   const R = 14, C = 2 * Math.PI * R, sw = 7;
-  const gap = segs.length > 1 ? C * 0.03 : 0; // small separators between segments
+  const gap = segs.length > 1 ? C * 0.035 : 0; // small separators between outcome arcs
+  const bands: { color: string; len: number; off: number }[] = [];
   let offset = 0;
+  for (const s of segs) {
+    const arc = (s.n / total) * C;
+    const usable = Math.max(0, arc - gap);
+    const band = usable / s.colors.length; // contiguous flag stripes within the arc
+    s.colors.forEach((color, k) => bands.push({ color, len: band, off: offset + k * band }));
+    offset += arc;
+  }
   return (
     <svg
       viewBox="0 0 36 36" width={size} height={size} className="-rotate-90 shrink-0"
@@ -46,18 +56,12 @@ export function PredictionDonut({ matchId, size = 26 }: { matchId: string; size?
     >
       <title>{segs.map((s) => s.label).join(" · ")}</title>
       <circle cx="18" cy="18" r={R} fill="none" stroke="#1a2320" strokeWidth={sw} />
-      {segs.map((s, i) => {
-        const len = (s.n / total) * C;
-        const draw = Math.max(0, len - gap);
-        const el = (
-          <circle
-            key={i} cx="18" cy="18" r={R} fill="none" stroke={s.color} strokeWidth={sw}
-            strokeDasharray={`${draw} ${C - draw}`} strokeDashoffset={-offset} strokeLinecap="butt"
-          />
-        );
-        offset += len;
-        return el;
-      })}
+      {bands.map((b, i) => (
+        <circle
+          key={i} cx="18" cy="18" r={R} fill="none" stroke={b.color} strokeWidth={sw}
+          strokeDasharray={`${b.len} ${C - b.len}`} strokeDashoffset={-b.off} strokeLinecap="butt"
+        />
+      ))}
     </svg>
   );
 }
