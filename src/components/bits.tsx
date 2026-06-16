@@ -1,4 +1,4 @@
-import { Target, Flame, Tv } from "lucide-react";
+import { Target, Flame, Tv, Check } from "lucide-react";
 import type { Match, MatchStatus, Position } from "@shared/types";
 import { useBarnito, useHelpers } from "../data/store";
 import { useTick, liveMinute } from "../lib/clock";
@@ -19,7 +19,7 @@ const RI = 7.5, RO = 15.5, THK = RO - RI, RMID = (RI + RO) / 2;
  * *concentric* bands for horizontal flags (Argentina, Germany) — with a clear gap between arcs.
  * When everyone agrees on one outcome the whole ring is that flag, lit with a glow.
  */
-export function PredictionDonut({ matchId, size = 32 }: { matchId: string; size?: number }) {
+export function PredictionDonut({ matchId, size = 40 }: { matchId: string; size?: number }) {
   const { scores, matchById } = useBarnito();
   const { teamName } = useHelpers();
   const pm = scores.perMatch.find((p) => p.matchId === matchId);
@@ -59,7 +59,6 @@ export function PredictionDonut({ matchId, size = 32 }: { matchId: string; size?
     start += segFrac;
   }
   const unanimous = segs.length === 1;
-  const glow = unanimous ? segs[0].flag.colors[0] : null;
 
   const arcEl = (a: typeof arcs[number], key: number) => {
     const c = 2 * Math.PI * a.r;
@@ -71,17 +70,27 @@ export function PredictionDonut({ matchId, size = 32 }: { matchId: string; size?
       />
     );
   };
+  const badge = Math.round(size * 0.44);
   return (
-    <svg
-      viewBox="0 0 36 36" width={size} height={size} className="-rotate-90 shrink-0"
-      role="img" aria-label={`Predictions: ${segs.map((s) => s.label).join(", ")}`}
-      style={glow ? { filter: `drop-shadow(0 0 3px ${glow})` } : undefined}
-    >
-      <title>{segs.map((s) => s.label).join(" · ")}{unanimous ? " (unanimous)" : ""}</title>
-      <circle cx="18" cy="18" r={RMID} fill="none" stroke="#1a2320" strokeWidth={THK} />
-      {arcs.map(arcEl)}
-      {unanimous && <circle cx="18" cy="18" r={RO + 1} fill="none" stroke={glow!} strokeWidth={1.2} opacity={0.9} />}
-    </svg>
+    <span className="relative inline-flex shrink-0 align-middle" style={{ width: size, height: size }}>
+      <svg
+        viewBox="0 0 36 36" width={size} height={size} className="-rotate-90"
+        role="img" aria-label={`Predictions: ${segs.map((s) => s.label).join(", ")}`}
+      >
+        <title>{segs.map((s) => s.label).join(" · ")}{unanimous ? " (unanimous)" : ""}</title>
+        <circle cx="18" cy="18" r={RMID} fill="none" stroke="#1a2320" strokeWidth={THK} />
+        {arcs.map(arcEl)}
+      </svg>
+      {unanimous && (
+        <span
+          className="absolute -bottom-px -right-px grid place-items-center rounded-full bg-accent-500 text-pitch-950 ring-2 ring-pitch-900"
+          style={{ width: badge, height: badge }}
+          title="Everyone agreed"
+        >
+          <Check size={Math.round(badge * 0.7)} strokeWidth={3.5} />
+        </span>
+      )}
+    </span>
   );
 }
 
