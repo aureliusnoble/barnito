@@ -78,6 +78,9 @@ export function PredictionDonut({ matchId, size = 84, labels = true }: { matchId
       />
     );
   };
+  // place the unanimous "100%" badge on the ring's top-right (≈45° from the top)
+  const badgeLeft = ((CC + RO * Math.SQRT1_2) / (CC * 2)) * 100;
+  const badgeTop = ((CC - RO * Math.SQRT1_2) / (CC * 2)) * 100;
   return (
     <span className="relative inline-flex shrink-0 align-middle" style={{ width: size, height: size }}>
       <svg
@@ -113,7 +116,8 @@ export function PredictionDonut({ matchId, size = 84, labels = true }: { matchId
       </svg>
       {unanimous && (
         <span
-          className="absolute -right-1 -top-1 rounded-full bg-accent-500 px-1 py-px text-[8px] font-extrabold leading-none text-pitch-950 ring-2 ring-pitch-900"
+          style={{ left: `${badgeLeft}%`, top: `${badgeTop}%` }}
+          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-500 px-1 py-px text-[8px] font-extrabold leading-none text-pitch-950 ring-2 ring-pitch-900"
           title="Everyone agreed"
         >
           100%
