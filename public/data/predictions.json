@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-14T21:56:28.607Z",
+  "updatedAt": "2026-06-16T09:53:37.877Z",
   "participants": [
     {
       "id": "8azil",
@@ -822,7 +822,7 @@
         },
         {
           "matchId": "G-1",
-          "home": 1,
+          "home": 2,
           "away": 1
         },
         {
@@ -837,7 +837,7 @@
         },
         {
           "matchId": "I-1",
-          "home": 1,
+          "home": 2,
           "away": 1
         },
         {
@@ -887,23 +887,23 @@
         },
         {
           "matchId": "B-4",
-          "home": 1,
+          "home": 3,
           "away": 0
         },
         {
           "matchId": "A-4",
-          "home": 2,
-          "away": 0
+          "home": 1,
+          "away": 1
         },
         {
           "matchId": "D-3",
-          "home": 2,
-          "away": 1
+          "home": 1,
+          "away": 0
         },
         {
           "matchId": "C-3",
-          "home": 0,
-          "away": 1
+          "home": 1,
+          "away": 2
         },
         {
           "matchId": "C-4",
@@ -922,17 +922,17 @@
         },
         {
           "matchId": "E-3",
-          "home": 1,
-          "away": 1
+          "home": 2,
+          "away": 2
         },
         {
           "matchId": "E-4",
-          "home": 2,
+          "home": 3,
           "away": 0
         },
         {
           "matchId": "F-4",
-          "home": 0,
+          "home": 1,
           "away": 2
         },
         {
@@ -953,7 +953,7 @@
         {
           "matchId": "G-4",
           "home": 0,
-          "away": 1
+          "away": 2
         },
         {
           "matchId": "J-3",
@@ -967,33 +967,33 @@
         },
         {
           "matchId": "I-4",
-          "home": 0,
-          "away": 0
+          "home": 2,
+          "away": 2
         },
         {
           "matchId": "J-4",
           "home": 1,
-          "away": 1
+          "away": 2
         },
         {
           "matchId": "K-3",
-          "home": 2,
+          "home": 3,
           "away": 0
         },
         {
           "matchId": "L-3",
-          "home": 3,
-          "away": 1
+          "home": 2,
+          "away": 0
         },
         {
           "matchId": "L-4",
           "home": 0,
-          "away": 1
+          "away": 2
         },
         {
           "matchId": "K-4",
           "home": 2,
-          "away": 0
+          "away": 1
         },
         {
           "matchId": "B-5",

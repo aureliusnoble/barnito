@@ -150,9 +150,8 @@ async function main() {
   const participants = [...byName.values()];
 
   // Manual corrections where the Scorito export cell was wrong (confirmed against the player).
-  const MATCH_OVERRIDE: Record<string, Record<string, [number, number]>> = {
-    "Will Guess Football Good": { "C-2": [0, 2], "G-1": [2, 1] }, // C-2 export 0-1 (pick 0-2); G-1 export 1-1 (pick 2-1)
-  };
+  // (Will's earlier C-2/G-1 fixes are now baked into the corrected export, so no overrides needed.)
+  const MATCH_OVERRIDE: Record<string, Record<string, [number, number]>> = {};
   for (const p of participants) {
     const ov = MATCH_OVERRIDE[p.name];
     if (!ov) continue;
