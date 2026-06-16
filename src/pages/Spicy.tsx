@@ -1,7 +1,7 @@
 import { Flame, ChevronRight } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { useMatchModal } from "../components/MatchModal";
-import { SectionTitle, Crest, SpiceRating, HotTakeBadge } from "../components/bits";
+import { SectionTitle, Crest, SpiceRating, HotTakeBadge, PredictionDonut, spiceRating } from "../components/bits";
 import { formatDay, formatTime, relativeKickoff } from "../lib/format";
 import type { SpicyMatch } from "@shared/types";
 
@@ -28,7 +28,12 @@ export default function Spicy() {
   const ranked = soon.length > 0 ? soon : scores.spiciness;
 
   const max = ranked[0]?.score ?? 0;
-  const [hero, ...rest] = ranked;
+  // "Don't miss" = the soonest game at the top chilli rating (so a 5-chilli tonight beats a 5-chilli next week).
+  const topChilli = ranked.reduce((hi, s) => Math.max(hi, spiceRating(s.score, max)), 0);
+  const hero = ranked
+    .filter((s) => spiceRating(s.score, max) === topChilli)
+    .sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))[0];
+  const rest = ranked.filter((s) => s.matchId !== hero?.matchId);
   const heroMatch = hero && matchById.get(hero.matchId);
 
   return (
@@ -60,7 +65,7 @@ export default function Spicy() {
               </div>
               <div className="flex items-center justify-center gap-4">
                 <TeamMini teamId={heroMatch.homeTeamId} name={teamName(heroMatch.homeTeamId)} />
-                <span className="font-display text-sm text-pitch-500">vs</span>
+                <PredictionDonut matchId={hero.matchId} size={40} />
                 <TeamMini teamId={heroMatch.awayTeamId} name={teamName(heroMatch.awayTeamId)} />
               </div>
               <div className="mt-3 text-center text-xs text-pitch-400">
@@ -141,6 +146,7 @@ function SpicyRow({
           <HotTakeBadge matchId={s.matchId} />
         </div>
       </div>
+      <PredictionDonut matchId={s.matchId} />
       <ChevronRight size={16} className="shrink-0 text-pitch-600" />
     </button>
   );

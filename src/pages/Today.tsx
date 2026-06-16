@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Trophy, ChevronRight, Goal, Flame, Radio, History } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import MatchCard from "../components/MatchCard";
-import { SectionTitle, Crest, SpiceRating } from "../components/bits";
+import { SectionTitle, Crest, SpiceRating, spiceRating } from "../components/bits";
 import { ukSlateCutoffMs } from "../lib/format";
 
 export default function Today() {
@@ -30,9 +30,17 @@ export default function Today() {
 
   const leader = scores.leaderboard[0];
   const topScorer = stats.topScorers[0];
-  const spicy = scores.spiciness.find((s) => Date.parse(s.kickoff) <= now + 7 * 86400_000) ?? scores.spiciness[0];
-  const spicyMatch = spicy && matchById.get(spicy.matchId);
   const spiceMax = useMemo(() => Math.max(0, ...scores.spiciness.map((s) => s.score)), [scores]);
+  // Soonest upcoming game at the top chilli rating (a 5-chilli tonight beats a 5-chilli next week).
+  const spicy = useMemo(() => {
+    const list = scores.spiciness;
+    if (list.length === 0) return undefined;
+    const top = list.reduce((hi, s) => Math.max(hi, spiceRating(s.score, spiceMax)), 0);
+    return list
+      .filter((s) => spiceRating(s.score, spiceMax) === top)
+      .sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))[0];
+  }, [scores, spiceMax]);
+  const spicyMatch = spicy && matchById.get(spicy.matchId);
   const { teamName } = useHelpers();
 
   return (

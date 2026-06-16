@@ -1,7 +1,7 @@
 import type { Match } from "@shared/types";
 import { ChevronRight } from "lucide-react";
 import { useHelpers } from "../data/store";
-import { StatusBadge, Crest, ScorerPickTags, HotTakeBadge, BroadcastBadge } from "./bits";
+import { StatusBadge, Crest, ScorerPickTags, HotTakeBadge, BroadcastBadge, PredictionDonut } from "./bits";
 import { useMatchModal } from "./MatchModal";
 import { formatTime } from "../lib/format";
 
@@ -37,6 +37,8 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
             winner={hasScore && match.awayGoals! > match.homeGoals!}
           />
         </div>
+
+        <PredictionDonut matchId={match.id} />
 
         <div className="w-12 shrink-0 text-right">
           {hasScore ? (
