@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { LayoutGrid, Trophy, ChevronDown } from "lucide-react";
 import { useBarnito } from "../data/store";
 import MatchCard from "../components/MatchCard";
 import Bracket from "../components/Bracket";
 import { formatDay, flagEmoji, footballDayKey } from "../lib/format";
+import { usePersistentState } from "../lib/usePersistentState";
 import { GROUPS } from "@shared/constants";
 
 type GroupFilter = "ALL" | (typeof GROUPS)[number];
@@ -12,11 +13,12 @@ type WhenFilter = "ALL" | "future" | "past";
 
 export default function Matches() {
   const { matches, teamById } = useBarnito();
-  const [mode, setMode] = useState<"groups" | "knockouts">("groups");
-  const [group, setGroup] = useState<GroupFilter>("ALL");
-  const [matchday, setMatchday] = useState<DayFilter>("ALL");
-  const [country, setCountry] = useState<string>("ALL");
-  const [when, setWhen] = useState<WhenFilter>("ALL");
+  // Filters persist across reloads (e.g. stay on "Upcoming").
+  const [mode, setMode] = usePersistentState<"groups" | "knockouts">("barnito.matches.mode", "groups");
+  const [group, setGroup] = usePersistentState<GroupFilter>("barnito.matches.group", "ALL");
+  const [matchday, setMatchday] = usePersistentState<DayFilter>("barnito.matches.matchday", "ALL");
+  const [country, setCountry] = usePersistentState<string>("barnito.matches.country", "ALL");
+  const [when, setWhen] = usePersistentState<WhenFilter>("barnito.matches.when", "ALL");
 
   const now = Date.now();
 
