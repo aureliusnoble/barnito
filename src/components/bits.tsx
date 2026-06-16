@@ -78,9 +78,10 @@ export function PredictionDonut({ matchId, size = 84, labels = true }: { matchId
       />
     );
   };
-  // place the unanimous "100%" badge on the ring's top-right (≈45° from the top)
-  const badgeLeft = ((CC + RO * Math.SQRT1_2) / (CC * 2)) * 100;
-  const badgeTop = ((CC - RO * Math.SQRT1_2) / (CC * 2)) * 100;
+  // place the unanimous "100%" badge just off the ring's top-right (≈45° from the top)
+  const rBadge = RO + 2.5;
+  const badgeLeft = ((CC + rBadge * Math.SQRT1_2) / (CC * 2)) * 100;
+  const badgeTop = ((CC - rBadge * Math.SQRT1_2) / (CC * 2)) * 100;
   return (
     <span className="relative inline-flex shrink-0 align-middle" style={{ width: size, height: size }}>
       <svg
