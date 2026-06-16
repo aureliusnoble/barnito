@@ -17,7 +17,7 @@ const DRAW_COLOR = "#5a6a63";
  * segment resembles the flag and stays distinguishable even when two teams share a hue.
  * Renders nothing if no one predicted.
  */
-export function PredictionDonut({ matchId, size = 26 }: { matchId: string; size?: number }) {
+export function PredictionDonut({ matchId, size = 32 }: { matchId: string; size?: number }) {
   const { scores, matchById } = useBarnito();
   const { teamName } = useHelpers();
   const pm = scores.perMatch.find((p) => p.matchId === matchId);
