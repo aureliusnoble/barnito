@@ -4,18 +4,20 @@ import { useBarnito, useHelpers } from "../data/store";
 import { useTick, liveMinute } from "../lib/clock";
 import { POSITION_LABEL } from "../lib/format";
 import { broadcasterFor } from "../lib/broadcasters";
-import { teamColors } from "../lib/teamColors";
+import { teamFlag, type Flag } from "../lib/teamColors";
 import { Crest } from "./visuals";
 
 export { Crest } from "./visuals";
 
 const DRAW_COLOR = "#5a6a63";
+// ring geometry (viewBox 36): inner/outer radius and derived thickness/mid-radius
+const RI = 7.5, RO = 15.5, THK = RO - RI, RMID = (RI + RO) / 2;
 
 /**
- * Tiny donut of how the group predicted a match's outcome: home-win / draw / away-win.
- * Each outcome arc is split into that team's flag-colour stripes (grey for draws), so the
- * segment resembles the flag and stays distinguishable even when two teams share a hue.
- * Renders nothing if no one predicted.
+ * Donut of how the group predicted a match: home-win / draw / away-win. Each outcome arc is
+ * drawn as that team's flag — stripes run *around* the arc for vertical flags (France) and as
+ * *concentric* bands for horizontal flags (Argentina, Germany) — with a clear gap between arcs.
+ * When everyone agrees on one outcome the whole ring is that flag, lit with a glow.
  */
 export function PredictionDonut({ matchId, size = 32 }: { matchId: string; size?: number }) {
   const { scores, matchById } = useBarnito();
@@ -32,36 +34,53 @@ export function PredictionDonut({ matchId, size = 32 }: { matchId: string; size?
     const d = (p.predHome as number) - (p.predAway as number);
     if (d > 0) home++; else if (d < 0) away++; else draw++;
   }
+  const drawFlag: Flag = { colors: [DRAW_COLOR], dir: "v" };
   const segs = [
-    { n: home, colors: teamColors(m.homeTeamId), label: `${teamName(m.homeTeamId)} ${home}` },
-    { n: draw, colors: [DRAW_COLOR], label: `Draw ${draw}` },
-    { n: away, colors: teamColors(m.awayTeamId), label: `${teamName(m.awayTeamId)} ${away}` },
+    { n: home, flag: teamFlag(m.homeTeamId), label: `${teamName(m.homeTeamId)} ${home}` },
+    { n: draw, flag: drawFlag, label: `Draw ${draw}` },
+    { n: away, flag: teamFlag(m.awayTeamId), label: `${teamName(m.awayTeamId)} ${away}` },
   ].filter((s) => s.n > 0);
 
-  const R = 14, C = 2 * Math.PI * R, sw = 7;
-  const gap = segs.length > 1 ? C * 0.035 : 0; // small separators between outcome arcs
-  const bands: { color: string; len: number; off: number }[] = [];
-  let offset = 0;
+  const gapFrac = 0.05; // angular gap (fraction of circle) between/around outcome arcs
+  // build the coloured arcs as {radius, color, spanFrac, startFrac}
+  const arcs: { r: number; color: string; span: number; start: number; w: number }[] = [];
+  let start = 0;
   for (const s of segs) {
-    const arc = (s.n / total) * C;
-    const usable = Math.max(0, arc - gap);
-    const band = usable / s.colors.length; // contiguous flag stripes within the arc
-    s.colors.forEach((color, k) => bands.push({ color, len: band, off: offset + k * band }));
-    offset += arc;
+    const segFrac = s.n / total;
+    const usable = Math.max(0.0001, segFrac - gapFrac);
+    const cols = s.flag.colors;
+    if (s.flag.dir === "h" && cols.length > 1) {
+      const bw = THK / cols.length; // concentric bands across the ring thickness
+      cols.forEach((color, k) => arcs.push({ r: RI + (k + 0.5) * bw, color, span: usable, start, w: bw }));
+    } else {
+      const piece = usable / cols.length; // stripes around the arc
+      cols.forEach((color, k) => arcs.push({ r: RMID, color, span: piece, start: start + k * piece, w: THK }));
+    }
+    start += segFrac;
   }
+  const unanimous = segs.length === 1;
+  const glow = unanimous ? segs[0].flag.colors[0] : null;
+
+  const arcEl = (a: typeof arcs[number], key: number) => {
+    const c = 2 * Math.PI * a.r;
+    const dash = a.span * c;
+    return (
+      <circle
+        key={key} cx="18" cy="18" r={a.r} fill="none" stroke={a.color} strokeWidth={a.w}
+        strokeDasharray={`${dash} ${c - dash}`} strokeDashoffset={-a.start * c} strokeLinecap="butt"
+      />
+    );
+  };
   return (
     <svg
       viewBox="0 0 36 36" width={size} height={size} className="-rotate-90 shrink-0"
       role="img" aria-label={`Predictions: ${segs.map((s) => s.label).join(", ")}`}
+      style={glow ? { filter: `drop-shadow(0 0 3px ${glow})` } : undefined}
     >
-      <title>{segs.map((s) => s.label).join(" · ")}</title>
-      <circle cx="18" cy="18" r={R} fill="none" stroke="#1a2320" strokeWidth={sw} />
-      {bands.map((b, i) => (
-        <circle
-          key={i} cx="18" cy="18" r={R} fill="none" stroke={b.color} strokeWidth={sw}
-          strokeDasharray={`${b.len} ${C - b.len}`} strokeDashoffset={-b.off} strokeLinecap="butt"
-        />
-      ))}
+      <title>{segs.map((s) => s.label).join(" · ")}{unanimous ? " (unanimous)" : ""}</title>
+      <circle cx="18" cy="18" r={RMID} fill="none" stroke="#1a2320" strokeWidth={THK} />
+      {arcs.map(arcEl)}
+      {unanimous && <circle cx="18" cy="18" r={RO + 1} fill="none" stroke={glow!} strokeWidth={1.2} opacity={0.9} />}
     </svg>
   );
 }
