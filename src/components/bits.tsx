@@ -1,11 +1,12 @@
 import { Target, Flame, Tv } from "lucide-react";
-import type { Match, MatchStatus, Position } from "@shared/types";
+import type { Match, MatchStatus, Position, Player } from "@shared/types";
 import { useBarnito, useHelpers } from "../data/store";
 import { useTick, liveMinute } from "../lib/clock";
 import { POSITION_LABEL } from "../lib/format";
 import { broadcasterFor } from "../lib/broadcasters";
 import { teamFlag, type Flag } from "../lib/teamColors";
-import { Crest } from "./visuals";
+import { Crest, Avatar } from "./visuals";
+import { lastName } from "./Pitch";
 
 export { Crest } from "./visuals";
 
@@ -226,37 +227,53 @@ export function SpiceRating({
 }
 
 /**
- * Small tags flagging that a participant has one of their six chosen scorers playing for a team in
- * this match — i.e. a reason to tune in. Membership only (no lineup needed): the player just has to
- * belong to one of the two nations. Returns null when nobody has a pick on either side.
+ * Picked scorers playing in this match, shown player-first: each chip is the player (photo +
+ * surname + crest) with the people who backed them as small secondary text. Grouped by player
+ * and ordered by how many backed them; capped with a "+N" overflow so the card stays minimal
+ * (full detail lives in the match modal). Returns null when nobody has a pick on either side.
  */
 export function ScorerPickTags({ match, className = "" }: { match: Match; className?: string }) {
   const { predictions, playerById } = useBarnito();
-  const { teamName } = useHelpers();
   const teamIds = new Set([match.homeTeamId, match.awayTeamId]);
-  const picks: { key: string; participant: string; playerName: string; teamId: string }[] = [];
+  const firstName = (n: string) => n.split(" ")[0];
+  const byPlayer = new Map<string, { player: Player; backers: string[] }>();
   for (const part of predictions.participants) {
     for (const pid of part.topPlayers) {
       const pl = playerById.get(pid);
       if (pl && teamIds.has(pl.teamId)) {
-        picks.push({ key: `${part.id}-${pid}`, participant: part.name, playerName: pl.name, teamId: pl.teamId });
+        const e = byPlayer.get(pid) ?? { player: pl, backers: [] };
+        e.backers.push(part.name);
+        byPlayer.set(pid, e);
       }
     }
   }
-  if (picks.length === 0) return null;
+  if (byPlayer.size === 0) return null;
+  const rows = [...byPlayer.values()].sort((a, b) => b.backers.length - a.backers.length);
+  const CAP = 4;
+  const shown = rows.slice(0, CAP);
+  const extra = rows.length - shown.length;
   return (
-    <div className={`flex flex-wrap items-center gap-1 ${className}`}>
-      <Target size={11} className="shrink-0 text-accent-400" />
-      {picks.map((p) => (
+    <div className={`flex flex-wrap items-center gap-1.5 ${className}`}>
+      <Target size={12} className="shrink-0 text-accent-400" />
+      {shown.map(({ player, backers }) => (
         <span
-          key={p.key}
-          title={`${p.participant}: ${p.playerName} (${teamName(p.teamId)})`}
-          className="chip gap-1 bg-accent-500/15 px-1.5 py-0.5 text-[10px] text-accent-300"
+          key={player.id}
+          title={`${player.name} — picked by ${backers.join(", ")}`}
+          className="inline-flex items-center gap-1 rounded-full bg-white/[0.04] py-0.5 pl-0.5 pr-2 ring-1 ring-white/[0.07]"
         >
-          <Crest teamId={p.teamId} size={10} />
-          {p.participant}
+          <Avatar photo={player.photo} name={player.name} position={player.position} size={18} />
+          <Crest teamId={player.teamId} size={9} />
+          <span className="text-[11px] font-semibold leading-none text-pitch-100">{lastName(player.name)}</span>
+          <span className="max-w-[8rem] truncate text-[9.5px] leading-none text-pitch-400">
+            {backers.map(firstName).join(", ")}
+          </span>
         </span>
       ))}
+      {extra > 0 && (
+        <span className="rounded-full bg-white/[0.04] px-2 py-1 text-[10px] font-semibold text-pitch-400 ring-1 ring-white/[0.07]">
+          +{extra}
+        </span>
+      )}
     </div>
   );
 }
