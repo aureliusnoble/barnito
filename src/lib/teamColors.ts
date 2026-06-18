@@ -10,7 +10,7 @@ const BLACK = "#3a3a3f";
 const WHITE = "#eef2f0";
 
 const FLAGS: Record<string, Flag> = {
-  algeria: { colors: ["#0a7d3b", WHITE, "#d21034"], dir: "v", weights: [0.45, 0.45, 0.1] },
+  algeria: { colors: ["#0a7d3b", "#d21034", WHITE], dir: "v", weights: [0.45, 0.1, 0.45] }, // green | red crescent (centre) | white
   argentina: { colors: ["#74acdf", WHITE, "#74acdf"], dir: "h" },
   australia: { colors: ["#00843d", "#ffcd00"], dir: "h" },
   austria: { colors: ["#ed2939", WHITE, "#ed2939"], dir: "h" },
