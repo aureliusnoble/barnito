@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Trophy, ChevronDown, Target, CircleCheck, Goal, Table2, Crown, Medal, LineChart } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Trophy, ChevronDown, ChevronUp, Target, CircleCheck, Goal, Table2, Crown, Medal, LineChart } from "lucide-react";
 import { useBarnito } from "../data/store";
 import ScoreChart from "../components/ScoreChart";
 import type { ScoreBreakdown } from "@shared/types";
@@ -38,11 +38,45 @@ function RankBadge({ rank }: { rank: number }) {
   );
 }
 
+/** Small green/red rank-movement chip over the last 24h (nothing when unchanged or untracked). */
+function RankDelta({ delta }: { delta: number }) {
+  if (delta === 0) return <span className="text-[9px] font-semibold text-pitch-600">–</span>;
+  const up = delta > 0;
+  return (
+    <span className={`inline-flex items-center gap-px text-[10px] font-bold leading-none ${up ? "text-emerald-400" : "text-red-400"}`}>
+      {up ? <ChevronUp size={11} strokeWidth={3} /> : <ChevronDown size={11} strokeWidth={3} />}
+      {Math.abs(delta)}
+    </span>
+  );
+}
+
 export default function Leaderboard() {
-  const { scores } = useBarnito();
-  const [open, setOpen] = useState<string | null>(scores.leaderboard[0]?.participantId ?? null);
+  const { scores, scoreHistory } = useBarnito();
+  const [open, setOpen] = useState<string | null>(null); // collapsed by default
   const [chart, setChart] = useState(false);
   const top = scores.leaderboard[0]?.total || 1;
+
+  // 24h movement: each player's total as of ~24h ago → points earned since, and rank then vs now.
+  const trend = useMemo(() => {
+    const cutoff = Date.now() - 24 * 3600_000;
+    const tracked = scoreHistory.some((h) => Date.parse(h.at) <= cutoff);
+    // latest snapshot at or before the cutoff per participant (their total 24h ago)
+    const prev = new Map<string, { at: number; total: number }>();
+    for (const h of scoreHistory) {
+      const t = Date.parse(h.at);
+      if (t > cutoff) continue;
+      const e = prev.get(h.participantId);
+      if (!e || t > e.at) prev.set(h.participantId, { at: t, total: h.total });
+    }
+    const totalThen = (id: string) => prev.get(id)?.total ?? 0;
+    const m = new Map<string, { gained: number; rankDelta: number }>();
+    for (const e of scores.leaderboard) {
+      const then = totalThen(e.participantId);
+      const rankThen = 1 + scores.leaderboard.filter((o) => totalThen(o.participantId) > then).length;
+      m.set(e.participantId, { gained: e.total - then, rankDelta: rankThen - e.rank });
+    }
+    return { tracked, get: (id: string) => m.get(id) };
+  }, [scores.leaderboard, scoreHistory]);
 
   return (
     <div className="space-y-4">
@@ -66,6 +100,7 @@ export default function Leaderboard() {
         {scores.leaderboard.map((entry) => {
           const isOpen = open === entry.participantId;
           const pct = Math.max(4, Math.round((entry.total / top) * 100));
+          const t = trend.get(entry.participantId);
           return (
             <div
               key={entry.participantId}
@@ -75,7 +110,10 @@ export default function Leaderboard() {
                 onClick={() => setOpen(isOpen ? null : entry.participantId)}
                 className="flex w-full items-center gap-3 p-3 text-left"
               >
-                <RankBadge rank={entry.rank} />
+                <div className="flex w-9 shrink-0 flex-col items-center gap-0.5">
+                  <RankBadge rank={entry.rank} />
+                  {trend.tracked && t && <RankDelta delta={t.rankDelta} />}
+                </div>
                 <div className="min-w-0 flex-1">
                   <div className="font-display text-base font-bold text-white">{entry.name}</div>
                   <div className="mt-1 h-1 overflow-hidden rounded-full bg-pitch-800">
@@ -85,9 +123,14 @@ export default function Leaderboard() {
                     />
                   </div>
                 </div>
-                <span className="font-display text-xl font-extrabold tabular-nums text-white">
-                  {entry.total}
-                </span>
+                <div className="flex shrink-0 flex-col items-end leading-none">
+                  <span className="font-display text-xl font-extrabold tabular-nums text-white">
+                    {entry.total}
+                  </span>
+                  {trend.tracked && t && t.gained > 0 && (
+                    <span className="mt-1 text-[11px] font-bold tabular-nums text-emerald-400">+{t.gained} · 24h</span>
+                  )}
+                </div>
                 <ChevronDown
                   size={16}
                   className={`shrink-0 text-pitch-500 transition ${isOpen ? "rotate-180" : ""}`}
@@ -116,8 +159,8 @@ export default function Leaderboard() {
         })}
       </div>
       <p className="px-1 text-xs text-pitch-500">
-        Points lock in at full time — live games don't count yet. Champion (+250) is awarded at the
-        end; group-standings points lock once each group finishes.
+        {trend.tracked && <><span className="text-pitch-400">▲▼ = rank move</span> and <span className="text-emerald-400">+pts</span> are over the last 24h. </>}
+        Points lock in at full time — live games don't count yet. Champion (+250) is awarded at the end.
       </p>
     </div>
   );
