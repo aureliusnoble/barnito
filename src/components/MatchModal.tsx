@@ -142,7 +142,10 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
   const hasRatings = (match.ratings ?? []).some((r) => r.rating != null);
   const hasStats = !!match.stats && match.stats.length === 2;
   const hasLineups = !!match.lineups && match.lineups.length > 0;
-  const hasMatchDetail = events.length > 0 || hasStats || hasRatings;
+  // Show the Match tab as soon as the game is under way (it appears live without reopening the
+  // modal), not only once events/stats/ratings have been ingested.
+  const started = match.status === "LIVE" || match.status === "HT" || match.status === "FINISHED";
+  const hasMatchDetail = started || events.length > 0 || hasStats || hasRatings;
 
   // Predictions stay the focus (default tab); everything else lives behind tabs to keep it clean.
   const tabs: { key: TabKey; label: string }[] = [
