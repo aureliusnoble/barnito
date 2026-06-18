@@ -7,7 +7,14 @@ import { Avatar } from "./visuals";
 import { PitchMarkings, lastName } from "./Pitch";
 import { formatFull, ordinal } from "../lib/format";
 import { WC_HISTORY } from "../data/wcHistory";
-import type { Lineup, LineupPlayer, Match, MatchEvent, MatchPredictionResult, PlayerRating, TeamStat } from "@shared/types";
+import type { Lineup, LineupPlayer, Match, MatchEvent, MatchPredictionResult, PlayerRating, TeamStat, Phase } from "@shared/types";
+import { ROUND_FACTOR } from "@shared/constants";
+
+/** Scoring multiplier for a match's phase (group ⇒ ×1, "none"/3rd-place ⇒ 0). */
+function roundFactor(match: Match): number {
+  if (match.phase === "none") return 0;
+  return ROUND_FACTOR[(match.phase ?? "group") as Phase];
+}
 
 /** WMO weather code → emoji. */
 function weatherIcon(code: number): string {
@@ -306,6 +313,17 @@ function MatchSections({ match, events, hasStats }: { match: Match; events: Matc
 
 /** The prediction table — the primary content of the modal. */
 function Predictions({ match, predicted }: { match: Match; predicted: MatchPredictionResult[] }) {
+  const live = match.status === "LIVE" || match.status === "HT";
+  const factor = roundFactor(match);
+  // Result/score points only (scorer points are shown next to the scorers). Final from the engine
+  // when played; provisional from the current score while live.
+  const matchPts = (p: MatchPredictionResult) => {
+    if (match.status === "FINISHED") return p.points;
+    if (!live || p.predHome == null || p.predAway == null || match.homeGoals == null || match.awayGoals == null) return 0;
+    const exact = p.predHome === match.homeGoals && p.predAway === match.awayGoals;
+    const outcome = Math.sign(p.predHome - p.predAway) === Math.sign(match.homeGoals - match.awayGoals);
+    return (exact ? 45 : outcome ? 30 : 0) * factor;
+  };
   return (
     <section>
       <div className="mb-2 flex items-baseline justify-between">
@@ -315,7 +333,7 @@ function Predictions({ match, predicted }: { match: Match; predicted: MatchPredi
             ? "points pending"
             : match.status === "FINISHED"
               ? "final points"
-              : "live — points at full time"}
+              : "live — provisional"}
         </span>
       </div>
       {predicted.length === 0 ? (
@@ -349,7 +367,7 @@ function Predictions({ match, predicted }: { match: Match; predicted: MatchPredi
                   >
                     {p.predHome}–{p.predAway}
                   </span>
-                  {match.status === "FINISHED" && <PointsPill points={p.points} />}
+                  {(match.status === "FINISHED" || live) && <PointsPill points={matchPts(p)} provisional={live} />}
                 </span>
               </li>
             );
@@ -373,9 +391,16 @@ function PickedScorers({ match, cards }: { match: Match; cards: Map<string, { ye
     }
   }
   if (byPlayer.size === 0) return null;
-  const goalsOf = (pid: string) => (match.goals ?? []).filter((g) => g.playerId === pid && !g.ownGoal).length;
+  const live = match.status === "LIVE" || match.status === "HT";
+  const factor = roundFactor(match);
+  // Goals that count for scorer points: exclude own goals and shootout goals (minute == null).
+  const goalsOf = (pid: string) => (match.goals ?? []).filter((g) => g.playerId === pid && !g.ownGoal && g.minute != null).length;
   const rows = [...byPlayer.entries()]
-    .map(([pid, backers]) => ({ pid, p: playerById.get(pid)!, backers, goals: goalsOf(pid), cards: cards.get(pid) }))
+    .map(([pid, backers]) => {
+      const p = playerById.get(pid)!;
+      const goals = goalsOf(pid);
+      return { pid, p, backers, goals, pts: goals * (p?.goalMultiplier ?? 8) * factor, cards: cards.get(pid) };
+    })
     .filter((r) => r.p)
     .sort((a, b) => b.goals - a.goals || b.backers.length - a.backers.length);
   return (
@@ -394,6 +419,7 @@ function PickedScorers({ match, cards }: { match: Match; cards: Map<string, { ye
                 {r.cards && <CardFlag yellow={r.cards.yellow > 0} red={r.cards.red > 0} size={11} />}
                 <Crest teamId={r.p.teamId} size={12} />
                 {r.goals > 0 && <span className="chip bg-accent-500/20 text-[10px] text-accent-300">{r.goals} ⚽</span>}
+                {r.pts > 0 && <PointsPill points={r.pts} provisional={live} />}
               </span>
               <span className="block truncate text-[11px] text-pitch-500">Picked by {r.backers.join(", ")}</span>
             </span>
