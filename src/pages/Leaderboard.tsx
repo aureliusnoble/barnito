@@ -128,7 +128,7 @@ export default function Leaderboard() {
                     {entry.total}
                   </span>
                   {trend.tracked && t && t.gained > 0 && (
-                    <span className="mt-1 text-[11px] font-bold tabular-nums text-emerald-400">+{t.gained} · 24h</span>
+                    <span className="mt-1 text-[11px] font-bold tabular-nums text-emerald-400">+{t.gained}</span>
                   )}
                 </div>
                 <ChevronDown
