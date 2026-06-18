@@ -9,7 +9,7 @@ import {
   apiGet, apiGetAllPages, requestCount, mapStatus, mapPosition, mapEventType, groupLetterFrom,
   GOAL_MULTIPLIER, WC_LEAGUE, WC_SEASON,
   type ApiFixture, type ApiFixtureDetailed, type ApiStandingRow, type ApiTeamEntry,
-  type ApiPlayerEntry, type ApiPlayerStat, type ApiInjury,
+  type ApiPlayerEntry, type ApiPlayerStat, type ApiInjury, type ApiLineup,
 } from "../_shared/apiFootball.ts";
 import { computeScores } from "../_shared/scoring.ts";
 import { computeGroupTable, type GroupResult } from "../_shared/standings.ts";
@@ -106,6 +106,17 @@ async function loadState() {
 
 type State = Awaited<ReturnType<typeof loadState>>;
 
+/** Map API lineups → our Lineup[] (shared by the embedded payload and the dedicated endpoint). */
+function mapLineups(apiLineups: ApiLineup[] | undefined, st: State): Lineup[] {
+  const tid = (id: number) => st.teamByApi.get(id)?.id ?? "";
+  const pid = (id: number | null) => (id ? st.playerByApi.get(id) ?? null : null);
+  return (apiLineups ?? []).map((l) => ({
+    teamId: tid(l.team.id), formation: l.formation, coach: l.coach?.name ?? null,
+    startXI: l.startXI.map((p) => ({ playerId: pid(p.player.id), name: p.player.name, number: p.player.number, pos: p.player.pos, grid: p.player.grid })),
+    subs: l.substitutes.map((p) => ({ playerId: pid(p.player.id), name: p.player.name, number: p.player.number, pos: p.player.pos, grid: p.player.grid })),
+  }));
+}
+
 function mapDetails(f: ApiFixtureDetailed, st: State) {
   const tid = (id: number) => st.teamByApi.get(id)?.id ?? "";
   const pid = (id: number | null) => (id ? st.playerByApi.get(id) ?? null : null);
@@ -117,11 +128,7 @@ function mapDetails(f: ApiFixtureDetailed, st: State) {
   const goals: GoalEvent[] = (f.events ?? []).filter((e) => e.type.toLowerCase() === "goal" && e.detail !== "Missed Penalty")
     .map((e) => ({ playerId: pid(e.player.id), apiPlayerId: e.player.id, playerName: e.player.name ?? "Unknown",
       minute: e.time.elapsed, teamId: tid(e.team.id), ownGoal: e.detail === "Own Goal" }));
-  const lineups: Lineup[] = (f.lineups ?? []).map((l) => ({
-    teamId: tid(l.team.id), formation: l.formation, coach: l.coach?.name ?? null,
-    startXI: l.startXI.map((p) => ({ playerId: pid(p.player.id), name: p.player.name, number: p.player.number, pos: p.player.pos, grid: p.player.grid })),
-    subs: l.substitutes.map((p) => ({ playerId: pid(p.player.id), name: p.player.name, number: p.player.number, pos: p.player.pos, grid: p.player.grid })),
-  }));
+  const lineups: Lineup[] = mapLineups(f.lineups, st);
   const stats: TeamStat[] = (f.statistics ?? []).map((s) => ({ teamId: tid(s.team.id), items: s.statistics }));
   const num = (v: string | number | null | undefined) => (v == null ? null : Number(v));
   const ratings: PlayerRating[] = (f.players ?? []).flatMap((tp) => tp.players.map((pl) => {
@@ -622,6 +629,22 @@ Deno.serve(async (req) => {
         const d = details.get(m.apiId);
         if (f) updated.set(m.id, buildMatch(f, m.id, st, d, m));
       }
+    }
+
+    // pre-match lineups: the official XI lands on the dedicated /fixtures/lineups endpoint ~20-60 min
+    // before kickoff, well before it appears in the embedded fixtures payload. Pull it every tick for
+    // imminent scheduled games so the formation shows up promptly (a few calls at most).
+    const preLineup = [...updated.values()].filter((m) => {
+      if (!m.apiId || m.status !== "SCHEDULED" || (m.lineups && m.lineups.length > 0)) return false;
+      const toKo = Date.parse(m.kickoff) - Date.now();
+      return toKo < 75 * 60 * 1000 && toKo > -3 * 60 * 60 * 1000;
+    }).slice(0, 10);
+    for (const m of preLineup) {
+      try {
+        const ls = await apiGet<ApiLineup>("fixtures/lineups", { fixture: m.apiId! });
+        const mapped = mapLineups(ls, st);
+        if (mapped.length > 0 && mapped.some((l) => l.startXI.length > 0)) { m.lineups = mapped; updated.set(m.id, m); }
+      } catch (_) { /* non-fatal — lineups simply not out yet */ }
     }
 
     // capture/refresh venue weather (live now; finished games backfilled at kickoff time, then frozen)
