@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { Puzzle, Info, X, Share2, Search } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { Avatar } from "../components/visuals";
@@ -63,10 +64,11 @@ export default function Daily() {
     return out;
   }, [matches]);
 
-  // Answer pool: a Champions-League-pedigree player (the fame gate) with a known current club + age.
+  // Answer pool: a Champions-League-pedigree player (the fame gate) with every field populated —
+  // current club, age, and a World Cup rating (so the rating clue is always meaningful).
   const pool = useMemo(
-    () => roster.players.filter((p) => p.ucl && p.club?.name && p.age != null),
-    [roster.players],
+    () => roster.players.filter((p) => p.ucl && p.club?.name && p.age != null && ratingByPlayer.has(p.id)),
+    [roster.players, ratingByPlayer],
   );
   // Guesses: any actual World Cup squad member (age set by the squad endpoint).
   const guessPool = useMemo(() => roster.players.filter((p) => p.age != null), [roster.players]);
@@ -110,7 +112,7 @@ export default function Daily() {
     // WC rating (green within 0.5, yellow within 2)
     const rg = rating(guess.id), rt = target && rating(t.id);
     const ratingCell: Cell = {
-      state: rg == null || rt == null ? "n" : Math.abs(rg - rt) <= 0.5 ? "g" : Math.abs(rg - rt) <= 2 ? "y" : "r",
+      state: rg == null || rt == null ? "n" : Math.abs(rg - rt) <= 0.1 ? "g" : Math.abs(rg - rt) <= 0.3 ? "y" : "r",
       node: <span className="text-[11px] font-bold tabular-nums">{rg != null ? rg.toFixed(1) : "–"}</span>,
     };
     return [nat, num, club, age, ratingCell];
@@ -258,7 +260,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
       <span className="text-amber-400">🟨 {yellow}</span>
     </li>
   );
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm animate-fade-in sm:items-center" onClick={onClose}>
       <div className="card max-h-[88vh] w-full max-w-sm animate-slide-up overflow-y-auto rounded-b-none rounded-t-4xl border-white/10 p-5 sm:rounded-4xl" onClick={(e) => e.stopPropagation()}>
         <div className="mb-3 flex items-center justify-between">
@@ -266,20 +268,22 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <button onClick={onClose} className="grid h-7 w-7 place-items-center rounded-full bg-white/5 text-pitch-300 hover:bg-white/10 hover:text-white"><X size={16} /></button>
         </div>
         <p className="text-sm text-pitch-300">
-          Guess the mystery player — a star from a major league — in up to <b className="text-white">8</b> tries. You can guess
-          <b className="text-white"> any player at this World Cup</b>; each pick locks in and shows how its fields compare:
+          Guess the mystery player — someone who's played in the <b className="text-white">Champions League (2022–26)</b> — in up to
+          <b className="text-white"> 8</b> tries. You can guess <b className="text-white">any player at this World Cup</b>; each pick locks
+          in and shows how its fields compare:
         </p>
         <ul className="mt-3 space-y-2 text-[13px] text-pitch-300">
           <Row label="Nation" green="same nation" yellow="same confederation" />
           <Row label="No." green="same shirt number" yellow="same position" />
           <Row label="Club" green="same club" yellow="same league" />
           <Row label="Age" green="exact" yellow="within 3 years" />
-          <Row label="Rating" green="within 0.5" yellow="within 2" />
+          <Row label="Rating" green="within 0.1" yellow="within 0.3" />
         </ul>
         <p className="mt-3 text-xs text-pitch-500">
           🟥 = no match · ⬛ = unknown (e.g. a player with no rating yet). A fresh player appears every day at midnight UK time.
         </p>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
