@@ -635,10 +635,38 @@ async function enrichUcl(meta: { uclSeasonIdx?: number; uclPage?: number }): Pro
   return { season, page: meta.uclPage ?? 1, matched, pages, seasonDone, done };
 }
 
+// Fill domestic club + league for World Cup squad members still missing one (e.g. players in leagues
+// outside the answer pool) so every valid guess compares meaningfully. Per-player; naturally
+// resumable (each call takes the next club==null squad members).
+async function enrichClubsBulk(limit: number): Promise<{ done: number; remaining: number }> {
+  const players = await selectAll("players", "id,api_id,club,age");
+  const pending = players.filter((p) => p.api_id && p.club == null && p.age != null);
+  let done = 0;
+  for (const p of pending) {
+    if (done >= limit) break;
+    try {
+      let club: { name: string; logo: string | null; league: string | null } | Record<string, never> = {};
+      for (const season of CLUB_SEASONS) {
+        const res = await apiGet<ApiPlayerProfile>("players", { id: p.api_id as number, season });
+        const c = pickClub(res[0]?.statistics ?? []);
+        if (c) { club = { name: c.name, logo: c.logo, league: c.league }; break; }
+      }
+      await supa.from("players").update({ club }).eq("id", p.id as string);
+      done++;
+    } catch (_) { /* non-fatal */ }
+  }
+  return { done, remaining: pending.length - done };
+}
+
 // ---------------------------------------------------------------------------
 Deno.serve(async (req) => {
   try {
     const mode = new URL(req.url).searchParams.get("mode");
+    if (mode === "clubs") {
+      const n = Number(new URL(req.url).searchParams.get("n") ?? "25");
+      const r = await enrichClubsBulk(n);
+      return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
     if (mode === "roster") {
       const force = new URL(req.url).searchParams.get("force") === "1";
       const r = await buildRoster(force);
