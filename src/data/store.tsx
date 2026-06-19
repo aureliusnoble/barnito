@@ -44,6 +44,7 @@ const rowToPlayer = (r: Row): Player => ({
   position: (r.position as Position) ?? "FWD", goalMultiplier: (r.goal_multiplier as GoalMultiplier) ?? 8,
   photo: (r.photo as string) ?? null, number: (r.number as number) ?? null,
   age: (r.age as number) ?? null, ucl: (r.ucl as boolean) ?? false,
+  wcBest: (r.wc_best as number) ?? 8,
   club: (r.club as Player["club"]) ?? null,
 });
 const rowToMatch = (r: Row): Match => ({

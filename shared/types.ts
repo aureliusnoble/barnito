@@ -49,6 +49,7 @@ export interface Player {
   number?: number | null;
   age?: number | null;
   ucl?: boolean; // has appeared in a recent Champions League — the daily game's answer gate
+  wcBest?: number; // career-best World Cup finish: 1 Winner … 7 Group Stage, 8 Debut/none
 
   // Domestic club the player normally plays for. Backfilled lazily from API-Football for picked /
   // goalscoring players. null = not looked up yet; {} (no name) = looked up, none found.

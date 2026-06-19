@@ -52,7 +52,7 @@ async function selectAll(table: string, columns = "*"): Promise<Record<string, u
 // ---------------------------------------------------------------------------
 async function getMeta() {
   const { data } = await supa.from("documents").select("data").eq("key", "_meta").maybeSingle();
-  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclSeasonIdx?: number; uclPage?: number };
+  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclSeasonIdx?: number; uclPage?: number; wcSeasonIdx?: number; wcPage?: number };
 }
 async function setDoc(key: string, data: unknown) {
   await supa.from("documents").upsert({ key, data, updated_at: new Date().toISOString() });
@@ -659,6 +659,51 @@ async function enrichClubsBulk(limit: number): Promise<{ done: number; remaining
 }
 
 // ---------------------------------------------------------------------------
+// Career-best World Cup finish per player (1=Winner … 7=Group Stage, 8=Debut/none). Top 4 per past
+// edition are fixed historical facts; QF/R16/Group are derived from round participation in that
+// edition's fixtures (avoids needing penalty results). Resumable by season + page.
+const WC_PAST_SEASONS = [2022, 2018, 2014, 2010, 2006];
+const WC_TOP4: Record<number, Record<string, number>> = {
+  2022: { Argentina: 1, France: 2, Croatia: 3, Morocco: 4 },
+  2018: { France: 1, Croatia: 2, Belgium: 3, England: 4 },
+  2014: { Germany: 1, Argentina: 2, Netherlands: 3, Brazil: 4 },
+  2010: { Spain: 1, Netherlands: 2, Germany: 3, Uruguay: 4 },
+  2006: { Italy: 1, France: 2, Germany: 3, Portugal: 4 },
+};
+async function enrichWcHistory(meta: { wcSeasonIdx?: number; wcPage?: number }): Promise<{ season: number; page: number; matched: number; pages: number; seasonDone: boolean; done: boolean }> {
+  const si = meta.wcSeasonIdx ?? 0;
+  if (si >= WC_PAST_SEASONS.length) { meta.wcSeasonIdx = 0; meta.wcPage = 1; return { season: 0, page: 1, matched: 0, pages: 0, seasonDone: true, done: true }; }
+  const season = WC_PAST_SEASONS[si];
+  const fixtures = await apiGet<ApiFixture>("fixtures", { league: 1, season });
+  const qf = new Set<number>(), r16 = new Set<number>();
+  for (const f of fixtures) {
+    const r = f.league.round;
+    if (/quarter/i.test(r)) { qf.add(f.teams.home.id); qf.add(f.teams.away.id); }
+    else if (/round of 16/i.test(r)) { r16.add(f.teams.home.id); r16.add(f.teams.away.id); }
+  }
+  const top4 = WC_TOP4[season] ?? {};
+  const players = await selectAll("players", "id,api_id");
+  const byApi = new Map<number, string>();
+  for (const p of players) if (p.api_id) byApi.set(p.api_id as number, p.id as string);
+  let page = meta.wcPage ?? 1, matched = 0, pages = 0, seasonDone = false;
+  for (; pages < 25; pages++, page++) {
+    const res = await apiGet<{ player: { id: number }; statistics: { team: { id: number; name: string } }[] }>("players", { league: 1, season, page });
+    for (const e of res) {
+      const ourId = byApi.get(e.player.id);
+      const team = e.statistics?.[0]?.team;
+      if (!ourId || !team) continue;
+      const finish = top4[team.name] ?? (qf.has(team.id) ? 5 : r16.has(team.id) ? 6 : 7);
+      await supa.from("players").update({ wc_best: finish }).eq("id", ourId).gt("wc_best", finish); // keep best (lowest)
+      matched++;
+    }
+    if (res.length < 20) { seasonDone = true; break; }
+  }
+  if (seasonDone) { meta.wcSeasonIdx = si + 1; meta.wcPage = 1; } else meta.wcPage = page;
+  const done = seasonDone && si + 1 >= WC_PAST_SEASONS.length;
+  return { season, page: meta.wcPage ?? 1, matched, pages, seasonDone, done };
+}
+
+// ---------------------------------------------------------------------------
 Deno.serve(async (req) => {
   try {
     const mode = new URL(req.url).searchParams.get("mode");
@@ -687,6 +732,12 @@ Deno.serve(async (req) => {
     if (mode === "ucl") {
       const meta = await getMeta();
       const r = await enrichUcl(meta);
+      await setDoc("_meta", meta);
+      return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
+    if (mode === "wchistory") {
+      const meta = await getMeta();
+      const r = await enrichWcHistory(meta);
       await setDoc("_meta", meta);
       return Response.json({ ok: true, mode, ...r, requests: requestCount() });
     }

@@ -27,7 +27,9 @@ const CELL_BG: Record<Cell["state"], string> = {
   g: "bg-emerald-600 text-white", y: "bg-amber-500 text-pitch-950", r: "bg-pitch-700 text-pitch-300", n: "bg-pitch-800 text-pitch-500",
 };
 const CELL_EMOJI: Record<Cell["state"], string> = { g: "🟩", y: "🟨", r: "🟥", n: "⬛" };
-const COL_EMOJI = "🌍👕🛡️🎂⭐"; // Nation · Number · Club · Age · Rating — column key for the share card
+const COL_EMOJI = "🌍👕🛡️🎂⭐🏆"; // Nation · Number · Club · Age · Rating · WC finish — share card key
+// Career-best World Cup finish (1 best … 8 debut)
+const WC_LABEL: Record<number, string> = { 1: "W", 2: "RU", 3: "3rd", 4: "4th", 5: "QF", 6: "R16", 7: "GS", 8: "Deb" };
 
 // Numeric tile (age / rating) with an optional chevron pointing toward the answer (↑ = answer higher).
 function numNode(value: ReactNode, dir: number): ReactNode {
@@ -125,7 +127,11 @@ export default function Daily() {
     const ratingState: Cell["state"] = rg == null || rt == null ? "n" : Math.abs(rg - rt) <= 0.2 ? "g" : Math.abs(rg - rt) <= 1 ? "y" : "r";
     const ratingDir = (ratingState === "y" || ratingState === "r") && rg != null && rt != null ? (rt > rg ? 1 : -1) : 0;
     const ratingCell: Cell = { state: ratingState, node: numNode(rg != null ? rg.toFixed(1) : "–", ratingDir) };
-    return [nat, num, club, age, ratingCell];
+    // Furthest ever at a World Cup (green exact, yellow within one rank) — chevron ↑ = answer went further
+    const gw = guess.wcBest ?? 8, tw = t.wcBest ?? 8;
+    const wcState: Cell["state"] = gw === tw ? "g" : Math.abs(gw - tw) <= 1 ? "y" : "r";
+    const wc: Cell = { state: wcState, node: numNode(WC_LABEL[gw], wcState === "g" ? 0 : tw < gw ? 1 : -1) };
+    return [nat, num, club, age, ratingCell, wc];
   }
 
   const suggestions = useMemo(() => {
@@ -172,13 +178,14 @@ export default function Daily() {
           </p>
 
           {/* column headers */}
-          <div className="grid grid-cols-[1fr_repeat(5,2.1rem)] items-center gap-1 px-1 text-[9px] font-semibold uppercase tracking-wide text-pitch-500 sm:grid-cols-[1fr_repeat(5,2.4rem)]">
+          <div className="grid grid-cols-[1fr_repeat(6,1.85rem)] items-center gap-1 px-1 text-[9px] font-semibold uppercase tracking-wide text-pitch-500 sm:grid-cols-[1fr_repeat(6,2.2rem)]">
             <span>Player</span>
             <span className="text-center">Nat</span>
             <span className="text-center">No.</span>
             <span className="text-center">Club</span>
             <span className="text-center">Age</span>
             <span className="text-center">Rtg</span>
+            <span className="text-center">WC</span>
           </div>
 
           {/* guesses */}
@@ -189,7 +196,7 @@ export default function Daily() {
               const cells = compare(p);
               const hit = p.id === target.id;
               return (
-                <div key={id} className={`grid grid-cols-[1fr_repeat(5,2.1rem)] items-center gap-1 rounded-xl p-1 sm:grid-cols-[1fr_repeat(5,2.4rem)] ${hit ? "ring-1 ring-emerald-500/40" : ""}`}>
+                <div key={id} className={`grid grid-cols-[1fr_repeat(6,1.85rem)] items-center gap-1 rounded-xl p-1 sm:grid-cols-[1fr_repeat(6,2.2rem)] ${hit ? "ring-1 ring-emerald-500/40" : ""}`}>
                   <span className="flex min-w-0 items-center gap-1.5 pl-0.5">
                     <Avatar photo={p.photo} name={p.name} position={p.position} size={24} />
                     <span className="truncate text-xs font-semibold text-pitch-100">{p.name}</span>
@@ -287,10 +294,13 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <Row label="Club" green="same club" yellow="same league" />
           <Row label="Age" green="exact" yellow="within 3 years" />
           <Row label="Rating" green="within 0.2" yellow="within 1" />
+          <Row label="WC run" green="same finish" yellow="within one round" />
         </ul>
         <p className="mt-3 text-xs text-pitch-500">
           <b className="text-pitch-300">Rating</b> is a player's average match rating so far at this World Cup. 🟥 = no match · ⬛ = unknown
-          (e.g. a player who hasn't played yet). ↑/↓ on Age & Rating point toward the answer. A fresh player appears every day at midnight UK time.
+          (e.g. a player who hasn't played yet). <b className="text-pitch-300">WC run</b> is the player's furthest-ever World Cup finish
+          (W · RU · 3rd · 4th · QF · R16 · GS, or Deb if it's their first). ↑/↓ on Age, Rating & WC point toward the answer. A fresh
+          player appears every day at midnight UK time.
         </p>
       </div>
     </div>,
