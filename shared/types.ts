@@ -47,6 +47,9 @@ export interface Player {
   goalMultiplier: GoalMultiplier;
   photo?: string | null;
   number?: number | null;
+  age?: number | null;
+  ucl?: boolean; // has appeared in a recent Champions League — the daily game's answer gate
+
   // Domestic club the player normally plays for. Backfilled lazily from API-Football for picked /
   // goalscoring players. null = not looked up yet; {} (no name) = looked up, none found.
   club?: { name: string | null; logo: string | null; league?: string | null } | null;

@@ -52,7 +52,7 @@ async function selectAll(table: string, columns = "*"): Promise<Record<string, u
 // ---------------------------------------------------------------------------
 async function getMeta() {
   const { data } = await supa.from("documents").select("data").eq("key", "_meta").maybeSingle();
-  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number };
+  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclCursor?: number };
 }
 async function setDoc(key: string, data: unknown) {
   await supa.from("documents").upsert({ key, data, updated_at: new Date().toISOString() });
@@ -608,6 +608,25 @@ async function enrichLeagues(meta: { leagueCursor?: number }): Promise<{ league:
   return { league: lid, matched, seen: entries.length, index: li, done: next >= TOP_LEAGUE_IDS.length };
 }
 
+// Flag WC players who appeared in a recent Champions League (league 2) — the daily game's answer
+// "fame" gate. The extra 2022 season catches stars (Messi/Ronaldo) now in MLS/Saudi. One season/call.
+const UCL_LEAGUE = 2;
+const UCL_SEASONS = [2025, 2024, 2023, 2022];
+async function enrichUcl(meta: { uclCursor?: number }): Promise<{ season: number; matched: number; seen: number; index: number; done: boolean }> {
+  const players = await selectAll("players", "id,api_id");
+  const byApi = new Map<number, string>();
+  for (const p of players) if (p.api_id) byApi.set(p.api_id as number, p.id as string);
+  const i = (meta.uclCursor ?? 0) % UCL_SEASONS.length;
+  const season = UCL_SEASONS[i];
+  const entries = await apiGetAllPages<{ player: { id: number } }>("players", { league: UCL_LEAGUE, season });
+  const ids: string[] = [];
+  for (const e of entries) { const ourId = byApi.get(e.player.id); if (ourId) ids.push(ourId); }
+  for (let j = 0; j < ids.length; j += 200) await supa.from("players").update({ ucl: true }).in("id", ids.slice(j, j + 200));
+  const next = i + 1;
+  meta.uclCursor = next >= UCL_SEASONS.length ? 0 : next;
+  return { season, matched: ids.length, seen: entries.length, index: i, done: next >= UCL_SEASONS.length };
+}
+
 // ---------------------------------------------------------------------------
 Deno.serve(async (req) => {
   try {
@@ -626,6 +645,12 @@ Deno.serve(async (req) => {
     if (mode === "leagues") {
       const meta = await getMeta();
       const r = await enrichLeagues(meta);
+      await setDoc("_meta", meta);
+      return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
+    if (mode === "ucl") {
+      const meta = await getMeta();
+      const r = await enrichUcl(meta);
       await setDoc("_meta", meta);
       return Response.json({ ok: true, mode, ...r, requests: requestCount() });
     }

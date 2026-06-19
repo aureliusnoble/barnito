@@ -7,6 +7,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Groups from "./pages/Groups";
 import Scorers from "./pages/Scorers";
 import Spicy from "./pages/Spicy";
+import Daily from "./pages/Daily";
 
 export default function App() {
   const { loading, error } = useDataState();
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/groups" element={<Groups />} />
         <Route path="/scorers" element={<Scorers />} />
         <Route path="/spicy" element={<Spicy />} />
+        <Route path="/daily" element={<Daily />} />
         <Route path="*" element={<Today />} />
       </Routes>
     </Layout>

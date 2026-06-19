@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Radio, CalendarDays, Trophy, Table2, Goal, Flame } from "lucide-react";
+import { Radio, CalendarDays, Trophy, Table2, Goal, Flame, Puzzle } from "lucide-react";
 import AirhornButton from "./AirhornButton";
 import InstallBanner from "./InstallBanner";
 import { MatchModalProvider } from "./MatchModal";
@@ -13,6 +13,7 @@ const NAV = [
   { to: "/groups", icon: Table2, label: "Groups" },
   { to: "/scorers", icon: Goal, label: "Scorers" },
   { to: "/spicy", icon: Flame, label: "Spicy" },
+  { to: "/daily", icon: Puzzle, label: "Daily" },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -71,7 +72,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-white/[0.06] bg-pitch-950/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl sm:hidden">
-        <div className="mx-auto grid max-w-3xl grid-cols-6">
+        <div className="mx-auto grid max-w-3xl grid-cols-7">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
