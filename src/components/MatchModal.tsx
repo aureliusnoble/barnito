@@ -832,6 +832,43 @@ function cardsThrough(allMatches: Match[], upto: Match): Map<string, { yellow: n
   return out;
 }
 
+// Disciplinary status a player carries INTO `target`, with anything that auto-clears beforehand
+// removed: a one-match ban (straight red, two yellows in a match, or a 2nd yellow across matches) is
+// served by the team's next fixture, and accumulated single yellows are wiped after the quarter-finals.
+function activeCards(allMatches: Match[], target: Match): Map<string, { booking: boolean; suspended: boolean }> {
+  const prior = allMatches.filter((m) => m.kickoff < target.kickoff).sort((a, b) => a.kickoff.localeCompare(b.kickoff));
+  const postQf = target.phase === "sf" || target.phase === "final";
+  const out = new Map<string, { booking: boolean; suspended: boolean }>();
+  for (const teamId of [target.homeTeamId, target.awayTeamId]) {
+    const seq = prior.filter((m) => m.homeTeamId === teamId || m.awayTeamId === teamId);
+    const py = new Map<string, number>();  // active single yellows
+    const ban = new Map<string, number>(); // unserved ban matches
+    for (const m of seq) {
+      for (const [pid, b] of ban) if (b > 0) ban.set(pid, b - 1); // this fixture serves a pending ban
+      const yellows = new Map<string, number>();
+      for (const e of m.events ?? []) {
+        if (e.type !== "CARD" || !e.playerId) continue;
+        if (/red/i.test(e.detail)) ban.set(e.playerId, (ban.get(e.playerId) ?? 0) + 1);
+        else yellows.set(e.playerId, (yellows.get(e.playerId) ?? 0) + 1);
+      }
+      for (const [pid, n] of yellows) {
+        if (n >= 2) ban.set(pid, (ban.get(pid) ?? 0) + 1); // two yellows in one match ⇒ sent off
+        else {
+          const t = (py.get(pid) ?? 0) + 1;
+          if (t >= 2) { ban.set(pid, (ban.get(pid) ?? 0) + 1); py.set(pid, 0); } // 2nd yellow across matches ⇒ ban; tally resets
+          else py.set(pid, t);
+        }
+      }
+    }
+    for (const pid of new Set([...py.keys(), ...ban.keys()])) {
+      const suspended = (ban.get(pid) ?? 0) > 0;
+      const booking = !postQf && (py.get(pid) ?? 0) > 0;
+      if (suspended || booking) out.set(pid, { booking, suspended });
+    }
+  }
+  return out;
+}
+
 /** Reduce a cumulative card tally to the single marker shown on a pitch token. */
 function cardMarker(cards: Map<string, { yellow: number; red: number }>) {
   return (pid: string | null): "yellow" | "red" | undefined => {
@@ -891,7 +928,8 @@ function SubsList({ l, side }: { l: Lineup; side: Side }) {
 const POS_FULL: Record<string, string> = { GK: "Goalkeepers", DEF: "Defenders", MID: "Midfielders", FWD: "Forwards" };
 const POS_ORDER: Record<string, number> = { GK: 0, DEF: 1, MID: 2, FWD: 3 };
 function SquadPreview({ match }: { match: Match }) {
-  const { roster, teamById } = useBarnito();
+  const { roster, teamById, matches } = useBarnito();
+  const cards = activeCards(matches.matches, match);
   const squad = (teamId: string) =>
     roster.players
       .filter((p) => p.teamId === teamId && p.age != null) // age is set only for named squad members
@@ -922,12 +960,17 @@ function SquadPreview({ match }: { match: Match }) {
                   <div key={pos}>
                     <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-wide text-pitch-500">{POS_FULL[pos]}</div>
                     <ul className="space-y-0.5">
-                      {ps.map((p) => (
-                        <li key={p.id} className="flex items-center gap-1.5 text-[12px] text-pitch-200">
-                          <span className="w-5 shrink-0 text-right font-mono text-[10px] text-pitch-500">{p.number ?? ""}</span>
-                          <span className="truncate">{p.name}</span>
-                        </li>
-                      ))}
+                      {ps.map((p) => {
+                        const c = cards.get(p.id);
+                        return (
+                          <li key={p.id} className="flex items-center gap-1.5 text-[12px] text-pitch-200">
+                            <span className="w-5 shrink-0 text-right font-mono text-[10px] text-pitch-500">{p.number ?? ""}</span>
+                            <span className={`truncate ${c?.suspended ? "text-pitch-500 line-through" : ""}`}>{p.name}</span>
+                            {c && <CardFlag yellow={c.booking} red={c.suspended} size={10} />}
+                            {c?.suspended && <span className="text-[9px] font-semibold uppercase text-red-400">out</span>}
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 );
