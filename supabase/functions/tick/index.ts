@@ -52,7 +52,7 @@ async function selectAll(table: string, columns = "*"): Promise<Record<string, u
 // ---------------------------------------------------------------------------
 async function getMeta() {
   const { data } = await supa.from("documents").select("data").eq("key", "_meta").maybeSingle();
-  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string };
+  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number };
 }
 async function setDoc(key: string, data: unknown) {
   await supa.from("documents").upsert({ key, data, updated_at: new Date().toISOString() });
@@ -552,12 +552,81 @@ async function backfillClubs(st: State, priority: Set<string>, limit = 10) {
 }
 
 // ---------------------------------------------------------------------------
+// One-off enrichment for the daily player game (Footle): shirt number + age for everyone, and
+// domestic club + league for players in recognizable leagues (these define the puzzle answer pool).
+
+// National-team shirt number + age from the squads endpoint (1 call/team). Resumable in chunks.
+async function enrichSquads(meta: { squadCursor?: number }): Promise<{ from: number; to: number; total: number; updated: number }> {
+  const teams = (await selectAll("teams", "id,api_id")).filter((t) => t.api_id) as unknown as { id: string; api_id: number }[];
+  const total = teams.length;
+  const start = (meta.squadCursor ?? 0) % (total || 1);
+  const end = Math.min(start + 12, total);
+  let updated = 0;
+  for (let i = start; i < end; i++) {
+    const sq = await apiGet<{ players: { id: number; number: number | null; age: number | null }[] }>("players/squads", { team: teams[i].api_id });
+    for (const p of sq[0]?.players ?? []) {
+      const patch: Record<string, unknown> = {};
+      if (p.number != null) patch.number = p.number;
+      if (p.age != null) patch.age = p.age;
+      if (Object.keys(patch).length > 0) { await supa.from("players").update(patch).eq("api_id", p.id); updated++; }
+    }
+  }
+  meta.squadCursor = end >= total ? 0 : end;
+  return { from: start, to: end, total, updated };
+}
+
+// Recognizable club leagues (API-Football league ids) → the daily game's answer pool.
+const TOP_LEAGUE_IDS = [
+  39, 140, 135, 78, 61, // Big Five: Premier League, La Liga, Serie A, Bundesliga, Ligue 1
+  88, 94, 307, 253, 40, // Eredivisie, Primeira Liga, Saudi Pro League, MLS, Championship
+];
+interface ApiLeaguePlayer {
+  player: { id: number };
+  statistics: { team: { id: number; name: string; logo: string | null }; league: { name: string | null; country: string | null } }[];
+}
+// Club + league for one recognizable league's players, matched to our World Cup players. Resumable
+// one league per invocation via meta.leagueCursor.
+async function enrichLeagues(meta: { leagueCursor?: number }): Promise<{ league: number; matched: number; seen: number; index: number; done: boolean }> {
+  const players = await selectAll("players", "id,api_id");
+  const byApi = new Map<number, string>();
+  for (const p of players) if (p.api_id) byApi.set(p.api_id as number, p.id as string);
+  const li = (meta.leagueCursor ?? 0) % TOP_LEAGUE_IDS.length;
+  const lid = TOP_LEAGUE_IDS[li];
+  const entries = await apiGetAllPages<ApiLeaguePlayer>("players", { league: lid, season: 2025 });
+  let matched = 0;
+  for (const e of entries) {
+    const ourId = byApi.get(e.player.id);
+    if (!ourId) continue;
+    const s0 = e.statistics?.[0];
+    if (!s0?.team?.name) continue;
+    const club = { name: s0.team.name, logo: s0.team.logo ?? null, league: s0.league?.name ?? null };
+    await supa.from("players").update({ club }).eq("id", ourId);
+    matched++;
+  }
+  const next = li + 1;
+  meta.leagueCursor = next >= TOP_LEAGUE_IDS.length ? 0 : next;
+  return { league: lid, matched, seen: entries.length, index: li, done: next >= TOP_LEAGUE_IDS.length };
+}
+
+// ---------------------------------------------------------------------------
 Deno.serve(async (req) => {
   try {
     const mode = new URL(req.url).searchParams.get("mode");
     if (mode === "roster") {
       const force = new URL(req.url).searchParams.get("force") === "1";
       const r = await buildRoster(force);
+      return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
+    if (mode === "squads") {
+      const meta = await getMeta();
+      const r = await enrichSquads(meta);
+      await setDoc("_meta", meta);
+      return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
+    if (mode === "leagues") {
+      const meta = await getMeta();
+      const r = await enrichLeagues(meta);
+      await setDoc("_meta", meta);
       return Response.json({ ok: true, mode, ...r, requests: requestCount() });
     }
 
