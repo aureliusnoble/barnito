@@ -116,8 +116,8 @@ export default function Daily() {
       state: sameClub ? "g" : sameLeague ? "y" : "r",
       node: guess.club?.logo ? <img src={guess.club.logo} alt="" className="h-5 w-5 object-contain" /> : <span className="text-[9px] font-bold">{guess.club?.name?.slice(0, 3) ?? "–"}</span>,
     };
-    // Age (green exact, yellow within 2) — chevron points toward the answer
-    const ageState: Cell["state"] = guess.age == null || t.age == null ? "n" : guess.age === t.age ? "g" : Math.abs(guess.age - t.age) <= 2 ? "y" : "r";
+    // Age (green exact, yellow within 3) — chevron points toward the answer
+    const ageState: Cell["state"] = guess.age == null || t.age == null ? "n" : guess.age === t.age ? "g" : Math.abs(guess.age - t.age) <= 3 ? "y" : "r";
     const ageDir = ageState === "y" || ageState === "r" ? (t.age! > guess.age! ? 1 : -1) : 0;
     const age: Cell = { state: ageState, node: numNode(guess.age ?? "–", ageDir) };
     // WC rating (green within 0.2, yellow within 1) — chevron points toward the answer
@@ -285,7 +285,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <Row label="Nation" green="same nation" yellow="same confederation" />
           <Row label="No." green="same shirt number" yellow="same position" />
           <Row label="Club" green="same club" yellow="same league" />
-          <Row label="Age" green="exact" yellow="within 2 years" />
+          <Row label="Age" green="exact" yellow="within 3 years" />
           <Row label="Rating" green="within 0.2" yellow="within 1" />
         </ul>
         <p className="mt-3 text-xs text-pitch-500">
