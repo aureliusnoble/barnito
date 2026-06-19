@@ -101,7 +101,8 @@ export default function Daily() {
     const sameClub = !!guess.club?.name && guess.club.name === t.club?.name;
     const sameLeague = !!guess.club?.league && guess.club.league === t.club?.league;
     const club: Cell = {
-      state: !guess.club?.name ? "n" : sameClub ? "g" : sameLeague ? "y" : "r",
+      // unknown or non-pool league can never be the answer's club/league → red (not grey)
+      state: sameClub ? "g" : sameLeague ? "y" : "r",
       node: guess.club?.logo ? <img src={guess.club.logo} alt="" className="h-5 w-5 object-contain" /> : <span className="text-[9px] font-bold">{guess.club?.name?.slice(0, 3) ?? "–"}</span>,
     };
     // Age (green exact, yellow within 3)
@@ -268,9 +269,8 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <button onClick={onClose} className="grid h-7 w-7 place-items-center rounded-full bg-white/5 text-pitch-300 hover:bg-white/10 hover:text-white"><X size={16} /></button>
         </div>
         <p className="text-sm text-pitch-300">
-          Guess the mystery player — someone who's played in the <b className="text-white">Champions League (2022–26)</b> — in up to
-          <b className="text-white"> 8</b> tries. You can guess <b className="text-white">any player at this World Cup</b>; each pick locks
-          in and shows how its fields compare:
+          Guess the mystery player in up to <b className="text-white">8</b> tries. You can guess
+          <b className="text-white"> any player at this World Cup</b>; each pick locks in and shows how its fields compare:
         </p>
         <ul className="mt-3 space-y-2 text-[13px] text-pitch-300">
           <Row label="Nation" green="same nation" yellow="same confederation" />
