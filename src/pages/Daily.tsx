@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Puzzle, Info, X, Share2, Search } from "lucide-react";
+import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { Avatar } from "../components/visuals";
 import { Crest } from "../components/bits";
@@ -28,6 +28,16 @@ const CELL_BG: Record<Cell["state"], string> = {
 };
 const CELL_EMOJI: Record<Cell["state"], string> = { g: "🟩", y: "🟨", r: "🟥", n: "⬛" };
 const COL_EMOJI = "🌍👕🛡️🎂⭐"; // Nation · Number · Club · Age · Rating — column key for the share card
+
+// Numeric tile (age / rating) with an optional chevron pointing toward the answer (↑ = answer higher).
+function numNode(value: ReactNode, dir: number): ReactNode {
+  return (
+    <span className="flex flex-col items-center justify-center leading-none">
+      <span className="text-[11px] font-bold tabular-nums">{value}</span>
+      {dir > 0 ? <ChevronUp size={9} strokeWidth={3} /> : dir < 0 ? <ChevronDown size={9} strokeWidth={3} /> : null}
+    </span>
+  );
+}
 const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
 function ukToday(): string {
@@ -106,17 +116,15 @@ export default function Daily() {
       state: sameClub ? "g" : sameLeague ? "y" : "r",
       node: guess.club?.logo ? <img src={guess.club.logo} alt="" className="h-5 w-5 object-contain" /> : <span className="text-[9px] font-bold">{guess.club?.name?.slice(0, 3) ?? "–"}</span>,
     };
-    // Age (green exact, yellow within 3)
-    const age: Cell = {
-      state: guess.age == null || t.age == null ? "n" : guess.age === t.age ? "g" : Math.abs(guess.age - t.age) <= 3 ? "y" : "r",
-      node: <span className="text-[11px] font-bold tabular-nums">{guess.age ?? "–"}</span>,
-    };
-    // WC rating (green within 0.5, yellow within 2)
+    // Age (green exact, yellow within 2) — chevron points toward the answer
+    const ageState: Cell["state"] = guess.age == null || t.age == null ? "n" : guess.age === t.age ? "g" : Math.abs(guess.age - t.age) <= 2 ? "y" : "r";
+    const ageDir = ageState === "y" || ageState === "r" ? (t.age! > guess.age! ? 1 : -1) : 0;
+    const age: Cell = { state: ageState, node: numNode(guess.age ?? "–", ageDir) };
+    // WC rating (green within 0.2, yellow within 1) — chevron points toward the answer
     const rg = rating(guess.id), rt = target && rating(t.id);
-    const ratingCell: Cell = {
-      state: rg == null || rt == null ? "n" : Math.abs(rg - rt) <= 0.2 ? "g" : Math.abs(rg - rt) <= 1 ? "y" : "r",
-      node: <span className="text-[11px] font-bold tabular-nums">{rg != null ? rg.toFixed(1) : "–"}</span>,
-    };
+    const ratingState: Cell["state"] = rg == null || rt == null ? "n" : Math.abs(rg - rt) <= 0.2 ? "g" : Math.abs(rg - rt) <= 1 ? "y" : "r";
+    const ratingDir = (ratingState === "y" || ratingState === "r") && rg != null && rt != null ? (rt > rg ? 1 : -1) : 0;
+    const ratingCell: Cell = { state: ratingState, node: numNode(rg != null ? rg.toFixed(1) : "–", ratingDir) };
     return [nat, num, club, age, ratingCell];
   }
 
@@ -277,12 +285,12 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <Row label="Nation" green="same nation" yellow="same confederation" />
           <Row label="No." green="same shirt number" yellow="same position" />
           <Row label="Club" green="same club" yellow="same league" />
-          <Row label="Age" green="exact" yellow="within 3 years" />
+          <Row label="Age" green="exact" yellow="within 2 years" />
           <Row label="Rating" green="within 0.2" yellow="within 1" />
         </ul>
         <p className="mt-3 text-xs text-pitch-500">
           <b className="text-pitch-300">Rating</b> is a player's average match rating so far at this World Cup. 🟥 = no match · ⬛ = unknown
-          (e.g. a player who hasn't played yet). A fresh player appears every day at midnight UK time.
+          (e.g. a player who hasn't played yet). ↑/↓ on Age & Rating point toward the answer. A fresh player appears every day at midnight UK time.
         </p>
       </div>
     </div>,
