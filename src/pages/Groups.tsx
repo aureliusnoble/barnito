@@ -6,7 +6,15 @@ import { POINTS_PER_CORRECT_STANDING } from "@shared/constants";
 import type { GroupStanding } from "@shared/types";
 
 type Result = "W" | "D" | "L";
-const firstName = (n: string) => n.split(" ")[0];
+
+/** First-name pill for a user who placed this row's team correctly. Amber = provisional, green = locked. */
+function NamePill({ name, final }: { name: string; final: boolean }) {
+  return (
+    <span className={`chip px-1.5 py-0.5 text-[10px] font-semibold ${final ? "bg-accent-500/20 text-accent-300" : "bg-spice-500/15 text-spice-300"}`}>
+      {name.split(" ")[0]}
+    </span>
+  );
+}
 
 export default function Groups() {
   const { standings, scores, predictions, matches } = useBarnito();
@@ -27,23 +35,19 @@ export default function Groups() {
     return map;
   }, [matches]);
 
-  // Standings points each user currently scores per group: 25 × correctly-placed teams in the live
-  // table (provisional until the group is final, then locked). Only users with > 0 are shown.
-  const pointsByGroup = useMemo(() => {
-    const out = new Map<string, { name: string; points: number }[]>();
+  // Per group, per finishing position: which users currently have that exact team in that slot
+  // (each = +25, provisional until the group finishes). Indexed by row position.
+  const correctByGroup = useMemo(() => {
+    const out = new Map<string, string[][]>();
     for (const g of standings.groups) {
       const order = g.rows.map((r) => r.teamId);
-      const list: { name: string; points: number }[] = [];
+      const perPos: string[][] = order.map(() => []);
       for (const ps of scores.predictedStandings) {
         const pg = ps.groups.find((x) => x.group === g.group);
         if (!pg) continue;
-        let correct = 0;
-        for (let i = 0; i < pg.orderedTeamIds.length; i++) if (pg.orderedTeamIds[i] === order[i]) correct++;
-        const points = correct * POINTS_PER_CORRECT_STANDING;
-        if (points > 0) list.push({ name: ps.name, points });
+        for (let i = 0; i < order.length; i++) if (pg.orderedTeamIds[i] === order[i]) perPos[i].push(ps.name);
       }
-      list.sort((a, b) => b.points - a.points || a.name.localeCompare(b.name));
-      out.set(g.group, list);
+      out.set(g.group, perPos);
     }
     return out;
   }, [standings, scores.predictedStandings]);
@@ -78,11 +82,17 @@ export default function Groups() {
             key={g.group}
             g={g}
             formByTeam={formByTeam}
-            board={pointsByGroup.get(g.group) ?? []}
+            correct={correctByGroup.get(g.group) ?? []}
             predicted={predForWho ? predForWho.groups.find((x) => x.group === g.group) : undefined}
           />
         ))}
       </div>
+
+      <p className="px-1 text-xs text-pitch-500">
+        The <span className="text-pitch-300">+{POINTS_PER_CORRECT_STANDING}</span> column marks who has each team in its
+        correct finishing position — worth +{POINTS_PER_CORRECT_STANDING} each, provisional while a group is in progress and
+        locked once it's final.
+      </p>
     </div>
   );
 }
@@ -101,12 +111,12 @@ function FormDots({ form }: { form: Result[] }) {
 function GroupTable({
   g,
   formByTeam,
-  board,
+  correct,
   predicted,
 }: {
   g: GroupStanding;
   formByTeam: Map<string, Result[]>;
-  board: { name: string; points: number }[];
+  correct: string[][];
   predicted?: { orderedTeamIds: string[]; correctPositions: number; points: number; counted: boolean };
 }) {
   const { teamName } = useHelpers();
@@ -128,12 +138,14 @@ function GroupTable({
             <th className="px-1 py-1.5 text-center font-semibold">Pld</th>
             <th className="px-1 py-1.5 text-center font-semibold">GD</th>
             <th className="px-2 py-1.5 text-center font-semibold">Pts</th>
-            <th className="hidden py-1.5 pr-3 text-center font-semibold sm:table-cell">Form</th>
+            <th className="hidden py-1.5 text-center font-semibold sm:table-cell">Form</th>
+            <th className={`py-1.5 pr-3 text-right font-semibold ${g.final ? "text-accent-400" : "text-spice-400"}`}>+{POINTS_PER_CORRECT_STANDING}</th>
           </tr>
         </thead>
         <tbody>
-          {g.rows.map((r) => {
+          {g.rows.map((r, i) => {
             const qualifies = r.pos <= 2;
+            const here = correct[i] ?? [];
             return (
               <tr
                 key={r.teamId}
@@ -154,33 +166,23 @@ function GroupTable({
                   {r.gd > 0 ? `+${r.gd}` : r.gd}
                 </td>
                 <td className="px-2 py-2 text-center font-bold tabular-nums text-white">{r.points}</td>
-                <td className="hidden py-2 pr-3 sm:table-cell">
+                <td className="hidden py-2 sm:table-cell">
                   <span className="flex justify-center">
                     <FormDots form={formByTeam.get(r.teamId) ?? []} />
                   </span>
+                </td>
+                <td className="py-2 pl-2 pr-3 align-middle">
+                  <div className="ml-auto flex max-w-[150px] flex-wrap justify-end gap-1 sm:max-w-[230px]">
+                    {here.map((n) => (
+                      <NamePill key={n} name={n} final={g.final} />
+                    ))}
+                  </div>
                 </td>
               </tr>
             );
           })}
         </tbody>
       </table>
-
-      {board.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5 border-t border-white/[0.06] px-3 py-2">
-          <span className="mr-0.5 text-[10px] font-semibold uppercase tracking-wide text-pitch-500">
-            {g.final ? "Standings · locked" : "Standings · live"}
-          </span>
-          {board.map((b) => (
-            <span
-              key={b.name}
-              title={`${b.name} — ${b.points} standings points${g.final ? "" : " (provisional)"}`}
-              className={`chip gap-1 ${g.final ? "bg-accent-500/20 text-accent-300" : "bg-spice-500/15 text-spice-300"}`}
-            >
-              {firstName(b.name)} <span className="font-bold tabular-nums">+{b.points}</span>
-            </span>
-          ))}
-        </div>
-      )}
 
       {predicted && (
         <div className="border-t border-white/[0.06] bg-pitch-950/40 px-3 py-2 text-xs">
