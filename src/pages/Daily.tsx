@@ -42,14 +42,9 @@ function numNode(value: ReactNode, dir: number): ReactNode {
     </span>
   );
 }
-// WC-finish tile: full label text + chevron pointing toward the answer (↑ = answer went further).
-function wcNode(label: string, dir: number): ReactNode {
-  return (
-    <span className="flex items-center justify-center gap-px px-0.5 text-center text-[8px] font-bold leading-[1.05]">
-      <span>{label}</span>
-      {dir > 0 ? <ChevronUp size={8} strokeWidth={3} className="shrink-0" /> : dir < 0 ? <ChevronDown size={8} strokeWidth={3} className="shrink-0" /> : null}
-    </span>
-  );
+// WC-finish tile: full label text (no direction arrow).
+function wcNode(label: string): ReactNode {
+  return <span className="px-0.5 text-center text-[8px] font-bold leading-[1.05]">{label}</span>;
 }
 const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
@@ -161,7 +156,7 @@ export default function Daily() {
     // Furthest ever at a World Cup incl. the live 2026 run (green exact, yellow within one rank)
     const gw = bestWc(guess), tw = bestWc(t);
     const wcState: Cell["state"] = gw === tw ? "g" : Math.abs(gw - tw) <= 1 ? "y" : "r";
-    const wc: Cell = { state: wcState, node: wcNode(WC_LABEL[gw], wcState === "g" ? 0 : tw < gw ? 1 : -1) };
+    const wc: Cell = { state: wcState, node: wcNode(WC_LABEL[gw]) };
     return [nat, num, club, age, ratingCell, wc];
   }
 
@@ -331,7 +326,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <b className="text-pitch-300">Rating</b> is a player's average match rating so far at this World Cup. 🟥 = no match · ⬛ = unknown
           (e.g. a player who hasn't played yet). <b className="text-pitch-300">WC run</b> is the player's furthest-ever World Cup finish —
           Winner, Runner Up, Third/Fourth Place, Quarter Final, Round of 16, Group Stage, or Debut — including this tournament as it
-          unfolds. ↑/↓ on Age, Rating & WC point toward the answer. A fresh player appears every day at midnight UK time.
+          unfolds. ↑/↓ on Age & Rating point toward the answer. A fresh player appears every day at midnight UK time.
         </p>
       </div>
     </div>,
