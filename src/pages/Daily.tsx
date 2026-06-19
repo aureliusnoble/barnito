@@ -48,7 +48,7 @@ export default function Daily() {
   void matchById;
   const { teamName } = useHelpers();
   const today = ukToday();
-  const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.${today}`, []);
+  const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.v1.${today}`, []);
   const [query, setQuery] = useState("");
   const [showRules, setShowRules] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -79,7 +79,8 @@ export default function Daily() {
     for (const p of pool) { const h = seedFrom(`${today}|${p.id}`); if (h > bestH) { bestH = h; best = p; } }
     return best;
   }, [pool, today]);
-  const dayNo = Math.max(1, Math.round((Date.parse(`${today}T00:00:00Z`) - Date.parse("2026-06-10T00:00:00Z")) / 86400000));
+  // Barnito #1 = 19 Jun 2026 (launch day); increments each UK day after.
+  const dayNo = Math.max(1, Math.round((Date.parse(`${today}T00:00:00Z`) - Date.parse("2026-06-19T00:00:00Z")) / 86400000) + 1);
 
   const won = !!target && guesses.includes(target.id);
   const over = won || guesses.length >= MAX_GUESSES;
