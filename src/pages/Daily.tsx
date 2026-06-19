@@ -26,6 +26,7 @@ const CELL_BG: Record<Cell["state"], string> = {
   g: "bg-emerald-600 text-white", y: "bg-amber-500 text-pitch-950", r: "bg-pitch-700 text-pitch-300", n: "bg-pitch-800 text-pitch-500",
 };
 const CELL_EMOJI: Record<Cell["state"], string> = { g: "🟩", y: "🟨", r: "🟥", n: "⬛" };
+const COL_EMOJI = "🌍👕🛡️🎂⭐"; // Nation · Number · Club · Age · Rating — column key for the share card
 const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
 function ukToday(): string {
@@ -135,7 +136,7 @@ export default function Daily() {
   const share = () => {
     const grid = guesses.map((id) => compare(playerById.get(id)!).map((c) => CELL_EMOJI[c.state]).join("")).join("\n");
     const head = `Barnito ⚽ Daily #${dayNo} — ${won ? `${guesses.length}/${MAX_GUESSES}` : `X/${MAX_GUESSES}`}`;
-    const text = `${head}\n${grid}\nhttps://aureliusnoble.github.io/barnito/#/daily`;
+    const text = `${head}\n${COL_EMOJI}\n${grid}\nhttps://aureliusnoble.github.io/barnito/#/daily`;
     navigator.clipboard?.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1800); }).catch(() => { /* ignore */ });
   };
 
