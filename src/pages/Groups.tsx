@@ -2,9 +2,11 @@ import { useMemo, useState } from "react";
 import { Table2 } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { SectionTitle, Crest } from "../components/bits";
+import { POINTS_PER_CORRECT_STANDING } from "@shared/constants";
 import type { GroupStanding } from "@shared/types";
 
 type Result = "W" | "D" | "L";
+const firstName = (n: string) => n.split(" ")[0];
 
 export default function Groups() {
   const { standings, scores, predictions, matches } = useBarnito();
@@ -24,6 +26,27 @@ export default function Groups() {
     }
     return map;
   }, [matches]);
+
+  // Standings points each user currently scores per group: 25 × correctly-placed teams in the live
+  // table (provisional until the group is final, then locked). Only users with > 0 are shown.
+  const pointsByGroup = useMemo(() => {
+    const out = new Map<string, { name: string; points: number }[]>();
+    for (const g of standings.groups) {
+      const order = g.rows.map((r) => r.teamId);
+      const list: { name: string; points: number }[] = [];
+      for (const ps of scores.predictedStandings) {
+        const pg = ps.groups.find((x) => x.group === g.group);
+        if (!pg) continue;
+        let correct = 0;
+        for (let i = 0; i < pg.orderedTeamIds.length; i++) if (pg.orderedTeamIds[i] === order[i]) correct++;
+        const points = correct * POINTS_PER_CORRECT_STANDING;
+        if (points > 0) list.push({ name: ps.name, points });
+      }
+      list.sort((a, b) => b.points - a.points || a.name.localeCompare(b.name));
+      out.set(g.group, list);
+    }
+    return out;
+  }, [standings, scores.predictedStandings]);
 
   const predForWho = who && scores.predictedStandings.find((p) => p.participantId === who);
 
@@ -55,6 +78,7 @@ export default function Groups() {
             key={g.group}
             g={g}
             formByTeam={formByTeam}
+            board={pointsByGroup.get(g.group) ?? []}
             predicted={predForWho ? predForWho.groups.find((x) => x.group === g.group) : undefined}
           />
         ))}
@@ -77,10 +101,12 @@ function FormDots({ form }: { form: Result[] }) {
 function GroupTable({
   g,
   formByTeam,
+  board,
   predicted,
 }: {
   g: GroupStanding;
   formByTeam: Map<string, Result[]>;
+  board: { name: string; points: number }[];
   predicted?: { orderedTeamIds: string[]; correctPositions: number; points: number; counted: boolean };
 }) {
   const { teamName } = useHelpers();
@@ -138,6 +164,23 @@ function GroupTable({
           })}
         </tbody>
       </table>
+
+      {board.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-white/[0.06] px-3 py-2">
+          <span className="mr-0.5 text-[10px] font-semibold uppercase tracking-wide text-pitch-500">
+            {g.final ? "Standings · locked" : "Standings · live"}
+          </span>
+          {board.map((b) => (
+            <span
+              key={b.name}
+              title={`${b.name} — ${b.points} standings points${g.final ? "" : " (provisional)"}`}
+              className={`chip gap-1 ${g.final ? "bg-accent-500/20 text-accent-300" : "bg-spice-500/15 text-spice-300"}`}
+            >
+              {firstName(b.name)} <span className="font-bold tabular-nums">+{b.points}</span>
+            </span>
+          ))}
+        </div>
+      )}
 
       {predicted && (
         <div className="border-t border-white/[0.06] bg-pitch-950/40 px-3 py-2 text-xs">
