@@ -296,13 +296,15 @@ export default function Daily() {
 }
 
 function RulesCard({ onClose }: { onClose: () => void }) {
-  const Row = ({ label, green, yellow }: { label: string; green: string; yellow: string }) => (
-    <li className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-      <span className="w-12 shrink-0 font-semibold text-pitch-100">{label}</span>
-      <span className="text-emerald-400">🟩 {green}</span>
-      <span className="text-amber-400">🟨 {yellow}</span>
-    </li>
-  );
+  const KEY: [string, string][] = [["🟩", "exact match"], ["🟨", "close"], ["🟥", "not a match"], ["⬛", "not known yet"]];
+  const CLUES: [string, string, string][] = [
+    ["Nation", "same country", "same confederation"],
+    ["Number", "same shirt no.", "same position"],
+    ["Club", "same club", "same league"],
+    ["Age", "exact age", "within 3 years"],
+    ["Rating", "within 0.2", "within 1.0"],
+    ["WC run", "same finish", "one round off"],
+  ];
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm animate-fade-in sm:items-center" onClick={onClose}>
       <div className="card max-h-[88vh] w-full max-w-sm animate-slide-up overflow-y-auto rounded-b-none rounded-t-4xl border-white/10 p-5 sm:rounded-4xl" onClick={(e) => e.stopPropagation()}>
@@ -310,24 +312,40 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <h3 className="font-display text-lg font-bold text-white">How to play</h3>
           <button onClick={onClose} className="grid h-7 w-7 place-items-center rounded-full bg-white/5 text-pitch-300 hover:bg-white/10 hover:text-white"><X size={16} /></button>
         </div>
+
         <p className="text-sm text-pitch-300">
-          Guess the mystery player in up to <b className="text-white">10</b> tries. You can guess
-          <b className="text-white"> any player at this World Cup</b>; each pick locks in and shows how its fields compare:
+          Guess the mystery footballer in up to <b className="text-white">10</b> tries — any player at this World Cup is fair game. Each
+          pick locks in and colours every clue:
         </p>
-        <ul className="mt-3 space-y-2 text-[13px] text-pitch-300">
-          <Row label="Nation" green="same nation" yellow="same confederation" />
-          <Row label="No." green="same shirt number" yellow="same position" />
-          <Row label="Club" green="same club" yellow="same league" />
-          <Row label="Age" green="exact" yellow="within 3 years" />
-          <Row label="Rating" green="within 0.2" yellow="within 1" />
-          <Row label="WC run" green="same finish" yellow="within one round" />
+
+        {/* what the colours mean */}
+        <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-[13px] text-pitch-300">
+          {KEY.map(([sq, meaning]) => (
+            <span key={sq} className="flex items-center gap-1.5">{sq} <span>{meaning}</span></span>
+          ))}
+        </div>
+
+        {/* clue table */}
+        <div className="mt-4 overflow-hidden rounded-xl ring-1 ring-white/10">
+          <div className="grid grid-cols-[4.2rem_1fr_1fr] gap-x-2 bg-white/[0.06] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-pitch-400">
+            <span>Clue</span><span>🟩 green</span><span>🟨 yellow</span>
+          </div>
+          {CLUES.map(([f, g, y], i) => (
+            <div key={f} className={`grid grid-cols-[4.2rem_1fr_1fr] items-center gap-x-2 px-3 py-1.5 text-[12px] ${i % 2 ? "" : "bg-white/[0.02]"}`}>
+              <span className="font-semibold text-pitch-100">{f}</span>
+              <span className="text-emerald-300/90">{g}</span>
+              <span className="text-amber-300/90">{y}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* footnotes */}
+        <ul className="mt-4 space-y-1.5 text-xs text-pitch-500">
+          <li><b className="text-pitch-300">Rating</b> — average match rating at this World Cup (⬛ until they've played).</li>
+          <li><b className="text-pitch-300">WC run</b> — best-ever finish (Winner → Group Stage, or Debut), including this tournament as it unfolds.</li>
+          <li><b className="text-pitch-300">↑ / ↓</b> on Age &amp; Rating point toward the answer.</li>
+          <li>A new mystery player every day at midnight (UK).</li>
         </ul>
-        <p className="mt-3 text-xs text-pitch-500">
-          <b className="text-pitch-300">Rating</b> is a player's average match rating so far at this World Cup. 🟥 = no match · ⬛ = unknown
-          (e.g. a player who hasn't played yet). <b className="text-pitch-300">WC run</b> is the player's furthest-ever World Cup finish —
-          Winner, Runner Up, Third/Fourth Place, Quarter Final, Round of 16, Group Stage, or Debut — including this tournament as it
-          unfolds. ↑/↓ on Age & Rating point toward the answer. A fresh player appears every day at midnight UK time.
-        </p>
       </div>
     </div>,
     document.body,
