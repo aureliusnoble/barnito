@@ -51,7 +51,7 @@ function seedFrom(s: string): number {
   return h >>> 0;
 }
 
-const MAX_GUESSES = 8;
+const MAX_GUESSES = 10;
 
 export default function Daily() {
   const { roster, matchById, matches, playerById } = useBarnito();
@@ -278,7 +278,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <button onClick={onClose} className="grid h-7 w-7 place-items-center rounded-full bg-white/5 text-pitch-300 hover:bg-white/10 hover:text-white"><X size={16} /></button>
         </div>
         <p className="text-sm text-pitch-300">
-          Guess the mystery player in up to <b className="text-white">8</b> tries. You can guess
+          Guess the mystery player in up to <b className="text-white">10</b> tries. You can guess
           <b className="text-white"> any player at this World Cup</b>; each pick locks in and shows how its fields compare:
         </p>
         <ul className="mt-3 space-y-2 text-[13px] text-pitch-300">
