@@ -256,12 +256,12 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
               <H2H match={match} />
               {hasLineups ? (
                 <Lineups match={match} cards={cards} />
+              ) : match.status === "SCHEDULED" ? (
+                <SquadPreview match={match} />
               ) : (
                 <section>
                   <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
-                  <p className="card p-4 text-center text-sm text-pitch-400">
-                    {match.status === "SCHEDULED" ? "Lineup available shortly before match" : "Lineups not available for this match"}
-                  </p>
+                  <p className="card p-4 text-center text-sm text-pitch-400">Lineups not available for this match</p>
                 </section>
               )}
               <Penalties match={match} />
@@ -883,6 +883,60 @@ function SubsList({ l, side }: { l: Lineup; side: Side }) {
         ))}
       </div>
     </div>
+  );
+}
+
+// Before an official lineup is published (it lands shortly before kick-off), show each team's current
+// squad grouped by position as a stand-in.
+const POS_FULL: Record<string, string> = { GK: "Goalkeepers", DEF: "Defenders", MID: "Midfielders", FWD: "Forwards" };
+const POS_ORDER: Record<string, number> = { GK: 0, DEF: 1, MID: 2, FWD: 3 };
+function SquadPreview({ match }: { match: Match }) {
+  const { roster, teamById } = useBarnito();
+  const squad = (teamId: string) =>
+    roster.players
+      .filter((p) => p.teamId === teamId && p.age != null) // age is set only for named squad members
+      .sort((a, b) => (POS_ORDER[a.position] ?? 9) - (POS_ORDER[b.position] ?? 9) || (a.number ?? 99) - (b.number ?? 99));
+  if (squad(match.homeTeamId).length === 0 && squad(match.awayTeamId).length === 0) {
+    return (
+      <section>
+        <h3 className="mb-2 font-display font-bold text-white">Lineups</h3>
+        <p className="card p-4 text-center text-sm text-pitch-400">Lineup available shortly before match</p>
+      </section>
+    );
+  }
+  return (
+    <section>
+      <h3 className="mb-1 font-display font-bold text-white">Squad</h3>
+      <p className="mb-2 text-xs text-pitch-500">Provisional squad — the confirmed lineup appears shortly before kick-off.</p>
+      <div className="grid grid-cols-2 gap-3">
+        {[match.homeTeamId, match.awayTeamId].map((id) => {
+          const players = squad(id);
+          const t = teamById.get(id);
+          return (
+            <div key={id} className="card space-y-2 p-3">
+              <div className="flex items-center gap-1.5"><Crest teamId={id} size={16} /><span className="truncate text-sm font-semibold text-white">{t?.name ?? ""}</span></div>
+              {(["GK", "DEF", "MID", "FWD"] as const).map((pos) => {
+                const ps = players.filter((p) => p.position === pos);
+                if (ps.length === 0) return null;
+                return (
+                  <div key={pos}>
+                    <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-wide text-pitch-500">{POS_FULL[pos]}</div>
+                    <ul className="space-y-0.5">
+                      {ps.map((p) => (
+                        <li key={p.id} className="flex items-center gap-1.5 text-[12px] text-pitch-200">
+                          <span className="w-5 shrink-0 text-right font-mono text-[10px] text-pitch-500">{p.number ?? ""}</span>
+                          <span className="truncate">{p.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
