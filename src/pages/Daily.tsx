@@ -29,7 +29,9 @@ const CELL_BG: Record<Cell["state"], string> = {
 const CELL_EMOJI: Record<Cell["state"], string> = { g: "🟩", y: "🟨", r: "🟥", n: "⬛" };
 const COL_EMOJI = "🌍👕🛡️🎂⭐🏆"; // Nation · Number · Club · Age · Rating · WC finish — share card key
 // Career-best World Cup finish (1 best … 8 debut)
-const WC_LABEL: Record<number, string> = { 1: "W", 2: "RU", 3: "3rd", 4: "4th", 5: "QF", 6: "R16", 7: "GS", 8: "Deb" };
+const WC_LABEL: Record<number, string> = {
+  1: "Winner", 2: "Runner Up", 3: "Third Place", 4: "Fourth Place", 5: "Quarter Final", 6: "Round of 16", 7: "Group Stage", 8: "Debut",
+};
 
 // Numeric tile (age / rating) with an optional chevron pointing toward the answer (↑ = answer higher).
 function numNode(value: ReactNode, dir: number): ReactNode {
@@ -37,6 +39,15 @@ function numNode(value: ReactNode, dir: number): ReactNode {
     <span className="flex flex-col items-center justify-center leading-none">
       <span className="text-[11px] font-bold tabular-nums">{value}</span>
       {dir > 0 ? <ChevronUp size={9} strokeWidth={3} /> : dir < 0 ? <ChevronDown size={9} strokeWidth={3} /> : null}
+    </span>
+  );
+}
+// WC-finish tile: full label text + chevron pointing toward the answer (↑ = answer went further).
+function wcNode(label: string, dir: number): ReactNode {
+  return (
+    <span className="flex items-center justify-center gap-px px-0.5 text-center text-[8px] font-bold leading-[1.05]">
+      <span>{label}</span>
+      {dir > 0 ? <ChevronUp size={8} strokeWidth={3} className="shrink-0" /> : dir < 0 ? <ChevronDown size={8} strokeWidth={3} className="shrink-0" /> : null}
     </span>
   );
 }
@@ -56,8 +67,7 @@ function seedFrom(s: string): number {
 const MAX_GUESSES = 10;
 
 export default function Daily() {
-  const { roster, matchById, matches, playerById } = useBarnito();
-  void matchById;
+  const { roster, matches, playerById, bracket } = useBarnito();
   const { teamName } = useHelpers();
   const today = ukToday();
   const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.v1.${today}`, []);
@@ -97,6 +107,27 @@ export default function Daily() {
   const won = !!target && guesses.includes(target.id);
   const over = won || guesses.length >= MAX_GUESSES;
 
+  // Live 2026 run per team — folds the ongoing tournament into "furthest ever". Only upgrades from the
+  // knockout (R16+) so group/Round-of-32 exits don't overwrite a player's "Debut".
+  const wc2026 = useMemo(() => {
+    const m = new Map<string, number>();
+    const set = (id: string | null | undefined, r: number) => { if (id && (m.get(id) ?? 99) > r) m.set(id, r); };
+    for (const round of bracket.rounds) {
+      const nm = round.name.toLowerCase();
+      const lvl = nm.includes("round of 16") ? 6 : nm.includes("quarter") ? 5 : nm.includes("semi") ? 4
+        : nm.includes("3rd") || nm.includes("third") ? 4 : nm.includes("final") ? 2 : 0;
+      if (!lvl) continue; // skip group / Round of 32
+      for (const x of round.matches) {
+        set(x.homeTeamId, lvl); set(x.awayTeamId, lvl);
+        if ((nm.includes("3rd") || nm.includes("third")) && x.homeGoals != null && x.awayGoals != null && x.homeGoals !== x.awayGoals)
+          set(x.homeGoals > x.awayGoals ? x.homeTeamId : x.awayTeamId, 3); // 3rd-place winner
+      }
+    }
+    if (matches.championTeamId) set(matches.championTeamId, 1);
+    return m;
+  }, [bracket, matches]);
+  const bestWc = (p: Player) => Math.min(p.wcBest ?? 8, wc2026.get(p.teamId) ?? 99);
+
   const rating = (id: string) => ratingByPlayer.get(id);
   function compare(guess: Player): Cell[] {
     const t = target!;
@@ -127,10 +158,10 @@ export default function Daily() {
     const ratingState: Cell["state"] = rg == null || rt == null ? "n" : Math.abs(rg - rt) <= 0.2 ? "g" : Math.abs(rg - rt) <= 1 ? "y" : "r";
     const ratingDir = (ratingState === "y" || ratingState === "r") && rg != null && rt != null ? (rt > rg ? 1 : -1) : 0;
     const ratingCell: Cell = { state: ratingState, node: numNode(rg != null ? rg.toFixed(1) : "–", ratingDir) };
-    // Furthest ever at a World Cup (green exact, yellow within one rank) — chevron ↑ = answer went further
-    const gw = guess.wcBest ?? 8, tw = t.wcBest ?? 8;
+    // Furthest ever at a World Cup incl. the live 2026 run (green exact, yellow within one rank)
+    const gw = bestWc(guess), tw = bestWc(t);
     const wcState: Cell["state"] = gw === tw ? "g" : Math.abs(gw - tw) <= 1 ? "y" : "r";
-    const wc: Cell = { state: wcState, node: numNode(WC_LABEL[gw], wcState === "g" ? 0 : tw < gw ? 1 : -1) };
+    const wc: Cell = { state: wcState, node: wcNode(WC_LABEL[gw], wcState === "g" ? 0 : tw < gw ? 1 : -1) };
     return [nat, num, club, age, ratingCell, wc];
   }
 
@@ -178,7 +209,7 @@ export default function Daily() {
           </p>
 
           {/* column headers */}
-          <div className="grid grid-cols-[1fr_repeat(6,1.85rem)] items-center gap-1 px-1 text-[9px] font-semibold uppercase tracking-wide text-pitch-500 sm:grid-cols-[1fr_repeat(6,2.2rem)]">
+          <div className="grid grid-cols-[minmax(0,1fr)_repeat(5,1.6rem)_3.9rem] items-center gap-1 px-1 text-[9px] font-semibold uppercase tracking-wide text-pitch-500 sm:grid-cols-[minmax(0,1fr)_repeat(5,1.95rem)_4.4rem]">
             <span>Player</span>
             <span className="text-center">Nat</span>
             <span className="text-center">No.</span>
@@ -196,13 +227,13 @@ export default function Daily() {
               const cells = compare(p);
               const hit = p.id === target.id;
               return (
-                <div key={id} className={`grid grid-cols-[1fr_repeat(6,1.85rem)] items-center gap-1 rounded-xl p-1 sm:grid-cols-[1fr_repeat(6,2.2rem)] ${hit ? "ring-1 ring-emerald-500/40" : ""}`}>
+                <div key={id} className={`grid grid-cols-[minmax(0,1fr)_repeat(5,1.6rem)_3.9rem] items-center gap-1 rounded-xl p-1 sm:grid-cols-[minmax(0,1fr)_repeat(5,1.95rem)_4.4rem] ${hit ? "ring-1 ring-emerald-500/40" : ""}`}>
                   <span className="flex min-w-0 items-center gap-1.5 pl-0.5">
                     <Avatar photo={p.photo} name={p.name} position={p.position} size={24} />
                     <span className="truncate text-xs font-semibold text-pitch-100">{p.name}</span>
                   </span>
                   {cells.map((c, i) => (
-                    <span key={i} className={`grid aspect-square place-items-center rounded-md ${CELL_BG[c.state]}`}>{c.node}</span>
+                    <span key={i} className={`grid h-7 place-items-center overflow-hidden rounded-md ${CELL_BG[c.state]}`}>{c.node}</span>
                   ))}
                 </div>
               );
@@ -298,9 +329,9 @@ function RulesCard({ onClose }: { onClose: () => void }) {
         </ul>
         <p className="mt-3 text-xs text-pitch-500">
           <b className="text-pitch-300">Rating</b> is a player's average match rating so far at this World Cup. 🟥 = no match · ⬛ = unknown
-          (e.g. a player who hasn't played yet). <b className="text-pitch-300">WC run</b> is the player's furthest-ever World Cup finish
-          (W · RU · 3rd · 4th · QF · R16 · GS, or Deb if it's their first). ↑/↓ on Age, Rating & WC point toward the answer. A fresh
-          player appears every day at midnight UK time.
+          (e.g. a player who hasn't played yet). <b className="text-pitch-300">WC run</b> is the player's furthest-ever World Cup finish —
+          Winner, Runner Up, Third/Fourth Place, Quarter Final, Round of 16, Group Stage, or Debut — including this tournament as it
+          unfolds. ↑/↓ on Age, Rating & WC point toward the answer. A fresh player appears every day at midnight UK time.
         </p>
       </div>
     </div>,
