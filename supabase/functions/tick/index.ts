@@ -52,7 +52,7 @@ async function selectAll(table: string, columns = "*"): Promise<Record<string, u
 // ---------------------------------------------------------------------------
 async function getMeta() {
   const { data } = await supa.from("documents").select("data").eq("key", "_meta").maybeSingle();
-  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclCursor?: number };
+  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclSeasonIdx?: number; uclPage?: number };
 }
 async function setDoc(key: string, data: unknown) {
   await supa.from("documents").upsert({ key, data, updated_at: new Date().toISOString() });
@@ -612,19 +612,27 @@ async function enrichLeagues(meta: { leagueCursor?: number }): Promise<{ league:
 // "fame" gate. The extra 2022 season catches stars (Messi/Ronaldo) now in MLS/Saudi. One season/call.
 const UCL_LEAGUE = 2;
 const UCL_SEASONS = [2025, 2024, 2023, 2022];
-async function enrichUcl(meta: { uclCursor?: number }): Promise<{ season: number; matched: number; seen: number; index: number; done: boolean }> {
+// A UCL season's player list is ~80 pages — too big for one invocation's wall-clock, so page through
+// it in chunks, resumable via meta.uclSeasonIdx + meta.uclPage.
+async function enrichUcl(meta: { uclSeasonIdx?: number; uclPage?: number }): Promise<{ season: number; page: number; matched: number; pages: number; seasonDone: boolean; done: boolean }> {
   const players = await selectAll("players", "id,api_id");
   const byApi = new Map<number, string>();
   for (const p of players) if (p.api_id) byApi.set(p.api_id as number, p.id as string);
-  const i = (meta.uclCursor ?? 0) % UCL_SEASONS.length;
-  const season = UCL_SEASONS[i];
-  const entries = await apiGetAllPages<{ player: { id: number } }>("players", { league: UCL_LEAGUE, season });
-  const ids: string[] = [];
-  for (const e of entries) { const ourId = byApi.get(e.player.id); if (ourId) ids.push(ourId); }
-  for (let j = 0; j < ids.length; j += 200) await supa.from("players").update({ ucl: true }).in("id", ids.slice(j, j + 200));
-  const next = i + 1;
-  meta.uclCursor = next >= UCL_SEASONS.length ? 0 : next;
-  return { season, matched: ids.length, seen: entries.length, index: i, done: next >= UCL_SEASONS.length };
+  const si = meta.uclSeasonIdx ?? 0;
+  if (si >= UCL_SEASONS.length) { meta.uclSeasonIdx = 0; meta.uclPage = 1; return { season: 0, page: 1, matched: 0, pages: 0, seasonDone: true, done: true }; }
+  const season = UCL_SEASONS[si];
+  let page = meta.uclPage ?? 1;
+  let matched = 0, pages = 0, seasonDone = false;
+  for (; pages < 25; pages++, page++) {
+    const res = await apiGet<{ player: { id: number } }>("players", { league: UCL_LEAGUE, season, page });
+    const ids = res.map((e) => byApi.get(e.player.id)).filter((x): x is string => !!x);
+    for (let j = 0; j < ids.length; j += 200) await supa.from("players").update({ ucl: true }).in("id", ids.slice(j, j + 200));
+    matched += ids.length;
+    if (res.length < 20) { seasonDone = true; break; } // last page of the season
+  }
+  if (seasonDone) { meta.uclSeasonIdx = si + 1; meta.uclPage = 1; } else meta.uclPage = page;
+  const done = seasonDone && si + 1 >= UCL_SEASONS.length;
+  return { season, page: meta.uclPage ?? 1, matched, pages, seasonDone, done };
 }
 
 // ---------------------------------------------------------------------------
