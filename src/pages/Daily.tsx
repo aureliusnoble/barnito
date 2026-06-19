@@ -281,7 +281,8 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <Row label="Rating" green="within 0.2" yellow="within 1" />
         </ul>
         <p className="mt-3 text-xs text-pitch-500">
-          🟥 = no match · ⬛ = unknown (e.g. a player with no rating yet). A fresh player appears every day at midnight UK time.
+          <b className="text-pitch-300">Rating</b> is a player's average match rating so far at this World Cup. 🟥 = no match · ⬛ = unknown
+          (e.g. a player who hasn't played yet). A fresh player appears every day at midnight UK time.
         </p>
       </div>
     </div>,
