@@ -114,7 +114,7 @@ export default function Daily() {
     // WC rating (green within 0.5, yellow within 2)
     const rg = rating(guess.id), rt = target && rating(t.id);
     const ratingCell: Cell = {
-      state: rg == null || rt == null ? "n" : Math.abs(rg - rt) <= 0.1 ? "g" : Math.abs(rg - rt) <= 0.3 ? "y" : "r",
+      state: rg == null || rt == null ? "n" : Math.abs(rg - rt) <= 0.2 ? "g" : Math.abs(rg - rt) <= 1 ? "y" : "r",
       node: <span className="text-[11px] font-bold tabular-nums">{rg != null ? rg.toFixed(1) : "–"}</span>,
     };
     return [nat, num, club, age, ratingCell];
@@ -278,7 +278,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           <Row label="No." green="same shirt number" yellow="same position" />
           <Row label="Club" green="same club" yellow="same league" />
           <Row label="Age" green="exact" yellow="within 3 years" />
-          <Row label="Rating" green="within 0.1" yellow="within 0.3" />
+          <Row label="Rating" green="within 0.2" yellow="within 1" />
         </ul>
         <p className="mt-3 text-xs text-pitch-500">
           🟥 = no match · ⬛ = unknown (e.g. a player with no rating yet). A fresh player appears every day at midnight UK time.
