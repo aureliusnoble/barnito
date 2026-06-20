@@ -644,6 +644,11 @@ async function enrichUcl2(meta: { uclSeason2?: number; uclPage2?: number }): Pro
   const si = meta.uclSeason2 ?? 0;
   if (si >= UCL_LONG.length) { meta.uclSeason2 = 0; meta.uclPage2 = 1; return { season: 0, page: 1, matched: 0, pages: 0, seasonDone: true, done: true }; }
   const season = UCL_LONG[si];
+  // Group/league-phase teams come from the standings (robust across the old group format and the new
+  // 36-team league phase, unlike round-name parsing); knockout teams from the fixtures.
+  const standings = await apiGet<{ league: { standings: ApiStandingRow[][] } }>("standings", { league: 2, season });
+  const grp = new Set<number>();
+  for (const table of standings[0]?.league.standings ?? []) for (const row of table) grp.add(row.team.id);
   const fixtures = await apiGet<ApiFixture>("fixtures", { league: 2, season });
   const ko = new Set<number>();
   for (const f of fixtures) if (UCL_KO_RE.test(f.league.round)) { ko.add(f.teams.home.id); ko.add(f.teams.away.id); }
@@ -656,10 +661,10 @@ async function enrichUcl2(meta: { uclSeason2?: number; uclPage2?: number }): Pro
     const ids: string[] = [], koIds: string[] = [];
     for (const e of res) {
       const ourId = byApi.get(e.player.id);
-      if (!ourId) continue;
-      ids.push(ourId);
       const tid = e.statistics?.[0]?.team?.id;
-      if (tid && ko.has(tid)) koIds.push(ourId);
+      if (!ourId || !tid || !grp.has(tid)) continue; // qualifier-only season ⇒ not a campaign
+      ids.push(ourId);
+      if (ko.has(tid)) koIds.push(ourId);
     }
     if (ids.length) await supa.rpc("ucl_mark", { ids, yr: season, ko_ids: koIds });
     matched += ids.length;

@@ -67,7 +67,7 @@ export default function Daily() {
   const { roster, matches, playerById, bracket } = useBarnito();
   const { teamName } = useHelpers();
   const today = ukToday();
-  const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.v3.${today}`, []);
+  const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.v4.${today}`, []);
   const [query, setQuery] = useState("");
   const [showRules, setShowRules] = useState(false);
   const [showFinder, setShowFinder] = useState(false);
