@@ -7,6 +7,10 @@ const MIN_INTERVAL_MS = 1200;
 let lastAt = 0;
 let count = 0;
 export const requestCount = () => count;
+// Remaining requests in the daily plan quota (from the API's rate-limit header). Lets heavy backfills
+// stand down before they starve the cron's live updates. Infinity until the first call reports it.
+let dailyRemaining = Number.POSITIVE_INFINITY;
+export const requestsRemaining = () => dailyRemaining;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 interface ApiResponse<T> {
@@ -27,6 +31,8 @@ async function raw<T>(path: string, params: Record<string, string | number>): Pr
     lastAt = Date.now();
     count++;
     const res = await fetch(url, { headers: { "x-apisports-key": key } });
+    const rem = res.headers.get("x-ratelimit-requests-remaining");
+    if (rem != null && rem !== "") dailyRemaining = Number(rem);
     if (res.status === 429 && attempt < 3) {
       await sleep((Number(res.headers.get("retry-after")) || 30) * 1000);
       continue;

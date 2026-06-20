@@ -6,7 +6,7 @@
 // Query modes: ?mode=roster (one-off: teams+players+fifa), ?mode=full (force a reconcile).
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
-  apiGet, apiGetAllPages, requestCount, mapStatus, mapPosition, mapEventType, groupLetterFrom,
+  apiGet, apiGetAllPages, requestCount, requestsRemaining, mapStatus, mapPosition, mapEventType, groupLetterFrom,
   GOAL_MULTIPLIER, WC_LEAGUE, WC_SEASON,
   type ApiFixture, type ApiFixtureDetailed, type ApiStandingRow, type ApiTeamEntry,
   type ApiPlayerEntry, type ApiPlayerStat, type ApiInjury, type ApiLineup,
@@ -744,9 +744,16 @@ async function enrichWcHistory(meta: { wcSeasonIdx?: number; wcPage?: number }):
 }
 
 // ---------------------------------------------------------------------------
+// Keep this many daily API requests in reserve for the cron's live updates (fixtures, lineups,
+// scores). Heavy one-off backfills stand down below it so they can never starve match coverage.
+const API_RESERVE = 5000;
+const HEAVY_MODES = new Set(["squads", "leagues", "ucl", "ucl2", "wchistory", "clubs"]);
 Deno.serve(async (req) => {
   try {
     const mode = new URL(req.url).searchParams.get("mode");
+    if (mode && HEAVY_MODES.has(mode) && requestsRemaining() < API_RESERVE) {
+      return Response.json({ ok: true, mode, skipped: "low API quota — reserved for live updates", remaining: requestsRemaining() });
+    }
     if (mode === "clubs") {
       const n = Number(new URL(req.url).searchParams.get("n") ?? "25");
       const r = await enrichClubsBulk(n);
