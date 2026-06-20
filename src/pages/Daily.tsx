@@ -67,7 +67,7 @@ export default function Daily() {
   const { roster, matches, playerById, bracket } = useBarnito();
   const { teamName } = useHelpers();
   const today = ukToday();
-  const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.v2.${today}`, []);
+  const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.v3.${today}`, []);
   const [query, setQuery] = useState("");
   const [showRules, setShowRules] = useState(false);
   const [showFinder, setShowFinder] = useState(false);
@@ -84,10 +84,10 @@ export default function Daily() {
     return out;
   }, [matches]);
 
-  // Answer pool: a Champions-League-pedigree player (the fame gate) with every field populated —
-  // current club, age, and a World Cup rating (so the rating clue is always meaningful).
+  // Answer pool (fame gate): played ≥5 Champions League campaigns AND once reached the knockout stage,
+  // with every field populated — current club, age, and a World Cup rating (so the clue is meaningful).
   const pool = useMemo(
-    () => roster.players.filter((p) => p.ucl && p.club?.name && p.age != null && ratingByPlayer.has(p.id)),
+    () => roster.players.filter((p) => (p.uclCount ?? 0) >= 5 && p.uclKo && p.club?.name && p.age != null && ratingByPlayer.has(p.id)),
     [roster.players, ratingByPlayer],
   );
   // Guesses: any actual World Cup squad member (age set by the squad endpoint).

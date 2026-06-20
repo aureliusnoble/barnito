@@ -48,7 +48,9 @@ export interface Player {
   photo?: string | null;
   number?: number | null;
   age?: number | null;
-  ucl?: boolean; // has appeared in a recent Champions League — the daily game's answer gate
+  ucl?: boolean; // legacy: appeared in a recent Champions League
+  uclCount?: number; // distinct Champions League campaigns played (back to ~2000)
+  uclKo?: boolean; // ever reached the Champions League knockout stage (beyond the group)
   wcBest?: number; // career-best World Cup finish: 1 Winner … 7 Group Stage, 8 Debut/none
 
   // Domestic club the player normally plays for. Backfilled lazily from API-Football for picked /

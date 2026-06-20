@@ -52,7 +52,7 @@ async function selectAll(table: string, columns = "*"): Promise<Record<string, u
 // ---------------------------------------------------------------------------
 async function getMeta() {
   const { data } = await supa.from("documents").select("data").eq("key", "_meta").maybeSingle();
-  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclSeasonIdx?: number; uclPage?: number; wcSeasonIdx?: number; wcPage?: number };
+  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclSeasonIdx?: number; uclPage?: number; wcSeasonIdx?: number; wcPage?: number; uclSeason2?: number; uclPage2?: number };
 }
 async function setDoc(key: string, data: unknown) {
   await supa.from("documents").upsert({ key, data, updated_at: new Date().toISOString() });
@@ -635,7 +635,42 @@ async function enrichUcl(meta: { uclSeasonIdx?: number; uclPage?: number }): Pro
   return { season, page: meta.uclPage ?? 1, matched, pages, seasonDone, done };
 }
 
-// Fill domestic club + league for World Cup squad members still missing one (e.g. players in leagues
+// Richer UCL history back to ~2000: per player, the set of distinct campaigns played (ucl_seasons) and
+// whether they ever reached the knockout stage (ucl_ko). Knockout teams per season are derived from
+// that season's fixtures. Idempotent via the ucl_mark() SQL function, so resumable re-runs are safe.
+const UCL_LONG: number[] = Array.from({ length: 2025 - 2000 + 1 }, (_, i) => 2025 - i); // 2025 → 2000
+const UCL_KO_RE = /16|quarter|semi|final|knockout|play-?off/i;
+async function enrichUcl2(meta: { uclSeason2?: number; uclPage2?: number }): Promise<{ season: number; page: number; matched: number; pages: number; seasonDone: boolean; done: boolean }> {
+  const si = meta.uclSeason2 ?? 0;
+  if (si >= UCL_LONG.length) { meta.uclSeason2 = 0; meta.uclPage2 = 1; return { season: 0, page: 1, matched: 0, pages: 0, seasonDone: true, done: true }; }
+  const season = UCL_LONG[si];
+  const fixtures = await apiGet<ApiFixture>("fixtures", { league: 2, season });
+  const ko = new Set<number>();
+  for (const f of fixtures) if (UCL_KO_RE.test(f.league.round)) { ko.add(f.teams.home.id); ko.add(f.teams.away.id); }
+  const players = await selectAll("players", "id,api_id");
+  const byApi = new Map<number, string>();
+  for (const p of players) if (p.api_id) byApi.set(p.api_id as number, p.id as string);
+  let page = meta.uclPage2 ?? 1, matched = 0, pages = 0, seasonDone = false;
+  for (; pages < 25; pages++, page++) {
+    const res = await apiGet<{ player: { id: number }; statistics: { team: { id: number } }[] }>("players", { league: 2, season, page });
+    const ids: string[] = [], koIds: string[] = [];
+    for (const e of res) {
+      const ourId = byApi.get(e.player.id);
+      if (!ourId) continue;
+      ids.push(ourId);
+      const tid = e.statistics?.[0]?.team?.id;
+      if (tid && ko.has(tid)) koIds.push(ourId);
+    }
+    if (ids.length) await supa.rpc("ucl_mark", { ids, yr: season, ko_ids: koIds });
+    matched += ids.length;
+    if (res.length < 20) { seasonDone = true; break; }
+  }
+  if (seasonDone) { meta.uclSeason2 = si + 1; meta.uclPage2 = 1; } else meta.uclPage2 = page;
+  const done = seasonDone && si + 1 >= UCL_LONG.length;
+  return { season, page: meta.uclPage2 ?? 1, matched, pages, seasonDone, done };
+}
+
+
 // outside the answer pool) so every valid guess compares meaningfully. Per-player; naturally
 // resumable (each call takes the next club==null squad members).
 async function enrichClubsBulk(limit: number): Promise<{ done: number; remaining: number }> {
@@ -738,6 +773,12 @@ Deno.serve(async (req) => {
     if (mode === "wchistory") {
       const meta = await getMeta();
       const r = await enrichWcHistory(meta);
+      await setDoc("_meta", meta);
+      return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
+    if (mode === "ucl2") {
+      const meta = await getMeta();
+      const r = await enrichUcl2(meta);
       await setDoc("_meta", meta);
       return Response.json({ ok: true, mode, ...r, requests: requestCount() });
     }
