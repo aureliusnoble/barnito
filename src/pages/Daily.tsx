@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown } from "lucide-react";
+import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { Avatar } from "../components/visuals";
 import { Crest } from "../components/bits";
@@ -21,6 +21,8 @@ const CONFED: Record<string, string> = {
   qatar: "AFC", uzbekistan: "AFC", iraq: "AFC", jordan: "AFC",
   "new-zealand": "OFC",
 };
+
+const CONFEDS = ["UEFA", "CONMEBOL", "CONCACAF", "CAF", "AFC", "OFC"];
 
 type Cell = { state: "g" | "y" | "r" | "n"; node: ReactNode };
 const CELL_BG: Record<Cell["state"], string> = {
@@ -68,6 +70,7 @@ export default function Daily() {
   const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.v2.${today}`, []);
   const [query, setQuery] = useState("");
   const [showRules, setShowRules] = useState(false);
+  const [showFinder, setShowFinder] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // average World Cup match rating per player (for the Rating field)
@@ -265,6 +268,12 @@ export default function Daily() {
                   )}
                 </div>
               )}
+              <button
+                onClick={() => setShowFinder(true)}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-pitch-900 py-2 text-xs font-semibold text-pitch-300 ring-1 ring-white/10 transition hover:text-accent-300"
+              >
+                <SlidersHorizontal size={14} /> Find players by nation, position, league…
+              </button>
             </div>
           )}
 
@@ -291,7 +300,121 @@ export default function Daily() {
       )}
 
       {showRules && <RulesCard onClose={() => setShowRules(false)} />}
+      {showFinder && (
+        <PlayerFinder
+          guessPool={guessPool}
+          guesses={guesses}
+          teamName={teamName}
+          onPick={(p) => { pick(p); setShowFinder(false); }}
+          onClose={() => setShowFinder(false)}
+        />
+      )}
     </div>
+  );
+}
+
+// Opt-in helper: narrow the squads by recognition traits (nation/confederation, position, league) and
+// tap a candidate to guess. Deliberately excludes the earned clues (number, age, rating, WC run) so it
+// eases recall without solving the puzzle.
+function PlayerFinder({ guessPool, guesses, teamName, onPick, onClose }: {
+  guessPool: Player[]; guesses: string[]; teamName: (id: string) => string; onPick: (p: Player) => void; onClose: () => void;
+}) {
+  const [confed, setConfed] = useState<string | null>(null);
+  const [nation, setNation] = useState<string | null>(null);
+  const [pos, setPos] = useState<string | null>(null);
+  const [league, setLeague] = useState<string | null>(null);
+  const made = new Set(guesses);
+
+  const nations = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const p of guessPool) if (!confed || CONFED[p.teamId] === confed) m.set(p.teamId, teamName(p.teamId));
+    return [...m.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  }, [guessPool, confed, teamName]);
+  const leagues = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of guessPool) if (p.club?.league) s.add(p.club.league);
+    return [...s].sort();
+  }, [guessPool]);
+
+  const anyFilter = !!(confed || nation || pos || league);
+  const results = useMemo(() => {
+    if (!anyFilter) return [];
+    return guessPool
+      .filter((p) => !made.has(p.id)
+        && (!confed || CONFED[p.teamId] === confed)
+        && (!nation || p.teamId === nation)
+        && (!pos || p.position === pos)
+        && (!league || p.club?.league === league))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guessPool, confed, nation, pos, league, anyFilter]);
+
+  const Chip = ({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) => (
+    <button onClick={onClick} className={`rounded-full px-2.5 py-1 text-xs font-semibold transition ${active ? "bg-accent-500 text-pitch-950" : "bg-pitch-800 text-pitch-300 ring-1 ring-white/10 hover:text-white"}`}>{children}</button>
+  );
+  const selectCls = "w-full rounded-lg bg-pitch-800 px-2.5 py-1.5 text-sm text-pitch-100 ring-1 ring-white/10 focus:outline-none focus:ring-accent-500/40";
+  const Label = ({ children }: { children: ReactNode }) => <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-pitch-500">{children}</div>;
+
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm animate-fade-in sm:items-center" onClick={onClose}>
+      <div className="card flex max-h-[90vh] w-full max-w-sm animate-slide-up flex-col rounded-b-none rounded-t-4xl border-white/10 p-5 sm:rounded-4xl" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="font-display text-lg font-bold text-white">Find players</h3>
+          <button onClick={onClose} className="grid h-7 w-7 place-items-center rounded-full bg-white/5 text-pitch-300 hover:bg-white/10 hover:text-white"><X size={16} /></button>
+        </div>
+        <p className="mb-3 text-xs text-pitch-500">Narrow the squads by what you know, then tap a player to guess. (Number, age, rating &amp; WC run stay hidden — that's the puzzle.)</p>
+
+        <div className="space-y-3">
+          <div>
+            <Label>Confederation</Label>
+            <div className="flex flex-wrap gap-1.5">
+              {CONFEDS.map((c) => <Chip key={c} active={confed === c} onClick={() => { setConfed(confed === c ? null : c); setNation(null); }}>{c}</Chip>)}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Nation</Label>
+              <select className={selectCls} value={nation ?? ""} onChange={(e) => setNation(e.target.value || null)}>
+                <option value="">Any</option>
+                {nations.map(([id, name]) => <option key={id} value={id}>{name}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label>League</Label>
+              <select className={selectCls} value={league ?? ""} onChange={(e) => setLeague(e.target.value || null)}>
+                <option value="">Any</option>
+                {leagues.map((l) => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <Label>Position</Label>
+            <div className="flex flex-wrap gap-1.5">
+              {(["GK", "DEF", "MID", "FWD"] as const).map((p) => <Chip key={p} active={pos === p} onClick={() => setPos(pos === p ? null : p)}>{p}</Chip>)}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between text-[11px] text-pitch-500">
+          <span>{anyFilter ? `${results.length} player${results.length === 1 ? "" : "s"}` : "Pick a filter to begin"}</span>
+          {anyFilter && <button onClick={() => { setConfed(null); setNation(null); setPos(null); setLeague(null); }} className="font-semibold text-pitch-400 hover:text-accent-300">Clear</button>}
+        </div>
+
+        <div className="mt-2 min-h-0 flex-1 overflow-y-auto rounded-xl ring-1 ring-white/10">
+          {results.slice(0, 80).map((p) => (
+            <button key={p.id} onClick={() => onPick(p)} className="flex w-full items-center gap-2.5 border-b border-white/[0.05] px-3 py-2 text-left last:border-0 hover:bg-white/[0.04]">
+              <Avatar photo={p.photo} name={p.name} position={p.position} size={26} />
+              <span className="min-w-0 flex-1 truncate text-sm text-pitch-100">{p.name}</span>
+              <span className="shrink-0 text-[10px] text-pitch-500">{p.position}</span>
+              <Crest teamId={p.teamId} size={14} />
+            </button>
+          ))}
+          {anyFilter && results.length > 80 && <p className="px-3 py-2 text-center text-xs text-pitch-500">Showing 80 — add a filter to narrow further.</p>}
+          {anyFilter && results.length === 0 && <p className="px-3 py-4 text-center text-sm text-pitch-500">No squad players match those filters.</p>}
+        </div>
+      </div>
+    </div>,
+    document.body,
   );
 }
 
