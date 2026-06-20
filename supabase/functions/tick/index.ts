@@ -21,6 +21,7 @@ import { MATCHES_PER_GROUP } from "../_shared/constants.ts";
 import { FIFA_RANKS } from "../_shared/fifaRanks.ts";
 
 const FULL_INTERVAL_MS = 5 * 60 * 1000;
+const IDLE_FULL_INTERVAL_MS = 30 * 60 * 1000; // when no match is live/imminent, reconcile far less often
 const STATS_INTERVAL_MS = 20 * 60 * 1000;
 const STALE_LIVE_MS = 3 * 60 * 60 * 1000;
 
@@ -797,11 +798,21 @@ Deno.serve(async (req) => {
 
     const meta = await getMeta();
     const now = Date.now();
-    const forceFull = mode === "full" || !meta.lastFull || now - Date.parse(meta.lastFull) > FULL_INTERVAL_MS;
 
     let st = await loadState();
     const updated = new Map<string, Match>(); // our match id -> Match (for the upsert + scoring)
     for (const r of st.matchRows) updated.set(r.id as string, rowToMatch(r));
+
+    // Is a match live or about to start? Drives how hard we poll — when nothing is on we reconcile
+    // sparingly and skip the live/lineup fetches entirely (saves thousands of idle requests/day).
+    const matchActive = [...updated.values()].some((m) => {
+      if (m.status === "LIVE" || m.status === "HT") return true;
+      if (m.status !== "SCHEDULED") return false;
+      const toKo = Date.parse(m.kickoff) - now;
+      return toKo < 75 * 60 * 1000 && toKo > -STALE_LIVE_MS; // imminent, or just kicked off (status not updated yet)
+    });
+    const forceFull = mode === "full" || !meta.lastFull
+      || now - Date.parse(meta.lastFull) > (matchActive ? FULL_INTERVAL_MS : IDLE_FULL_INTERVAL_MS);
 
     // ----- full reconcile: every fixture's status/score, teams, bracket -----
     if (forceFull) {
@@ -847,8 +858,11 @@ Deno.serve(async (req) => {
       meta.lastFull = new Date().toISOString();
     }
 
-    // ----- live poll: fast path for in-progress matches ----------------------
+    // ----- live poll: fast path for in-progress matches (only when something is on) ----------
+    let liveCount = 0;
+    if (matchActive) {
     const live = (await apiGet<ApiFixture>("fixtures", { live: "all" })).filter((f) => f.league.id === WC_LEAGUE);
+    liveCount = live.length;
     const liveIds = new Set<number>(live.map((f) => f.fixture.id));
     // also force-reconcile any of OUR matches stuck LIVE past a sane window
     for (const m of updated.values()) {
@@ -880,6 +894,7 @@ Deno.serve(async (req) => {
         if (mapped.length > 0 && mapped.some((l) => l.startXI.length > 0)) { m.lineups = mapped; updated.set(m.id, m); }
       } catch (_) { /* non-fatal — lineups simply not out yet */ }
     }
+    } // end if (matchActive)
 
     // capture/refresh venue weather (live now; finished games backfilled at kickoff time, then frozen)
     await refreshWeather(updated);
@@ -888,8 +903,8 @@ Deno.serve(async (req) => {
     const rows = [...updated.values()].map((m) => matchToRow(m));
     if (rows.length) await supa.from("matches").upsert(rows, { onConflict: "id" });
 
-    // occasional extras
-    if (!meta.lastStats || now - Date.parse(meta.lastStats) > STATS_INTERVAL_MS) {
+    // occasional extras (only around match time — saves idle requests)
+    if (matchActive && (!meta.lastStats || now - Date.parse(meta.lastStats) > STATS_INTERVAL_MS)) {
       st = await loadState();
       try { await refreshExtras(st); meta.lastStats = new Date().toISOString(); } catch (_) { /* non-fatal */ }
     }
@@ -907,7 +922,7 @@ Deno.serve(async (req) => {
     }
     await setDoc("_meta", meta);
 
-    return Response.json({ ok: true, full: forceFull, live: live.length, requests: requestCount() });
+    return Response.json({ ok: true, full: forceFull, active: matchActive, live: liveCount, requests: requestCount() });
   } catch (e) {
     console.error(e);
     return new Response(JSON.stringify({ ok: false, error: String(e) }), { status: 500 });
