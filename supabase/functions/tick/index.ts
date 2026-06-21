@@ -769,7 +769,7 @@ async function enrichWcHistory(meta: { wcSeasonIdx?: number; wcPage?: number }):
 // ---------------------------------------------------------------------------
 // Keep this many daily API requests in reserve for the cron's live updates (fixtures, lineups,
 // scores). Heavy one-off backfills stand down below it so they can never starve match coverage.
-const API_RESERVE = 5000;
+const API_RESERVE = 3500;
 const HEAVY_MODES = new Set(["squads", "leagues", "ucl", "ucl2", "wchistory", "clubs", "clubhistory"]);
 Deno.serve(async (req) => {
   try {
