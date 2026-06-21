@@ -636,6 +636,28 @@ async function enrichUcl(meta: { uclSeasonIdx?: number; uclPage?: number }): Pro
   return { season, page: meta.uclPage ?? 1, matched, pages, seasonDone, done };
 }
 
+// Per-player career club history (clubs + the seasons spent at each) from players/teams. Powers the
+// daily game's "shared club" clue. ~1 call/player; resumable (club_history null = not fetched) and
+// reserve-guarded so it never starves live coverage.
+interface ApiPlayerTeams { team: { id: number; name: string; logo: string | null }; seasons: number[] }
+async function enrichClubHistory(limit: number): Promise<{ done: number; remaining: number; quota: number }> {
+  const { data } = await supa.from("players").select("id,api_id")
+    .is("club_history", null).not("age", "is", null).not("api_id", "is", null).limit(limit);
+  const cands = (data ?? []) as { id: string; api_id: number }[];
+  let done = 0;
+  for (const p of cands) {
+    try {
+      const res = await apiGet<ApiPlayerTeams>("players/teams", { player: p.api_id });
+      const hist = res.map((e) => ({ id: e.team.id, name: e.team.name, logo: e.team.logo ?? null, seasons: e.seasons ?? [] }));
+      await supa.from("players").update({ club_history: hist }).eq("id", p.id);
+      done++;
+    } catch (_) { /* non-fatal */ }
+  }
+  const { count } = await supa.from("players").select("id", { count: "exact", head: true })
+    .is("club_history", null).not("age", "is", null).not("api_id", "is", null);
+  return { done, remaining: count ?? -1, quota: requestsRemaining() };
+}
+
 // Richer UCL history back to ~2000: per player, the set of distinct campaigns played (ucl_seasons) and
 // whether they ever reached the knockout stage (ucl_ko). Knockout teams per season are derived from
 // that season's fixtures. Idempotent via the ucl_mark() SQL function, so resumable re-runs are safe.
@@ -748,7 +770,7 @@ async function enrichWcHistory(meta: { wcSeasonIdx?: number; wcPage?: number }):
 // Keep this many daily API requests in reserve for the cron's live updates (fixtures, lineups,
 // scores). Heavy one-off backfills stand down below it so they can never starve match coverage.
 const API_RESERVE = 5000;
-const HEAVY_MODES = new Set(["squads", "leagues", "ucl", "ucl2", "wchistory", "clubs"]);
+const HEAVY_MODES = new Set(["squads", "leagues", "ucl", "ucl2", "wchistory", "clubs", "clubhistory"]);
 Deno.serve(async (req) => {
   try {
     const mode = new URL(req.url).searchParams.get("mode");
@@ -758,6 +780,11 @@ Deno.serve(async (req) => {
     if (mode === "clubs") {
       const n = Number(new URL(req.url).searchParams.get("n") ?? "25");
       const r = await enrichClubsBulk(n);
+      return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
+    if (mode === "clubhistory") {
+      const n = Number(new URL(req.url).searchParams.get("n") ?? "40");
+      const r = await enrichClubHistory(n);
       return Response.json({ ok: true, mode, ...r, requests: requestCount() });
     }
     if (mode === "roster") {
@@ -919,6 +946,11 @@ Deno.serve(async (req) => {
       for (const part of st.participants) for (const pid of ((part.top_players as string[]) ?? [])) priority.add(pid);
       for (const r of st.matchRows) for (const g of ((r.goals as { playerId: string | null }[]) ?? [])) if (g.playerId) priority.add(g.playerId);
       try { await backfillClubs(st, priority); } catch (_) { /* non-fatal */ }
+      // top up career club history (for the daily game) only when idle and quota is healthy, so it
+      // completes on its own over quiet periods without ever eating into live-match coverage
+      if (!matchActive && requestsRemaining() > 5500) {
+        try { await enrichClubHistory(20); } catch (_) { /* non-fatal */ }
+      }
     }
     await setDoc("_meta", meta);
 

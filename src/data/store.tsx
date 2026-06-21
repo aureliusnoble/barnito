@@ -46,6 +46,7 @@ const rowToPlayer = (r: Row): Player => ({
   age: (r.age as number) ?? null, ucl: (r.ucl as boolean) ?? false,
   uclCount: ((r.ucl_seasons as number[]) ?? []).length, uclKo: (r.ucl_ko as boolean) ?? false,
   wcBest: (r.wc_best as number) ?? 8,
+  clubHistory: (r.club_history as Player["clubHistory"]) ?? null,
   club: (r.club as Player["club"]) ?? null,
 });
 const rowToMatch = (r: Row): Match => ({

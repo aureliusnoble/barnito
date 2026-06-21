@@ -52,6 +52,8 @@ export interface Player {
   uclCount?: number; // distinct Champions League campaigns played (back to ~2000)
   uclKo?: boolean; // ever reached the Champions League knockout stage (beyond the group)
   wcBest?: number; // career-best World Cup finish: 1 Winner … 7 Group Stage, 8 Debut/none
+  // Career club history (clubs + the seasons spent at each) for the daily game's "shared club" clue.
+  clubHistory?: { id: number; name: string; logo: string | null; seasons: number[] }[] | null;
 
   // Domestic club the player normally plays for. Backfilled lazily from API-Football for picked /
   // goalscoring players. null = not looked up yet; {} (no name) = looked up, none found.

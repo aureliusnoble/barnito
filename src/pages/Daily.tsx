@@ -29,7 +29,7 @@ const CELL_BG: Record<Cell["state"], string> = {
   g: "bg-emerald-600 text-white", y: "bg-amber-500 text-pitch-950", r: "bg-pitch-700 text-pitch-300", n: "bg-pitch-800 text-pitch-500",
 };
 const CELL_EMOJI: Record<Cell["state"], string> = { g: "🟩", y: "🟨", r: "🟥", n: "⬛" };
-const COL_EMOJI = "🌍👕🛡️🎂⭐🏆"; // Nation · Number · Club · Age · Rating · WC finish — share card key
+const COL_EMOJI = "🌍👕🛡️🤝🎂⭐🏆"; // Nation · Number · Club · Shared club · Age · Rating · WC — share card key
 // Career-best World Cup finish (1 best … 8 debut)
 const WC_LABEL: Record<number, string> = {
   1: "Winner", 2: "Runner Up", 3: "Third Place", 4: "Fourth Place", 5: "Quarter Final", 6: "Round of 16", 7: "Group Stage", 8: "Debut",
@@ -125,6 +125,8 @@ export default function Daily() {
     return m;
   }, [bracket, matches]);
   const bestWc = (p: Player) => Math.min(p.wcBest ?? 8, wc2026.get(p.teamId) ?? 99);
+  // National-team ids, to exclude shared *national* teams (same-nation guesses) from the shared-club clue.
+  const wcTeamApiIds = useMemo(() => new Set((roster.teams ?? []).map((t) => t.apiId).filter((x): x is number => x != null)), [roster.teams]);
 
   const rating = (id: string) => ratingByPlayer.get(id);
   function compare(guess: Player): Cell[] {
@@ -160,7 +162,28 @@ export default function Daily() {
     const gw = bestWc(guess), tw = bestWc(t);
     const wcState: Cell["state"] = gw === tw ? "g" : Math.abs(gw - tw) <= 1 ? "y" : "r";
     const wc: Cell = { state: wcState, node: wcNode(WC_LABEL[gw]) };
-    return [nat, num, club, age, ratingCell, wc];
+    // Shared club: 🟩 they were at the same club at the same time, 🟨 both played there at some point,
+    // ⬛ unknown until both histories are loaded. National teams excluded.
+    let sharedState: Cell["state"] = "n", sharedLogo: string | null = null;
+    const gh = guess.clubHistory, th = t.clubHistory;
+    if (gh && th) {
+      const thMap = new Map(th.filter((c) => !wcTeamApiIds.has(c.id)).map((c) => [c.id, c]));
+      let ever = false, same = false;
+      for (const c of gh) {
+        if (wcTeamApiIds.has(c.id)) continue;
+        const tc = thMap.get(c.id);
+        if (!tc) continue;
+        ever = true;
+        if (c.seasons.some((s) => tc.seasons.includes(s))) { same = true; sharedLogo = c.logo ?? tc.logo ?? null; break; }
+        if (!sharedLogo) sharedLogo = c.logo ?? tc.logo ?? null;
+      }
+      sharedState = same ? "g" : ever ? "y" : "r";
+    }
+    const sharedCell: Cell = {
+      state: sharedState,
+      node: sharedLogo ? <img src={sharedLogo} alt="" className="h-5 w-5 object-contain" /> : <span className="text-[10px] font-bold">{sharedState === "n" ? "?" : "–"}</span>,
+    };
+    return [nat, num, club, sharedCell, age, ratingCell, wc];
   }
 
   const suggestions = useMemo(() => {
@@ -207,11 +230,12 @@ export default function Daily() {
           </p>
 
           {/* column headers */}
-          <div className="grid grid-cols-[minmax(0,1fr)_repeat(5,1.6rem)_3.9rem] items-center gap-1 px-1 text-[9px] font-semibold uppercase tracking-wide text-pitch-500 sm:grid-cols-[minmax(0,1fr)_repeat(5,1.95rem)_4.4rem]">
+          <div className="grid grid-cols-[minmax(0,1fr)_repeat(6,1.5rem)_3.6rem] items-center gap-1 px-1 text-[9px] font-semibold uppercase tracking-wide text-pitch-500 sm:grid-cols-[minmax(0,1fr)_repeat(6,1.85rem)_4.2rem]">
             <span>Player</span>
             <span className="text-center">Nat</span>
             <span className="text-center">No.</span>
             <span className="text-center">Club</span>
+            <span className="text-center">Both</span>
             <span className="text-center">Age</span>
             <span className="text-center">Rtg</span>
             <span className="text-center">WC</span>
@@ -225,7 +249,7 @@ export default function Daily() {
               const cells = compare(p);
               const hit = p.id === target.id;
               return (
-                <div key={id} className={`grid grid-cols-[minmax(0,1fr)_repeat(5,1.6rem)_3.9rem] items-center gap-1 rounded-xl p-1 sm:grid-cols-[minmax(0,1fr)_repeat(5,1.95rem)_4.4rem] ${hit ? "ring-1 ring-emerald-500/40" : ""}`}>
+                <div key={id} className={`grid grid-cols-[minmax(0,1fr)_repeat(6,1.5rem)_3.6rem] items-center gap-1 rounded-xl p-1 sm:grid-cols-[minmax(0,1fr)_repeat(6,1.85rem)_4.2rem] ${hit ? "ring-1 ring-emerald-500/40" : ""}`}>
                   <span className="flex min-w-0 items-center gap-1.5 pl-0.5">
                     <Avatar photo={p.photo} name={p.name} position={p.position} size={24} />
                     <span className="truncate text-xs font-semibold text-pitch-100">{p.name}</span>
@@ -424,6 +448,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
     ["Nation", "same country", "same confederation"],
     ["Number", "same shirt no.", "same position"],
     ["Club", "same club", "same league"],
+    ["Both", "shared a club, same time", "shared a club ever"],
     ["Age", "exact age", "within 3 years"],
     ["Rating", "within 0.2", "within 1.0"],
     ["WC run", "same finish", "one round off"],
@@ -464,6 +489,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
 
         {/* footnotes */}
         <ul className="mt-4 space-y-1.5 text-xs text-pitch-500">
+          <li><b className="text-pitch-300">Both</b> — have the two players ever shared a club (🟩 at the same time, 🟨 at any point); the badge shows that club.</li>
           <li><b className="text-pitch-300">Rating</b> — average match rating at this World Cup (⬛ until they've played).</li>
           <li><b className="text-pitch-300">WC run</b> — best-ever finish (Winner → Group Stage, or Debut), including this tournament as it unfolds.</li>
           <li><b className="text-pitch-300">↑ / ↓</b> on Age &amp; Rating point toward the answer.</li>
