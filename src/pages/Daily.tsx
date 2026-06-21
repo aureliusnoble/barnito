@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown, SlidersHorizontal, Users } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { Avatar } from "../components/visuals";
 import { Crest } from "../components/bits";
@@ -162,9 +162,9 @@ export default function Daily() {
     const gw = bestWc(guess), tw = bestWc(t);
     const wcState: Cell["state"] = gw === tw ? "g" : Math.abs(gw - tw) <= 1 ? "y" : "r";
     const wc: Cell = { state: wcState, node: wcNode(WC_LABEL[gw]) };
-    // Shared club: 🟩 they were at the same club at the same time, 🟨 both played there at some point,
-    // ⬛ unknown until both histories are loaded. National teams excluded.
-    let sharedState: Cell["state"] = "n", sharedLogo: string | null = null;
+    // Shared club: 🟩 at the same club at the same time, 🟨 both played there at some point, 🟥 never,
+    // ⬛ unknown until both histories load. The specific club is NOT revealed. National teams excluded.
+    let sharedState: Cell["state"] = "n";
     const gh = guess.clubHistory, th = t.clubHistory;
     if (gh && th) {
       const thMap = new Map(th.filter((c) => !wcTeamApiIds.has(c.id)).map((c) => [c.id, c]));
@@ -174,14 +174,15 @@ export default function Daily() {
         const tc = thMap.get(c.id);
         if (!tc) continue;
         ever = true;
-        if (c.seasons.some((s) => tc.seasons.includes(s))) { same = true; sharedLogo = c.logo ?? tc.logo ?? null; break; }
-        if (!sharedLogo) sharedLogo = c.logo ?? tc.logo ?? null;
+        if (c.seasons.some((s) => tc.seasons.includes(s))) { same = true; break; }
       }
       sharedState = same ? "g" : ever ? "y" : "r";
     }
     const sharedCell: Cell = {
       state: sharedState,
-      node: sharedLogo ? <img src={sharedLogo} alt="" className="h-5 w-5 object-contain" /> : <span className="text-[10px] font-bold">{sharedState === "n" ? "?" : "–"}</span>,
+      node: sharedState === "g" || sharedState === "y"
+        ? <Users size={13} strokeWidth={2.5} />
+        : <span className="text-[10px] font-bold">{sharedState === "n" ? "?" : "–"}</span>,
     };
     return [nat, num, club, sharedCell, age, ratingCell, wc];
   }
@@ -489,7 +490,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
 
         {/* footnotes */}
         <ul className="mt-4 space-y-1.5 text-xs text-pitch-500">
-          <li><b className="text-pitch-300">Both</b> — have the two players ever shared a club (🟩 at the same time, 🟨 at any point); the badge shows that club.</li>
+          <li><b className="text-pitch-300">Both</b> — have you and the mystery player ever shared a club: 🟩 at the same time, 🟨 at any point (the club itself isn't revealed).</li>
           <li><b className="text-pitch-300">Rating</b> — average match rating at this World Cup (⬛ until they've played).</li>
           <li><b className="text-pitch-300">WC run</b> — best-ever finish (Winner → Group Stage, or Debut), including this tournament as it unfolds.</li>
           <li><b className="text-pitch-300">↑ / ↓</b> on Age &amp; Rating point toward the answer.</li>
