@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, Target } from "lucide-react";
+import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, Target, Snowflake } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal } from "./PlayerModal";
 import { StatusBadge, PointsPill, GroupPill, Crest, PosBadge, CardFlag, BroadcastBadge } from "./bits";
@@ -15,6 +15,10 @@ function roundFactor(match: Match): number {
   if (match.phase === "none") return 0;
   return ROUND_FACTOR[(match.phase ?? "group") as Phase];
 }
+
+// WC 2026 stadiums with a retractable roof + air-conditioning (indoor climate, unaffected by the
+// outdoor forecast). SoFi / BC Place are roofed but not air-conditioned, so they're excluded.
+const CLIMATE_CONTROLLED = new Set(["AT&T Stadium", "NRG Stadium", "Mercedes-Benz Stadium"]);
 
 /** WMO weather code → emoji. */
 function weatherIcon(code: number): string {
@@ -213,6 +217,14 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
                   {match.weather.forecast ? "Forecast · " : ""}{weatherIcon(match.weather.code)} {match.weather.temp}°C · 💧 {match.weather.humidity}% humidity
                 </span>
               </>
+            )}
+            {CLIMATE_CONTROLLED.has(venue?.name ?? match.ground ?? "") && (
+              <span
+                className="inline-flex items-center gap-1 rounded-full bg-sky-500/15 px-2 py-0.5 text-[11px] font-semibold text-sky-300 ring-1 ring-sky-400/30"
+                title="Retractable-roof, air-conditioned stadium — play is shielded from the outdoor forecast"
+              >
+                <Snowflake size={11} /> Climate controlled
+              </span>
             )}
           </div>
         </div>
