@@ -236,7 +236,7 @@ export default function Daily() {
             <span className="text-center">Nat</span>
             <span className="text-center">No.</span>
             <span className="text-center">Club</span>
-            <span className="text-center">Both</span>
+            <span className="text-center">Hist.</span>
             <span className="text-center">Age</span>
             <span className="text-center">Rtg</span>
             <span className="text-center">WC</span>
@@ -449,7 +449,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
     ["Nation", "same country", "same confederation"],
     ["Number", "same shirt no.", "same position"],
     ["Club", "same club", "same league"],
-    ["Both", "shared a club, same time", "shared a club ever"],
+    ["Hist.", "shared a club, same time", "shared a club ever"],
     ["Age", "exact age", "within 3 years"],
     ["Rating", "within 0.2", "within 1.0"],
     ["WC run", "same finish", "one round off"],
@@ -490,7 +490,7 @@ function RulesCard({ onClose }: { onClose: () => void }) {
 
         {/* footnotes */}
         <ul className="mt-4 space-y-1.5 text-xs text-pitch-500">
-          <li><b className="text-pitch-300">Both</b> — have you and the mystery player ever shared a club: 🟩 at the same time, 🟨 at any point (the club itself isn't revealed).</li>
+          <li><b className="text-pitch-300">Hist.</b> — have you and the mystery player ever shared a club: 🟩 at the same time, 🟨 at any point (the club itself isn't revealed).</li>
           <li><b className="text-pitch-300">Rating</b> — average match rating at this World Cup (⬛ until they've played).</li>
           <li><b className="text-pitch-300">WC run</b> — best-ever finish (Winner → Group Stage, or Debut), including this tournament as it unfolds.</li>
           <li><b className="text-pitch-300">↑ / ↓</b> on Age &amp; Rating point toward the answer.</li>
