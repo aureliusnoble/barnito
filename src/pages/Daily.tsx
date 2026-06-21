@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown, SlidersHorizontal, Users, Star } from "lucide-react";
+import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown, SlidersHorizontal, Users } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { Avatar } from "../components/visuals";
 import { Crest } from "../components/bits";
@@ -62,10 +62,6 @@ function seedFrom(s: string): number {
 }
 
 const MAX_GUESSES = 10;
-// A possible answer: ≥5 Champions League campaigns and reached the knockout (the fame gate). Starred
-// in search so players can see which guesses could be the mystery player.
-const isCandidate = (p: Player) => (p.uclCount ?? 0) >= 5 && !!p.uclKo;
-const CandidateStar = () => <Star size={12} className="shrink-0 fill-amber-400 text-amber-400" />;
 
 export default function Daily() {
   const { roster, matches, playerById, bracket } = useBarnito();
@@ -291,7 +287,6 @@ export default function Daily() {
                       <button key={p.id} onClick={() => pick(p)} className="flex w-full items-center gap-2.5 border-b border-white/[0.05] px-3 py-2 text-left last:border-0 hover:bg-white/[0.04]">
                         <Avatar photo={p.photo} name={p.name} position={p.position} size={26} />
                         <span className="min-w-0 flex-1 truncate text-sm text-pitch-100">{p.name}</span>
-                        {isCandidate(p) && <CandidateStar />}
                         <Crest teamId={p.teamId} size={14} />
                       </button>
                     ))
@@ -435,7 +430,6 @@ function PlayerFinder({ guessPool, guesses, teamName, onPick, onClose }: {
             <button key={p.id} onClick={() => onPick(p)} className="flex w-full items-center gap-2.5 border-b border-white/[0.05] px-3 py-2 text-left last:border-0 hover:bg-white/[0.04]">
               <Avatar photo={p.photo} name={p.name} position={p.position} size={26} />
               <span className="min-w-0 flex-1 truncate text-sm text-pitch-100">{p.name}</span>
-              {isCandidate(p) && <CandidateStar />}
               <span className="shrink-0 text-[10px] text-pitch-500">{p.position}</span>
               <Crest teamId={p.teamId} size={14} />
             </button>
@@ -472,9 +466,8 @@ function RulesCard({ onClose }: { onClose: () => void }) {
           Guess the mystery footballer in up to <b className="text-white">10</b> tries — any player at this World Cup is a valid guess. Each
           pick locks in and colours every clue:
         </p>
-        <p className="mt-2 flex items-start gap-1.5 text-xs text-pitch-400">
-          <Star size={13} className="mt-px shrink-0 fill-amber-400 text-amber-400" />
-          <span>The answer is always a player with <b className="text-pitch-200">5+ Champions League campaigns</b> who has reached the <b className="text-pitch-200">knockout stage</b> — these are starred in search.</span>
+        <p className="mt-2 text-xs text-pitch-400">
+          The answer is always a player with <b className="text-pitch-200">5+ Champions League campaigns</b> who has reached the <b className="text-pitch-200">knockout stage</b>.
         </p>
 
         {/* what the colours mean */}
