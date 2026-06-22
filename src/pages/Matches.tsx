@@ -40,7 +40,9 @@ export default function Matches() {
       .filter((m) => {
         if (when === "ALL") return true;
         const started = Date.parse(m.kickoff) <= now;
-        return when === "past" ? started : !started;
+        const isLive = m.status === "LIVE" || m.status === "HT";
+        // a game in progress right now appears under both Upcoming and Past
+        return when === "past" ? (started || isLive) : (!started || isLive);
       });
     // newest-first for past games, chronological otherwise
     arr.sort((a, b) => (when === "past" ? b.kickoff.localeCompare(a.kickoff) : a.kickoff.localeCompare(b.kickoff)));
