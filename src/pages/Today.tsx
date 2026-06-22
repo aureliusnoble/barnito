@@ -7,7 +7,8 @@ import { SectionTitle, Crest, SpiceRating, spiceRating } from "../components/bit
 import { ukSlateCutoffMs } from "../lib/format";
 
 export default function Today() {
-  const { matches, scores, stats, matchById } = useBarnito();
+  const { matches, scores, stats, matchById, playerStats, playerById } = useBarnito();
+  const { teamName } = useHelpers();
   const [tab, setTab] = useState<"today" | "recent">("today");
 
   const now = Date.now();
@@ -29,7 +30,20 @@ export default function Today() {
   );
 
   const leader = scores.leaderboard[0];
-  const topScorer = stats.topScorers[0];
+  // Golden Boot from our event-based playerStats (the API topscorers feed lags badly post-match).
+  const topScorer = useMemo(() => {
+    let bestPid: string | null = null, bestGoals = 0;
+    for (const [pid, s] of Object.entries(playerStats.players)) {
+      if ((s.goals ?? 0) > bestGoals) { bestGoals = s.goals; bestPid = pid; }
+    }
+    if (bestPid) {
+      const p = playerById.get(bestPid);
+      const ts = stats.topScorers.find((t) => t.playerId === bestPid);
+      return { name: p?.name ?? ts?.name ?? "—", value: bestGoals, teamName: ts?.teamName ?? (p ? teamName(p.teamId) : "") };
+    }
+    const ts = stats.topScorers[0];
+    return ts ? { name: ts.name, value: ts.value, teamName: ts.teamName } : null;
+  }, [playerStats, stats, playerById, teamName]);
   const spiceMax = useMemo(() => Math.max(0, ...scores.spiciness.map((s) => s.score)), [scores]);
   // Soonest upcoming game at the top chilli rating (a 5-chilli tonight beats a 5-chilli next week).
   const spicy = useMemo(() => {
@@ -41,7 +55,6 @@ export default function Today() {
       .sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))[0];
   }, [scores, spiceMax]);
   const spicyMatch = spicy && matchById.get(spicy.matchId);
-  const { teamName } = useHelpers();
 
   return (
     <div className="space-y-5">
