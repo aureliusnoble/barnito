@@ -382,7 +382,7 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
     for (const e of m.events ?? []) {
       if (!e.playerId) continue;
       ps[e.playerId] ??= blank();
-      if (e.type === "GOAL" && !/own/i.test(e.detail)) ps[e.playerId].goals++;
+      if (e.type === "GOAL" && !/own|missed/i.test(e.detail)) ps[e.playerId].goals++; // exclude own goals + missed penalties
       if (e.type === "CARD" && /yellow/i.test(e.detail)) ps[e.playerId].yellow++;
       if (e.type === "CARD" && /red/i.test(e.detail)) ps[e.playerId].red++;
     }
