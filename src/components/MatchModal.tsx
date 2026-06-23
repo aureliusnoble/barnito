@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, Target, Snowflake } from "lucide-react";
+import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, ChevronUp, Target, Snowflake } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal } from "./PlayerModal";
 import { StatusBadge, PointsPill, GroupPill, Crest, PosBadge, CardFlag, BroadcastBadge } from "./bits";
@@ -762,6 +762,7 @@ type Side = "home" | "away";
 function PitchToken({ p, x, y, side, card }: { p: LineupPlayer; x: number; y: number; side: Side; card?: "yellow" | "red" }) {
   const { open } = usePlayerModal();
   const fill = side === "home" ? "bg-sky-500" : "bg-spice-500";
+  const subbedOn = (p as XIPlayer).subbedOn;
   return (
     <button
       type="button"
@@ -769,12 +770,17 @@ function PitchToken({ p, x, y, side, card }: { p: LineupPlayer; x: number; y: nu
       onClick={() => p.playerId && open(p.playerId)}
       style={{ left: `${x}%`, top: `${y}%` }}
       className={`absolute flex w-[18%] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-0.5 ${p.playerId ? "cursor-pointer" : "cursor-default"}`}
-      title={card ? `${p.name} · ${card === "red" ? "sent off" : "booked"}` : p.name}
+      title={`${p.name}${subbedOn ? " · came on" : ""}${card ? ` · ${card === "red" ? "sent off" : "booked"}` : ""}`}
     >
       <span className={`relative grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-white shadow-md ring-2 ring-white/85 ${fill}`}>
         {p.number ?? ""}
         {card && (
           <span className={`absolute -right-1 -top-1 h-2.5 w-[7px] rounded-[1px] ring-1 ring-pitch-950/70 ${card === "red" ? "bg-red-500" : "bg-yellow-400"}`} />
+        )}
+        {subbedOn && (
+          <span className="absolute -left-1 -top-1 grid h-3 w-3 place-items-center rounded-full bg-emerald-500 ring-1 ring-pitch-950/70">
+            <ChevronUp size={9} strokeWidth={3} className="text-white" />
+          </span>
         )}
       </span>
       <span className="max-w-full truncate rounded-sm bg-pitch-950/70 px-1 text-[8.5px] font-medium leading-tight text-white">
@@ -995,9 +1001,36 @@ function SquadPreview({ match }: { match: Match }) {
   );
 }
 
+type XIPlayer = LineupPlayer & { subbedOn?: boolean };
+// Reflect substitutions: replace each subbed-off starter with the player who came on (the off player
+// is matched to the XI by id/surname; the incoming player is found on the bench by surname). Marks
+// them subbedOn so the pitch shows who's actually on now, updating live as subs happen.
+function applySubs(l: Lineup, events: MatchEvent[] | undefined): Lineup {
+  const subs = (events ?? []).filter((e) => e.type === "SUBST" && e.teamId === l.teamId);
+  if (!subs.length) return l;
+  const benchBySurname = new Map<string, LineupPlayer>();
+  for (const s of l.subs) { const k = lastName(s.name).toLowerCase(); if (!benchBySurname.has(k)) benchBySurname.set(k, s); }
+  const inByPid = new Map<string, string>();  // off starter playerId → incoming name
+  const inByName = new Map<string, string>(); // off starter surname → incoming name
+  for (const e of subs) {
+    if (!e.assistName) continue;
+    if (e.playerId) inByPid.set(e.playerId, e.assistName);
+    if (e.playerName) inByName.set(lastName(e.playerName).toLowerCase(), e.assistName);
+  }
+  const startXI: XIPlayer[] = l.startXI.map((p) => {
+    const inName = (p.playerId && inByPid.get(p.playerId)) || inByName.get(lastName(p.name).toLowerCase());
+    if (!inName) return p;
+    const bench = benchBySurname.get(lastName(inName).toLowerCase());
+    return { playerId: bench?.playerId ?? null, name: bench?.name ?? inName, number: bench?.number ?? null, pos: p.pos, grid: p.grid, subbedOn: true };
+  });
+  return { ...l, startXI };
+}
+
 function Lineups({ match, cards }: { match: Match; cards: Map<string, { yellow: number; red: number }> }) {
-  const home = match.lineups?.find((l) => l.teamId === match.homeTeamId);
-  const away = match.lineups?.find((l) => l.teamId === match.awayTeamId);
+  const rawHome = match.lineups?.find((l) => l.teamId === match.homeTeamId);
+  const rawAway = match.lineups?.find((l) => l.teamId === match.awayTeamId);
+  const home = rawHome ? applySubs(rawHome, match.events) : undefined;
+  const away = rawAway ? applySubs(rawAway, match.events) : undefined;
   if (!home && !away) return null;
   const hasGrid = [home, away].some((l) => l?.startXI.some((p) => p.grid));
 
@@ -1026,6 +1059,7 @@ function Lineups({ match, cards }: { match: Match; cards: Map<string, { yellow: 
                     <li key={i} className="flex items-center gap-1.5 text-pitch-200">
                       <span className="w-5 text-right font-mono text-[11px] text-pitch-500">{p.number ?? ""}</span>
                       <span className="truncate">{p.name}</span>
+                      {(p as XIPlayer).subbedOn && <ChevronUp size={11} strokeWidth={3} className="shrink-0 text-emerald-400" />}
                     </li>
                   ))}
                 </ul>
