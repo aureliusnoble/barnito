@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { LayoutGrid, Trophy, ChevronDown } from "lucide-react";
 import { useBarnito } from "../data/store";
 import MatchCard from "../components/MatchCard";
@@ -12,9 +12,18 @@ type DayFilter = "ALL" | 1 | 2 | 3;
 type WhenFilter = "ALL" | "future" | "past";
 
 export default function Matches() {
-  const { matches, teamById } = useBarnito();
+  const { matches, teamById, bracket } = useBarnito();
+  // Default to the Knockouts view once the tournament reaches that stage (group stage complete, or a
+  // knockout tie has kicked off); the user can still toggle within a session.
+  const inKnockout = useMemo(() => {
+    const groupGames = matches.matches.filter((m) => (m.group as string) !== "?");
+    const groupsDone = groupGames.length > 0 && groupGames.every((m) => m.status === "FINISHED");
+    const koStarted = bracket.rounds.some((r) => r.matches.some((m) => m.status !== "SCHEDULED"));
+    return groupsDone || koStarted;
+  }, [matches, bracket]);
+  const [modeOverride, setMode] = useState<"groups" | "knockouts" | null>(null);
+  const mode = modeOverride ?? (inKnockout ? "knockouts" : "groups");
   // Filters persist across reloads (e.g. stay on "Upcoming").
-  const [mode, setMode] = usePersistentState<"groups" | "knockouts">("barnito.matches.mode", "groups");
   const [group, setGroup] = usePersistentState<GroupFilter>("barnito.matches.group", "ALL");
   const [matchday, setMatchday] = usePersistentState<DayFilter>("barnito.matches.matchday", "ALL");
   const [country, setCountry] = usePersistentState<string>("barnito.matches.country", "ALL");
