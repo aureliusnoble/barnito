@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Goal, Trophy, Users, AlertTriangle, ChevronDown, ChevronRight, Star } from "lucide-react";
+import { Goal, Trophy, Users, AlertTriangle, ChevronDown, ChevronRight, Star, Search } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal, type PlayerSeed } from "../components/PlayerModal";
 import { SectionTitle, Crest, CardFlag, PosBadge } from "../components/bits";
@@ -19,7 +19,8 @@ const seedFromStat = (p: PlayerStatLine): PlayerSeed => ({
   apps: p.appearances,
 });
 
-type View = "people" | "boot" | "players" | "bestxi";
+type View = "people" | "boot" | "players" | "bestxi" | "find";
+const normName = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 
 export default function Scorers() {
   const [view, setView] = useState<View>("people");
@@ -41,8 +42,11 @@ export default function Scorers() {
         <Toggle on={view === "bestxi"} onClick={() => setView("bestxi")} icon={<Star size={14} />}>
           Best XI
         </Toggle>
+        <Toggle on={view === "find"} onClick={() => setView("find")} icon={<Search size={14} />}>
+          Find
+        </Toggle>
       </div>
-      {view === "people" ? <ByPerson /> : view === "boot" ? <GoldenBoot /> : view === "players" ? <ByPlayer /> : <BestXI />}
+      {view === "people" ? <ByPerson /> : view === "boot" ? <GoldenBoot /> : view === "players" ? <ByPlayer /> : view === "bestxi" ? <BestXI /> : <FindScorers />}
     </div>
   );
 }
@@ -324,6 +328,78 @@ function ByPlayer() {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+// Browse players by team / position to help pick top scorers; optionally restrict to teams still in.
+function FindScorers() {
+  const { roster, bracket, playerStats } = useBarnito();
+  const { teamName } = useHelpers();
+  const { open } = usePlayerModal();
+  const [team, setTeam] = useState("");
+  const [pos, setPos] = useState<Position | "">("");
+  const [stillIn, setStillIn] = useState(true);
+  const [q, setQ] = useState("");
+
+  const stillInSet = useMemo(() => {
+    const all = new Set(roster.teams.map((t) => t.id));
+    const r32 = bracket.rounds.find((r) => r.name === "Round of 32");
+    const qual = new Set<string>();
+    if (r32) for (const m of r32.matches) { if (m.homeTeamId) qual.add(m.homeTeamId); if (m.awayTeamId) qual.add(m.awayTeamId); }
+    const out = new Set<string>();
+    for (const round of bracket.rounds) for (const m of round.matches) {
+      if (m.status === "FINISHED" && m.homeGoals != null && m.awayGoals != null && m.homeGoals !== m.awayGoals) {
+        out.add(m.homeGoals < m.awayGoals ? (m.homeTeamId ?? "") : (m.awayTeamId ?? ""));
+      }
+    }
+    return new Set([...(qual.size ? qual : all)].filter((t) => !out.has(t)));
+  }, [bracket, roster]);
+
+  const teams = useMemo(() => [...roster.teams].sort((a, b) => a.name.localeCompare(b.name)), [roster.teams]);
+  const goalsOf = (id: string) => playerStats.players[id]?.goals ?? 0;
+  const results = useMemo(() => {
+    const qq = normName(q.trim());
+    return roster.players
+      .filter((p) => p.age != null
+        && (!team || p.teamId === team)
+        && (!pos || p.position === pos)
+        && (!stillIn || stillInSet.has(p.teamId))
+        && (qq.length < 2 || normName(p.name).includes(qq)))
+      .sort((a, b) => goalsOf(b.id) - goalsOf(a.id) || a.name.localeCompare(b.name))
+      .slice(0, 150);
+  }, [roster.players, team, pos, stillIn, q, stillInSet, playerStats]);
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 rounded-xl bg-pitch-900 px-3 py-2 ring-1 ring-white/10 focus-within:ring-accent-500/40">
+        <Search size={16} className="shrink-0 text-pitch-500" />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search players…" className="w-full bg-transparent text-sm text-pitch-100 placeholder:text-pitch-500 focus:outline-none" />
+      </div>
+      <div className="flex flex-wrap items-center gap-1.5">
+        <select value={team} onChange={(e) => setTeam(e.target.value)} className="rounded-lg bg-pitch-900 px-2.5 py-1.5 text-sm text-pitch-100 ring-1 ring-white/10 focus:outline-none">
+          <option value="">All teams</option>
+          {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+        </select>
+        {(["GK", "DEF", "MID", "FWD"] as const).map((p) => (
+          <button key={p} onClick={() => setPos(pos === p ? "" : p)} className={`rounded-full px-2.5 py-1 text-xs font-semibold transition ${pos === p ? "bg-accent-500 text-pitch-950" : "bg-pitch-800 text-pitch-300 ring-1 ring-white/10 hover:text-white"}`}>{p}</button>
+        ))}
+        <button onClick={() => setStillIn((v) => !v)} className={`rounded-full px-2.5 py-1 text-xs font-semibold transition ${stillIn ? "bg-emerald-600 text-white" : "bg-pitch-800 text-pitch-300 ring-1 ring-white/10 hover:text-white"}`}>Still in</button>
+      </div>
+      <div className="px-1 text-[11px] text-pitch-500">{results.length} player{results.length === 1 ? "" : "s"}{results.length === 150 ? "+ — refine to narrow" : ""}</div>
+      <ul className="space-y-1">
+        {results.map((p) => (
+          <li key={p.id}>
+            <button onClick={() => open(p.id)} className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left hover:bg-white/[0.04]">
+              <Avatar photo={p.photo} name={p.name} position={p.position} size={28} />
+              <span className="min-w-0 flex-1 truncate text-sm text-pitch-100">{p.name}</span>
+              {goalsOf(p.id) > 0 && <span className="shrink-0 text-xs font-semibold text-accent-300">{goalsOf(p.id)}⚽</span>}
+              <PosBadge position={p.position} />
+              <span className="flex shrink-0 items-center gap-1 text-xs text-pitch-400"><Crest teamId={p.teamId} size={12} /><span className="hidden max-w-[6rem] truncate sm:inline">{teamName(p.teamId)}</span></span>
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
