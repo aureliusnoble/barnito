@@ -43,6 +43,7 @@ export default function Matches() {
 
   const filtered = useMemo(() => {
     const arr = matches.matches
+      .filter((m) => (m.group as string) !== "?") // group-stage card list; knockouts live in the bracket
       .filter((m) => (group === "ALL" || m.group === group))
       .filter((m) => (matchday === "ALL" || m.matchday === matchday))
       .filter((m) => (country === "ALL" || m.homeTeamId === country || m.awayTeamId === country))

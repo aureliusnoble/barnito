@@ -70,6 +70,7 @@ function rowToMatch(r: Record<string, unknown>): Match {
     lineups: (r.lineups as Lineup[]) ?? undefined, stats: (r.stats as TeamStat[]) ?? undefined,
     ratings: (r.ratings as PlayerRating[]) ?? undefined, h2h: (r.h2h as Match["h2h"]) ?? undefined,
     weather: (r.weather as Match["weather"]) ?? null,
+    phase: (r.phase as Match["phase"]) ?? undefined,
   };
 }
 function matchToRow(m: Match, round?: string) {
@@ -79,7 +80,7 @@ function matchToRow(m: Match, round?: string) {
     away_team_id: m.awayTeamId, home_goals: m.homeGoals, away_goals: m.awayGoals, ground: m.ground,
     venue: m.venue, goals: m.goals, events: m.events ?? null, lineups: m.lineups ?? null,
     stats: m.stats ?? null, ratings: m.ratings ?? null, h2h: m.h2h ?? null, round: round ?? null,
-    weather: m.weather ?? null, updated_at: new Date().toISOString(),
+    weather: m.weather ?? null, phase: m.phase ?? null, updated_at: new Date().toISOString(),
   };
 }
 
@@ -154,7 +155,7 @@ function mapDetails(f: ApiFixtureDetailed, st: State) {
   return { goals, events, lineups, stats, ratings };
 }
 
-function buildMatch(f: ApiFixture, id: string, st: State, details?: ReturnType<typeof mapDetails>, carry?: Match): Match {
+function buildMatch(f: ApiFixture, id: string, st: State, details?: ReturnType<typeof mapDetails>, carry?: Match, phase?: Match["phase"]): Match {
   const home = st.teamByApi.get(f.teams.home.id);
   const away = st.teamByApi.get(f.teams.away.id);
   const md = f.league.round.match(/(\d+)\s*$/);
@@ -162,7 +163,7 @@ function buildMatch(f: ApiFixture, id: string, st: State, details?: ReturnType<t
   const played = status === "LIVE" || status === "HT" || status === "FINISHED";
   const v = f.fixture.venue;
   return {
-    id, apiId: f.fixture.id, group: (home?.group ?? "?") as GroupLetter, matchday: md ? Number(md[1]) : 1,
+    id, apiId: f.fixture.id, phase, group: (phase ? "?" : home?.group ?? "?") as GroupLetter, matchday: md ? Number(md[1]) : 1,
     kickoff: f.fixture.date, ground: v?.name ?? null, venue: v?.name ? { name: v.name, city: v.city ?? null } : null,
     homeTeamId: home?.id ?? slug(f.teams.home.name), awayTeamId: away?.id ?? slug(f.teams.away.name),
     status, elapsed: f.fixture.status.elapsed, homeGoals: f.goals.home, awayGoals: f.goals.away,
@@ -265,6 +266,31 @@ function groupIds(fixtures: ApiFixture[], st: State): Map<number, { id: string; 
     if (key.startsWith("x-")) { for (const f of fs) out.set(f.fixture.id, { id: `x-${f.fixture.id}`, group: null }); continue; }
     fs.sort((a, b) => a.fixture.date.localeCompare(b.fixture.date) || a.fixture.id - b.fixture.id);
     fs.forEach((f, i) => out.set(f.fixture.id, { id: `${key}-${i + 1}`, group: key as GroupLetter }));
+  }
+  return out;
+}
+
+// API round name → scoring phase ("none" = ingested but not scored, i.e. the 3rd-place match).
+const KO_PHASE: Record<string, Match["phase"]> = {
+  "Round of 32": "r32", "Round of 16": "r16", "Quarter-finals": "qf", "Semi-finals": "sf", "Final": "final", "3rd Place Final": "none",
+};
+// Stable ids for knockout ties, but ONLY once both teams are confirmed (drawn) — placeholder/TBD ties
+// are skipped so nothing appears until the bracket is set. Numbered by kickoff within each round.
+function knockoutIds(fixtures: ApiFixture[], st: State): Map<number, { id: string; phase: Match["phase"] }> {
+  const out = new Map<number, { id: string; phase: Match["phase"] }>();
+  const byRound = new Map<string, ApiFixture[]>();
+  for (const f of fixtures) {
+    if (KO_PHASE[f.league.round] === undefined) continue; // group stage or unknown round
+    (byRound.get(f.league.round) ?? byRound.set(f.league.round, []).get(f.league.round)!).push(f);
+  }
+  for (const [round, fs] of byRound) {
+    const ph = KO_PHASE[round];
+    fs.sort((a, b) => a.fixture.date.localeCompare(b.fixture.date) || a.fixture.id - b.fixture.id);
+    fs.forEach((f, i) => {
+      if (!st.teamByApi.get(f.teams.home.id) || !st.teamByApi.get(f.teams.away.id)) return; // not drawn yet
+      const id = ph === "final" ? "final" : ph === "none" ? "3p" : `${ph}-${i + 1}`;
+      out.set(f.fixture.id, { id, phase: ph });
+    });
   }
   return out;
 }
@@ -847,11 +873,17 @@ Deno.serve(async (req) => {
       const standings = await apiGet<{ league: { standings: ApiStandingRow[][] } }>("standings", { league: WC_LEAGUE, season: WC_SEASON });
       await reconcileTeams(standings[0]?.league.standings ?? [], fixtures);
       st = await loadState(); // refresh team→group after upsert
-      const ids = groupIds(fixtures, st);
-      // fetch details for played group matches that changed or lack events
+      const gids = groupIds(fixtures, st);
+      const kids = knockoutIds(fixtures, st); // confirmed (drawn) knockout ties only
+      const idFor = (fid: number): { id: string; phase?: Match["phase"] } | null => {
+        const g = gids.get(fid); if (g) return { id: g.id };
+        const k = kids.get(fid); if (k) return { id: k.id, phase: k.phase };
+        return null;
+      };
+      // fetch details for played matches that changed or lack events
       const need: number[] = [];
       for (const f of fixtures) {
-        const idg = ids.get(f.fixture.id);
+        const idg = idFor(f.fixture.id);
         if (!idg) continue;
         const status = mapStatus(f.fixture.status.short);
         const cur = updated.get(idg.id);
@@ -864,9 +896,9 @@ Deno.serve(async (req) => {
       }
       const details = await fetchDetails(need.slice(0, 60), st);
       for (const f of fixtures) {
-        const idg = ids.get(f.fixture.id);
+        const idg = idFor(f.fixture.id);
         if (!idg) continue;
-        updated.set(idg.id, buildMatch(f, idg.id, st, details.get(f.fixture.id), updated.get(idg.id)));
+        updated.set(idg.id, buildMatch(f, idg.id, st, details.get(f.fixture.id), updated.get(idg.id), idg.phase));
       }
       await setDoc("bracket", buildBracket(fixtures, st));
 

@@ -60,6 +60,7 @@ const rowToMatch = (r: Row): Match => ({
   lineups: (r.lineups as Lineup[]) ?? undefined, stats: (r.stats as TeamStat[]) ?? undefined,
   ratings: (r.ratings as PlayerRating[]) ?? undefined, h2h: (r.h2h as Match["h2h"]) ?? undefined,
   weather: (r.weather as Match["weather"]) ?? null,
+  phase: (r.phase as Match["phase"]) ?? undefined,
 });
 const rowToParticipant = (r: Row): Participant => ({
   id: r.id as string, name: r.name as string, matchScores: (r.match_scores as Participant["matchScores"]) ?? [],
