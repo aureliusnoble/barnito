@@ -334,7 +334,7 @@ function ByPlayer() {
 
 // Browse players by team / position to help pick top scorers; optionally restrict to teams still in.
 function FindScorers() {
-  const { roster, bracket, playerStats } = useBarnito();
+  const { roster, bracket, playerStats, matches } = useBarnito();
   const { teamName } = useHelpers();
   const { open } = usePlayerModal();
   const [team, setTeam] = useState("");
@@ -358,6 +358,18 @@ function FindScorers() {
 
   const teams = useMemo(() => [...roster.teams].sort((a, b) => a.name.localeCompare(b.name)), [roster.teams]);
   const goalsOf = (id: string) => playerStats.players[id]?.goals ?? 0;
+  // Each team's next fixture (soonest not-yet-finished match) → opponent + home/away.
+  const nextOpp = useMemo(() => {
+    const m = new Map<string, { oppId: string; home: boolean }>();
+    const upcoming = matches.matches
+      .filter((x) => x.status !== "FINISHED")
+      .sort((a, b) => a.kickoff.localeCompare(b.kickoff));
+    for (const x of upcoming) {
+      if (!m.has(x.homeTeamId)) m.set(x.homeTeamId, { oppId: x.awayTeamId, home: true });
+      if (!m.has(x.awayTeamId)) m.set(x.awayTeamId, { oppId: x.homeTeamId, home: false });
+    }
+    return m;
+  }, [matches]);
   // Teams that still have ≥1 player under the other active filters — so the dropdown hides empties.
   const availableTeams = useMemo(() => {
     const qq = normName(q.trim());
@@ -405,17 +417,32 @@ function FindScorers() {
       </div>
       <div className="px-1 text-[11px] text-pitch-500">{results.length} player{results.length === 1 ? "" : "s"}{results.length === 150 ? "+ — refine to narrow" : ""}</div>
       <ul className="space-y-1">
-        {results.map((p) => (
-          <li key={p.id}>
-            <button onClick={() => open(p.id)} className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left hover:bg-white/[0.04]">
-              <Avatar photo={p.photo} name={p.name} position={p.position} size={28} />
-              <span className="min-w-0 flex-1 truncate text-sm text-pitch-100">{p.name}</span>
-              {goalsOf(p.id) > 0 && <span className="shrink-0 text-xs font-semibold text-accent-300">{goalsOf(p.id)}⚽</span>}
-              <PosBadge position={p.position} />
-              <span className="flex shrink-0 items-center gap-1 text-xs text-pitch-400"><Crest teamId={p.teamId} size={12} /><span className="hidden max-w-[6rem] truncate sm:inline">{teamName(p.teamId)}</span></span>
-            </button>
-          </li>
-        ))}
+        {results.map((p) => {
+          const opp = nextOpp.get(p.teamId);
+          return (
+            <li key={p.id}>
+              <button onClick={() => open(p.id)} className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left hover:bg-white/[0.04]">
+                <Avatar photo={p.photo} name={p.name} position={p.position} size={30} />
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center gap-1.5">
+                    <span className="truncate text-sm text-pitch-100">{p.name}</span>
+                    <PosBadge position={p.position} />
+                  </span>
+                  <span className="flex items-center gap-1 text-[11px] text-pitch-500">
+                    <Crest teamId={p.teamId} size={11} />
+                    <span className="max-w-[5rem] truncate">{teamName(p.teamId)}</span>
+                    {opp && <>
+                      <span className="text-pitch-600">· next {opp.home ? "v" : "@"}</span>
+                      <Crest teamId={opp.oppId} size={11} />
+                      <span className="max-w-[5rem] truncate">{teamName(opp.oppId)}</span>
+                    </>}
+                  </span>
+                </span>
+                {goalsOf(p.id) > 0 && <span className="shrink-0 text-xs font-semibold text-accent-300">{goalsOf(p.id)}⚽</span>}
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
