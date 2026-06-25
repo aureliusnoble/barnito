@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Table2, Trophy } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { SectionTitle, Crest } from "../components/bits";
-import Bracket from "../components/Bracket";
+import BracketDiagram from "../components/BracketDiagram";
 import { POINTS_PER_CORRECT_STANDING } from "@shared/constants";
 import type { GroupStanding } from "@shared/types";
 
@@ -83,7 +83,7 @@ export default function Groups() {
       </div>
 
       {tab === "bracket" ? (
-        <Bracket />
+        <BracketDiagram />
       ) : (
         <>
           <div className="flex items-center gap-2">
