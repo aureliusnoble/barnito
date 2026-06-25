@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Goal, Trophy, Users, AlertTriangle, ChevronDown, ChevronRight, Star, Search } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal, type PlayerSeed } from "../components/PlayerModal";
@@ -358,6 +358,23 @@ function FindScorers() {
 
   const teams = useMemo(() => [...roster.teams].sort((a, b) => a.name.localeCompare(b.name)), [roster.teams]);
   const goalsOf = (id: string) => playerStats.players[id]?.goals ?? 0;
+  // Teams that still have ≥1 player under the other active filters — so the dropdown hides empties.
+  const availableTeams = useMemo(() => {
+    const qq = normName(q.trim());
+    const has = new Set<string>();
+    for (const p of roster.players) {
+      if (p.age == null) continue;
+      if (pos && p.position !== pos) continue;
+      if (stillIn && !stillInSet.has(p.teamId)) continue;
+      if (qq.length >= 2 && !normName(p.name).includes(qq)) continue;
+      has.add(p.teamId);
+    }
+    return teams.filter((t) => has.has(t.id));
+  }, [roster.players, pos, stillIn, q, stillInSet, teams]);
+  // If the chosen team no longer has any matching player, clear it back to "All teams".
+  useEffect(() => {
+    if (team && !availableTeams.some((t) => t.id === team)) setTeam("");
+  }, [availableTeams, team]);
   const results = useMemo(() => {
     const qq = normName(q.trim());
     return roster.players
@@ -379,7 +396,7 @@ function FindScorers() {
       <div className="flex flex-wrap items-center gap-1.5">
         <select value={team} onChange={(e) => setTeam(e.target.value)} className="rounded-lg bg-pitch-900 px-2.5 py-1.5 text-sm text-pitch-100 ring-1 ring-white/10 focus:outline-none">
           <option value="">All teams</option>
-          {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+          {availableTeams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
         </select>
         {(["GK", "DEF", "MID", "FWD"] as const).map((p) => (
           <button key={p} onClick={() => setPos(pos === p ? "" : p)} className={`rounded-full px-2.5 py-1 text-xs font-semibold transition ${pos === p ? "bg-accent-500 text-pitch-950" : "bg-pitch-800 text-pitch-300 ring-1 ring-white/10 hover:text-white"}`}>{p}</button>
