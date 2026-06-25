@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { Table2 } from "lucide-react";
+import { Table2, Trophy } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { SectionTitle, Crest } from "../components/bits";
+import Bracket from "../components/Bracket";
 import { POINTS_PER_CORRECT_STANDING } from "@shared/constants";
 import type { GroupStanding } from "@shared/types";
 
@@ -9,8 +10,17 @@ type Result = "W" | "D" | "L";
 const firstName = (n: string) => n.split(" ")[0];
 
 export default function Groups() {
-  const { standings, scores, predictions, matches } = useBarnito();
+  const { standings, scores, predictions, matches, bracket } = useBarnito();
   const [who, setWho] = useState<string>("");
+  // Tables vs full knockout bracket; default to the bracket once the knockout stage is underway.
+  const inKnockout = useMemo(() => {
+    const groupGames = matches.matches.filter((m) => (m.group as string) !== "?");
+    const groupsDone = groupGames.length > 0 && groupGames.every((m) => m.status === "FINISHED");
+    const koStarted = bracket.rounds.some((r) => r.matches.some((m) => m.status !== "SCHEDULED"));
+    return groupsDone || koStarted;
+  }, [matches, bracket]);
+  const [tabOverride, setTab] = useState<"tables" | "bracket" | null>(null);
+  const tab = tabOverride ?? (inKnockout ? "bracket" : "tables");
 
   // recent form per team from finished matches (chronological, last 3)
   const formByTeam = useMemo(() => {
@@ -52,42 +62,64 @@ export default function Groups() {
 
   return (
     <div className="space-y-4">
-      <SectionTitle icon={<Table2 size={18} className="text-accent-400" />} hint="actual tables">
+      <SectionTitle icon={<Table2 size={18} className="text-accent-400" />} hint={tab === "bracket" ? "knockout bracket" : "actual tables"}>
         Groups
       </SectionTitle>
 
-      <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold text-pitch-400">Overlay prediction</span>
-        <select
-          value={who}
-          onChange={(e) => setWho(e.target.value)}
-          className="rounded-lg border border-white/10 bg-pitch-900 px-2 py-1 text-sm text-pitch-100"
-        >
-          <option value="">— none —</option>
-          {predictions.participants.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="space-y-4">
-        {standings.groups.map((g) => (
-          <GroupTable
-            key={g.group}
-            g={g}
-            formByTeam={formByTeam}
-            board={pointsByGroup.get(g.group) ?? []}
-            predicted={predForWho ? predForWho.groups.find((x) => x.group === g.group) : undefined}
-          />
+      {/* group tables vs knockout bracket */}
+      <div className="grid grid-cols-2 gap-1 rounded-xl bg-pitch-900/70 p-1 ring-1 ring-white/[0.06]">
+        {([["tables", "Tables", Table2], ["bracket", "Bracket", Trophy]] as const).map(([t, label, Icon]) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-sm font-semibold transition ${
+              tab === t ? "bg-accent-500 text-pitch-950" : "text-pitch-300 hover:text-white"
+            }`}
+          >
+            <Icon size={14} strokeWidth={2.5} />
+            {label}
+          </button>
         ))}
       </div>
 
-      <p className="px-1 text-xs text-pitch-500">
-        Standings points = +{POINTS_PER_CORRECT_STANDING} for each team a player placed in its correct finishing
-        position — provisional while a group is in progress, locked once it's final.
-      </p>
+      {tab === "bracket" ? (
+        <Bracket />
+      ) : (
+        <>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-pitch-400">Overlay prediction</span>
+            <select
+              value={who}
+              onChange={(e) => setWho(e.target.value)}
+              className="rounded-lg border border-white/10 bg-pitch-900 px-2 py-1 text-sm text-pitch-100"
+            >
+              <option value="">— none —</option>
+              {predictions.participants.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-4">
+            {standings.groups.map((g) => (
+              <GroupTable
+                key={g.group}
+                g={g}
+                formByTeam={formByTeam}
+                board={pointsByGroup.get(g.group) ?? []}
+                predicted={predForWho ? predForWho.groups.find((x) => x.group === g.group) : undefined}
+              />
+            ))}
+          </div>
+
+          <p className="px-1 text-xs text-pitch-500">
+            Standings points = +{POINTS_PER_CORRECT_STANDING} for each team a player placed in its correct finishing
+            position — provisional while a group is in progress, locked once it's final.
+          </p>
+        </>
+      )}
     </div>
   );
 }
