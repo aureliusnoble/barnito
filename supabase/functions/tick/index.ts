@@ -24,6 +24,7 @@ const FULL_INTERVAL_MS = 5 * 60 * 1000;
 const IDLE_FULL_INTERVAL_MS = 30 * 60 * 1000; // when no match is live/imminent, reconcile far less often
 const STATS_INTERVAL_MS = 20 * 60 * 1000;
 const STALE_LIVE_MS = 3 * 60 * 60 * 1000;
+const FINALIZE_STALE_MS = 4 * 60 * 60 * 1000; // a match still "live" this long after KO → feed stuck; finalize
 
 const supa = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -898,7 +899,13 @@ Deno.serve(async (req) => {
       for (const f of fixtures) {
         const idg = idFor(f.fixture.id);
         if (!idg) continue;
-        updated.set(idg.id, buildMatch(f, idg.id, st, details.get(f.fixture.id), updated.get(idg.id), idg.phase));
+        const prev = updated.get(idg.id);
+        const built = buildMatch(f, idg.id, st, details.get(f.fixture.id), prev, idg.phase);
+        // never revert a finished match to live (guards against a feed that keeps re-reporting "in play")
+        if (prev?.status === "FINISHED" && (built.status === "LIVE" || built.status === "HT")) {
+          built.status = "FINISHED"; built.elapsed = null;
+        }
+        updated.set(idg.id, built);
       }
       await setDoc("bracket", buildBracket(fixtures, st));
 
@@ -959,6 +966,14 @@ Deno.serve(async (req) => {
     await refreshWeather(updated);
 
     // upsert all changed matches
+    // safety: a match stuck "live" far past kickoff (feed never posted Full Time) → finalize at the
+    // current score so standings/scoring can complete and live-polling stops.
+    for (const m of updated.values()) {
+      if ((m.status === "LIVE" || m.status === "HT") && Date.now() - Date.parse(m.kickoff) > FINALIZE_STALE_MS) {
+        updated.set(m.id, { ...m, status: "FINISHED", elapsed: null });
+      }
+    }
+
     const rows = [...updated.values()].map((m) => matchToRow(m));
     if (rows.length) await supa.from("matches").upsert(rows, { onConflict: "id" });
 
