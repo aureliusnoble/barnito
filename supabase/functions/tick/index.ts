@@ -349,10 +349,14 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
 
   // standings (actual) computed locally from finished matches
   const groups = [...new Set(teams.map((t) => t.group).filter((g) => g !== "?"))].sort();
+  const groupOf = new Map(teams.map((t) => [t.id, t.group] as const));
   const buildStandings = (ms: Match[]): StandingsFile => ({
     updatedAt: new Date().toISOString(),
     groups: groups.map((group) => {
-      const gm = ms.filter((m) => m.group === group);
+      // A true group-stage game has BOTH teams in this group and no knockout phase. A knockout tie
+      // can carry a stale group_letter (and even a null phase), so identify group games by team
+      // membership — bulletproof against mis-tagged rows that would otherwise block the lock.
+      const gm = ms.filter((m) => !m.phase && groupOf.get(m.homeTeamId) === group && groupOf.get(m.awayTeamId) === group);
       const results: GroupResult[] = gm.filter((m) => m.status === "FINISHED" && m.homeGoals !== null && m.awayGoals !== null)
         .map((m) => ({ homeTeamId: m.homeTeamId, awayTeamId: m.awayTeamId, homeGoals: m.homeGoals!, awayGoals: m.awayGoals! }));
       const teamIds = teams.filter((t) => t.group === group).map((t) => t.id);

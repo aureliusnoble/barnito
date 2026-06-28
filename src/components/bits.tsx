@@ -259,8 +259,14 @@ export function ScorerPickTags({ match, className = "" }: { match: Match; classN
   const teamIds = new Set([match.homeTeamId, match.awayTeamId]);
   const firstName = (n: string) => n.split(" ")[0];
   const byPlayer = new Map<string, { player: Player; backers: string[] }>();
+  // Group games show the group-stage picks; a knockout tie shows only that round's picks
+  // (so R32 cards list R32 scorer predictions, not the now-irrelevant group picks).
+  const picksFor = (part: (typeof predictions.participants)[number]) =>
+    !match.phase ? part.topPlayers
+      : match.phase === "none" ? []
+      : part.scorersByRound?.[match.phase] ?? [];
   for (const part of predictions.participants) {
-    for (const pid of part.topPlayers) {
+    for (const pid of picksFor(part)) {
       const pl = playerById.get(pid);
       if (pl && teamIds.has(pl.teamId)) {
         const e = byPlayer.get(pid) ?? { player: pl, backers: [] };
