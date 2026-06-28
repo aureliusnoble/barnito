@@ -5,11 +5,14 @@ import { StatusBadge, Crest, ScorerPickTags, HotTakeBadge, BroadcastBadge, Predi
 import { useMatchModal } from "./MatchModal";
 import { formatTime } from "../lib/format";
 
+const PHASE_LABEL: Record<string, string> = { r32: "R32", r16: "R16", qf: "QF", sf: "SF", final: "Final", none: "3rd place" };
+
 export default function MatchCard({ match, showGroup = true }: { match: Match; showGroup?: boolean }) {
   const { teamName } = useHelpers();
   const { open } = useMatchModal();
   const hasScore = match.homeGoals != null && match.awayGoals != null;
   const live = match.status === "LIVE" || match.status === "HT";
+  const stageLabel = match.phase ? PHASE_LABEL[match.phase] ?? null : `Grp ${match.group}`;
 
   return (
     <button
@@ -19,7 +22,7 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
       <div className="flex items-center gap-3">
         <div className="flex w-11 shrink-0 flex-col items-center gap-1">
           <StatusBadge match={match} />
-          {showGroup && <span className="text-[10px] font-semibold text-pitch-500">Grp {match.group}</span>}
+          {showGroup && stageLabel && <span className="text-[10px] font-semibold text-pitch-500">{stageLabel}</span>}
           <BroadcastBadge match={match} />
         </div>
 

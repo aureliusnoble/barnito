@@ -275,23 +275,16 @@ function groupIds(fixtures: ApiFixture[], st: State): Map<number, { id: string; 
 const KO_PHASE: Record<string, Match["phase"]> = {
   "Round of 32": "r32", "Round of 16": "r16", "Quarter-finals": "qf", "Semi-finals": "sf", "Final": "final", "3rd Place Final": "none",
 };
-// Stable ids for knockout ties, but ONLY once both teams are confirmed (drawn) — placeholder/TBD ties
-// are skipped so nothing appears until the bracket is set. Numbered by kickoff within each round.
+// Knockout match ids, ONLY once both teams are confirmed (drawn) — placeholder/TBD ties are skipped.
+// Keyed by the fixture's api id so the id is stable as the bracket fills in (numbering by position
+// shifts as fixtures appear and would collide with the api_id unique constraint).
 function knockoutIds(fixtures: ApiFixture[], st: State): Map<number, { id: string; phase: Match["phase"] }> {
   const out = new Map<number, { id: string; phase: Match["phase"] }>();
-  const byRound = new Map<string, ApiFixture[]>();
   for (const f of fixtures) {
-    if (KO_PHASE[f.league.round] === undefined) continue; // group stage or unknown round
-    (byRound.get(f.league.round) ?? byRound.set(f.league.round, []).get(f.league.round)!).push(f);
-  }
-  for (const [round, fs] of byRound) {
-    const ph = KO_PHASE[round];
-    fs.sort((a, b) => a.fixture.date.localeCompare(b.fixture.date) || a.fixture.id - b.fixture.id);
-    fs.forEach((f, i) => {
-      if (!st.teamByApi.get(f.teams.home.id) || !st.teamByApi.get(f.teams.away.id)) return; // not drawn yet
-      const id = ph === "final" ? "final" : ph === "none" ? "3p" : `${ph}-${i + 1}`;
-      out.set(f.fixture.id, { id, phase: ph });
-    });
+    const ph = KO_PHASE[f.league.round];
+    if (ph === undefined) continue; // group stage or unknown round
+    if (!st.teamByApi.get(f.teams.home.id) || !st.teamByApi.get(f.teams.away.id)) continue; // not drawn yet
+    out.set(f.fixture.id, { id: `${ph ?? "ko"}-${f.fixture.id}`, phase: ph });
   }
   return out;
 }
@@ -912,7 +905,7 @@ Deno.serve(async (req) => {
       // head-to-head (historical → fetch a few per run for matches that still lack it)
       const needH2H = [...updated.values()].filter((m) => m.group !== "?" && !m.h2h).slice(0, 6);
       for (const m of needH2H) {
-        const fx = fixtures.find((f) => ids.get(f.fixture.id)?.id === m.id);
+        const fx = fixtures.find((f) => gids.get(f.fixture.id)?.id === m.id);
         if (!fx) continue;
         try {
           const h2h = await apiGet<ApiFixture>("fixtures/headtohead", { h2h: `${fx.teams.home.id}-${fx.teams.away.id}`, last: 6 });
@@ -975,7 +968,7 @@ Deno.serve(async (req) => {
     }
 
     const rows = [...updated.values()].map((m) => matchToRow(m));
-    if (rows.length) await supa.from("matches").upsert(rows, { onConflict: "id" });
+    if (rows.length) { const { error } = await supa.from("matches").upsert(rows, { onConflict: "id" }); if (error) console.error("matches upsert failed:", error.message); }
 
     // occasional extras (only around match time — saves idle requests)
     if (matchActive && (!meta.lastStats || now - Date.parse(meta.lastStats) > STATS_INTERVAL_MS)) {

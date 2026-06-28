@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { LayoutGrid, Trophy, ChevronDown } from "lucide-react";
 import { useBarnito } from "../data/store";
 import MatchCard from "../components/MatchCard";
-import Bracket from "../components/Bracket";
 import { formatDay, flagEmoji, footballDayKey } from "../lib/format";
 import { usePersistentState } from "../lib/usePersistentState";
 import { GROUPS } from "@shared/constants";
@@ -23,6 +22,7 @@ export default function Matches() {
   }, [matches, bracket]);
   const [modeOverride, setMode] = useState<"groups" | "knockouts" | null>(null);
   const mode = modeOverride ?? (inKnockout ? "knockouts" : "groups");
+  const [round, setRound] = useState<string>("ALL"); // knockout round filter (phase)
   // Filters persist across reloads (e.g. stay on "Upcoming").
   const [group, setGroup] = usePersistentState<GroupFilter>("barnito.matches.group", "ALL");
   const [matchday, setMatchday] = usePersistentState<DayFilter>("barnito.matches.matchday", "ALL");
@@ -42,10 +42,11 @@ export default function Matches() {
   }, [matches, teamById]);
 
   const filtered = useMemo(() => {
-    const arr = matches.matches
-      .filter((m) => (m.group as string) !== "?") // group-stage card list; knockouts live in the bracket
-      .filter((m) => (group === "ALL" || m.group === group))
-      .filter((m) => (matchday === "ALL" || m.matchday === matchday))
+    const ko = mode === "knockouts";
+    let arr = matches.matches.filter((m) => (ko ? !!m.phase : (m.group as string) !== "?"));
+    if (ko) arr = arr.filter((m) => round === "ALL" || m.phase === round);
+    else arr = arr.filter((m) => group === "ALL" || m.group === group).filter((m) => matchday === "ALL" || m.matchday === matchday);
+    arr = arr
       .filter((m) => (country === "ALL" || m.homeTeamId === country || m.awayTeamId === country))
       .filter((m) => {
         if (when === "ALL") return true;
@@ -57,7 +58,7 @@ export default function Matches() {
     // newest-first for past games, chronological otherwise
     arr.sort((a, b) => (when === "past" ? b.kickoff.localeCompare(a.kickoff) : a.kickoff.localeCompare(b.kickoff)));
     return arr;
-  }, [matches, group, matchday, country, when, now]);
+  }, [matches, mode, group, matchday, round, country, when, now]);
 
   // group by "football day" (noon UK → noon UK) for headers
   const byDay = useMemo(() => {
@@ -91,10 +92,6 @@ export default function Matches() {
         )}
       </div>
 
-      {mode === "knockouts" ? (
-        <Bracket />
-      ) : (
-        <>
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <span className="w-16 shrink-0 text-xs font-semibold text-pitch-400">Country</span>
@@ -119,20 +116,32 @@ export default function Matches() {
           onChange={(v) => setWhen(v as WhenFilter)}
           render={(v) => (v === "ALL" ? "All" : v === "future" ? "Upcoming" : "Past")}
         />
-        <Pills
-          label="Group"
-          value={group}
-          options={["ALL", ...GROUPS]}
-          onChange={(v) => setGroup(v as GroupFilter)}
-          render={(v) => (v === "ALL" ? "All" : v)}
-        />
-        <Pills
-          label="Matchday"
-          value={matchday}
-          options={["ALL", 1, 2, 3]}
-          onChange={(v) => setMatchday(v as DayFilter)}
-          render={(v) => (v === "ALL" ? "All" : `MD ${v}`)}
-        />
+        {mode === "knockouts" ? (
+          <Pills
+            label="Round"
+            value={round}
+            options={["ALL", "r32", "r16", "qf", "sf", "final"]}
+            onChange={setRound}
+            render={(v) => (v === "ALL" ? "All" : ({ r32: "R32", r16: "R16", qf: "QF", sf: "SF", final: "Final" } as Record<string, string>)[v] ?? v)}
+          />
+        ) : (
+          <>
+            <Pills
+              label="Group"
+              value={group}
+              options={["ALL", ...GROUPS]}
+              onChange={(v) => setGroup(v as GroupFilter)}
+              render={(v) => (v === "ALL" ? "All" : v)}
+            />
+            <Pills
+              label="Matchday"
+              value={matchday}
+              options={["ALL", 1, 2, 3]}
+              onChange={(v) => setMatchday(v as DayFilter)}
+              render={(v) => (v === "ALL" ? "All" : `MD ${v}`)}
+            />
+          </>
+        )}
       </div>
 
       {byDay.length === 0 && (
@@ -151,8 +160,6 @@ export default function Matches() {
           </div>
         </section>
       ))}
-        </>
-      )}
     </div>
   );
 }
