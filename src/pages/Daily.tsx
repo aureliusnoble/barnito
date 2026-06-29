@@ -1,11 +1,12 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown, SlidersHorizontal, Users } from "lucide-react";
+import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown, SlidersHorizontal, Users, ExternalLink } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { Avatar } from "../components/visuals";
 import { Crest } from "../components/bits";
 import { usePersistentState } from "../lib/usePersistentState";
 import { burstConfetti } from "../lib/confetti";
+import { DAILY_WIKI } from "../data/dailyWikiLinks";
 import type { Player } from "@shared/types";
 
 // Confederation per World Cup nation — used for the "same championship" (yellow) on Nation.
@@ -315,9 +316,21 @@ export default function Daily() {
                 <Crest teamId={target.teamId} size={15} />
                 <span className="text-pitch-400">{teamName(target.teamId)}</span>
               </div>
-              <button onClick={share} className="mx-auto mt-3 flex items-center gap-2 rounded-full bg-accent-500 px-4 py-2 text-sm font-bold text-pitch-950 transition active:scale-95">
-                <Share2 size={15} /> {copied ? "Copied!" : "Share result"}
-              </button>
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                <button onClick={share} className="flex items-center gap-2 rounded-full bg-accent-500 px-4 py-2 text-sm font-bold text-pitch-950 transition active:scale-95">
+                  <Share2 size={15} /> {copied ? "Copied!" : "Share result"}
+                </button>
+                {DAILY_WIKI[target.id] && (
+                  <a
+                    href={DAILY_WIKI[target.id]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 rounded-full bg-pitch-800 px-4 py-2 text-sm font-bold text-pitch-200 ring-1 ring-white/10 transition hover:text-accent-300 active:scale-95"
+                  >
+                    <ExternalLink size={15} /> Wikipedia
+                  </a>
+                )}
+              </div>
               <p className="mt-2 text-xs text-pitch-500">Next player at midnight (UK).</p>
             </div>
           )}
