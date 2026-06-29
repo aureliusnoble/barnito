@@ -906,8 +906,10 @@ Deno.serve(async (req) => {
       }
       await setDoc("bracket", buildBracket(fixtures, st));
 
-      // head-to-head (historical → fetch a few per run for matches that still lack it)
-      const needH2H = [...updated.values()].filter((m) => m.group !== "?" && !m.h2h).slice(0, 6);
+      // head-to-head (historical → fetch a few per run for matches that still lack it). Any fixture
+      // with both teams confirmed qualifies — including knockout ties (group "?"), so e.g. an R32
+      // tie shows its all-time meetings, not just group games.
+      const needH2H = [...updated.values()].filter((m) => m.homeTeamId && m.awayTeamId && !m.h2h).slice(0, 6);
       for (const m of needH2H) {
         const fx = fixtures.find((f) => gids.get(f.fixture.id)?.id === m.id);
         if (!fx) continue;
