@@ -96,8 +96,30 @@ export default function BracketDiagram() {
     return m;
   }, [matches]);
 
-  // Build each round's slots: R32 from the official order; later rounds by each team's origin slot.
-  const cols = CANON.map(([name, n], r) => {
+  // Freshest result per fixture (the matches table updates in realtime), used to decide who advances
+  // the instant a tie goes FINISHED — without waiting for the provider to publish the next round.
+  const liveByApi = useMemo(() => {
+    const m = new Map<number, (typeof matches.matches)[number]>();
+    for (const x of matches.matches) if (x.apiId != null) m.set(x.apiId, x);
+    return m;
+  }, [matches]);
+  const winnerOf = (bm: BracketMatch | null): string | null => {
+    if (!bm) return null;
+    const live = bm.apiId != null ? liveByApi.get(bm.apiId) : undefined;
+    const s = live ?? bm;
+    if (s.status !== "FINISHED" || s.homeGoals == null || s.awayGoals == null) return null;
+    if (s.homeGoals > s.awayGoals) return s.homeTeamId ?? bm.homeTeamId ?? null;
+    if (s.awayGoals > s.homeGoals) return s.awayTeamId ?? bm.awayTeamId ?? null;
+    return null; // level after extra time → settled on penalties; the real fixture resolves the side
+  };
+
+  // Build each round left→right. R32 comes from the official slot order. Each later round's slot i is
+  // fed by the two slots (2i, 2i+1) below it: use the provider's fixture if one exists, otherwise
+  // synthesize the tie from the winners we already know so advancement shows the moment a tie ends.
+  const cols: { name: string; n: number; slots: (BracketMatch | null)[] }[] = [];
+  let prevSlots: (BracketMatch | null)[] | null = null;
+  for (let r = 0; r < CANON.length; r++) {
+    const [name, n] = CANON[r];
     const slots: (BracketMatch | null)[] = Array(n).fill(null);
     if (name === "Round of 32") {
       for (let i = 0; i < 16; i++) slots[i] = r32BySlot[i];
@@ -109,9 +131,24 @@ export default function BracketDiagram() {
         const slot = Math.floor(o / 2 ** r);
         if (slot >= 0 && slot < n && !slots[slot]) slots[slot] = tie;
       }
+      if (prevSlots) {
+        for (let i = 0; i < n; i++) {
+          if (slots[i]) continue;
+          const hw = winnerOf(prevSlots[2 * i]);
+          const aw = winnerOf(prevSlots[2 * i + 1]);
+          if (hw || aw) {
+            slots[i] = {
+              apiId: null, round: name, kickoff: null, ground: null,
+              homeTeamId: hw ?? null, awayTeamId: aw ?? null, homeName: null, awayName: null,
+              status: "SCHEDULED", homeGoals: null, awayGoals: null,
+            };
+          }
+        }
+      }
     }
-    return { name, n, slots };
-  });
+    cols.push({ name, n, slots });
+    prevSlots = slots;
+  }
   const totalW = COL_W * cols.length;
 
   return (
