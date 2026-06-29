@@ -22,11 +22,18 @@ const seedFromStat = (p: PlayerStatLine): PlayerSeed => ({
 type View = "people" | "boot" | "players" | "bestxi" | "find";
 const normName = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 
+// Scorer picks are per round; each knockout round multiplies the per-goal value (×2 R32 … ×6 Final).
+const PHASE_ORDER = ["group", "r32", "r16", "qf", "sf", "final"] as const;
+const PHASE_LABEL: Record<string, string> = {
+  group: "Group stage", r32: "Round of 32", r16: "Round of 16", qf: "Quarter-finals", sf: "Semi-finals", final: "Final",
+};
+const PHASE_SHORT: Record<string, string> = { group: "Grp", r32: "R32", r16: "R16", qf: "QF", sf: "SF", final: "F" };
+
 export default function Scorers() {
   const [view, setView] = useState<View>("people");
   return (
     <div className="space-y-4">
-      <SectionTitle icon={<Goal size={18} className="text-accent-400" />} hint="32 DEF/GK · 16 MID · 8 FWD per goal">
+      <SectionTitle icon={<Goal size={18} className="text-accent-400" />} hint="Per goal: 32 DEF/GK · 16 MID · 8 FWD — then ×round (Grp 1 · R32 2 · R16 3 · QF 4 · SF 5 · Final 6)">
         Goal scorers
       </SectionTitle>
       <div className="flex flex-wrap gap-1.5">
@@ -135,39 +142,57 @@ function ByPerson() {
                 <ChevronDown size={16} className={`shrink-0 text-pitch-500 transition ${isOpen ? "rotate-180" : ""}`} />
               </button>
               {isOpen && (
-                <ul className="divide-y divide-white/[0.04] border-t border-white/[0.06]">
-                  {sv.picks.map((p) => {
-                    const player = playerById.get(p.playerId);
-                    const injury = injuryByPlayerId.get(p.playerId);
-                    const cs = playerStats.players[p.playerId];
+                <div className="border-t border-white/[0.06]">
+                  {PHASE_ORDER.filter((ph) => sv.picks.some((p) => p.phase === ph)).map((ph) => {
+                    const rows = sv.picks.filter((p) => p.phase === ph);
+                    const gGoals = rows.reduce((n, p) => n + p.goals, 0);
+                    const gPts = rows.reduce((n, p) => n + p.points, 0);
                     return (
-                      <li key={p.playerId} onClick={() => open(p.playerId)} className="flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm transition hover:bg-white/[0.03]">
-                        <Avatar photo={player?.photo} name={p.playerName} position={p.position} size={30} />
-                        <span className="min-w-0 flex-1">
-                          <span className="flex items-center gap-1.5">
-                            <span className="truncate text-pitch-100">{p.playerName}</span>
-                            {cs && <CardFlag yellow={cs.yellow > 0} red={cs.red > 0} size={12} />}
-                            {injury && (
-                              <span title={`${injury.type}: ${injury.reason}`} className="shrink-0">
-                                <AlertTriangle size={13} className="text-spice-400" />
-                              </span>
-                            )}
+                      <div key={ph}>
+                        {/* round header + this round's subtotal, so it's clear which round the goals/points are from */}
+                        <div className="flex items-center justify-between bg-white/[0.025] px-3 py-1.5">
+                          <span className="text-[11px] font-bold uppercase tracking-wide text-pitch-300">{PHASE_LABEL[ph]}</span>
+                          <span className="text-[11px] text-pitch-500">
+                            {gGoals} {gGoals === 1 ? "goal" : "goals"} · <span className="font-bold text-accent-300">{gPts} pts</span>
                           </span>
-                          <span className="flex items-center gap-1 text-[11px] text-pitch-500">
-                            <Crest teamId={p.teamId} size={11} /> {teamName(p.teamId)}
-                          </span>
-                        </span>
-                        <PosBadge position={p.position} />
-                        <span className="w-9 text-right text-pitch-300">
-                          {p.goals}
-                          <span className="text-[10px] text-pitch-500"> gl</span>
-                        </span>
-                        <span className="w-10 text-right font-bold tabular-nums text-white">{p.points}</span>
-                        <ChevronRight size={14} className="shrink-0 text-pitch-600" />
-                      </li>
+                        </div>
+                        <ul className="divide-y divide-white/[0.04]">
+                          {rows.map((p) => {
+                            const player = playerById.get(p.playerId);
+                            const injury = injuryByPlayerId.get(p.playerId);
+                            const cs = playerStats.players[p.playerId];
+                            return (
+                              <li key={`${ph}-${p.playerId}`} onClick={() => open(p.playerId)} className="flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm transition hover:bg-white/[0.03]">
+                                <Avatar photo={player?.photo} name={p.playerName} position={p.position} size={30} />
+                                <span className="min-w-0 flex-1">
+                                  <span className="flex items-center gap-1.5">
+                                    <span className="truncate text-pitch-100">{p.playerName}</span>
+                                    {cs && <CardFlag yellow={cs.yellow > 0} red={cs.red > 0} size={12} />}
+                                    {injury && (
+                                      <span title={`${injury.type}: ${injury.reason}`} className="shrink-0">
+                                        <AlertTriangle size={13} className="text-spice-400" />
+                                      </span>
+                                    )}
+                                  </span>
+                                  <span className="flex items-center gap-1 text-[11px] text-pitch-500">
+                                    <Crest teamId={p.teamId} size={11} /> {teamName(p.teamId)}
+                                  </span>
+                                </span>
+                                <PosBadge position={p.position} />
+                                <span className="w-12 text-right leading-tight text-pitch-300" title={`${p.goals} goals × ${p.multiplier} pts per goal`}>
+                                  {p.goals}<span className="text-[10px] text-pitch-500"> gl</span>
+                                  <span className="block text-[9px] text-pitch-600">×{p.multiplier}/gl</span>
+                                </span>
+                                <span className="w-10 text-right font-bold tabular-nums text-white">{p.points}</span>
+                                <ChevronRight size={14} className="shrink-0 text-pitch-600" />
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
                     );
                   })}
-                </ul>
+                </div>
               )}
             </div>
           );
@@ -272,8 +297,9 @@ interface Agg {
   playerName: string;
   teamId: string;
   position: Position;
-  goals: number;
-  pickedBy: string[];
+  goals: number; // total across the rounds where the player was someone's pick
+  backers: string[]; // distinct people (a person picking them in two rounds counts once)
+  phases: string[]; // rounds they were picked in, canonical order
 }
 
 function ByPlayer() {
@@ -281,25 +307,31 @@ function ByPlayer() {
   const { open } = usePlayerModal();
   const { teamName } = useHelpers();
 
-  const aggregated = useMemo(() => {
-    const map = new Map<string, Agg>();
+  const aggregated = useMemo<Agg[]>(() => {
+    const map = new Map<string, {
+      playerId: string; playerName: string; teamId: string; position: Position;
+      goalsByPhase: Map<string, number>; backers: Set<string>; phases: Set<string>;
+    }>();
     for (const sv of scores.scorerView) {
       for (const pick of sv.picks) {
-        const a = map.get(pick.playerId) ?? {
-          playerId: pick.playerId,
-          playerName: pick.playerName,
-          teamId: pick.teamId,
-          position: pick.position,
-          goals: pick.goals,
-          pickedBy: [],
-        };
-        a.pickedBy.push(sv.name);
-        map.set(pick.playerId, a);
+        let a = map.get(pick.playerId);
+        if (!a) {
+          a = { playerId: pick.playerId, playerName: pick.playerName, teamId: pick.teamId, position: pick.position, goalsByPhase: new Map(), backers: new Set(), phases: new Set() };
+          map.set(pick.playerId, a);
+        }
+        a.backers.add(sv.name);
+        a.phases.add(pick.phase);
+        a.goalsByPhase.set(pick.phase, pick.goals); // identical across pickers for a given phase
       }
     }
-    return [...map.values()].sort(
-      (a, b) => b.pickedBy.length - a.pickedBy.length || b.goals - a.goals,
-    );
+    return [...map.values()]
+      .map((a) => ({
+        playerId: a.playerId, playerName: a.playerName, teamId: a.teamId, position: a.position,
+        goals: [...a.goalsByPhase.values()].reduce((n, g) => n + g, 0),
+        backers: [...a.backers],
+        phases: PHASE_ORDER.filter((ph) => a.phases.has(ph)),
+      }))
+      .sort((a, b) => b.backers.length - a.backers.length || b.goals - a.goals);
   }, [scores]);
 
   return (
@@ -310,18 +342,21 @@ function ByPlayer() {
           <div key={a.playerId} onClick={() => open(a.playerId)} className="card card-hover flex cursor-pointer items-center gap-2.5 p-3 text-sm">
             <Avatar photo={player?.photo} name={a.playerName} position={a.position} size={32} />
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <span className="truncate font-semibold text-white">{a.playerName}</span>
                 <PosBadge position={a.position} />
+                {a.phases.map((ph) => (
+                  <span key={ph} title={PHASE_LABEL[ph]} className="rounded bg-white/[0.06] px-1 py-px text-[9px] font-bold uppercase tracking-wide text-pitch-300">{PHASE_SHORT[ph]}</span>
+                ))}
               </div>
               <div className="flex items-center gap-1 truncate text-[11px] text-pitch-400">
-                <Crest teamId={a.teamId} size={11} /> {teamName(a.teamId)} · picked by {a.pickedBy.join(", ")}
+                <Crest teamId={a.teamId} size={11} /> {teamName(a.teamId)} · picked by {a.backers.join(", ")}
               </div>
             </div>
             <div className="text-right">
               <div className="font-bold tabular-nums text-white">{a.goals} ⚽</div>
               <div className="text-[10px] text-pitch-500">
-                ×{a.pickedBy.length} {a.pickedBy.length === 1 ? "pick" : "picks"}
+                {a.backers.length} {a.backers.length === 1 ? "backer" : "backers"}
               </div>
             </div>
             <ChevronRight size={14} className="shrink-0 text-pitch-600" />
