@@ -336,6 +336,13 @@ function Predictions({ match, predicted }: { match: Match; predicted: MatchPredi
     const outcome = Math.sign(p.predHome - p.predAway) === Math.sign(match.homeGoals - match.awayGoals);
     return (exact ? 45 : outcome ? 30 : 0) * factor;
   };
+  // Rank by home margin (predHome − predAway): biggest home wins first, draws in the middle, biggest
+  // away wins last; higher home score breaks ties (3–1 above 2–0).
+  const ordered = [...predicted].sort((a, b) => {
+    const da = (a.predHome ?? 0) - (a.predAway ?? 0);
+    const db = (b.predHome ?? 0) - (b.predAway ?? 0);
+    return db - da || (b.predHome ?? 0) - (a.predHome ?? 0);
+  });
   return (
     <section>
       <div className="mb-2 flex items-baseline justify-between">
@@ -352,7 +359,7 @@ function Predictions({ match, predicted }: { match: Match; predicted: MatchPredi
         <p className="text-sm text-pitch-400">No predictions on record for this match.</p>
       ) : (
         <ul className="divide-y divide-white/[0.05]">
-          {predicted.map((p) => {
+          {ordered.map((p) => {
             const onScore = p.live && p.matchesCurrentScore;
             const onResult = p.live && !p.matchesCurrentScore && p.matchesCurrentOutcome;
             return (
