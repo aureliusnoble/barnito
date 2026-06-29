@@ -911,7 +911,7 @@ Deno.serve(async (req) => {
       // tie shows its all-time meetings, not just group games.
       const needH2H = [...updated.values()].filter((m) => m.homeTeamId && m.awayTeamId && !m.h2h).slice(0, 6);
       for (const m of needH2H) {
-        const fx = fixtures.find((f) => gids.get(f.fixture.id)?.id === m.id);
+        const fx = fixtures.find((f) => idFor(f.fixture.id)?.id === m.id);
         if (!fx) continue;
         try {
           const h2h = await apiGet<ApiFixture>("fixtures/headtohead", { h2h: `${fx.teams.home.id}-${fx.teams.away.id}`, last: 6 });
