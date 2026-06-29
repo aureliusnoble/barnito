@@ -940,7 +940,9 @@ Deno.serve(async (req) => {
         if (!m.apiId) continue;
         const f = liveById.get(m.apiId);
         const d = details.get(m.apiId);
-        if (f) updated.set(m.id, buildMatch(f, m.id, st, d, m));
+        // carry the match's known phase through the live rebuild — otherwise a knockout tie loses its
+        // phase (and gets a stray group_letter) the moment it goes live, reverting its round factor to ×1.
+        if (f) updated.set(m.id, buildMatch(f, m.id, st, d, m, m.phase));
       }
     }
 
