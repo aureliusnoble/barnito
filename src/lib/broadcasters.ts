@@ -1,8 +1,8 @@
 // UK free-to-air broadcaster for each World Cup 2026 fixture (BBC vs ITV).
 // API-Football carries no UK TV data, so this is a manual map sourced from the published
 // BBC/ITV schedule (live-footballontv.com + ESPN UK TV guide). Keyed by the two team ids sorted
-// + joined with "|" so home/away order doesn't matter. All 72 group-stage fixtures are covered;
-// knockout ties are chosen nearer the time and show no badge until added here.
+// + joined with "|" so home/away order doesn't matter. All 72 group-stage fixtures and the 16
+// Round-of-32 ties are covered; later knockout ties show no badge until added here.
 export type Broadcaster = "BBC" | "ITV";
 
 const BROADCASTERS: Record<string, Broadcaster> = {
@@ -78,6 +78,24 @@ const BROADCASTERS: Record<string, Broadcaster> = {
   "spain|uruguay": "ITV",
   "sweden|tunisia": "ITV",
   "turkiye|usa": "ITV",
+
+  // Round of 32 (BBC/ITV split as published).
+  "canada|south-africa": "ITV",
+  "brazil|japan": "ITV",
+  "germany|paraguay": "BBC",
+  "morocco|netherlands": "ITV",
+  "ivory-coast|norway": "BBC",
+  "france|sweden": "ITV",
+  "ecuador|mexico": "ITV",
+  "congo-dr|england": "BBC",
+  "belgium|senegal": "ITV",
+  "bosnia-and-herzegovina|usa": "BBC",
+  "austria|spain": "BBC",
+  "croatia|portugal": "BBC",
+  "algeria|switzerland": "BBC",
+  "australia|egypt": "BBC",
+  "argentina|cape-verde-islands": "ITV",
+  "colombia|ghana": "ITV",
 };
 
 /** UK broadcaster for a fixture, or null if not yet confirmed. */
