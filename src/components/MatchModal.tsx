@@ -359,13 +359,19 @@ function Predictions({ match, predicted }: { match: Match; predicted: MatchPredi
         <p className="text-sm text-pitch-400">No predictions on record for this match.</p>
       ) : (
         <ul className="divide-y divide-white/[0.05]">
-          {ordered.map((p) => {
+          {ordered.map((p, i) => {
             const onScore = p.live && p.matchesCurrentScore;
             const onResult = p.live && !p.matchesCurrentScore && p.matchesCurrentOutcome;
+            // A thin brighter rule + a little space marks the boundary between home-win, draw and
+            // away-win guesses (the list is sorted by margin, so these groups are contiguous).
+            const sign = (q: MatchPredictionResult) => Math.sign((q.predHome ?? 0) - (q.predAway ?? 0));
+            const newGroup = i > 0 && sign(ordered[i - 1]) !== sign(p);
             return (
               <li
                 key={p.participantId}
                 className={`flex items-center justify-between rounded-lg px-2 py-2 ${
+                  newGroup ? "mt-1.5 border-t border-white/20 pt-3" : ""
+                } ${
                   onScore ? "bg-accent-500/10 ring-1 ring-accent-500/30" : onResult ? "bg-white/[0.03]" : ""
                 }`}
               >
