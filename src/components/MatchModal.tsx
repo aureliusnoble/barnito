@@ -864,17 +864,29 @@ function cardsThrough(allMatches: Match[], upto: Match): Map<string, { yellow: n
 }
 
 // Disciplinary status a player carries INTO `target`, with anything that auto-clears beforehand
-// removed: a one-match ban (straight red, two yellows in a match, or a 2nd yellow across matches) is
-// served by the team's next fixture, and accumulated single yellows are wiped after the quarter-finals.
+// A one-match ban (straight red, two yellows in a match, or a 2nd yellow across matches) is served by
+// the team's next fixture and carries across amnesties. Accumulated single yellows are wiped at FIFA's
+// 2026 amnesty boundaries — after the group stage AND after the quarter-finals (the 48-team format adds
+// the Round of 32, so a second amnesty was introduced) — so group yellows don't threaten the knockouts.
+const cardWindow = (m: Match): number => {
+  const ph = m.phase;
+  if (!ph || ph === "group") return 0;       // group stage
+  if (ph === "sf" || ph === "final") return 2; // post-QF amnesty
+  return 1;                                    // R32 / R16 / QF
+};
 function activeCards(allMatches: Match[], target: Match): Map<string, { booking: boolean; suspended: boolean }> {
   const prior = allMatches.filter((m) => m.kickoff < target.kickoff).sort((a, b) => a.kickoff.localeCompare(b.kickoff));
-  const postQf = target.phase === "sf" || target.phase === "final";
+  const targetWin = cardWindow(target);
   const out = new Map<string, { booking: boolean; suspended: boolean }>();
   for (const teamId of [target.homeTeamId, target.awayTeamId]) {
     const seq = prior.filter((m) => m.homeTeamId === teamId || m.awayTeamId === teamId);
-    const py = new Map<string, number>();  // active single yellows
-    const ban = new Map<string, number>(); // unserved ban matches
+    const py = new Map<string, number>();  // single-yellow tally within the current amnesty window
+    const ban = new Map<string, number>(); // unserved ban matches (carry across amnesties)
+    let curWin: number | null = null;
     for (const m of seq) {
+      const w = cardWindow(m);
+      if (curWin !== null && w !== curWin) py.clear(); // yellows wiped at the amnesty boundary
+      curWin = w;
       for (const [pid, b] of ban) if (b > 0) ban.set(pid, b - 1); // this fixture serves a pending ban
       const yellows = new Map<string, number>();
       for (const e of m.events ?? []) {
@@ -891,9 +903,11 @@ function activeCards(allMatches: Match[], target: Match): Map<string, { booking:
         }
       }
     }
+    // if the target match opens a new amnesty window, the single-yellow tally is already wiped for it
+    if (curWin !== null && targetWin !== curWin) py.clear();
     for (const pid of new Set([...py.keys(), ...ban.keys()])) {
       const suspended = (ban.get(pid) ?? 0) > 0;
-      const booking = !postQf && (py.get(pid) ?? 0) > 0;
+      const booking = (py.get(pid) ?? 0) > 0;
       if (suspended || booking) out.set(pid, { booking, suspended });
     }
   }
