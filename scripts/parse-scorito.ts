@@ -36,6 +36,12 @@ const pairToMatch = new Map<string, { id: string; home: string; away: string }>(
 for (const m of matchesFile.matches) {
   pairToMatch.set([m.homeTeamId, m.awayTeamId].sort().join("|"), { id: m.id, home: m.homeTeamId, away: m.awayTeamId });
 }
+// R32 ties only (id "r32-…"), so the "R32 Matches" sheet maps to the knockout fixture, never a group one.
+const pairToR32 = new Map<string, { id: string; home: string; away: string }>();
+for (const m of matchesFile.matches) {
+  if (!m.id.startsWith("r32-")) continue;
+  pairToR32.set([m.homeTeamId, m.awayTeamId].sort().join("|"), { id: m.id, home: m.homeTeamId, away: m.awayTeamId });
+}
 
 // scorer name index
 const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
@@ -98,8 +104,12 @@ async function main() {
   const M = wb.getWorksheet("Matches")!;
   const S = wb.getWorksheet("Top Scorers")!;
   const C = wb.getWorksheet("Champion")!;
+  const R32M = wb.getWorksheet("R32 Matches");
+  const R32S = wb.getWorksheet("R32 Top Scorers");
 
   const byName = new Map<string, Participant>();
+  // Per-round scorer picks; group is mirrored into topPlayers for backwards compatibility.
+  const r32Scorers = new Map<string, string[]>(); // participant id → resolved player ids
   const get = (name: string): Participant => {
     const cn = canonical(name);
     if (!byName.has(cn)) byName.set(cn, { id: slug(cn), name: cn, matchScores: [], topPlayers: [], champion: "" });
@@ -136,6 +146,43 @@ async function main() {
     if (m.id && !get(player).topPlayers.includes(m.id)) get(player).topPlayers.push(m.id);
   });
 
+  // --- R32 match scores (sheet: Player, Team1, Team2, Pred1, Pred2 — no Round column) ---
+  if (R32M) {
+    R32M.eachRow((row, n) => {
+      if (n === 1) return;
+      const player = txt(row.getCell(1).value);
+      if (!player) return;
+      const c1 = txt(row.getCell(2).value), c2 = txt(row.getCell(3).value);
+      const p1 = numv(row.getCell(4).value), p2 = numv(row.getCell(5).value);
+      if (p1 == null || p2 == null) return;
+      const t1 = CODE_TO_TEAM[c1], t2 = CODE_TO_TEAM[c2];
+      if (!t1 || !teamIds.has(t1)) { codeIssues.add(c1); return; }
+      if (!t2 || !teamIds.has(t2)) { codeIssues.add(c2); return; }
+      const fx = pairToR32.get([t1, t2].sort().join("|"));
+      if (!fx) { fixtureMisses.push(`${c1} v ${c2} (R32)`); return; }
+      const home = fx.home === t1 ? p1 : p2;
+      const away = fx.home === t1 ? p2 : p1;
+      get(player).matchScores.push({ matchId: fx.id, home, away } as MatchScorePrediction);
+    });
+  }
+
+  // --- R32 scorers (4 per player) ---
+  if (R32S) {
+    R32S.eachRow((row, n) => {
+      if (n === 1) return;
+      const player = txt(row.getCell(1).value);
+      const scorer = txt(row.getCell(2).value);
+      if (!player || !scorer) return;
+      if (!scorerResolution.has(scorer)) scorerResolution.set(scorer, matchScorer(scorer));
+      const m = scorerResolution.get(scorer)!;
+      if (!m.id) return;
+      const pid = get(player).id;
+      const arr = r32Scorers.get(pid) ?? [];
+      if (!arr.includes(m.id)) arr.push(m.id);
+      r32Scorers.set(pid, arr);
+    });
+  }
+
   // --- champion ---
   C.eachRow((row, n) => {
     if (n === 1) return;
@@ -149,9 +196,21 @@ async function main() {
 
   const participants = [...byName.values()];
 
+  // Per-round scorer picks: group mirrors topPlayers; r32 from its own sheet. Scoring reads
+  // scorersByRound[phase] for knockout ties and falls back to topPlayers for the group stage.
+  for (const p of participants) {
+    const r32 = r32Scorers.get(p.id) ?? [];
+    if (p.topPlayers.length || r32.length) {
+      p.scorersByRound = { group: p.topPlayers, ...(r32.length ? { r32 } : {}) };
+    }
+  }
+
   // Manual corrections where the Scorito export cell was wrong (confirmed against the player).
-  // (Will's earlier C-2/G-1 fixes are now baked into the corrected export, so no overrides needed.)
-  const MATCH_OVERRIDE: Record<string, Record<string, [number, number]>> = {};
+  // Will's earlier C-2/G-1 fixes are baked into the corrected export. Sarah's Panama–Croatia (L-4)
+  // export cell reads 0-1 but her real pick is 0-2 (confirmed); the export keeps reverting it.
+  const MATCH_OVERRIDE: Record<string, Record<string, [number, number]>> = {
+    Sarah: { "L-4": [0, 2] },
+  };
   for (const p of participants) {
     const ov = MATCH_OVERRIDE[p.name];
     if (!ov) continue;
@@ -164,7 +223,8 @@ async function main() {
   // ---- report ----
   console.log(`\n=== PARTICIPANTS (${participants.length}) ===`);
   for (const p of participants) {
-    console.log(`  ${p.name}: ${p.matchScores.length} scores, ${p.topPlayers.length} scorers, champion=${p.champion || "—"}`);
+    const r32n = p.scorersByRound?.r32?.length ?? 0;
+    console.log(`  ${p.name}: ${p.matchScores.length} scores, ${p.topPlayers.length} group scorers, ${r32n} R32 scorers, champion=${p.champion || "—"}`);
   }
   console.log(`\n=== SCORER RESOLUTION (${scorerResolution.size}) ===`);
   for (const [raw, m] of scorerResolution) {

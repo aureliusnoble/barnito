@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-16T09:53:37.877Z",
+  "updatedAt": "2026-06-29T06:58:35.243Z",
   "participants": [
     {
       "id": "8azil",
@@ -364,6 +364,86 @@
           "matchId": "J-5",
           "home": 0,
           "away": 1
+        },
+        {
+          "matchId": "r32-1561329",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562344",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1565176",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1562345",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1564789",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565177",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567306",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567307",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567308",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1562586",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567311",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567309",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567312",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1565178",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565179",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567310",
+          "home": 1,
+          "away": 0
         }
       ],
       "topPlayers": [
@@ -374,7 +454,23 @@
         "argentina-j-alvarez",
         "germany-k-havertz"
       ],
-      "champion": "france"
+      "champion": "france",
+      "scorersByRound": {
+        "group": [
+          "england-h-kane",
+          "france-kylian-mbappe",
+          "france-m-olise",
+          "spain-lamine-yamal",
+          "argentina-j-alvarez",
+          "germany-k-havertz"
+        ],
+        "r32": [
+          "england-h-kane",
+          "france-kylian-mbappe",
+          "argentina-l-messi",
+          "germany-k-havertz"
+        ]
+      }
     },
     {
       "id": "aurelius",
@@ -739,6 +835,86 @@
           "matchId": "J-5",
           "home": 0,
           "away": 1
+        },
+        {
+          "matchId": "r32-1561329",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562344",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565176",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1562345",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1564789",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565177",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567306",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567307",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567308",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562586",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567311",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567309",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567312",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565178",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1565179",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567310",
+          "home": 1,
+          "away": 0
         }
       ],
       "topPlayers": [
@@ -749,7 +925,23 @@
         "germany-k-havertz",
         "germany-f-wirtz"
       ],
-      "champion": "france"
+      "champion": "france",
+      "scorersByRound": {
+        "group": [
+          "norway-e-haaland",
+          "argentina-l-messi",
+          "portugal-cristiano-ronaldo",
+          "belgium-k-de-bruyne",
+          "germany-k-havertz",
+          "germany-f-wirtz"
+        ],
+        "r32": [
+          "norway-e-haaland",
+          "france-kylian-mbappe",
+          "spain-mikel-oyarzabal",
+          "germany-k-havertz"
+        ]
+      }
     },
     {
       "id": "will-guess-football-good",
@@ -1114,6 +1306,86 @@
           "matchId": "J-5",
           "home": 1,
           "away": 2
+        },
+        {
+          "matchId": "r32-1561329",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1562344",
+          "home": 3,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565176",
+          "home": 3,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562345",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1564789",
+          "home": 1,
+          "away": 3
+        },
+        {
+          "matchId": "r32-1565177",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567306",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567307",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567308",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1562586",
+          "home": 3,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567311",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567309",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1567312",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565178",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565179",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567310",
+          "home": 1,
+          "away": 0
         }
       ],
       "topPlayers": [
@@ -1124,7 +1396,23 @@
         "argentina-j-alvarez",
         "portugal-bruno-fernandes"
       ],
-      "champion": "france"
+      "champion": "france",
+      "scorersByRound": {
+        "group": [
+          "norway-e-haaland",
+          "england-h-kane",
+          "france-kylian-mbappe",
+          "france-m-olise",
+          "argentina-j-alvarez",
+          "portugal-bruno-fernandes"
+        ],
+        "r32": [
+          "norway-e-haaland",
+          "france-kylian-mbappe",
+          "argentina-l-messi",
+          "brazil-vinicius-junior"
+        ]
+      }
     },
     {
       "id": "sarah",
@@ -1363,7 +1651,7 @@
         {
           "matchId": "L-4",
           "home": 0,
-          "away": 1
+          "away": 2
         },
         {
           "matchId": "K-4",
@@ -1489,6 +1777,86 @@
           "matchId": "J-5",
           "home": 0,
           "away": 1
+        },
+        {
+          "matchId": "r32-1561329",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562344",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565176",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1562345",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1564789",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565177",
+          "home": 3,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567306",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567307",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567308",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562586",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567311",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567309",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567312",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565178",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565179",
+          "home": 3,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567310",
+          "home": 1,
+          "away": 1
         }
       ],
       "topPlayers": [
@@ -1499,7 +1867,23 @@
         "spain-lamine-yamal",
         "germany-f-wirtz"
       ],
-      "champion": "spain"
+      "champion": "spain",
+      "scorersByRound": {
+        "group": [
+          "england-h-kane",
+          "france-kylian-mbappe",
+          "france-m-olise",
+          "brazil-vinicius-junior",
+          "spain-lamine-yamal",
+          "germany-f-wirtz"
+        ],
+        "r32": [
+          "norway-e-haaland",
+          "france-kylian-mbappe",
+          "argentina-l-messi",
+          "germany-k-havertz"
+        ]
+      }
     },
     {
       "id": "robsonaldo",
@@ -1864,6 +2248,86 @@
           "matchId": "J-5",
           "home": 1,
           "away": 1
+        },
+        {
+          "matchId": "r32-1561329",
+          "home": 0,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1562344",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565176",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1562345",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1564789",
+          "home": 0,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565177",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567306",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567307",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567308",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1562586",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567311",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567309",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567312",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1565178",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565179",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567310",
+          "home": 1,
+          "away": 1
         }
       ],
       "topPlayers": [
@@ -1874,7 +2338,23 @@
         "portugal-bruno-fernandes",
         "spain-dani-olmo"
       ],
-      "champion": "england"
+      "champion": "england",
+      "scorersByRound": {
+        "group": [
+          "norway-e-haaland",
+          "england-h-kane",
+          "spain-mikel-oyarzabal",
+          "portugal-cristiano-ronaldo",
+          "portugal-bruno-fernandes",
+          "spain-dani-olmo"
+        ],
+        "r32": [
+          "norway-e-haaland",
+          "england-h-kane",
+          "france-kylian-mbappe",
+          "argentina-l-messi"
+        ]
+      }
     },
     {
       "id": "stuart",
@@ -2239,6 +2719,86 @@
           "matchId": "J-5",
           "home": 1,
           "away": 2
+        },
+        {
+          "matchId": "r32-1561329",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562344",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565176",
+          "home": 3,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1562345",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1564789",
+          "home": 0,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565177",
+          "home": 3,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567306",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567307",
+          "home": 3,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567308",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562586",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567311",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567309",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567312",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565178",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1565179",
+          "home": 5,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567310",
+          "home": 2,
+          "away": 1
         }
       ],
       "topPlayers": [
@@ -2249,7 +2809,23 @@
         "spain-ferran-torres",
         "argentina-j-alvarez"
       ],
-      "champion": "france"
+      "champion": "france",
+      "scorersByRound": {
+        "group": [
+          "argentina-lautaro-martinez",
+          "france-kylian-mbappe",
+          "france-m-olise",
+          "spain-mikel-oyarzabal",
+          "spain-ferran-torres",
+          "argentina-j-alvarez"
+        ],
+        "r32": [
+          "france-kylian-mbappe",
+          "argentina-l-messi",
+          "spain-mikel-oyarzabal",
+          "germany-k-havertz"
+        ]
+      }
     },
     {
       "id": "javier-barndembo",
@@ -2614,6 +3190,86 @@
           "matchId": "J-5",
           "home": 1,
           "away": 1
+        },
+        {
+          "matchId": "r32-1561329",
+          "home": 0,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1562344",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565176",
+          "home": 3,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1562345",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "matchId": "r32-1564789",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565177",
+          "home": 3,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567306",
+          "home": 3,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567307",
+          "home": 2,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567308",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1562586",
+          "home": 3,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567311",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1567309",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1567312",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "matchId": "r32-1565178",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "matchId": "r32-1565179",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "matchId": "r32-1567310",
+          "home": 1,
+          "away": 0
         }
       ],
       "topPlayers": [
@@ -2624,7 +3280,23 @@
         "brazil-raphinha",
         "spain-mikel-oyarzabal"
       ],
-      "champion": "france"
+      "champion": "france",
+      "scorersByRound": {
+        "group": [
+          "england-h-kane",
+          "argentina-e-fernandez-2",
+          "belgium-j-doku",
+          "norway-e-haaland",
+          "brazil-raphinha",
+          "spain-mikel-oyarzabal"
+        ],
+        "r32": [
+          "argentina-l-messi",
+          "france-kylian-mbappe",
+          "norway-e-haaland",
+          "brazil-matheus-cunha"
+        ]
+      }
     }
   ]
 }
