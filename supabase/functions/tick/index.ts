@@ -67,6 +67,7 @@ function rowToMatch(r: Record<string, unknown>): Match {
     venue: (r.venue as Match["venue"]) ?? null, homeTeamId: r.home_team_id as string, awayTeamId: r.away_team_id as string,
     status: r.status as Match["status"], elapsed: (r.elapsed as number) ?? null,
     homeGoals: (r.home_goals as number) ?? null, awayGoals: (r.away_goals as number) ?? null,
+    penHome: (r.pen_home as number) ?? null, penAway: (r.pen_away as number) ?? null,
     goals: (r.goals as GoalEvent[]) ?? [], events: (r.events as MatchEvent[]) ?? undefined,
     lineups: (r.lineups as Lineup[]) ?? undefined, stats: (r.stats as TeamStat[]) ?? undefined,
     ratings: (r.ratings as PlayerRating[]) ?? undefined, h2h: (r.h2h as Match["h2h"]) ?? undefined,
@@ -79,6 +80,7 @@ function matchToRow(m: Match, round?: string) {
     id: m.id, api_id: m.apiId, group_letter: m.group === "?" ? null : m.group, matchday: m.matchday,
     kickoff: m.kickoff, status: m.status, elapsed: m.elapsed, home_team_id: m.homeTeamId,
     away_team_id: m.awayTeamId, home_goals: m.homeGoals, away_goals: m.awayGoals, ground: m.ground,
+    pen_home: m.penHome ?? null, pen_away: m.penAway ?? null,
     venue: m.venue, goals: m.goals, events: m.events ?? null, lineups: m.lineups ?? null,
     stats: m.stats ?? null, ratings: m.ratings ?? null, h2h: m.h2h ?? null, round: round ?? null,
     weather: m.weather ?? null, phase: m.phase ?? null, updated_at: new Date().toISOString(),
@@ -89,7 +91,7 @@ function matchToRow(m: Match, round?: string) {
 // realtime message per row to every connected client, which alone can blow the egress quota.
 const MATCH_SIG_KEYS = [
   "api_id", "group_letter", "matchday", "kickoff", "status", "elapsed", "home_team_id", "away_team_id",
-  "home_goals", "away_goals", "ground", "venue", "goals", "events", "lineups", "stats", "ratings", "h2h", "weather", "phase",
+  "home_goals", "away_goals", "pen_home", "pen_away", "ground", "venue", "goals", "events", "lineups", "stats", "ratings", "h2h", "weather", "phase",
 ] as const;
 // deno-lint-ignore no-explicit-any
 const sigNorm = (v: any) => (v == null || (Array.isArray(v) && v.length === 0) ? null : v); // []/null/undefined all equal
@@ -179,6 +181,7 @@ function buildMatch(f: ApiFixture, id: string, st: State, details?: ReturnType<t
     kickoff: f.fixture.date, ground: v?.name ?? null, venue: v?.name ? { name: v.name, city: v.city ?? null } : null,
     homeTeamId: home?.id ?? slug(f.teams.home.name), awayTeamId: away?.id ?? slug(f.teams.away.name),
     status, elapsed: f.fixture.status.elapsed, homeGoals: f.goals.home, awayGoals: f.goals.away,
+    penHome: f.score?.penalty?.home ?? null, penAway: f.score?.penalty?.away ?? null,
     goals: played ? (details?.goals ?? carry?.goals ?? []) : [],
     events: played ? (details?.events ?? carry?.events) : undefined,
     lineups: details?.lineups ?? (played ? carry?.lineups : undefined),

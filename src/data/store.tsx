@@ -56,6 +56,7 @@ const rowToMatch = (r: Row): Match => ({
   homeTeamId: r.home_team_id as string, awayTeamId: r.away_team_id as string,
   status: (r.status as Match["status"]) ?? "SCHEDULED", elapsed: (r.elapsed as number) ?? null,
   homeGoals: (r.home_goals as number) ?? null, awayGoals: (r.away_goals as number) ?? null,
+  penHome: (r.pen_home as number) ?? null, penAway: (r.pen_away as number) ?? null,
   goals: (r.goals as GoalEvent[]) ?? [], events: (r.events as MatchEvent[]) ?? undefined,
   lineups: (r.lineups as Lineup[]) ?? undefined, stats: (r.stats as TeamStat[]) ?? undefined,
   ratings: (r.ratings as PlayerRating[]) ?? undefined, h2h: (r.h2h as Match["h2h"]) ?? undefined,
@@ -74,7 +75,7 @@ const EMPTY_SCORES: ScoresFile = { updatedAt: "", leaderboard: [], perMatch: [],
 // heavy per-match jsonb (lineups, events, stats, ratings, h2h, weather), which is ~90% of the row and
 // only used in the match modal / Daily / Best XI. The initial load still pulls those once; the 30s
 // poll merges just these light fields so we don't re-transfer megabytes of unchanged detail.
-const MATCH_LIGHT_COLS = "id,api_id,group_letter,matchday,kickoff,status,elapsed,home_team_id,away_team_id,home_goals,away_goals,ground,venue,goals,phase,updated_at";
+const MATCH_LIGHT_COLS = "id,api_id,group_letter,matchday,kickoff,status,elapsed,home_team_id,away_team_id,home_goals,away_goals,pen_home,pen_away,ground,venue,goals,phase,updated_at";
 // Player columns minus club_history (~1.26 MB, used only by the Daily game) — that's lazy-loaded and cached separately.
 const PLAYER_LIGHT_COLS = "id,api_id,name,team_id,position,goal_multiplier,photo,number,age,ucl,ucl_seasons,ucl_ko,wc_best,club";
 

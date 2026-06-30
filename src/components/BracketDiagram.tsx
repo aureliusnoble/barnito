@@ -3,7 +3,7 @@ import { useBarnito, useHelpers } from "../data/store";
 import { Crest } from "./bits";
 import { useMatchModal } from "./MatchModal";
 import { formatDay, formatTime } from "../lib/format";
-import type { BracketMatch } from "@shared/types";
+import type { BracketMatch, Match } from "@shared/types";
 
 // Full knockout bracket as a connected left-to-right tree (R32 → Final), in the official WC-2026 order
 // (not kickoff order). Blank slots show ties not yet confirmed; tap a confirmed tie for the full card.
@@ -33,9 +33,12 @@ function Row({ teamId, name, goals, won }: { teamId: string | null; name?: strin
   );
 }
 
-function MatchBox({ m, onOpen }: { m: BracketMatch | null; onOpen?: () => void }) {
+function MatchBox({ m, onOpen, pens }: { m: BracketMatch | null; onOpen?: () => void; pens?: { home: number; away: number } | null }) {
   const score = !!m && m.homeGoals != null && m.awayGoals != null;
   const live = m?.status === "LIVE" || m?.status === "HT";
+  const shootout = !!pens && pens.home !== pens.away; // level after ET → penalties decided it
+  const homeWon = !!score && (m!.homeGoals! > m!.awayGoals! || (shootout && pens!.home > pens!.away));
+  const awayWon = !!score && (m!.awayGoals! > m!.homeGoals! || (shootout && pens!.away > pens!.home));
   const Tag = onOpen ? "button" : "div";
   return (
     <Tag
@@ -44,13 +47,14 @@ function MatchBox({ m, onOpen }: { m: BracketMatch | null; onOpen?: () => void }
     >
       <div className="flex items-center justify-between px-1 pt-px text-[7.5px] leading-tight text-pitch-500">
         <span className="truncate">{m?.kickoff ? `${formatDay(m.kickoff)} · ${formatTime(m.kickoff)}` : "TBC"}</span>
-        {m?.status === "FINISHED" && <span className="shrink-0 text-pitch-400">FT</span>}
+        {shootout && <span className="shrink-0 text-pitch-400">pens {pens!.home}–{pens!.away}</span>}
+        {m?.status === "FINISHED" && !shootout && <span className="shrink-0 text-pitch-400">FT</span>}
         {live && <span className="shrink-0 font-semibold text-red-400">LIVE</span>}
       </div>
       <div className="flex flex-1 flex-col">
-        <Row teamId={m?.homeTeamId ?? null} name={m?.homeName} goals={m?.homeGoals ?? null} won={!!score && m!.homeGoals! > m!.awayGoals!} />
+        <Row teamId={m?.homeTeamId ?? null} name={m?.homeName} goals={m?.homeGoals ?? null} won={homeWon} />
         <div className="border-t border-white/[0.06]" />
-        <Row teamId={m?.awayTeamId ?? null} name={m?.awayName} goals={m?.awayGoals ?? null} won={!!score && m!.awayGoals! > m!.homeGoals!} />
+        <Row teamId={m?.awayTeamId ?? null} name={m?.awayName} goals={m?.awayGoals ?? null} won={awayWon} />
       </div>
     </Tag>
   );
@@ -105,12 +109,15 @@ export default function BracketDiagram() {
   }, [matches]);
   const winnerOf = (bm: BracketMatch | null): string | null => {
     if (!bm) return null;
-    const live = bm.apiId != null ? liveByApi.get(bm.apiId) : undefined;
+    const live: Match | undefined = bm.apiId != null ? liveByApi.get(bm.apiId) : undefined;
     const s = live ?? bm;
     if (s.status !== "FINISHED" || s.homeGoals == null || s.awayGoals == null) return null;
     if (s.homeGoals > s.awayGoals) return s.homeTeamId ?? bm.homeTeamId ?? null;
     if (s.awayGoals > s.homeGoals) return s.awayTeamId ?? bm.awayTeamId ?? null;
-    return null; // level after extra time → settled on penalties; the real fixture resolves the side
+    // level after extra time → decided on penalties
+    const ph = live?.penHome, pa = live?.penAway;
+    if (ph != null && pa != null && ph !== pa) return ph > pa ? (s.homeTeamId ?? bm.homeTeamId ?? null) : (s.awayTeamId ?? bm.awayTeamId ?? null);
+    return null; // shootout result not in yet
   };
 
   // Build each round left→right. R32 comes from the official slot order. Each later round's slot i is
@@ -168,9 +175,11 @@ export default function BracketDiagram() {
                   const yc = (i + 0.5) * slot;
                   const canOpen = !!(m && m.homeTeamId && m.awayTeamId && m.apiId != null && matchIdByApi.has(m.apiId));
                   const onOpen = canOpen ? () => open(matchIdByApi.get(m!.apiId!)!) : undefined;
+                  const live = m?.apiId != null ? liveByApi.get(m.apiId) : undefined;
+                  const pens = live?.penHome != null && live?.penAway != null ? { home: live.penHome, away: live.penAway } : null;
                   const nodes = [
                     <div key={`b${i}`} style={{ position: "absolute", top: yc - BOX_H / 2, left: 0, width: BOX_W, height: BOX_H }}>
-                      <MatchBox m={m} onOpen={onOpen} />
+                      <MatchBox m={m} onOpen={onOpen} pens={pens} />
                     </div>,
                   ];
                   if (r < cols.length - 1 && i % 2 === 0) {

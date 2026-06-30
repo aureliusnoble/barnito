@@ -161,6 +161,10 @@ export interface Match {
   elapsed: number | null; // live minute
   homeGoals: number | null;
   awayGoals: number | null;
+  // Penalty-shootout score when a knockout tie was level after extra time (else null). Decides who
+  // advances; does NOT change homeGoals/awayGoals or match-result scoring.
+  penHome?: number | null;
+  penAway?: number | null;
   goals: GoalEvent[];
   // rich display data (optional; populated for live/finished matches)
   events?: MatchEvent[];
