@@ -1,7 +1,7 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Puzzle, Info, X, Share2, Search, ChevronUp, ChevronDown, SlidersHorizontal, Users, ExternalLink } from "lucide-react";
-import { useBarnito, useHelpers } from "../data/store";
+import { useBarnito, useHelpers, useEnsureClubHistory } from "../data/store";
 import { Avatar } from "../components/visuals";
 import { Crest } from "../components/bits";
 import { usePersistentState } from "../lib/usePersistentState";
@@ -67,6 +67,9 @@ const MAX_GUESSES = 10;
 export default function Daily() {
   const { roster, matches, playerById, bracket } = useBarnito();
   const { teamName } = useHelpers();
+  const ensureClubHistory = useEnsureClubHistory();
+  // The shared-club-history clue needs each player's career clubs — lazy-loaded (and cached) only here.
+  useEffect(() => { ensureClubHistory(); }, [ensureClubHistory]);
   const today = ukToday();
   const [guesses, setGuesses] = usePersistentState<string[]>(`barnito.daily.v4.${today}`, []);
   const [query, setQuery] = useState("");

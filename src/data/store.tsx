@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "./supabase";
 import type {
   Roster, MatchesFile, PredictionsFile, StandingsFile, ScoresFile,
@@ -27,8 +27,8 @@ export interface BarnitoData {
   injuryByPlayerId: Map<string, InjuryItem>;
 }
 
-interface State { data: BarnitoData | null; loading: boolean; error: string | null }
-const Ctx = createContext<State>({ data: null, loading: true, error: null });
+interface State { data: BarnitoData | null; loading: boolean; error: string | null; ensureClubHistory: () => void }
+const Ctx = createContext<State>({ data: null, loading: true, error: null, ensureClubHistory: () => {} });
 
 type Row = Record<string, unknown>;
 
@@ -75,6 +75,45 @@ const EMPTY_SCORES: ScoresFile = { updatedAt: "", leaderboard: [], perMatch: [],
 // only used in the match modal / Daily / Best XI. The initial load still pulls those once; the 30s
 // poll merges just these light fields so we don't re-transfer megabytes of unchanged detail.
 const MATCH_LIGHT_COLS = "id,api_id,group_letter,matchday,kickoff,status,elapsed,home_team_id,away_team_id,home_goals,away_goals,ground,venue,goals,phase,updated_at";
+// Player columns minus club_history (~1.26 MB, used only by the Daily game) — that's lazy-loaded and cached separately.
+const PLAYER_LIGHT_COLS = "id,api_id,name,team_id,position,goal_multiplier,photo,number,age,ucl,ucl_seasons,ucl_ko,wc_best,club";
+
+// PostgREST caps a response at 1000 rows; the players table (~2300) and score_history (grows over
+// time) exceed that, so page through them in full or the UI silently drops data.
+async function selectAll(table: string, columns = "*", orderCol?: string): Promise<Row[]> {
+  const rows: Row[] = [];
+  const size = 1000;
+  for (let from = 0; ; from += size) {
+    let qb = supabase.from(table).select(columns).range(from, from + size - 1);
+    if (orderCol) qb = qb.order(orderCol, { ascending: true });
+    const { data, error } = await qb;
+    if (error) throw error;
+    const d = (data ?? []) as unknown as Row[];
+    rows.push(...d);
+    if (d.length < size) break;
+  }
+  return rows;
+}
+
+// localStorage cache for the static-ish roster so returning visitors don't re-download it every load
+// (a big chunk of the free-tier egress). Versioned + TTL'd; any failure falls back to a network fetch.
+const CACHE_VERSION = 1;
+const DAY_MS = 86_400_000;
+const CK_TEAMS = "barnito.cache.teams.v1";
+const CK_PLAYERS = "barnito.cache.players.v1";
+const CK_CLUBHIST = "barnito.cache.clubHistory.v1";
+function cacheGet<T>(key: string, maxAgeMs: number): T | null {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const o = JSON.parse(raw) as { v: number; t: number; data: T };
+    if (o.v !== CACHE_VERSION || Date.now() - o.t > maxAgeMs) return null;
+    return o.data;
+  } catch { return null; }
+}
+function cacheSet(key: string, data: unknown) {
+  try { localStorage.setItem(key, JSON.stringify({ v: CACHE_VERSION, t: Date.now(), data })); } catch { /* quota / disabled */ }
+}
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [teamRows, setTeamRows] = useState<Row[]>([]);
@@ -91,33 +130,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    // PostgREST returns at most 1000 rows per request; the players table (~2300) and score_history
-    // (grows over time) exceed that, so page through them in full or the UI silently drops data.
-    const selectAll = async (table: string, columns = "*", orderCol?: string): Promise<Row[]> => {
-      const rows: Row[] = [];
-      const size = 1000;
-      for (let from = 0; ; from += size) {
-        let qb = supabase.from(table).select(columns).range(from, from + size - 1);
-        if (orderCol) qb = qb.order(orderCol, { ascending: true });
-        const { data, error } = await qb;
-        if (error) throw error;
-        const d = (data ?? []) as unknown as Row[];
-        rows.push(...d);
-        if (d.length < size) break;
-      }
-      return rows;
-    };
     (async () => {
       try {
+        // teams + (light) players are static-ish: serve from localStorage when fresh and skip the
+        // network entirely, so a returning visitor downloads only the live tables.
+        const cTeams = cacheGet<Row[]>(CK_TEAMS, DAY_MS);
+        const cPlayers = cacheGet<Row[]>(CK_PLAYERS, DAY_MS);
         const [teams, players, matches, participants, docs, hist] = await Promise.all([
-          selectAll("teams"),
-          selectAll("players"),
+          cTeams ?? selectAll("teams"),
+          cPlayers ?? selectAll("players", PLAYER_LIGHT_COLS),
           selectAll("matches"),
           selectAll("participants"),
           selectAll("documents", "key,data"),
           selectAll("score_history", "participant_id,at,total", "at"),
         ]);
         if (cancelled) return;
+        if (!cTeams) cacheSet(CK_TEAMS, teams);
+        if (!cPlayers) cacheSet(CK_PLAYERS, players);
         setTeamRows(teams);
         setPlayerRows(players);
         setMatchRows(matches);
@@ -207,6 +236,26 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Lazy-load the big club_history blob (only the Daily game needs it). Served from localStorage when
+  // present, otherwise fetched once and cached, then merged into the player rows. No-op after the first call.
+  const clubHistRef = useRef(false);
+  const ensureClubHistory = useCallback(() => {
+    if (clubHistRef.current) return;
+    clubHistRef.current = true;
+    (async () => {
+      let map = cacheGet<Record<string, unknown>>(CK_CLUBHIST, 30 * DAY_MS);
+      if (!map) {
+        try {
+          const rows = await selectAll("players", "id,club_history");
+          map = Object.fromEntries(rows.map((r) => [r.id as string, (r.club_history as unknown) ?? null]));
+          cacheSet(CK_CLUBHIST, map);
+        } catch { clubHistRef.current = false; return; } // let a later mount retry
+      }
+      const ch = map;
+      setPlayerRows((prev) => prev.map((r) => (ch[r.id as string] != null ? { ...r, club_history: ch[r.id as string] } : r)));
+    })();
+  }, []);
+
   const data = useMemo<BarnitoData | null>(() => {
     if (loading || error) return null;
     const teams = teamRows.map(rowToTeam);
@@ -240,7 +289,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
   }, [loading, error, teamRows, playerRows, matchRows, participantRows, docs, history]);
 
-  return <Ctx.Provider value={{ data, loading, error }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ data, loading, error, ensureClubHistory }}>{children}</Ctx.Provider>;
 }
 
 export function useBarnito(): BarnitoData {
@@ -249,6 +298,8 @@ export function useBarnito(): BarnitoData {
   return data;
 }
 export function useDataState(): State { return useContext(Ctx); }
+/** Trigger the one-time lazy load of player club history (used by the Daily game). */
+export function useEnsureClubHistory(): () => void { return useContext(Ctx).ensureClubHistory; }
 
 export function useHelpers() {
   const d = useBarnito();
