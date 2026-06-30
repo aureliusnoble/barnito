@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "./supabase";
 import type {
   Roster, MatchesFile, PredictionsFile, StandingsFile, ScoresFile,
@@ -70,6 +70,12 @@ const rowToParticipant = (r: Row): Participant => ({
 
 const EMPTY_SCORES: ScoresFile = { updatedAt: "", leaderboard: [], perMatch: [], predictedStandings: [], scorerView: [], spiciness: [] };
 
+// Light match columns for the polling backstop — everything the lists/cards/scoring need, but NOT the
+// heavy per-match jsonb (lineups, events, stats, ratings, h2h, weather), which is ~90% of the row and
+// only used in the match modal / Daily / Best XI. The initial load still pulls those once; the 30s
+// poll merges just these light fields so we don't re-transfer megabytes of unchanged detail.
+const MATCH_LIGHT_COLS = "id,api_id,group_letter,matchday,kickoff,status,elapsed,home_team_id,away_team_id,home_goals,away_goals,ground,venue,goals,phase,updated_at";
+
 export function DataProvider({ children }: { children: ReactNode }) {
   const [teamRows, setTeamRows] = useState<Row[]>([]);
   const [playerRows, setPlayerRows] = useState<Row[]>([]);
@@ -79,6 +85,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [history, setHistory] = useState<ScoreHistoryPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Latest match rows, for the poll's liveness gate (avoids re-subscribing the realtime effect).
+  const matchRowsRef = useRef<Row[]>([]);
+  matchRowsRef.current = matchRows;
 
   useEffect(() => {
     let cancelled = false;
@@ -148,23 +157,47 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     // Realtime can silently drop — most commonly when a mobile tab is backgrounded (the websocket
     // closes), so the score/minute is frozen on return. Re-pull the live-changing tables when the
-    // tab regains focus, and on a slow interval as a backstop if realtime is quiet.
+    // tab regains focus, and on a slow interval as a backstop if realtime is quiet. Crucially, this
+    // pulls only the LIGHT match columns and merges them onto the rows we already have, so the poll
+    // never re-transfers the heavy per-match detail (lineups/ratings/etc.) — that's the difference
+    // between a few KB and ~600 KB every cycle. Live detail still arrives via realtime on change.
     const refreshLive = async () => {
       try {
         const [m, d, h] = await Promise.all([
-          selectAll("matches"),
+          selectAll("matches", MATCH_LIGHT_COLS),
           selectAll("documents", "key,data"),
           selectAll("score_history", "participant_id,at,total", "at"),
         ]);
         if (cancelled) return;
-        setMatchRows(m);
+        setMatchRows((prev) => {
+          const byId = new Map(prev.map((r) => [r.id as string, r]));
+          for (const lr of m) {
+            const ex = byId.get(lr.id as string);
+            byId.set(lr.id as string, ex ? { ...ex, ...lr } : lr); // overlay light fields, keep heavy detail
+          }
+          return [...byId.values()];
+        });
         setDocs(Object.fromEntries(d.map((row: Row) => [row.key as string, row.data])));
         setHistory(h.map((r: Row) => ({ participantId: r.participant_id as string, at: r.at as string, total: r.total as number })));
       } catch { /* keep last good data */ }
     };
+    // Poll hard only when a match is live or imminent; otherwise back off to a ~10-min heartbeat so an
+    // idle open tab isn't re-pulling every 30s. Realtime + the visibility refresh cover the rest.
+    const liveSoon = () => matchRowsRef.current.some((r) => {
+      const s = r.status as string;
+      if (s === "LIVE" || s === "HT") return true;
+      if (s !== "SCHEDULED") return false;
+      const toKo = Date.parse(r.kickoff as string) - Date.now();
+      return toKo < 75 * 60 * 1000 && toKo > -3 * 60 * 60 * 1000;
+    });
     const onVisible = () => { if (document.visibilityState === "visible") refreshLive(); };
     document.addEventListener("visibilitychange", onVisible);
-    const pollId = window.setInterval(() => { if (document.visibilityState === "visible") refreshLive(); }, 30_000);
+    let ticks = 0;
+    const pollId = window.setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      ticks++;
+      if (liveSoon() || ticks % 20 === 0) refreshLive(); // every 30s when live, else ~every 10 min
+    }, 30_000);
 
     return () => {
       cancelled = true;

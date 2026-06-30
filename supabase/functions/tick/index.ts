@@ -84,6 +84,17 @@ function matchToRow(m: Match, round?: string) {
     weather: m.weather ?? null, phase: m.phase ?? null, updated_at: new Date().toISOString(),
   };
 }
+// Meaningful fields (everything but the always-changing updated_at and the cosmetic round), used to
+// skip re-writing unchanged match rows — otherwise every tick rewrites all 88 rows and fires a
+// realtime message per row to every connected client, which alone can blow the egress quota.
+const MATCH_SIG_KEYS = [
+  "api_id", "group_letter", "matchday", "kickoff", "status", "elapsed", "home_team_id", "away_team_id",
+  "home_goals", "away_goals", "ground", "venue", "goals", "events", "lineups", "stats", "ratings", "h2h", "weather", "phase",
+] as const;
+// deno-lint-ignore no-explicit-any
+const sigNorm = (v: any) => (v == null || (Array.isArray(v) && v.length === 0) ? null : v); // []/null/undefined all equal
+// deno-lint-ignore no-explicit-any
+const matchSig = (r: Record<string, any>) => JSON.stringify(MATCH_SIG_KEYS.map((k) => sigNorm(r[k])));
 
 // ---------------------------------------------------------------------------
 // lookup state from DB
@@ -975,7 +986,13 @@ Deno.serve(async (req) => {
       }
     }
 
-    const rows = [...updated.values()].map((m) => matchToRow(m));
+    // Only write rows that actually changed (new row, or a meaningful field differs). Skipping
+    // no-op upserts avoids a realtime fan-out of every match to every client on every tick.
+    const origById = new Map(st.matchRows.map((r) => [r.id as string, r]));
+    const rows = [...updated.values()].map((m) => matchToRow(m)).filter((row) => {
+      const orig = origById.get(row.id);
+      return !orig || matchSig(orig) !== matchSig(row);
+    });
     if (rows.length) { const { error } = await supa.from("matches").upsert(rows, { onConflict: "id" }); if (error) console.error("matches upsert failed:", error.message); }
 
     // occasional extras (only around match time — saves idle requests)
