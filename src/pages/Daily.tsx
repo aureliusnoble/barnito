@@ -9,6 +9,17 @@ import { burstConfetti } from "../lib/confetti";
 import { DAILY_WIKI } from "../data/dailyWikiLinks";
 import type { Player } from "@shared/types";
 
+// National sides that the shared-club clue must exclude but that our name matching would otherwise
+// miss: WC nations API-Football spells differently, plus non-WC nations that appear in players' youth
+// caps. Only a fallback — the API `national` flag is authoritative once club history is re-fetched.
+const EXTRA_NATION_NAMES = [
+  "Côte d'Ivoire", "Korea Republic", "United States", "IR Iran", "Turkey", "Bosnia-Herzegovina",
+  "Italy", "Denmark", "Serbia", "Slovenia", "Kosovo", "Republic of Ireland", "Northern Ireland",
+  "Wales", "Nigeria", "Cameroon", "Poland", "Greece", "Romania", "Hungary", "Ukraine", "Russia",
+  "Finland", "Iceland", "Montenegro", "North Macedonia", "Albania", "Bulgaria", "Slovakia", "Chile",
+  "Peru", "Venezuela", "Bolivia", "Costa Rica", "Honduras", "Nigeria", "Mali", "Guinea", "Zambia",
+];
+
 // Confederation per World Cup nation — used for the "same championship" (yellow) on Nation.
 const CONFED: Record<string, string> = {
   belgium: "UEFA", croatia: "UEFA", austria: "UEFA", scotland: "UEFA", norway: "UEFA",
@@ -135,8 +146,13 @@ export default function Daily() {
   // shows a bogus "shared club" via the U21/U23 setup. Club academies ("Bayer Leverkusen U19") stay.
   const wcTeamApiIds = useMemo(() => new Set((roster.teams ?? []).map((t) => t.apiId).filter((x): x is number => x != null)), [roster.teams]);
   const nationNames = useMemo(() => (roster.teams ?? []).map((t) => t.name).filter(Boolean), [roster.teams]);
-  const isNationalTeam = (c: { id: number; name: string }) =>
-    wcTeamApiIds.has(c.id) || nationNames.some((n) => c.name === n || c.name.startsWith(n + " "));
+  // Prefer API-Football's `national` flag (covers every senior/youth national side of any country);
+  // fall back to name matching for entries fetched before the flag existed. Extra names cover WC
+  // nations the API spells differently, plus non-WC youth sides seen in the data (Italy, Serbia, …).
+  const isNationalTeam = (c: { id: number; name: string; national?: boolean }) =>
+    c.national === true || wcTeamApiIds.has(c.id)
+    || nationNames.some((n) => c.name === n || c.name.startsWith(n + " "))
+    || EXTRA_NATION_NAMES.some((n) => c.name === n || c.name.startsWith(n + " "));
 
   const rating = (id: string) => ratingByPlayer.get(id);
   function compare(guess: Player): Cell[] {

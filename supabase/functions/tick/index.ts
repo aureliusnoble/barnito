@@ -54,7 +54,7 @@ async function selectAll(table: string, columns = "*"): Promise<Record<string, u
 // ---------------------------------------------------------------------------
 async function getMeta() {
   const { data } = await supa.from("documents").select("data").eq("key", "_meta").maybeSingle();
-  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclSeasonIdx?: number; uclPage?: number; wcSeasonIdx?: number; wcPage?: number; uclSeason2?: number; uclPage2?: number };
+  return (data?.data ?? {}) as { lastFull?: string; lastStats?: string; squadCursor?: number; leagueCursor?: number; uclSeasonIdx?: number; uclPage?: number; wcSeasonIdx?: number; wcPage?: number; uclSeason2?: number; uclPage2?: number; histCursor?: number };
 }
 async function setDoc(key: string, data: unknown) {
   await supa.from("documents").upsert({ key, data, updated_at: new Date().toISOString() });
@@ -677,7 +677,7 @@ async function enrichUcl(meta: { uclSeasonIdx?: number; uclPage?: number }): Pro
 // Per-player career club history (clubs + the seasons spent at each) from players/teams. Powers the
 // daily game's "shared club" clue. ~1 call/player; resumable (club_history null = not fetched) and
 // reserve-guarded so it never starves live coverage.
-interface ApiPlayerTeams { team: { id: number; name: string; logo: string | null }; seasons: number[] }
+interface ApiPlayerTeams { team: { id: number; name: string; logo: string | null; national?: boolean }; seasons: number[] }
 async function enrichClubHistory(limit: number): Promise<{ done: number; remaining: number; quota: number }> {
   const { data } = await supa.from("players").select("id,api_id")
     .is("club_history", null).not("age", "is", null).not("api_id", "is", null).limit(limit);
@@ -686,7 +686,7 @@ async function enrichClubHistory(limit: number): Promise<{ done: number; remaini
   for (const p of cands) {
     try {
       const res = await apiGet<ApiPlayerTeams>("players/teams", { player: p.api_id });
-      const hist = res.map((e) => ({ id: e.team.id, name: e.team.name, logo: e.team.logo ?? null, seasons: e.seasons ?? [] }));
+      const hist = res.map((e) => ({ id: e.team.id, name: e.team.name, logo: e.team.logo ?? null, seasons: e.seasons ?? [], national: e.team.national === true }));
       await supa.from("players").update({ club_history: hist }).eq("id", p.id);
       done++;
     } catch (_) { /* non-fatal */ }
@@ -859,6 +859,27 @@ Deno.serve(async (req) => {
       const r = await enrichUcl2(meta);
       await setDoc("_meta", meta);
       return Response.json({ ok: true, mode, ...r, requests: requestCount() });
+    }
+    // Re-fetch club history in batches to backfill the `national` flag (added later). Paginated by a
+    // cursor; call repeatedly until next===0. Overwrites in place so the daily clue never blanks.
+    if (mode === "rehist") {
+      const meta = await getMeta();
+      const start = meta.histCursor ?? 0;
+      const BATCH = 50;
+      const { data } = await supa.from("players").select("id,api_id").not("api_id", "is", null).order("id").range(start, start + BATCH - 1);
+      const rows = (data ?? []) as { id: string; api_id: number }[];
+      let done = 0;
+      for (const p of rows) {
+        try {
+          const res = await apiGet<ApiPlayerTeams>("players/teams", { player: p.api_id });
+          const hist = res.map((e) => ({ id: e.team.id, name: e.team.name, logo: e.team.logo ?? null, seasons: e.seasons ?? [], national: e.team.national === true }));
+          await supa.from("players").update({ club_history: hist }).eq("id", p.id);
+          done++;
+        } catch (_) { /* non-fatal */ }
+      }
+      meta.histCursor = rows.length === BATCH ? start + BATCH : 0;
+      await setDoc("_meta", meta);
+      return Response.json({ ok: true, mode, start, done, next: meta.histCursor, requests: requestCount() });
     }
 
     const meta = await getMeta();
