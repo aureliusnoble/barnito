@@ -11,11 +11,12 @@ const CANON: [string, number][] = [
   ["Round of 32", 16], ["Round of 16", 8], ["Quarter-finals", 4], ["Semi-finals", 2], ["Final", 1],
 ];
 const SHORT: Record<string, string> = { "Round of 32": "R32", "Round of 16": "R16", "Quarter-finals": "QF", "Semi-finals": "SF", "Final": "Final" };
-// Official WC-2026 bracket, top→bottom LEAF order = R32 matches 73→88 in sequence, so consecutive
-// pairs reproduce the real R16 ties (M89=W73+W74, M90=W75+W76, …). Each slot lists one deterministic
-// group placement that uniquely identifies that tie (its best-third/other side rides along), and a
-// team keeps its origin slot through later rounds. Top half (M73–80) feeds SF1, bottom (M81–88) SF2.
-const R32_SLOTS = ["2A", "1E", "1F", "1C", "1I", "2E", "1A", "1L", "1D", "1G", "2K", "1H", "1B", "1J", "1K", "2D"];
+// Official WC-2026 bracket, top→bottom LEAF order taken from the published bracket: the left half is
+// slots 0–7 (feeds SF1), the right half is slots 8–15 (feeds SF2), so consecutive pairs reproduce the
+// real R16 ties. Each slot lists one group placement that uniquely identifies its R32 tie (the other
+// side rides along), and a team keeps its origin slot through later rounds. England (1L) and Argentina
+// (1J) both sit in the right half → they can meet in the semi-final, per the official bracket.
+const R32_SLOTS = ["1E", "1I", "2A", "1F", "2K", "1H", "1D", "1G", "1C", "2E", "1A", "1L", "1J", "2D", "1B", "1K"];
 
 const BOX_W = 108, BOX_H = 48, GAP = 30, COL_W = BOX_W + GAP, VX = BOX_W + GAP / 2, H = 16 * 56;
 const LINE = "#3f5546";
