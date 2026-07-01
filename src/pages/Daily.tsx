@@ -129,8 +129,14 @@ export default function Daily() {
     return m;
   }, [bracket, matches]);
   const bestWc = (p: Player) => Math.min(p.wcBest ?? 8, wc2026.get(p.teamId) ?? 99);
-  // National-team ids, to exclude shared *national* teams (same-nation guesses) from the shared-club clue.
+  // Exclude *national* teams from the shared-club clue. Senior sides are caught by api id, but youth
+  // national teams (e.g. "Germany U21", "France U23") have their own ids, so also exclude any history
+  // entry whose name is a WC nation or that nation plus a suffix — otherwise every same-nation pair
+  // shows a bogus "shared club" via the U21/U23 setup. Club academies ("Bayer Leverkusen U19") stay.
   const wcTeamApiIds = useMemo(() => new Set((roster.teams ?? []).map((t) => t.apiId).filter((x): x is number => x != null)), [roster.teams]);
+  const nationNames = useMemo(() => (roster.teams ?? []).map((t) => t.name).filter(Boolean), [roster.teams]);
+  const isNationalTeam = (c: { id: number; name: string }) =>
+    wcTeamApiIds.has(c.id) || nationNames.some((n) => c.name === n || c.name.startsWith(n + " "));
 
   const rating = (id: string) => ratingByPlayer.get(id);
   function compare(guess: Player): Cell[] {
@@ -171,10 +177,10 @@ export default function Daily() {
     let sharedState: Cell["state"] = "n";
     const gh = guess.clubHistory, th = t.clubHistory;
     if (gh && th) {
-      const thMap = new Map(th.filter((c) => !wcTeamApiIds.has(c.id)).map((c) => [c.id, c]));
+      const thMap = new Map(th.filter((c) => !isNationalTeam(c)).map((c) => [c.id, c]));
       let ever = false, same = false;
       for (const c of gh) {
-        if (wcTeamApiIds.has(c.id)) continue;
+        if (isNationalTeam(c)) continue;
         const tc = thMap.get(c.id);
         if (!tc) continue;
         ever = true;
