@@ -98,7 +98,7 @@ async function selectAll(table: string, columns = "*", orderCol?: string): Promi
 
 // localStorage cache for the static-ish roster so returning visitors don't re-download it every load
 // (a big chunk of the free-tier egress). Versioned + TTL'd; any failure falls back to a network fetch.
-const CACHE_VERSION = 1;
+const CACHE_VERSION = 2; // bump to invalidate cached rosters (e.g. corrected player clubs)
 const DAY_MS = 86_400_000;
 const CK_TEAMS = "barnito.cache.teams.v1";
 const CK_PLAYERS = "barnito.cache.players.v1";

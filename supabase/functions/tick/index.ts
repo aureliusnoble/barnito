@@ -546,6 +546,17 @@ async function refreshExtras(st: State) {
 // players people actually open: their six-scorer picks and anyone who has scored. A few per run,
 // throttled; club null = not looked up, {} = looked up but none found.
 const CLUB_SEASONS = [2025, 2024];
+// Confirmed current-club corrections the data source hasn't caught — e.g. a mid-season transfer that
+// API-Football hasn't logged in the player's team history yet, so `pickClub` can't derive it. Applied
+// on every full reconcile so they stick regardless of enrichment. Keyed by our player id.
+const CLUB_OVERRIDE: Record<string, { name: string; logo: string | null; league: string }> = {
+  "germany-p-gro": { name: "Brighton", logo: "https://media.api-sports.io/football/teams/51.png", league: "Premier League" }, // rejoined Brighton Jan 2026
+};
+async function applyClubOverrides() {
+  for (const [id, club] of Object.entries(CLUB_OVERRIDE)) {
+    try { await supa.from("players").update({ club }).eq("id", id); } catch (_) { /* non-fatal */ }
+  }
+}
 interface ApiPlayerProfile {
   player: { id: number };
   statistics: {
@@ -905,6 +916,7 @@ Deno.serve(async (req) => {
       const fixtures = await apiGet<ApiFixture>("fixtures", { league: WC_LEAGUE, season: WC_SEASON });
       const standings = await apiGet<{ league: { standings: ApiStandingRow[][] } }>("standings", { league: WC_LEAGUE, season: WC_SEASON });
       await reconcileTeams(standings[0]?.league.standings ?? [], fixtures);
+      await applyClubOverrides(); // pin manually-corrected current clubs the feed hasn't caught
       st = await loadState(); // refresh team→group after upsert
       const gids = groupIds(fixtures, st);
       const kids = knockoutIds(fixtures, st); // confirmed (drawn) knockout ties only
