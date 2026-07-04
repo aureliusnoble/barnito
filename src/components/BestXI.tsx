@@ -59,11 +59,12 @@ export default function BestXI() {
   const { matches, playerById } = useBarnito();
   const { open } = usePlayerModal();
 
-  const { rows, label } = useMemo(() => {
+  const { nodes, label } = useMemo(() => {
     // 1) average match rating per player + 2) the line they've most often started in + 3) lateral spot.
     const agg = new Map<string, { sum: number; n: number; min: number; name: string; teamId: string }>();
     const startCount = new Map<string, Record<Position, number>>(); // times started in each line
     const lat = new Map<string, { sum: number; n: number }>(); // typical lateral position, 0=left … 1=right
+    const dep = new Map<string, { sum: number; n: number }>(); // typical depth, 0=own goal line … 1=most advanced
     for (const m of matches.matches) {
       for (const r of m.ratings ?? []) {
         if (!r.playerId || r.rating == null) continue;
@@ -73,7 +74,8 @@ export default function BestXI() {
       }
       for (const l of m.lineups ?? []) {
         const rowSize = new Map<number, number>(); // players per grid row, to normalise the column
-        for (const p of l.startXI) if (p.grid) { const r = Number(p.grid.split(":")[0]); rowSize.set(r, (rowSize.get(r) ?? 0) + 1); }
+        let maxRow = 1;
+        for (const p of l.startXI) if (p.grid) { const r = Number(p.grid.split(":")[0]); rowSize.set(r, (rowSize.get(r) ?? 0) + 1); maxRow = Math.max(maxRow, r); }
         for (const p of l.startXI) {
           const cat = p.pos ? POS_OF[p.pos] : null;
           if (p.playerId && cat) {
@@ -85,6 +87,9 @@ export default function BestXI() {
             const lateral = (c - 0.5) / (rowSize.get(r) ?? 1); // lower column = left, matching the match pitch
             const e = lat.get(p.playerId) ?? { sum: 0, n: 0 };
             e.sum += lateral; e.n += 1; lat.set(p.playerId, e);
+            const depth = maxRow > 1 ? (r - 1) / (maxRow - 1) : 0; // row 1 = GK line, higher = further forward
+            const de = dep.get(p.playerId) ?? { sum: 0, n: 0 };
+            de.sum += depth; de.n += 1; dep.set(p.playerId, de);
           }
         }
       }
@@ -131,15 +136,47 @@ export default function BestXI() {
       best = { d, m, f, def: byPos.DEF.slice(0, d), mid: byPos.MID.slice(0, m), fwd: byPos.FWD.slice(0, f), total: 0 };
     }
     const label = `${best.d}-${best.m}-${best.f}`;
-    // order each line left→right by typical lateral position (no grid history → middle).
-    const latOf = (p: XIPlayer) => { const e = lat.get(p.playerId); return e ? e.sum / e.n : 0.5; };
-    const order = (r: XIPlayer[]) => r.slice().sort((a, b) => latOf(a) - latOf(b));
-    const rows = [gk ? [gk] : [], order(best.def), order(best.mid), order(best.fwd)].filter((r) => r.length > 0);
-    return { rows, label };
+
+    // Place each player at their REAL average pitch spot (lateral × depth), falling back to a sensible
+    // spot for their line when there's no grid history. Then relax with pairwise repulsion so tokens
+    // keep a minimum gap and never overlap — while staying as close as possible to their true position.
+    const LINE_DEPTH: Record<Position, number> = { GK: 0, DEF: 0.24, MID: 0.55, FWD: 0.92 };
+    const chosen = [...(gk ? [gk] : []), ...best.def, ...best.mid, ...best.fwd];
+    const nodes = chosen.map((p, i) => {
+      const l = lat.get(p.playerId), d = dep.get(p.playerId);
+      const lateral = l ? l.sum / l.n : 0.5;
+      const depth = d ? d.sum / d.n : LINE_DEPTH[p.position];
+      // tiny deterministic jitter (by index) so identical spots separate the same way every render
+      const j = ((i * 37) % 7 - 3) * 0.35;
+      return {
+        p,
+        x: 10 + lateral * 80 + j, // 10 (left) … 90 (right)
+        y: 86 - depth * 72 - j, // 86 (own goal, bottom) … 14 (attack, top)
+      };
+    });
+    // aspect-ratio-aware repulsion: the pitch is taller than wide (68×105), so a 1% step in y is more
+    // pixels than in x — compare distances in width-normalised space so the gap looks even.
+    const AR = 105 / 68;
+    const MIN = 16; // minimum centre-to-centre gap (in % of width); ~avatar + breathing room
+    for (let it = 0; it < 90; it++) {
+      for (let i = 0; i < nodes.length; i++) {
+        for (let k = i + 1; k < nodes.length; k++) {
+          const a = nodes[i], b = nodes[k];
+          const dx = a.x - b.x, dy = (a.y - b.y) * AR;
+          let dist = Math.hypot(dx, dy);
+          if (dist >= MIN) continue;
+          if (dist < 0.01) dist = 0.01;
+          const push = (MIN - dist) / 2, ux = dx / dist, uy = dy / dist;
+          a.x += ux * push; a.y += (uy * push) / AR;
+          b.x -= ux * push; b.y -= (uy * push) / AR;
+        }
+      }
+      for (const n of nodes) { n.x = Math.max(8, Math.min(92, n.x)); n.y = Math.max(12, Math.min(88, n.y)); }
+    }
+    return { nodes, label };
   }, [matches, playerById]);
 
-  const count = rows.reduce((n, l) => n + l.length, 0);
-  if (count === 0) {
+  if (nodes.length === 0) {
     return <p className="card p-6 text-center text-sm text-pitch-400">The Team of the Tournament appears once match ratings start coming in.</p>;
   }
 
@@ -147,7 +184,8 @@ export default function BestXI() {
     <div className="space-y-3">
       <p className="px-1 text-sm text-pitch-400">
         Best match ratings (weighted by minutes played), in the legitimate formation that maximises the
-        team's average — here <span className="font-semibold text-pitch-200">{label}</span>. Tap a player for their card.
+        team's average — here <span className="font-semibold text-pitch-200">{label}</span>. Each player sits at their real
+        average pitch position (nudged apart so no two overlap). Tap a player for their card.
       </p>
       <div
         className="relative mx-auto w-full max-w-[22rem] overflow-hidden rounded-2xl shadow-[inset_0_0_40px_rgba(0,0,0,0.45)] ring-1 ring-white/10"
@@ -161,13 +199,9 @@ export default function BestXI() {
         <div className="absolute bottom-1.5 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-pitch-950/55 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider text-white/70 backdrop-blur-sm">
           Our goal
         </div>
-        {rows.flatMap((line, li) =>
-          line.map((p, i) => {
-            const y = 86 - (li / (rows.length - 1)) * 72; // GK (li=0) near the bottom, striker near the top
-            const x = 10 + ((i + 0.5) / line.length) * 80;
-            return <XIToken key={p.playerId} p={p} x={x} y={y} onOpen={() => open(p.playerId)} />;
-          }),
-        )}
+        {nodes.map(({ p, x, y }) => (
+          <XIToken key={p.playerId} p={p} x={x} y={y} onOpen={() => open(p.playerId)} />
+        ))}
       </div>
     </div>
   );
