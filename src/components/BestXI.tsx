@@ -23,14 +23,14 @@ interface XIPlayer {
 const POS_OF: Record<string, Position> = { G: "GK", D: "DEF", M: "MID", F: "FWD" };
 const ORDER: Position[] = ["GK", "DEF", "MID", "FWD"];
 
-/** Most-common formation seen in the lineups so far, as outfield-line counts e.g. [4,2,3,1]. */
-function modeFormation(segsList: string[]): { label: string; segs: number[] } {
-  const count = new Map<string, number>();
-  for (const f of segsList) count.set(f, (count.get(f) ?? 0) + 1);
-  const label = [...count.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? "4-3-3";
-  const segs = label.split("-").map(Number).filter((n) => n > 0);
-  return { label, segs: segs.length >= 3 ? segs : [4, 3, 3] };
-}
+// Legitimate outfield shapes (DEF-MID-FWD, always 10 outfield + 1 GK). We pick whichever of these
+// yields the highest total rating, so e.g. two standout forwards can both start in a 3- or 4-forward
+// shape rather than being forced out by a fixed formation. Restricted to real formations only.
+const FORMATIONS: { d: number; m: number; f: number }[] = [
+  { d: 3, m: 5, f: 2 }, { d: 3, m: 4, f: 3 },
+  { d: 4, m: 5, f: 1 }, { d: 4, m: 4, f: 2 }, { d: 4, m: 3, f: 3 },
+  { d: 5, m: 4, f: 1 }, { d: 5, m: 3, f: 2 }, { d: 5, m: 2, f: 3 },
+];
 
 function XIToken({ p, x, y, onOpen }: { p: XIPlayer; x: number; y: number; onOpen: () => void }) {
   return (
@@ -60,11 +60,10 @@ export default function BestXI() {
   const { open } = usePlayerModal();
 
   const { rows, label } = useMemo(() => {
-    // 1) average match rating per player + 2) which line(s) they've actually started in.
+    // 1) average match rating per player + 2) the line they've most often started in + 3) lateral spot.
     const agg = new Map<string, { sum: number; n: number; min: number; name: string; teamId: string }>();
-    const eligible = new Map<string, Set<Position>>();
+    const startCount = new Map<string, Record<Position, number>>(); // times started in each line
     const lat = new Map<string, { sum: number; n: number }>(); // typical lateral position, 0=left … 1=right
-    const formations: string[] = [];
     for (const m of matches.matches) {
       for (const r of m.ratings ?? []) {
         if (!r.playerId || r.rating == null) continue;
@@ -73,12 +72,14 @@ export default function BestXI() {
         agg.set(r.playerId, a);
       }
       for (const l of m.lineups ?? []) {
-        if (l.formation) formations.push(l.formation);
         const rowSize = new Map<number, number>(); // players per grid row, to normalise the column
         for (const p of l.startXI) if (p.grid) { const r = Number(p.grid.split(":")[0]); rowSize.set(r, (rowSize.get(r) ?? 0) + 1); }
         for (const p of l.startXI) {
           const cat = p.pos ? POS_OF[p.pos] : null;
-          if (p.playerId && cat) (eligible.get(p.playerId) ?? eligible.set(p.playerId, new Set()).get(p.playerId)!).add(cat);
+          if (p.playerId && cat) {
+            const c = startCount.get(p.playerId) ?? { GK: 0, DEF: 0, MID: 0, FWD: 0 };
+            c[cat] += 1; startCount.set(p.playerId, c);
+          }
           if (p.playerId && p.grid) {
             const [r, c] = p.grid.split(":").map(Number);
             const lateral = (c - 0.5) / (rowSize.get(r) ?? 1); // lower column = left, matching the match pitch
@@ -93,12 +94,11 @@ export default function BestXI() {
       const roster = playerById.get(playerId);
       // minutes coverage can be missing; fall back to ~a full game per appearance
       const minutes = a.min > 0 ? a.min : a.n * 90;
-      return {
-        playerId, name: a.name, teamId: a.teamId,
-        photo: roster?.photo ?? null,
-        position: roster?.position ?? ("MID" as Position),
-        avg: a.sum / a.n, apps: a.n, minutes,
-      };
+      // Bucket by the line they've most often actually started in; fall back to nominal position.
+      const sc = startCount.get(playerId);
+      const started = sc ? ORDER.reduce((best, k) => (sc[k] > sc[best] ? k : best), "GK" as Position) : null;
+      const position = started && sc && sc[started] > 0 ? started : roster?.position ?? ("MID" as Position);
+      return { playerId, name: a.name, teamId: a.teamId, photo: roster?.photo ?? null, position, avg: a.sum / a.n, apps: a.n, minutes };
     });
     // Weight the average rating by minutes played on a log curve, so a sustained run of games
     // outranks a single high-scoring cameo — but with diminishing returns. The most-played player
@@ -109,50 +109,32 @@ export default function BestXI() {
       ...p,
       score: p.avg * (Math.log1p(p.minutes) / Math.log1p(maxMin)),
     }));
-    // A player can fill any line they've started in, plus their nominal position ("or similar").
-    const eligOf = (p: XIPlayer) => {
-      const s = new Set(eligible.get(p.playerId) ?? []);
-      s.add(p.position);
-      return s;
-    };
 
-    // formation → slot counts (first line = DEF, last = FWD, anything between = MID)
-    const { label, segs } = modeFormation(formations);
-    const need: Record<Position, number> = {
-      GK: 1, DEF: segs[0], FWD: segs[segs.length - 1],
-      MID: segs.slice(1, -1).reduce((s, n) => s + n, 0),
-    };
-    const filled: Record<Position, XIPlayer[]> = { GK: [], DEF: [], MID: [], FWD: [] };
+    // Best players per line (by weighted score), then choose the legitimate formation whose eleven
+    // sum highest — i.e. the shape that maximises the average rating (all shapes field exactly 11).
+    const byPos: Record<Position, XIPlayer[]> = { GK: [], DEF: [], MID: [], FWD: [] };
+    for (const p of players) byPos[p.position].push(p);
+    for (const k of ORDER) byPos[k].sort((a, b) => b.score - a.score || b.minutes - a.minutes);
+    const gk = byPos.GK[0];
 
-    const sorted = players.slice().sort((a, b) => b.score - a.score || b.minutes - a.minutes);
-    const used = new Set<string>();
-    const placeInto = (cats: (p: XIPlayer) => Position[]) => {
-      for (const p of sorted) {
-        if (used.has(p.playerId)) continue;
-        const open = cats(p).filter((c) => filled[c].length < need[c]);
-        if (open.length === 0) continue;
-        // keep players in their natural role when possible, else fill the scarcest open line
-        const choice = open.includes(p.position)
-          ? p.position
-          : open.sort((a, b) => (need[a] - filled[a].length) - (need[b] - filled[b].length))[0];
-        filled[choice].push(p); used.add(p.playerId);
-      }
-    };
-    // pass 1: only lines the player is eligible for; pass 2: relax to fill any gaps
-    placeInto((p) => ORDER.filter((c) => eligOf(p).has(c)));
-    placeInto(() => ORDER);
-
-    // lay out by the real formation rows: GK, DEF, [mid lines…], FWD
-    const mid = filled.MID;
-    const midSegs = segs.slice(1, -1);
-    const midRows: XIPlayer[][] = [];
-    let mi = 0;
-    for (const cnt of midSegs) { midRows.push(mid.slice(mi, mi + cnt)); mi += cnt; }
-    // order each line left→right by the players' typical lateral position (players without grid
-    // history sit in the middle), so the back four reads LB-CB-CB-RB rather than by rating.
+    type Pick = { d: number; m: number; f: number; def: XIPlayer[]; mid: XIPlayer[]; fwd: XIPlayer[]; total: number };
+    let best: Pick | null = null;
+    for (const { d, m, f } of FORMATIONS) {
+      if (byPos.DEF.length < d || byPos.MID.length < m || byPos.FWD.length < f) continue; // can't field it
+      const def = byPos.DEF.slice(0, d), mid = byPos.MID.slice(0, m), fwd = byPos.FWD.slice(0, f);
+      const total = (gk?.score ?? 0) + [...def, ...mid, ...fwd].reduce((s, p) => s + p.score, 0);
+      if (!best || total > best.total) best = { d, m, f, def, mid, fwd, total };
+    }
+    // fallback before enough players exist for any full shape: clamp toward a 4-3-3
+    if (!best) {
+      const d = Math.min(4, byPos.DEF.length), m = Math.min(3, byPos.MID.length), f = Math.min(3, byPos.FWD.length);
+      best = { d, m, f, def: byPos.DEF.slice(0, d), mid: byPos.MID.slice(0, m), fwd: byPos.FWD.slice(0, f), total: 0 };
+    }
+    const label = `${best.d}-${best.m}-${best.f}`;
+    // order each line left→right by typical lateral position (no grid history → middle).
     const latOf = (p: XIPlayer) => { const e = lat.get(p.playerId); return e ? e.sum / e.n : 0.5; };
     const order = (r: XIPlayer[]) => r.slice().sort((a, b) => latOf(a) - latOf(b));
-    const rows = [filled.GK, order(filled.DEF), ...midRows.map(order), order(filled.FWD)].filter((r) => r.length > 0);
+    const rows = [gk ? [gk] : [], order(best.def), order(best.mid), order(best.fwd)].filter((r) => r.length > 0);
     return { rows, label };
   }, [matches, playerById]);
 
@@ -164,8 +146,8 @@ export default function BestXI() {
   return (
     <div className="space-y-3">
       <p className="px-1 text-sm text-pitch-400">
-        Best match rating per position (weighted by minutes played), in the tournament's most-used shape (<span className="font-semibold text-pitch-200">{label}</span>).
-        Players are eligible for any line they've started in. Tap a player for their card.
+        Best match ratings (weighted by minutes played), in the legitimate formation that maximises the
+        team's average — here <span className="font-semibold text-pitch-200">{label}</span>. Tap a player for their card.
       </p>
       <div
         className="relative mx-auto w-full max-w-[22rem] overflow-hidden rounded-2xl shadow-[inset_0_0_40px_rgba(0,0,0,0.45)] ring-1 ring-white/10"
