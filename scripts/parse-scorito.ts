@@ -36,11 +36,17 @@ const pairToMatch = new Map<string, { id: string; home: string; away: string }>(
 for (const m of matchesFile.matches) {
   pairToMatch.set([m.homeTeamId, m.awayTeamId].sort().join("|"), { id: m.id, home: m.homeTeamId, away: m.awayTeamId });
 }
-// R32 ties only (id "r32-…"), so the "R32 Matches" sheet maps to the knockout fixture, never a group one.
-const pairToR32 = new Map<string, { id: string; home: string; away: string }>();
-for (const m of matchesFile.matches) {
-  if (!m.id.startsWith("r32-")) continue;
-  pairToR32.set([m.homeTeamId, m.awayTeamId].sort().join("|"), { id: m.id, home: m.homeTeamId, away: m.awayTeamId });
+// Per-phase fixture lookup by unordered team-id pair, so a knockout sheet maps to the right tie
+// (id "r16-…" / "r32-…" / …), never a group one. Keyed by phase → (pair → fixture).
+const KO_PHASES = ["r32", "r16", "qf", "sf", "final"] as const;
+const pairToPhase = new Map<string, Map<string, { id: string; home: string; away: string }>>();
+for (const ph of KO_PHASES) {
+  const m = new Map<string, { id: string; home: string; away: string }>();
+  for (const fx of matchesFile.matches) {
+    if (!fx.id.startsWith(`${ph}-`)) continue;
+    m.set([fx.homeTeamId, fx.awayTeamId].sort().join("|"), { id: fx.id, home: fx.homeTeamId, away: fx.awayTeamId });
+  }
+  pairToPhase.set(ph, m);
 }
 
 // scorer name index
@@ -104,12 +110,10 @@ async function main() {
   const M = wb.getWorksheet("Matches")!;
   const S = wb.getWorksheet("Top Scorers")!;
   const C = wb.getWorksheet("Champion")!;
-  const R32M = wb.getWorksheet("R32 Matches");
-  const R32S = wb.getWorksheet("R32 Top Scorers");
 
   const byName = new Map<string, Participant>();
-  // Per-round scorer picks; group is mirrored into topPlayers for backwards compatibility.
-  const r32Scorers = new Map<string, string[]>(); // participant id → resolved player ids
+  // Per-round scorer picks (phase → participant id → resolved player ids); group is mirrored into topPlayers.
+  const scorersByPhaseMap = new Map<string, Map<string, string[]>>();
   const get = (name: string): Participant => {
     const cn = canonical(name);
     if (!byName.has(cn)) byName.set(cn, { id: slug(cn), name: cn, matchScores: [], topPlayers: [], champion: "" });
@@ -146,41 +150,50 @@ async function main() {
     if (m.id && !get(player).topPlayers.includes(m.id)) get(player).topPlayers.push(m.id);
   });
 
-  // --- R32 match scores (sheet: Player, Team1, Team2, Pred1, Pred2 — no Round column) ---
-  if (R32M) {
-    R32M.eachRow((row, n) => {
-      if (n === 1) return;
-      const player = txt(row.getCell(1).value);
-      if (!player) return;
-      const c1 = txt(row.getCell(2).value), c2 = txt(row.getCell(3).value);
-      const p1 = numv(row.getCell(4).value), p2 = numv(row.getCell(5).value);
-      if (p1 == null || p2 == null) return;
-      const t1 = CODE_TO_TEAM[c1], t2 = CODE_TO_TEAM[c2];
-      if (!t1 || !teamIds.has(t1)) { codeIssues.add(c1); return; }
-      if (!t2 || !teamIds.has(t2)) { codeIssues.add(c2); return; }
-      const fx = pairToR32.get([t1, t2].sort().join("|"));
-      if (!fx) { fixtureMisses.push(`${c1} v ${c2} (R32)`); return; }
-      const home = fx.home === t1 ? p1 : p2;
-      const away = fx.home === t1 ? p2 : p1;
-      get(player).matchScores.push({ matchId: fx.id, home, away } as MatchScorePrediction);
-    });
-  }
-
-  // --- R32 scorers (4 per player) ---
-  if (R32S) {
-    R32S.eachRow((row, n) => {
-      if (n === 1) return;
-      const player = txt(row.getCell(1).value);
-      const scorer = txt(row.getCell(2).value);
-      if (!player || !scorer) return;
-      if (!scorerResolution.has(scorer)) scorerResolution.set(scorer, matchScorer(scorer));
-      const m = scorerResolution.get(scorer)!;
-      if (!m.id) return;
-      const pid = get(player).id;
-      const arr = r32Scorers.get(pid) ?? [];
-      if (!arr.includes(m.id)) arr.push(m.id);
-      r32Scorers.set(pid, arr);
-    });
+  // --- knockout rounds (R32, R16, QF, SF, Final) — each with its own Matches + Top Scorers sheets ---
+  // Sheets: "<Label> Matches" (Player, Team1, Team2, Pred1, Pred2 — no Round column) and
+  // "<Label> Top Scorers" (Player, Scorer Name). Whatever sheets are present get ingested.
+  const SHEET_LABEL: Record<string, string> = { r32: "R32", r16: "R16", qf: "QF", sf: "SF", final: "Final" };
+  for (const ph of KO_PHASES) {
+    const label = SHEET_LABEL[ph];
+    const pairMap = pairToPhase.get(ph)!;
+    const MS = wb.getWorksheet(`${label} Matches`);
+    if (MS) {
+      MS.eachRow((row, n) => {
+        if (n === 1) return;
+        const player = txt(row.getCell(1).value);
+        if (!player) return;
+        const c1 = txt(row.getCell(2).value), c2 = txt(row.getCell(3).value);
+        const p1 = numv(row.getCell(4).value), p2 = numv(row.getCell(5).value);
+        if (p1 == null || p2 == null) return;
+        const t1 = CODE_TO_TEAM[c1], t2 = CODE_TO_TEAM[c2];
+        if (!t1 || !teamIds.has(t1)) { codeIssues.add(c1); return; }
+        if (!t2 || !teamIds.has(t2)) { codeIssues.add(c2); return; }
+        const fx = pairMap.get([t1, t2].sort().join("|"));
+        if (!fx) { fixtureMisses.push(`${c1} v ${c2} (${label})`); return; }
+        const home = fx.home === t1 ? p1 : p2;
+        const away = fx.home === t1 ? p2 : p1;
+        get(player).matchScores.push({ matchId: fx.id, home, away } as MatchScorePrediction);
+      });
+    }
+    const SS = wb.getWorksheet(`${label} Top Scorers`);
+    if (SS) {
+      const phaseScorers = scorersByPhaseMap.get(ph) ?? new Map<string, string[]>();
+      scorersByPhaseMap.set(ph, phaseScorers);
+      SS.eachRow((row, n) => {
+        if (n === 1) return;
+        const player = txt(row.getCell(1).value);
+        const scorer = txt(row.getCell(2).value);
+        if (!player || !scorer) return;
+        if (!scorerResolution.has(scorer)) scorerResolution.set(scorer, matchScorer(scorer));
+        const m = scorerResolution.get(scorer)!;
+        if (!m.id) return;
+        const pid = get(player).id;
+        const arr = phaseScorers.get(pid) ?? [];
+        if (!arr.includes(m.id)) arr.push(m.id);
+        phaseScorers.set(pid, arr);
+      });
+    }
   }
 
   // --- champion ---
@@ -196,12 +209,16 @@ async function main() {
 
   const participants = [...byName.values()];
 
-  // Per-round scorer picks: group mirrors topPlayers; r32 from its own sheet. Scoring reads
-  // scorersByRound[phase] for knockout ties and falls back to topPlayers for the group stage.
+  // Per-round scorer picks: group mirrors topPlayers; each knockout round from its own sheet. Scoring
+  // reads scorersByRound[phase] for knockout ties and falls back to topPlayers for the group stage.
   for (const p of participants) {
-    const r32 = r32Scorers.get(p.id) ?? [];
-    if (p.topPlayers.length || r32.length) {
-      p.scorersByRound = { group: p.topPlayers, ...(r32.length ? { r32 } : {}) };
+    const rounds: Partial<Record<string, string[]>> = {};
+    for (const ph of KO_PHASES) {
+      const picks = scorersByPhaseMap.get(ph)?.get(p.id);
+      if (picks && picks.length) rounds[ph] = picks;
+    }
+    if (p.topPlayers.length || Object.keys(rounds).length) {
+      p.scorersByRound = { group: p.topPlayers, ...rounds } as Participant["scorersByRound"];
     }
   }
 
@@ -223,8 +240,8 @@ async function main() {
   // ---- report ----
   console.log(`\n=== PARTICIPANTS (${participants.length}) ===`);
   for (const p of participants) {
-    const r32n = p.scorersByRound?.r32?.length ?? 0;
-    console.log(`  ${p.name}: ${p.matchScores.length} scores, ${p.topPlayers.length} group scorers, ${r32n} R32 scorers, champion=${p.champion || "—"}`);
+    const koCounts = KO_PHASES.map((ph) => `${ph}:${p.scorersByRound?.[ph]?.length ?? 0}`).filter((s) => !s.endsWith(":0")).join(" ");
+    console.log(`  ${p.name}: ${p.matchScores.length} scores, ${p.topPlayers.length} group scorers${koCounts ? ` · ${koCounts}` : ""}, champion=${p.champion || "—"}`);
   }
   console.log(`\n=== SCORER RESOLUTION (${scorerResolution.size}) ===`);
   for (const [raw, m] of scorerResolution) {

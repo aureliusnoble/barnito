@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-29T06:51:05.369Z",
+  "updatedAt": "2026-07-04T08:25:16.518Z",
   "tournamentComplete": false,
   "championTeamId": null,
   "matches": [
@@ -2184,6 +2184,50 @@
       ]
     },
     {
+      "id": "C-6",
+      "apiId": 1489406,
+      "group": "C",
+      "matchday": 3,
+      "kickoff": "2026-06-24T22:00:00+00:00",
+      "ground": "Hard Rock Stadium",
+      "venue": {
+        "city": "Miami Gardens",
+        "name": "Hard Rock Stadium"
+      },
+      "homeTeamId": "scotland",
+      "awayTeamId": "brazil",
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "goals": [
+        {
+          "minute": 7,
+          "teamId": "brazil",
+          "ownGoal": false,
+          "playerId": "brazil-vinicius-junior",
+          "playerName": "Vinicius Junior",
+          "apiPlayerId": 762
+        },
+        {
+          "minute": 45,
+          "teamId": "brazil",
+          "ownGoal": false,
+          "playerId": "brazil-vinicius-junior",
+          "playerName": "Vinicius Junior",
+          "apiPlayerId": 762
+        },
+        {
+          "minute": 60,
+          "teamId": "brazil",
+          "ownGoal": false,
+          "playerId": "brazil-matheus-cunha",
+          "playerName": "M. Cunha",
+          "apiPlayerId": 1165
+        }
+      ]
+    },
+    {
       "id": "C-5",
       "apiId": 1489405,
       "group": "C",
@@ -2248,50 +2292,6 @@
           "playerId": "morocco-gessime-yassine",
           "playerName": "G. Yassine",
           "apiPlayerId": 369544
-        }
-      ]
-    },
-    {
-      "id": "C-6",
-      "apiId": 1489406,
-      "group": "C",
-      "matchday": 3,
-      "kickoff": "2026-06-24T22:00:00+00:00",
-      "ground": "Hard Rock Stadium",
-      "venue": {
-        "city": "Miami Gardens",
-        "name": "Hard Rock Stadium"
-      },
-      "homeTeamId": "scotland",
-      "awayTeamId": "brazil",
-      "status": "FINISHED",
-      "elapsed": 90,
-      "homeGoals": 0,
-      "awayGoals": 3,
-      "goals": [
-        {
-          "minute": 7,
-          "teamId": "brazil",
-          "ownGoal": false,
-          "playerId": "brazil-vinicius-junior",
-          "playerName": "Vinicius Junior",
-          "apiPlayerId": 762
-        },
-        {
-          "minute": 45,
-          "teamId": "brazil",
-          "ownGoal": false,
-          "playerId": "brazil-vinicius-junior",
-          "playerName": "Vinicius Junior",
-          "apiPlayerId": 762
-        },
-        {
-          "minute": 60,
-          "teamId": "brazil",
-          "ownGoal": false,
-          "playerId": "brazil-matheus-cunha",
-          "playerName": "M. Cunha",
-          "apiPlayerId": 1165
         }
       ]
     },
@@ -2536,25 +2536,6 @@
       ]
     },
     {
-      "id": "D-5",
-      "apiId": 1489411,
-      "group": "D",
-      "matchday": 3,
-      "kickoff": "2026-06-26T02:00:00+00:00",
-      "ground": "Levi's Stadium",
-      "venue": {
-        "city": "Santa Clara",
-        "name": "Levi's Stadium"
-      },
-      "homeTeamId": "paraguay",
-      "awayTeamId": "australia",
-      "status": "FINISHED",
-      "elapsed": 90,
-      "homeGoals": 0,
-      "awayGoals": 0,
-      "goals": []
-    },
-    {
       "id": "D-6",
       "apiId": 1539012,
       "group": "D",
@@ -2615,64 +2596,23 @@
       ]
     },
     {
-      "id": "I-5",
-      "apiId": 1489416,
-      "group": "I",
+      "id": "D-5",
+      "apiId": 1489411,
+      "group": "D",
       "matchday": 3,
-      "kickoff": "2026-06-26T19:00:00+00:00",
-      "ground": "Gillette Stadium",
+      "kickoff": "2026-06-26T02:00:00+00:00",
+      "ground": "Levi's Stadium",
       "venue": {
-        "city": "Boston",
-        "name": "Gillette Stadium"
+        "city": "Santa Clara",
+        "name": "Levi's Stadium"
       },
-      "homeTeamId": "norway",
-      "awayTeamId": "france",
+      "homeTeamId": "paraguay",
+      "awayTeamId": "australia",
       "status": "FINISHED",
       "elapsed": 90,
-      "homeGoals": 1,
-      "awayGoals": 4,
-      "goals": [
-        {
-          "minute": 7,
-          "teamId": "france",
-          "ownGoal": false,
-          "playerId": "france-o-dembele",
-          "playerName": "O. Dembele",
-          "apiPlayerId": 153
-        },
-        {
-          "minute": 20,
-          "teamId": "france",
-          "ownGoal": false,
-          "playerId": "france-o-dembele",
-          "playerName": "O. Dembele",
-          "apiPlayerId": 153
-        },
-        {
-          "minute": 21,
-          "teamId": "norway",
-          "ownGoal": false,
-          "playerId": "norway-t-aasgaard",
-          "playerName": "T. Aasgaard",
-          "apiPlayerId": 277930
-        },
-        {
-          "minute": 32,
-          "teamId": "france",
-          "ownGoal": false,
-          "playerId": "france-o-dembele",
-          "playerName": "O. Dembele",
-          "apiPlayerId": 153
-        },
-        {
-          "minute": 90,
-          "teamId": "france",
-          "ownGoal": false,
-          "playerId": "france-d-doue",
-          "playerName": "D. Doue",
-          "apiPlayerId": 343027
-        }
-      ]
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "goals": []
     },
     {
       "id": "I-6",
@@ -2731,6 +2671,66 @@
           "playerId": "senegal-i-ndiaye",
           "playerName": "I. Ndiaye",
           "apiPlayerId": 18592
+        }
+      ]
+    },
+    {
+      "id": "I-5",
+      "apiId": 1489416,
+      "group": "I",
+      "matchday": 3,
+      "kickoff": "2026-06-26T19:00:00+00:00",
+      "ground": "Gillette Stadium",
+      "venue": {
+        "city": "Boston",
+        "name": "Gillette Stadium"
+      },
+      "homeTeamId": "norway",
+      "awayTeamId": "france",
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 1,
+      "awayGoals": 4,
+      "goals": [
+        {
+          "minute": 7,
+          "teamId": "france",
+          "ownGoal": false,
+          "playerId": "france-o-dembele",
+          "playerName": "O. Dembele",
+          "apiPlayerId": 153
+        },
+        {
+          "minute": 20,
+          "teamId": "france",
+          "ownGoal": false,
+          "playerId": "france-o-dembele",
+          "playerName": "O. Dembele",
+          "apiPlayerId": 153
+        },
+        {
+          "minute": 21,
+          "teamId": "norway",
+          "ownGoal": false,
+          "playerId": "norway-t-aasgaard",
+          "playerName": "T. Aasgaard",
+          "apiPlayerId": 277930
+        },
+        {
+          "minute": 32,
+          "teamId": "france",
+          "ownGoal": false,
+          "playerId": "france-o-dembele",
+          "playerName": "O. Dembele",
+          "apiPlayerId": 153
+        },
+        {
+          "minute": 90,
+          "teamId": "france",
+          "ownGoal": false,
+          "playerId": "france-d-doue",
+          "playerName": "D. Doue",
+          "apiPlayerId": 343027
         }
       ]
     },
@@ -2886,42 +2886,6 @@
       ]
     },
     {
-      "id": "L-6",
-      "apiId": 1489422,
-      "group": "L",
-      "matchday": 3,
-      "kickoff": "2026-06-27T21:00:00+00:00",
-      "ground": "MetLife Stadium",
-      "venue": {
-        "city": "East Rutherford",
-        "name": "MetLife Stadium"
-      },
-      "homeTeamId": "panama",
-      "awayTeamId": "england",
-      "status": "FINISHED",
-      "elapsed": 90,
-      "homeGoals": 0,
-      "awayGoals": 2,
-      "goals": [
-        {
-          "minute": 62,
-          "teamId": "england",
-          "ownGoal": false,
-          "playerId": "england-j-bellingham",
-          "playerName": "J. Bellingham",
-          "apiPlayerId": 129718
-        },
-        {
-          "minute": 67,
-          "teamId": "england",
-          "ownGoal": false,
-          "playerId": "england-h-kane",
-          "playerName": "H. Kane",
-          "apiPlayerId": 184
-        }
-      ]
-    },
-    {
       "id": "L-5",
       "apiId": 1489420,
       "group": "L",
@@ -2962,6 +2926,42 @@
           "playerId": "croatia-n-vlasic",
           "playerName": "N. Vlasic",
           "apiPlayerId": 842
+        }
+      ]
+    },
+    {
+      "id": "L-6",
+      "apiId": 1489422,
+      "group": "L",
+      "matchday": 3,
+      "kickoff": "2026-06-27T21:00:00+00:00",
+      "ground": "MetLife Stadium",
+      "venue": {
+        "city": "East Rutherford",
+        "name": "MetLife Stadium"
+      },
+      "homeTeamId": "panama",
+      "awayTeamId": "england",
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "goals": [
+        {
+          "minute": 62,
+          "teamId": "england",
+          "ownGoal": false,
+          "playerId": "england-j-bellingham",
+          "playerName": "J. Bellingham",
+          "apiPlayerId": 129718
+        },
+        {
+          "minute": 67,
+          "teamId": "england",
+          "ownGoal": false,
+          "playerId": "england-h-kane",
+          "playerName": "H. Kane",
+          "apiPlayerId": 184
         }
       ]
     },
@@ -3037,6 +3037,58 @@
       ]
     },
     {
+      "id": "J-6",
+      "apiId": 1489421,
+      "group": "J",
+      "matchday": 3,
+      "kickoff": "2026-06-28T02:00:00+00:00",
+      "ground": "AT&T Stadium",
+      "venue": {
+        "city": "Arlington",
+        "name": "AT&T Stadium"
+      },
+      "homeTeamId": "jordan",
+      "awayTeamId": "argentina",
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 1,
+      "awayGoals": 3,
+      "goals": [
+        {
+          "minute": 19,
+          "teamId": "argentina",
+          "ownGoal": false,
+          "playerId": "argentina-g-lo-celso",
+          "playerName": "G. Lo Celso",
+          "apiPlayerId": 1578
+        },
+        {
+          "minute": 31,
+          "teamId": "argentina",
+          "ownGoal": false,
+          "playerId": "argentina-lautaro-martinez",
+          "playerName": "L. Martinez",
+          "apiPlayerId": 217
+        },
+        {
+          "minute": 55,
+          "teamId": "jordan",
+          "ownGoal": false,
+          "playerId": "jordan-mousa-tamari",
+          "playerName": "M. Tamari",
+          "apiPlayerId": 15286
+        },
+        {
+          "minute": 80,
+          "teamId": "argentina",
+          "ownGoal": false,
+          "playerId": "argentina-l-messi",
+          "playerName": "L. Messi",
+          "apiPlayerId": 154
+        }
+      ]
+    },
+    {
       "id": "J-5",
       "apiId": 1489418,
       "group": "J",
@@ -3105,58 +3157,6 @@
       ]
     },
     {
-      "id": "J-6",
-      "apiId": 1489421,
-      "group": "J",
-      "matchday": 3,
-      "kickoff": "2026-06-28T02:00:00+00:00",
-      "ground": "AT&T Stadium",
-      "venue": {
-        "city": "Arlington",
-        "name": "AT&T Stadium"
-      },
-      "homeTeamId": "jordan",
-      "awayTeamId": "argentina",
-      "status": "FINISHED",
-      "elapsed": 90,
-      "homeGoals": 1,
-      "awayGoals": 3,
-      "goals": [
-        {
-          "minute": 19,
-          "teamId": "argentina",
-          "ownGoal": false,
-          "playerId": "argentina-g-lo-celso",
-          "playerName": "G. Lo Celso",
-          "apiPlayerId": 1578
-        },
-        {
-          "minute": 31,
-          "teamId": "argentina",
-          "ownGoal": false,
-          "playerId": "argentina-lautaro-martinez",
-          "playerName": "L. Martinez",
-          "apiPlayerId": 217
-        },
-        {
-          "minute": 55,
-          "teamId": "jordan",
-          "ownGoal": false,
-          "playerId": "jordan-mousa-tamari",
-          "playerName": "M. Tamari",
-          "apiPlayerId": 15286
-        },
-        {
-          "minute": 80,
-          "teamId": "argentina",
-          "ownGoal": false,
-          "playerId": "argentina-l-messi",
-          "playerName": "L. Messi",
-          "apiPlayerId": 154
-        }
-      ]
-    },
-    {
       "id": "r32-1561329",
       "apiId": 1561329,
       "group": "?",
@@ -3192,16 +3192,41 @@
       "kickoff": "2026-06-29T17:00:00+00:00",
       "ground": "NRG Stadium",
       "venue": {
-        "city": null,
+        "city": "Houston",
         "name": "NRG Stadium"
       },
       "homeTeamId": "brazil",
       "awayTeamId": "japan",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 29,
+          "teamId": "japan",
+          "ownGoal": false,
+          "playerId": "japan-k-sano",
+          "playerName": "K. Sano",
+          "apiPlayerId": 33889
+        },
+        {
+          "minute": 56,
+          "teamId": "brazil",
+          "ownGoal": false,
+          "playerId": "brazil-casemiro",
+          "playerName": "Casemiro",
+          "apiPlayerId": 747
+        },
+        {
+          "minute": 90,
+          "teamId": "brazil",
+          "ownGoal": false,
+          "playerId": "brazil-gabriel-martinelli",
+          "playerName": "G. Martinelli",
+          "apiPlayerId": 127769
+        }
+      ]
     },
     {
       "id": "r32-1565176",
@@ -3211,16 +3236,33 @@
       "kickoff": "2026-06-29T20:30:00+00:00",
       "ground": "Gillette Stadium",
       "venue": {
-        "city": null,
+        "city": "Boston",
         "name": "Gillette Stadium"
       },
       "homeTeamId": "germany",
       "awayTeamId": "paraguay",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 120,
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 42,
+          "teamId": "paraguay",
+          "ownGoal": false,
+          "playerId": "paraguay-j-enciso",
+          "playerName": "Julio Enciso",
+          "apiPlayerId": 70747
+        },
+        {
+          "minute": 54,
+          "teamId": "germany",
+          "ownGoal": false,
+          "playerId": "germany-k-havertz",
+          "playerName": "Kai Havertz",
+          "apiPlayerId": 978
+        }
+      ]
     },
     {
       "id": "r32-1562345",
@@ -3235,11 +3277,68 @@
       },
       "homeTeamId": "netherlands",
       "awayTeamId": "morocco",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 120,
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 72,
+          "teamId": "netherlands",
+          "ownGoal": false,
+          "playerId": "netherlands-c-gakpo",
+          "playerName": "C. Gakpo",
+          "apiPlayerId": 247
+        },
+        {
+          "minute": 90,
+          "teamId": "morocco",
+          "ownGoal": false,
+          "playerId": "morocco-i-diop",
+          "playerName": "I. Diop",
+          "apiPlayerId": 18814
+        },
+        {
+          "minute": 120,
+          "teamId": "netherlands",
+          "ownGoal": false,
+          "playerId": "netherlands-t-koopmeiners",
+          "playerName": "T. Koopmeiners",
+          "apiPlayerId": 36899
+        },
+        {
+          "minute": 120,
+          "teamId": "morocco",
+          "ownGoal": false,
+          "playerId": "morocco-s-rahimi",
+          "playerName": "S. Rahimi",
+          "apiPlayerId": 36579
+        },
+        {
+          "minute": 120,
+          "teamId": "netherlands",
+          "ownGoal": false,
+          "playerId": "netherlands-w-weghorst",
+          "playerName": "W. Weghorst",
+          "apiPlayerId": 25416
+        },
+        {
+          "minute": 120,
+          "teamId": "morocco",
+          "ownGoal": false,
+          "playerId": "morocco-c-talbi",
+          "playerName": "C. Talbi",
+          "apiPlayerId": 336659
+        },
+        {
+          "minute": 120,
+          "teamId": "morocco",
+          "ownGoal": false,
+          "playerId": "morocco-i-saibari",
+          "playerName": "I. Saibari",
+          "apiPlayerId": 161897
+        }
+      ]
     },
     {
       "id": "r32-1564789",
@@ -3247,15 +3346,43 @@
       "group": "?",
       "matchday": 32,
       "kickoff": "2026-06-30T17:00:00+00:00",
-      "ground": null,
-      "venue": null,
+      "ground": "AT&T Stadium",
+      "venue": {
+        "city": "Dallas",
+        "name": "AT&T Stadium"
+      },
       "homeTeamId": "ivory-coast",
       "awayTeamId": "norway",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "goals": [
+        {
+          "minute": 39,
+          "teamId": "norway",
+          "ownGoal": false,
+          "playerId": "norway-a-nusa",
+          "playerName": "A. Nusa",
+          "apiPlayerId": 314511
+        },
+        {
+          "minute": 74,
+          "teamId": "ivory-coast",
+          "ownGoal": false,
+          "playerId": "ivory-coast-a-diallo",
+          "playerName": "A. Diallo",
+          "apiPlayerId": 157997
+        },
+        {
+          "minute": 86,
+          "teamId": "norway",
+          "ownGoal": false,
+          "playerId": "norway-e-haaland",
+          "playerName": "E. Haaland",
+          "apiPlayerId": 1100
+        }
+      ]
     },
     {
       "id": "r32-1565177",
@@ -3265,16 +3392,41 @@
       "kickoff": "2026-06-30T21:00:00+00:00",
       "ground": "MetLife Stadium",
       "venue": {
-        "city": null,
+        "city": "New-York",
         "name": "MetLife Stadium"
       },
       "homeTeamId": "france",
       "awayTeamId": "sweden",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "goals": [
+        {
+          "minute": 45,
+          "teamId": "france",
+          "ownGoal": false,
+          "playerId": "france-kylian-mbappe",
+          "playerName": "K. Mbappe",
+          "apiPlayerId": 278
+        },
+        {
+          "minute": 53,
+          "teamId": "france",
+          "ownGoal": false,
+          "playerId": "france-b-barcola",
+          "playerName": "B. Barcola",
+          "apiPlayerId": 161904
+        },
+        {
+          "minute": 74,
+          "teamId": "france",
+          "ownGoal": false,
+          "playerId": "france-kylian-mbappe",
+          "playerName": "K. Mbappe",
+          "apiPlayerId": 278
+        }
+      ]
     },
     {
       "id": "r32-1567306",
@@ -3289,11 +3441,28 @@
       },
       "homeTeamId": "mexico",
       "awayTeamId": "ecuador",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "goals": [
+        {
+          "minute": 22,
+          "teamId": "mexico",
+          "ownGoal": false,
+          "playerId": "mexico-j-quinones",
+          "playerName": "J. Quinones",
+          "apiPlayerId": 35532
+        },
+        {
+          "minute": 31,
+          "teamId": "mexico",
+          "ownGoal": false,
+          "playerId": "mexico-r-jimenez",
+          "playerName": "R. Jimenez",
+          "apiPlayerId": 2887
+        }
+      ]
     },
     {
       "id": "r32-1567307",
@@ -3303,16 +3472,41 @@
       "kickoff": "2026-07-01T16:00:00+00:00",
       "ground": "Mercedes-Benz Stadium",
       "venue": {
-        "city": null,
+        "city": "Atlanta",
         "name": "Mercedes-Benz Stadium"
       },
       "homeTeamId": "england",
       "awayTeamId": "congo-dr",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 7,
+          "teamId": "congo-dr",
+          "ownGoal": false,
+          "playerId": "congo-dr-b-cipenga",
+          "playerName": "B. Cipenga",
+          "apiPlayerId": 279482
+        },
+        {
+          "minute": 75,
+          "teamId": "england",
+          "ownGoal": false,
+          "playerId": "england-h-kane",
+          "playerName": "H. Kane",
+          "apiPlayerId": 184
+        },
+        {
+          "minute": 86,
+          "teamId": "england",
+          "ownGoal": false,
+          "playerId": "england-h-kane",
+          "playerName": "H. Kane",
+          "apiPlayerId": 184
+        }
+      ]
     },
     {
       "id": "r32-1567308",
@@ -3322,16 +3516,57 @@
       "kickoff": "2026-07-01T20:00:00+00:00",
       "ground": "Lumen Field",
       "venue": {
-        "city": null,
+        "city": "Seattle",
         "name": "Lumen Field"
       },
       "homeTeamId": "belgium",
       "awayTeamId": "senegal",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 120,
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "goals": [
+        {
+          "minute": 25,
+          "teamId": "senegal",
+          "ownGoal": false,
+          "playerId": "senegal-h-diarra",
+          "playerName": "H. Diarra",
+          "apiPlayerId": 327631
+        },
+        {
+          "minute": 51,
+          "teamId": "senegal",
+          "ownGoal": false,
+          "playerId": "senegal-i-sarr",
+          "playerName": "I. Sarr",
+          "apiPlayerId": 2218
+        },
+        {
+          "minute": 86,
+          "teamId": "belgium",
+          "ownGoal": false,
+          "playerId": "belgium-r-lukaku",
+          "playerName": "R. Lukaku",
+          "apiPlayerId": 907
+        },
+        {
+          "minute": 89,
+          "teamId": "belgium",
+          "ownGoal": false,
+          "playerId": "belgium-y-tielemans",
+          "playerName": "Y. Tielemans",
+          "apiPlayerId": 2926
+        },
+        {
+          "minute": 120,
+          "teamId": "belgium",
+          "ownGoal": false,
+          "playerId": "belgium-y-tielemans",
+          "playerName": "Y. Tielemans",
+          "apiPlayerId": 2926
+        }
+      ]
     },
     {
       "id": "r32-1562586",
@@ -3339,15 +3574,35 @@
       "group": "?",
       "matchday": 32,
       "kickoff": "2026-07-02T00:00:00+00:00",
-      "ground": null,
-      "venue": null,
+      "ground": "Levi's Stadium",
+      "venue": {
+        "city": "San-Francisco",
+        "name": "Levi's Stadium"
+      },
       "homeTeamId": "usa",
       "awayTeamId": "bosnia-and-herzegovina",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "goals": [
+        {
+          "minute": 45,
+          "teamId": "usa",
+          "ownGoal": false,
+          "playerId": "usa-f-balogun",
+          "playerName": "F. Balogun",
+          "apiPlayerId": 138835
+        },
+        {
+          "minute": 82,
+          "teamId": "usa",
+          "ownGoal": false,
+          "playerId": "usa-m-tillman",
+          "playerName": "M. Tillman",
+          "apiPlayerId": 162037
+        }
+      ]
     },
     {
       "id": "r32-1567311",
@@ -3357,16 +3612,41 @@
       "kickoff": "2026-07-02T19:00:00+00:00",
       "ground": "SoFi Stadium",
       "venue": {
-        "city": null,
+        "city": "Inglewood",
         "name": "SoFi Stadium"
       },
       "homeTeamId": "spain",
       "awayTeamId": "austria",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "goals": [
+        {
+          "minute": 36,
+          "teamId": "spain",
+          "ownGoal": false,
+          "playerId": "spain-mikel-oyarzabal",
+          "playerName": "M. Oyarzabal",
+          "apiPlayerId": 47323
+        },
+        {
+          "minute": 66,
+          "teamId": "spain",
+          "ownGoal": false,
+          "playerId": "spain-pedro-porro",
+          "playerName": "P. Porro",
+          "apiPlayerId": 47519
+        },
+        {
+          "minute": 89,
+          "teamId": "spain",
+          "ownGoal": false,
+          "playerId": "spain-mikel-oyarzabal",
+          "playerName": "M. Oyarzabal",
+          "apiPlayerId": 47323
+        }
+      ]
     },
     {
       "id": "r32-1567309",
@@ -3376,16 +3656,41 @@
       "kickoff": "2026-07-02T23:00:00+00:00",
       "ground": "BMO Field",
       "venue": {
-        "city": null,
+        "city": "Toronto",
         "name": "BMO Field"
       },
       "homeTeamId": "portugal",
       "awayTeamId": "croatia",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 53,
+          "teamId": "croatia",
+          "ownGoal": false,
+          "playerId": "croatia-i-perisic",
+          "playerName": "I. Perisic",
+          "apiPlayerId": 207
+        },
+        {
+          "minute": 68,
+          "teamId": "portugal",
+          "ownGoal": false,
+          "playerId": "portugal-cristiano-ronaldo",
+          "playerName": "C. Ronaldo",
+          "apiPlayerId": 874
+        },
+        {
+          "minute": 90,
+          "teamId": "portugal",
+          "ownGoal": false,
+          "playerId": "portugal-goncalo-ramos",
+          "playerName": "G. Ramos",
+          "apiPlayerId": 41585
+        }
+      ]
     },
     {
       "id": "r32-1567312",
@@ -3395,16 +3700,33 @@
       "kickoff": "2026-07-03T03:00:00+00:00",
       "ground": "BC Place",
       "venue": {
-        "city": null,
+        "city": "Vancouver",
         "name": "BC Place"
       },
       "homeTeamId": "switzerland",
       "awayTeamId": "algeria",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "goals": [
+        {
+          "minute": 10,
+          "teamId": "switzerland",
+          "ownGoal": false,
+          "playerId": "switzerland-b-embolo",
+          "playerName": "Breel Embolo",
+          "apiPlayerId": 421
+        },
+        {
+          "minute": 46,
+          "teamId": "switzerland",
+          "ownGoal": false,
+          "playerId": "switzerland-d-ndoye",
+          "playerName": "Dan Ndoye",
+          "apiPlayerId": 48648
+        }
+      ]
     },
     {
       "id": "r32-1565178",
@@ -3412,15 +3734,83 @@
       "group": "?",
       "matchday": 32,
       "kickoff": "2026-07-03T18:00:00+00:00",
-      "ground": null,
-      "venue": null,
+      "ground": "AT&T Stadium",
+      "venue": {
+        "city": "Dallas",
+        "name": "AT&T Stadium"
+      },
       "homeTeamId": "australia",
       "awayTeamId": "egypt",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 120,
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "goals": [
+        {
+          "minute": 13,
+          "teamId": "egypt",
+          "ownGoal": false,
+          "playerId": "egypt-emam-ashour",
+          "playerName": "E. Ashour",
+          "apiPlayerId": 17269
+        },
+        {
+          "minute": 55,
+          "teamId": "australia",
+          "ownGoal": true,
+          "playerId": "egypt-mohamed-hany",
+          "playerName": "M. Hany",
+          "apiPlayerId": 2654
+        },
+        {
+          "minute": 120,
+          "teamId": "egypt",
+          "ownGoal": false,
+          "playerId": "egypt-mahmoud-saber",
+          "playerName": "M. Saber",
+          "apiPlayerId": 69196
+        },
+        {
+          "minute": 120,
+          "teamId": "australia",
+          "ownGoal": false,
+          "playerId": "australia-j-irvine",
+          "playerName": "J. Irvine",
+          "apiPlayerId": 2749
+        },
+        {
+          "minute": 120,
+          "teamId": "egypt",
+          "ownGoal": false,
+          "playerId": "egypt-rami-rabia",
+          "playerName": "R. Rabia",
+          "apiPlayerId": 16805
+        },
+        {
+          "minute": 120,
+          "teamId": "australia",
+          "ownGoal": false,
+          "playerId": "australia-a-mabil",
+          "playerName": "A. Mabil",
+          "apiPlayerId": 2755
+        },
+        {
+          "minute": 120,
+          "teamId": "egypt",
+          "ownGoal": false,
+          "playerId": "egypt-mohamed-salah",
+          "playerName": "M. Salah",
+          "apiPlayerId": 306
+        },
+        {
+          "minute": 120,
+          "teamId": "egypt",
+          "ownGoal": false,
+          "playerId": "egypt-hossam-abdelmaguid",
+          "playerName": "H. Abdelmaguid",
+          "apiPlayerId": 269621
+        }
+      ]
     },
     {
       "id": "r32-1565179",
@@ -3430,16 +3820,57 @@
       "kickoff": "2026-07-03T22:00:00+00:00",
       "ground": "Hard Rock Stadium",
       "venue": {
-        "city": null,
+        "city": "Miami",
         "name": "Hard Rock Stadium"
       },
       "homeTeamId": "argentina",
       "awayTeamId": "cape-verde-islands",
-      "status": "SCHEDULED",
-      "elapsed": null,
-      "homeGoals": null,
-      "awayGoals": null,
-      "goals": []
+      "status": "FINISHED",
+      "elapsed": 120,
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "goals": [
+        {
+          "minute": 29,
+          "teamId": "argentina",
+          "ownGoal": false,
+          "playerId": "argentina-l-messi",
+          "playerName": "L. Messi",
+          "apiPlayerId": 154
+        },
+        {
+          "minute": 59,
+          "teamId": "cape-verde-islands",
+          "ownGoal": false,
+          "playerId": "cape-verde-islands-deroy-duarte",
+          "playerName": "D. Duarte",
+          "apiPlayerId": 37435
+        },
+        {
+          "minute": 92,
+          "teamId": "argentina",
+          "ownGoal": false,
+          "playerId": "argentina-lisandro-martinez",
+          "playerName": "L. Martinez",
+          "apiPlayerId": 2467
+        },
+        {
+          "minute": 103,
+          "teamId": "cape-verde-islands",
+          "ownGoal": false,
+          "playerId": "cape-verde-islands-s-lopes-cabral",
+          "playerName": "S. Lopes Cabral",
+          "apiPlayerId": 308689
+        },
+        {
+          "minute": 111,
+          "teamId": "argentina",
+          "ownGoal": true,
+          "playerId": "cape-verde-islands-diney-borges",
+          "playerName": "D. Borges",
+          "apiPlayerId": 41608
+        }
+      ]
     },
     {
       "id": "r32-1567310",
@@ -3449,11 +3880,163 @@
       "kickoff": "2026-07-04T01:30:00+00:00",
       "ground": "Arrowhead Stadium",
       "venue": {
-        "city": null,
+        "city": "Kansas City",
         "name": "Arrowhead Stadium"
       },
       "homeTeamId": "colombia",
       "awayTeamId": "ghana",
+      "status": "FINISHED",
+      "elapsed": 90,
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "goals": [
+        {
+          "minute": 14,
+          "teamId": "colombia",
+          "ownGoal": false,
+          "playerId": "colombia-j-arias",
+          "playerName": "J. Arias",
+          "apiPlayerId": 13708
+        }
+      ]
+    },
+    {
+      "id": "r16-1567824",
+      "apiId": 1567824,
+      "group": "?",
+      "matchday": 16,
+      "kickoff": "2026-07-04T17:00:00+00:00",
+      "ground": "NRG Stadium",
+      "venue": {
+        "city": "Houston",
+        "name": "NRG Stadium"
+      },
+      "homeTeamId": "canada",
+      "awayTeamId": "morocco",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "r16-1569870",
+      "apiId": 1569870,
+      "group": "?",
+      "matchday": 16,
+      "kickoff": "2026-07-04T21:00:00+00:00",
+      "ground": "Lincoln Financial Field",
+      "venue": {
+        "city": "Philadelphia",
+        "name": "Lincoln Financial Field"
+      },
+      "homeTeamId": "paraguay",
+      "awayTeamId": "france",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "r16-1568100",
+      "apiId": 1568100,
+      "group": "?",
+      "matchday": 16,
+      "kickoff": "2026-07-05T20:00:00+00:00",
+      "ground": "MetLife Stadium",
+      "venue": {
+        "city": null,
+        "name": "MetLife Stadium"
+      },
+      "homeTeamId": "brazil",
+      "awayTeamId": "norway",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "r16-1570714",
+      "apiId": 1570714,
+      "group": "?",
+      "matchday": 16,
+      "kickoff": "2026-07-06T00:00:00+00:00",
+      "ground": "Estadio Banorte",
+      "venue": {
+        "city": "Mexico City",
+        "name": "Estadio Banorte"
+      },
+      "homeTeamId": "mexico",
+      "awayTeamId": "england",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "r16-1576756",
+      "apiId": 1576756,
+      "group": "?",
+      "matchday": 16,
+      "kickoff": "2026-07-06T19:00:00+00:00",
+      "ground": null,
+      "venue": null,
+      "homeTeamId": "portugal",
+      "awayTeamId": "spain",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "r16-1570715",
+      "apiId": 1570715,
+      "group": "?",
+      "matchday": 16,
+      "kickoff": "2026-07-07T00:00:00+00:00",
+      "ground": "Lumen Field",
+      "venue": {
+        "city": null,
+        "name": "Lumen Field"
+      },
+      "homeTeamId": "usa",
+      "awayTeamId": "belgium",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "r16-1576804",
+      "apiId": 1576804,
+      "group": "?",
+      "matchday": 16,
+      "kickoff": "2026-07-07T16:00:00+00:00",
+      "ground": null,
+      "venue": null,
+      "homeTeamId": "argentina",
+      "awayTeamId": "egypt",
+      "status": "SCHEDULED",
+      "elapsed": null,
+      "homeGoals": null,
+      "awayGoals": null,
+      "goals": []
+    },
+    {
+      "id": "r16-1576805",
+      "apiId": 1576805,
+      "group": "?",
+      "matchday": 16,
+      "kickoff": "2026-07-07T20:00:00+00:00",
+      "ground": null,
+      "venue": null,
+      "homeTeamId": "switzerland",
+      "awayTeamId": "colombia",
       "status": "SCHEDULED",
       "elapsed": null,
       "homeGoals": null,
