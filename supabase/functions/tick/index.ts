@@ -557,6 +557,17 @@ async function applyClubOverrides() {
     try { await supa.from("players").update({ club }).eq("id", id); } catch (_) { /* non-fatal */ }
   }
 }
+// Confirmed career-best WC finishes the historical import missed — e.g. a squad member whose past
+// appearances aren't in API-Football's per-season stats (unused/bit-part sub), so they'd wrongly read
+// "Debut". Value = finish on the old 1-8 scale (5=QF, 6=R16, 7=Group). Only ever lowers (keeps best).
+const WC_BEST_OVERRIDE: Record<string, number> = {
+  "netherlands-d-malen": 5, // in the Netherlands 2022 squad that reached the quarter-finals
+};
+async function applyWcBestOverrides() {
+  for (const [id, w] of Object.entries(WC_BEST_OVERRIDE)) {
+    try { await supa.from("players").update({ wc_best: w }).eq("id", id).gt("wc_best", w); } catch (_) { /* non-fatal */ }
+  }
+}
 interface ApiPlayerProfile {
   player: { id: number };
   statistics: {
@@ -917,6 +928,7 @@ Deno.serve(async (req) => {
       const standings = await apiGet<{ league: { standings: ApiStandingRow[][] } }>("standings", { league: WC_LEAGUE, season: WC_SEASON });
       await reconcileTeams(standings[0]?.league.standings ?? [], fixtures);
       await applyClubOverrides(); // pin manually-corrected current clubs the feed hasn't caught
+      await applyWcBestOverrides(); // pin career-best finishes the historical import couldn't match
       st = await loadState(); // refresh team→group after upsert
       const gids = groupIds(fixtures, st);
       const kids = knockoutIds(fixtures, st); // confirmed (drawn) knockout ties only
