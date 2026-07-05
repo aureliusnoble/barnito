@@ -43,9 +43,14 @@ const CELL_BG: Record<Cell["state"], string> = {
 const CELL_EMOJI: Record<Cell["state"], string> = { g: "🟩", y: "🟨", r: "🟥", n: "⬛" };
 const COL_EMOJI = "🌍👕🛡️🤝🎂⭐🏆"; // Nation · Number · Club · Shared club · Age · Rating · WC — share card key
 // Career-best World Cup finish (1 best … 8 debut)
+// Furthest-ever WC finish, lower = better. The 48-team 2026 edition adds a Round of 32, so it sits
+// between Round of 16 (6) and Group Stage; older career finishes (no R32) are remapped onto this.
 const WC_LABEL: Record<number, string> = {
-  1: "Winner", 2: "Runner Up", 3: "Third Place", 4: "Fourth Place", 5: "Quarter Final", 6: "Round of 16", 7: "Group Stage", 8: "Debut",
+  1: "Winner", 2: "Runner Up", 3: "Third Place", 4: "Fourth Place", 5: "Quarter Final", 6: "Round of 16", 7: "Round of 32", 8: "Group Stage", 9: "Debut",
 };
+// Career wc_best comes from past tournaments on the old 8-point scale (7=Group, 8=Debut, no R32);
+// shift Group/Debut down one to make room for Round of 32 at 7.
+const remapCareer = (w: number) => (w <= 6 ? w : w + 1);
 
 // Numeric tile (age / rating) with an optional chevron pointing toward the answer (↑ = answer higher).
 function numNode(value: ReactNode, dir: number): ReactNode {
@@ -120,16 +125,17 @@ export default function Daily() {
   const won = !!target && guesses.includes(target.id);
   const over = won || guesses.length >= MAX_GUESSES;
 
-  // Live 2026 run per team — folds the ongoing tournament into "furthest ever". Only upgrades from the
-  // knockout (R16+) so group/Round-of-32 exits don't overwrite a player's "Debut".
+  // Live 2026 run per team — folds the ongoing tournament into "furthest ever", and updates after each
+  // match. Every participating team is at least Group Stage (8); reaching the knockouts upgrades that.
   const wc2026 = useMemo(() => {
     const m = new Map<string, number>();
     const set = (id: string | null | undefined, r: number) => { if (id && (m.get(id) ?? 99) > r) m.set(id, r); };
+    for (const t of roster.teams) set(t.id, 8); // played the group stage
     for (const round of bracket.rounds) {
       const nm = round.name.toLowerCase();
-      const lvl = nm.includes("round of 16") ? 6 : nm.includes("quarter") ? 5 : nm.includes("semi") ? 4
-        : nm.includes("3rd") || nm.includes("third") ? 4 : nm.includes("final") ? 2 : 0;
-      if (!lvl) continue; // skip group / Round of 32
+      const lvl = nm.includes("round of 32") ? 7 : nm.includes("round of 16") ? 6 : nm.includes("quarter") ? 5
+        : nm.includes("semi") ? 4 : nm.includes("3rd") || nm.includes("third") ? 4 : nm.includes("final") ? 2 : 0;
+      if (!lvl) continue;
       for (const x of round.matches) {
         set(x.homeTeamId, lvl); set(x.awayTeamId, lvl);
         if ((nm.includes("3rd") || nm.includes("third")) && x.homeGoals != null && x.awayGoals != null && x.homeGoals !== x.awayGoals)
@@ -138,8 +144,8 @@ export default function Daily() {
     }
     if (matches.championTeamId) set(matches.championTeamId, 1);
     return m;
-  }, [bracket, matches]);
-  const bestWc = (p: Player) => Math.min(p.wcBest ?? 8, wc2026.get(p.teamId) ?? 99);
+  }, [bracket, matches, roster.teams]);
+  const bestWc = (p: Player) => Math.min(remapCareer(p.wcBest ?? 8), wc2026.get(p.teamId) ?? 9);
   // Exclude *national* teams from the shared-club clue. Senior sides are caught by api id, but youth
   // national teams (e.g. "Germany U21", "France U23") have their own ids, so also exclude any history
   // entry whose name is a WC nation or that nation plus a suffix — otherwise every same-nation pair
