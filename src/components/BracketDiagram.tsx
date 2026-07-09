@@ -3,6 +3,7 @@ import { useBarnito, useHelpers } from "../data/store";
 import { Crest } from "./bits";
 import { useMatchModal } from "./MatchModal";
 import { formatDay, formatTime } from "../lib/format";
+import { broadcasterFor } from "../lib/broadcasters";
 import type { BracketMatch, Match } from "@shared/types";
 
 // Full knockout bracket as a connected left-to-right tree (R32 → Final), in the official WC-2026 order
@@ -40,17 +41,21 @@ function MatchBox({ m, onOpen, pens }: { m: BracketMatch | null; onOpen?: () => 
   const shootout = !!pens && pens.home !== pens.away; // level after ET → penalties decided it
   const homeWon = !!score && (m!.homeGoals! > m!.awayGoals! || (shootout && pens!.home > pens!.away));
   const awayWon = !!score && (m!.awayGoals! > m!.homeGoals! || (shootout && pens!.away > pens!.home));
+  const bc = m?.homeTeamId && m?.awayTeamId ? broadcasterFor(m.homeTeamId, m.awayTeamId) : null;
   const Tag = onOpen ? "button" : "div";
   return (
     <Tag
       onClick={onOpen}
       className={`flex h-full w-full flex-col overflow-hidden rounded-md bg-pitch-900 text-left ring-1 ${live ? "ring-red-500/50" : "ring-white/10"} ${onOpen ? "cursor-pointer transition hover:ring-accent-500/50" : ""}`}
     >
-      <div className="flex items-center justify-between px-1 pt-px text-[7.5px] leading-tight text-pitch-500">
+      <div className="flex items-center justify-between gap-0.5 px-1 pt-px text-[7.5px] leading-tight text-pitch-500">
         <span className="truncate">{m?.kickoff ? `${formatDay(m.kickoff)} · ${formatTime(m.kickoff)}` : "TBC"}</span>
-        {shootout && <span className="shrink-0 text-pitch-400">pens {pens!.home}–{pens!.away}</span>}
-        {m?.status === "FINISHED" && !shootout && <span className="shrink-0 text-pitch-400">FT</span>}
-        {live && <span className="shrink-0 font-semibold text-red-400">LIVE</span>}
+        <span className="flex shrink-0 items-center gap-0.5">
+          {bc && <span className={`rounded-sm px-0.5 text-[6.5px] font-bold ${bc === "BBC" ? "bg-red-500/20 text-red-300" : "bg-amber-500/20 text-amber-300"}`}>{bc}</span>}
+          {shootout && <span className="text-pitch-400">pens {pens!.home}–{pens!.away}</span>}
+          {m?.status === "FINISHED" && !shootout && <span className="text-pitch-400">FT</span>}
+          {live && <span className="font-semibold text-red-400">LIVE</span>}
+        </span>
       </div>
       <div className="flex flex-1 flex-col">
         <Row teamId={m?.homeTeamId ?? null} name={m?.homeName} goals={m?.homeGoals ?? null} won={homeWon} />

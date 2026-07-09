@@ -30,6 +30,15 @@ export default function Today() {
         .sort((a, b) => b.kickoff.localeCompare(a.kickoff)),
     [matches, now],
   );
+  // When nothing's left today, fall back to the next two upcoming fixtures so the tab isn't empty.
+  const nextTwo = useMemo(
+    () =>
+      matches.matches
+        .filter((m) => m.status !== "FINISHED" && Date.parse(m.kickoff) > now)
+        .sort((a, b) => a.kickoff.localeCompare(b.kickoff))
+        .slice(0, 2),
+    [matches, now],
+  );
 
   const leader = scores.leaderboard[0];
   // Golden Boot from our event-based playerStats (the API topscorers feed lags badly post-match).
@@ -117,11 +126,18 @@ export default function Today() {
 
       {tab === "today" ? (
         <section>
-          <SectionTitle hint="upcoming & live">Today's games</SectionTitle>
+          <SectionTitle hint={todays.length === 0 ? "next up" : "upcoming & live"}>{todays.length === 0 ? "Next matches" : "Today's games"}</SectionTitle>
           {todays.length === 0 ? (
-            <div className="card p-8 text-center text-pitch-300">
-              <div className="mb-2 text-3xl">🌙</div>No more games today — check "Recent" for results.
-            </div>
+            nextTwo.length === 0 ? (
+              <div className="card p-8 text-center text-pitch-300">
+                <div className="mb-2 text-3xl">🌙</div>No more games today — check "Recent" for results.
+              </div>
+            ) : (
+              <>
+                <p className="mb-2 px-1 text-xs text-pitch-500">No more games today — here's what's next.</p>
+                <div className="space-y-2">{nextTwo.map((m) => <MatchCard key={m.id} match={m} />)}</div>
+              </>
+            )
           ) : (
             <div className="space-y-2">{todays.map((m) => <MatchCard key={m.id} match={m} />)}</div>
           )}
