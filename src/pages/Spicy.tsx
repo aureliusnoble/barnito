@@ -19,13 +19,15 @@ function HeatBar({ score, max }: { score: number; max: number }) {
 
 export default function Spicy() {
   const { scores, matchById } = useBarnito();
-  const { teamName } = useHelpers();
+  const { teamName, predictionsRevealed } = useHelpers();
   const { open } = useMatchModal();
 
+  // Don't surface a match's prediction spread before its round is revealed (kicks off).
+  const spiciness = scores.spiciness.filter((s) => { const m = matchById.get(s.matchId); return !m || predictionsRevealed(m); });
   // Focus on the near future — the point is to tell people what to tune into soon.
   const horizon = Date.now() + 7 * 24 * 60 * 60 * 1000;
-  const soon = scores.spiciness.filter((s) => Date.parse(s.kickoff) <= horizon);
-  const ranked = soon.length > 0 ? soon : scores.spiciness;
+  const soon = spiciness.filter((s) => Date.parse(s.kickoff) <= horizon);
+  const ranked = soon.length > 0 ? soon : spiciness;
 
   const max = ranked[0]?.score ?? 0;
   // "Don't miss" = the soonest game at the top chilli rating (so a 5-chilli tonight beats a 5-chilli next week).

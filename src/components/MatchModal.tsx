@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, ChevronUp, Target, Snowflake } from "lucide-react";
+import { X, MapPin, ArrowLeftRight, Star, Sparkles, Swords, ChevronDown, ChevronRight, ChevronUp, Target, Snowflake, Lock } from "lucide-react";
 import { useBarnito, useHelpers } from "../data/store";
 import { usePlayerModal } from "./PlayerModal";
 import { StatusBadge, PointsPill, GroupPill, Crest, PosBadge, CardFlag, BroadcastBadge } from "./bits";
@@ -139,7 +139,7 @@ type TabKey = "predictions" | "info" | "match";
 
 function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => void }) {
   const { matchById, scores, matches } = useBarnito();
-  const { teamName } = useHelpers();
+  const { teamName, predictionsRevealed } = useHelpers();
   const match = matchById.get(matchId);
   const [tab, setTab] = useState<TabKey>("predictions");
   if (!match) return null;
@@ -249,17 +249,25 @@ function MatchDetail({ matchId, onClose }: { matchId: string; onClose: () => voi
           </div>
 
           {active === "predictions" && (
-            <div className="space-y-5">
-              {match.status === "SCHEDULED" && (
-                <PredictionSplit
-                  preds={predicted}
-                  homeName={teamName(match.homeTeamId)}
-                  awayName={teamName(match.awayTeamId)}
-                />
-              )}
-              <Predictions match={match} predicted={predicted} />
-              <PickedScorers match={match} cards={cards} />
-            </div>
+            predictionsRevealed(match) ? (
+              <div className="space-y-5">
+                {match.status === "SCHEDULED" && (
+                  <PredictionSplit
+                    preds={predicted}
+                    homeName={teamName(match.homeTeamId)}
+                    awayName={teamName(match.awayTeamId)}
+                  />
+                )}
+                <Predictions match={match} predicted={predicted} />
+                <PickedScorers match={match} cards={cards} />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.06] bg-pitch-900/40 py-10 text-center">
+                <Lock size={20} className="text-pitch-500" />
+                <p className="text-sm font-semibold text-pitch-200">Predictions hidden until kickoff</p>
+                <p className="max-w-[16rem] text-xs text-pitch-500">Everyone's picks for this round are revealed when the first match kicks off.</p>
+              </div>
+            )
           )}
 
           {active === "info" && (

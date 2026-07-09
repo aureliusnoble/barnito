@@ -1,5 +1,5 @@
 import type { Match } from "@shared/types";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Lock } from "lucide-react";
 import { useHelpers } from "../data/store";
 import { StatusBadge, Crest, ScorerPickTags, HotTakeBadge, BroadcastBadge, PredictionDonut } from "./bits";
 import { useMatchModal } from "./MatchModal";
@@ -8,10 +8,11 @@ import { formatTime } from "../lib/format";
 const PHASE_LABEL: Record<string, string> = { r32: "R32", r16: "R16", qf: "QF", sf: "SF", final: "Final", none: "3rd place" };
 
 export default function MatchCard({ match, showGroup = true }: { match: Match; showGroup?: boolean }) {
-  const { teamName } = useHelpers();
+  const { teamName, predictionsRevealed } = useHelpers();
   const { open } = useMatchModal();
   const hasScore = match.homeGoals != null && match.awayGoals != null;
   const live = match.status === "LIVE" || match.status === "HT";
+  const revealed = predictionsRevealed(match); // hide others' picks until this round kicks off
   const stageLabel = match.phase ? PHASE_LABEL[match.phase] ?? null : `Grp ${match.group}`;
 
   return (
@@ -41,7 +42,7 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
           />
         </div>
 
-        <PredictionDonut matchId={match.id} />
+        {revealed && <PredictionDonut matchId={match.id} />}
 
         <div className="w-12 shrink-0 text-right">
           {hasScore ? (
@@ -57,10 +58,15 @@ export default function MatchCard({ match, showGroup = true }: { match: Match; s
         <ChevronRight size={16} className="-ml-1 shrink-0 self-center text-pitch-600" />
       </div>
 
-      {match.status !== "FINISHED" && (
+      {match.status !== "FINISHED" && revealed && (
         <div className="mt-2 space-y-1.5 border-t border-white/[0.05] pt-2 empty:hidden">
           <HotTakeBadge matchId={match.id} />
           <ScorerPickTags match={match} />
+        </div>
+      )}
+      {!revealed && (
+        <div className="mt-2 flex items-center gap-1.5 border-t border-white/[0.05] pt-2 text-[11px] text-pitch-500">
+          <Lock size={11} /> Predictions hidden until kickoff
         </div>
       )}
     </button>

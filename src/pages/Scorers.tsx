@@ -85,7 +85,7 @@ function Toggle({
 function ByPerson() {
   const { scores, participantById, playerById, injuryByPlayerId, playerStats } = useBarnito();
   const { open } = usePlayerModal();
-  const { teamName } = useHelpers();
+  const { teamName, phaseRevealed } = useHelpers();
   const [openId, setOpenId] = useState<string | null>(null);
   const ordered = useMemo(() => [...scores.scorerView].sort((a, b) => b.total - a.total), [scores]);
 
@@ -120,7 +120,8 @@ function ByPerson() {
       <div className="space-y-2">
         {ordered.map((sv, i) => {
           const champ = participantById.get(sv.participantId)?.champion;
-          const goals = sv.picks.reduce((n, p) => n + p.goals, 0);
+          const picks = sv.picks.filter((p) => phaseRevealed(p.phase)); // hide a round's picks until it kicks off
+          const goals = picks.reduce((n, p) => n + p.goals, 0);
           const isOpen = openId === sv.participantId;
           return (
             <div key={sv.participantId} className="card overflow-hidden">
@@ -135,7 +136,7 @@ function ByPerson() {
                     {champ && <span title="Champion pick"><Crest teamId={champ} size={14} /></span>}
                   </span>
                   <span className="text-[11px] text-pitch-400">
-                    {goals} {goals === 1 ? "goal" : "goals"} · {sv.picks.length} picks
+                    {goals} {goals === 1 ? "goal" : "goals"} · {picks.length} picks
                   </span>
                 </div>
                 <span className="font-display text-lg font-extrabold tabular-nums text-white">{sv.total}</span>
@@ -143,8 +144,8 @@ function ByPerson() {
               </button>
               {isOpen && (
                 <div className="border-t border-white/[0.06]">
-                  {PHASE_ORDER.filter((ph) => sv.picks.some((p) => p.phase === ph)).map((ph) => {
-                    const rows = sv.picks.filter((p) => p.phase === ph);
+                  {PHASE_ORDER.filter((ph) => picks.some((p) => p.phase === ph)).map((ph) => {
+                    const rows = picks.filter((p) => p.phase === ph);
                     const gGoals = rows.reduce((n, p) => n + p.goals, 0);
                     const gPts = rows.reduce((n, p) => n + p.points, 0);
                     return (
@@ -205,12 +206,12 @@ function ByPerson() {
 function GoldenBoot() {
   const { stats, scores, playerStats, playerById } = useBarnito();
   const { open } = usePlayerModal();
-  const { teamName } = useHelpers();
+  const { teamName, phaseRevealed } = useHelpers();
   const pickedIds = useMemo(() => {
     const s = new Set<string>();
-    for (const sv of scores.scorerView) for (const p of sv.picks) s.add(p.playerId);
+    for (const sv of scores.scorerView) for (const p of sv.picks) if (phaseRevealed(p.phase)) s.add(p.playerId);
     return s;
-  }, [scores]);
+  }, [scores, phaseRevealed]);
 
   // Drive the boot from our own goal events (real-time) so a just-scored goal shows immediately,
   // then merge API-Football's topscorers (which lags post-match) for any extra coverage.
@@ -305,7 +306,7 @@ interface Agg {
 function ByPlayer() {
   const { scores, playerById } = useBarnito();
   const { open } = usePlayerModal();
-  const { teamName } = useHelpers();
+  const { teamName, phaseRevealed } = useHelpers();
 
   const aggregated = useMemo<Agg[]>(() => {
     const map = new Map<string, {
@@ -314,6 +315,7 @@ function ByPlayer() {
     }>();
     for (const sv of scores.scorerView) {
       for (const pick of sv.picks) {
+        if (!phaseRevealed(pick.phase)) continue; // exclude rounds not yet revealed
         let a = map.get(pick.playerId);
         if (!a) {
           a = { playerId: pick.playerId, playerName: pick.playerName, teamId: pick.teamId, position: pick.position, goalsByPhase: new Map(), backers: new Set(), phases: new Set() };
@@ -332,7 +334,7 @@ function ByPlayer() {
         phases: PHASE_ORDER.filter((ph) => a.phases.has(ph)),
       }))
       .sort((a, b) => b.backers.length - a.backers.length || b.goals - a.goals);
-  }, [scores]);
+  }, [scores, phaseRevealed]);
 
   return (
     <div className="space-y-2">

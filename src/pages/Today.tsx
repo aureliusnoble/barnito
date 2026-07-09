@@ -8,7 +8,9 @@ import { ukSlateCutoffMs } from "../lib/format";
 
 export default function Today() {
   const { matches, scores, stats, matchById, playerStats, playerById } = useBarnito();
-  const { teamName } = useHelpers();
+  const { teamName, predictionsRevealed } = useHelpers();
+  // Only consider matches whose round's predictions are revealed (kicked off) for the spice teaser.
+  const spiciness = useMemo(() => scores.spiciness.filter((s) => { const m = matchById.get(s.matchId); return !m || predictionsRevealed(m); }), [scores, matchById, predictionsRevealed]);
   const [tab, setTab] = useState<"today" | "recent">("today");
 
   const now = Date.now();
@@ -44,16 +46,15 @@ export default function Today() {
     const ts = stats.topScorers[0];
     return ts ? { name: ts.name, value: ts.value, teamName: ts.teamName } : null;
   }, [playerStats, stats, playerById, teamName]);
-  const spiceMax = useMemo(() => Math.max(0, ...scores.spiciness.map((s) => s.score)), [scores]);
+  const spiceMax = useMemo(() => Math.max(0, ...spiciness.map((s) => s.score)), [spiciness]);
   // Soonest upcoming game at the top chilli rating (a 5-chilli tonight beats a 5-chilli next week).
   const spicy = useMemo(() => {
-    const list = scores.spiciness;
-    if (list.length === 0) return undefined;
-    const top = list.reduce((hi, s) => Math.max(hi, spiceRating(s.score, spiceMax)), 0);
-    return list
+    if (spiciness.length === 0) return undefined;
+    const top = spiciness.reduce((hi, s) => Math.max(hi, spiceRating(s.score, spiceMax)), 0);
+    return spiciness
       .filter((s) => spiceRating(s.score, spiceMax) === top)
       .sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff))[0];
-  }, [scores, spiceMax]);
+  }, [spiciness, spiceMax]);
   const spicyMatch = spicy && matchById.get(spicy.matchId);
 
   return (

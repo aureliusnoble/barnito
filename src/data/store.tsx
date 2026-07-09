@@ -304,10 +304,26 @@ export function useEnsureClubHistory(): () => void { return useContext(Ctx).ensu
 
 export function useHelpers() {
   const d = useBarnito();
-  return useMemo(() => ({
-    teamName: (id: string) => d.teamById.get(id)?.name ?? id,
-    teamGroup: (id: string) => d.teamById.get(id)?.group ?? "?",
-    playerName: (id: string) => d.playerById.get(id)?.name ?? id,
-    participantName: (id: string) => d.participantById.get(id)?.name ?? id,
-  }), [d]);
+  return useMemo(() => {
+    // Earliest kickoff per knockout phase — a round's predictions stay hidden until it kicks off, so
+    // nobody sees others' picks before the deadline (group-stage picks were always public).
+    const revealAt = new Map<string, number>();
+    for (const m of d.matches.matches) {
+      const ph = m.phase;
+      if (!ph || ph === "none") continue;
+      const t = Date.parse(m.kickoff);
+      if (Number.isFinite(t) && (!revealAt.has(ph) || t < (revealAt.get(ph) as number))) revealAt.set(ph, t);
+    }
+    return {
+      teamName: (id: string) => d.teamById.get(id)?.name ?? id,
+      teamGroup: (id: string) => d.teamById.get(id)?.group ?? "?",
+      playerName: (id: string) => d.playerById.get(id)?.name ?? id,
+      participantName: (id: string) => d.participantById.get(id)?.name ?? id,
+      // group games (no phase) are always visible; a knockout tie reveals once its round has kicked off.
+      predictionsRevealed: (m: Match) => !m.phase || m.phase === "none" || Date.now() >= (revealAt.get(m.phase) ?? 0),
+      // same rule keyed by phase string ("group"/"r32"/… as used in scorer picks): a knockout round
+      // with no fixtures yet counts as not-revealed (nothing to leak).
+      phaseRevealed: (phase: string) => phase === "group" || (revealAt.has(phase) && Date.now() >= (revealAt.get(phase) as number)),
+    };
+  }, [d]);
 }
