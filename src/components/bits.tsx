@@ -134,14 +134,16 @@ export function BroadcastBadge({ match, className = "" }: { match: Match; classN
   if (!b) return null;
   const tone = b === "BBC"
     ? "bg-sky-500/15 text-sky-300 ring-sky-500/25"
-    : "bg-amber-500/15 text-amber-300 ring-amber-500/25";
+    : b === "ITV"
+      ? "bg-amber-500/15 text-amber-300 ring-amber-500/25"
+      : "bg-emerald-500/15 text-emerald-300 ring-emerald-500/25";
   return (
     <span
-      title={`Watch on ${b} (UK)`}
+      title={b === "Both" ? "Watch on BBC or ITV (UK)" : `Watch on ${b} (UK)`}
       className={`inline-flex items-center gap-0.5 rounded px-1 py-px text-[9px] font-bold leading-none ring-1 ${tone} ${className}`}
     >
       <Tv size={8} strokeWidth={2.5} />
-      {b}
+      {b === "Both" ? "BBC/ITV" : b}
     </span>
   );
 }

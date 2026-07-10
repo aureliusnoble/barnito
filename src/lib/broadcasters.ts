@@ -3,7 +3,7 @@
 // BBC/ITV schedule (live-footballontv.com + ESPN UK TV guide). Keyed by the two team ids sorted
 // + joined with "|" so home/away order doesn't matter. All 72 group-stage fixtures and the 16
 // Round-of-32 ties are covered; later knockout ties show no badge until added here.
-export type Broadcaster = "BBC" | "ITV";
+export type Broadcaster = "BBC" | "ITV" | "Both"; // "Both" = simulcast on BBC One & ITV1
 
 const BROADCASTERS: Record<string, Broadcaster> = {
   "algeria|argentina": "ITV",
@@ -96,6 +96,12 @@ const BROADCASTERS: Record<string, Broadcaster> = {
   "australia|egypt": "BBC",
   "argentina|cape-verde-islands": "ITV",
   "colombia|ghana": "ITV",
+
+  // Quarter-finals (semis & final are simulcast on both channels — see BRACKET_SCHEDULE).
+  "france|morocco": "Both",
+  "belgium|spain": "BBC",
+  "england|norway": "ITV",
+  "argentina|switzerland": "ITV",
 };
 
 /** UK broadcaster for a fixture, or null if not yet confirmed. */

@@ -3,7 +3,7 @@ import { useBarnito, useHelpers } from "../data/store";
 import { Crest } from "./bits";
 import { useMatchModal } from "./MatchModal";
 import { formatDay, formatTime } from "../lib/format";
-import { broadcasterFor } from "../lib/broadcasters";
+import { broadcasterFor, type Broadcaster } from "../lib/broadcasters";
 import type { BracketMatch, Match } from "@shared/types";
 
 // Full knockout bracket as a connected left-to-right tree (R32 → Final), in the official WC-2026 order
@@ -22,6 +22,17 @@ const R32_SLOTS = ["1E", "1I", "2A", "1F", "2K", "1H", "1D", "1G", "1C", "2E", "
 const BOX_W = 108, BOX_H = 48, GAP = 30, COL_W = BOX_W + GAP, VX = BOX_W + GAP / 2, H = 16 * 56;
 const LINE = "#3f5546";
 
+// Fixed FIFA schedule (kickoffs UTC) + UK TV for the rounds the provider hasn't published fixtures for
+// yet, so the bracket still shows date/time/channel before the teams are known. SF slot 0 = top half.
+const BRACKET_SCHEDULE: Record<string, { kickoff: string; tv: Broadcaster }[]> = {
+  "Semi-finals": [
+    { kickoff: "2026-07-14T19:00:00+00:00", tv: "Both" }, // Dallas · Tue 14 Jul, 8pm BST
+    { kickoff: "2026-07-15T19:00:00+00:00", tv: "Both" }, // Atlanta · Wed 15 Jul, 8pm BST
+  ],
+  "Final": [{ kickoff: "2026-07-19T19:00:00+00:00", tv: "Both" }], // New Jersey · Sun 19 Jul, 8pm BST
+};
+const THIRD_PLACE_KICKOFF = "2026-07-18T21:00:00+00:00"; // Miami · Sat 18 Jul, 10pm BST (channel TBC)
+
 function Row({ teamId, name, goals, won }: { teamId: string | null; name?: string | null; goals: number | null; won: boolean }) {
   const { teamName } = useHelpers();
   return (
@@ -35,13 +46,15 @@ function Row({ teamId, name, goals, won }: { teamId: string | null; name?: strin
   );
 }
 
-function MatchBox({ m, onOpen, pens }: { m: BracketMatch | null; onOpen?: () => void; pens?: { home: number; away: number } | null }) {
+function MatchBox({ m, onOpen, pens, tv }: { m: BracketMatch | null; onOpen?: () => void; pens?: { home: number; away: number } | null; tv?: Broadcaster | null }) {
   const score = !!m && m.homeGoals != null && m.awayGoals != null;
   const live = m?.status === "LIVE" || m?.status === "HT";
   const shootout = !!pens && pens.home !== pens.away; // level after ET → penalties decided it
   const homeWon = !!score && (m!.homeGoals! > m!.awayGoals! || (shootout && pens!.home > pens!.away));
   const awayWon = !!score && (m!.awayGoals! > m!.homeGoals! || (shootout && pens!.away > pens!.home));
-  const bc = m?.homeTeamId && m?.awayTeamId ? broadcasterFor(m.homeTeamId, m.awayTeamId) : null;
+  // explicit tv (from the fixed schedule for TBD later rounds) wins; else derive from the team pair.
+  const bc = tv !== undefined ? tv : m?.homeTeamId && m?.awayTeamId ? broadcasterFor(m.homeTeamId, m.awayTeamId) : null;
+  const bcLabel = bc === "Both" ? "BBC/ITV" : bc;
   const Tag = onOpen ? "button" : "div";
   return (
     <Tag
@@ -51,7 +64,7 @@ function MatchBox({ m, onOpen, pens }: { m: BracketMatch | null; onOpen?: () => 
       <div className="flex items-center justify-between gap-0.5 px-1 pt-px text-[7.5px] leading-tight text-pitch-500">
         <span className="truncate">{m?.kickoff ? `${formatDay(m.kickoff)} · ${formatTime(m.kickoff)}` : "TBC"}</span>
         <span className="flex shrink-0 items-center gap-0.5">
-          {bc && <span className={`rounded-sm px-0.5 text-[6.5px] font-bold ${bc === "BBC" ? "bg-red-500/20 text-red-300" : "bg-amber-500/20 text-amber-300"}`}>{bc}</span>}
+          {bc && <span className={`rounded-sm px-0.5 text-[6.5px] font-bold ${bc === "BBC" ? "bg-sky-500/20 text-sky-300" : bc === "ITV" ? "bg-amber-500/20 text-amber-300" : "bg-emerald-500/20 text-emerald-300"}`}>{bcLabel}</span>}
           {shootout && <span className="text-pitch-400">pens {pens!.home}–{pens!.away}</span>}
           {m?.status === "FINISHED" && !shootout && <span className="text-pitch-400">FT</span>}
           {live && <span className="font-semibold text-red-400">LIVE</span>}
@@ -158,13 +171,46 @@ export default function BracketDiagram() {
           }
         }
       }
+      // fixed-schedule fallback for rounds without provider fixtures: show date/time even when TBD.
+      const sched = BRACKET_SCHEDULE[name];
+      if (sched) {
+        for (let i = 0; i < n; i++) {
+          if (!sched[i]) continue;
+          if (!slots[i]) {
+            slots[i] = {
+              apiId: null, round: name, kickoff: sched[i].kickoff, ground: null,
+              homeTeamId: null, awayTeamId: null, homeName: null, awayName: null,
+              status: "SCHEDULED", homeGoals: null, awayGoals: null,
+            };
+          } else if (slots[i]!.apiId == null && !slots[i]!.kickoff) {
+            slots[i] = { ...slots[i]!, kickoff: sched[i].kickoff }; // date the synthesized node
+          }
+        }
+      }
     }
     cols.push({ name, n, slots });
     prevSlots = slots;
   }
   const totalW = COL_W * cols.length;
 
+  // 3rd-place play-off: contested by the two semi-final losers (TBC until the semis finish).
+  const sfCol = cols.find((c) => c.name === "Semi-finals");
+  const loserOf = (bm: BracketMatch | null): string | null => {
+    if (!bm) return null;
+    const w = winnerOf(bm);
+    if (!w) return null;
+    const l = bm.apiId != null ? liveByApi.get(bm.apiId) : undefined;
+    const s = l ?? bm;
+    return w === (s.homeTeamId ?? bm.homeTeamId) ? (s.awayTeamId ?? bm.awayTeamId ?? null) : (s.homeTeamId ?? bm.homeTeamId ?? null);
+  };
+  const thirdNode: BracketMatch = {
+    apiId: null, round: "3rd place", kickoff: THIRD_PLACE_KICKOFF, ground: null,
+    homeTeamId: loserOf(sfCol?.slots[0] ?? null), awayTeamId: loserOf(sfCol?.slots[1] ?? null),
+    homeName: null, awayName: null, status: "SCHEDULED", homeGoals: null, awayGoals: null,
+  };
+
   return (
+    <div className="space-y-3">
     <div className="-mx-3 overflow-x-auto px-3 pb-2">
       <div style={{ width: totalW }}>
         <div className="mb-1 flex">
@@ -183,9 +229,10 @@ export default function BracketDiagram() {
                   const onOpen = canOpen ? () => open(matchIdByApi.get(m!.apiId!)!) : undefined;
                   const live = m?.apiId != null ? liveByApi.get(m.apiId) : undefined;
                   const pens = live?.penHome != null && live?.penAway != null ? { home: live.penHome, away: live.penAway } : null;
+                  const tv = BRACKET_SCHEDULE[c.name]?.[i]?.tv; // fixed channel for TBD later rounds
                   const nodes = [
                     <div key={`b${i}`} style={{ position: "absolute", top: yc - BOX_H / 2, left: 0, width: BOX_W, height: BOX_H }}>
-                      <MatchBox m={m} onOpen={onOpen} pens={pens} />
+                      <MatchBox m={m} onOpen={onOpen} pens={pens} tv={tv} />
                     </div>,
                   ];
                   if (r < cols.length - 1 && i % 2 === 0) {
@@ -206,6 +253,12 @@ export default function BracketDiagram() {
           })}
         </div>
       </div>
+    </div>
+    {/* 3rd-place play-off — contested by the two semi-final losers */}
+    <div className="flex items-center gap-2 px-1">
+      <span className="shrink-0 text-[9px] font-semibold uppercase tracking-wide text-pitch-500">3rd place</span>
+      <div style={{ width: BOX_W, height: BOX_H }}><MatchBox m={thirdNode} /></div>
+    </div>
     </div>
   );
 }
