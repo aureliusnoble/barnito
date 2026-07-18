@@ -29,18 +29,15 @@ import { computeGroupTable, type GroupResult } from "./standings.ts";
 const sign = (n: number) => (n > 0 ? 1 : n < 0 ? -1 : 0);
 
 const PHASES: Phase[] = ["group", "r32", "r16", "qf", "sf", "final"];
-/** The 3rd-place playoff has no scorer-pick bucket of its own, but its scoreline is scored — at
- * the final's weight, matching Scorito (a correct result there = 30 × 6 = 180). */
-const THIRD_PLACE_FACTOR = ROUND_FACTOR.final;
-/** A match's scorer-pick phase, or null if it has none (3rd-place match). Group matches default in.
- * Note: the 3rd-place scoreline is still scored — see factorOf — it just carries no scorer picks. */
+/** A match's scoring phase, or null if unscored. Group matches default in; the 3rd-place playoff
+ * shares the FINAL round — same ×6 weight and the same scorer picks (a goal there counts for a
+ * final-bucket pick, a correct result = 30 × 6 = 180), matching Scorito. */
 function phaseOf(m: Match): Phase | null {
   if (!m.phase) return "group";
-  return m.phase === "none" ? null : m.phase;
+  return m.phase === "none" ? "final" : m.phase;
 }
 /** Per-match scoreline factor (×1 group … ×6 final); the 3rd-place playoff scores at ×6 too. */
 function factorOf(m: Match): number {
-  if (m.phase === "none") return THIRD_PLACE_FACTOR;
   const ph = phaseOf(m);
   return ph ? ROUND_FACTOR[ph] : 0;
 }

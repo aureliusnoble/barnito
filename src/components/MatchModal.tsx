@@ -416,9 +416,10 @@ function PickedScorers({ match, cards }: { match: Match; cards: Map<string, { ye
   const { predictions, playerById } = useBarnito();
   const { open } = usePlayerModal();
   const teamIds = new Set([match.homeTeamId, match.awayTeamId]);
-  // Group games show the group-stage picks; a knockout tie shows only that round's picks.
+  // Group games show the group-stage picks; a knockout tie shows only that round's picks; the
+  // 3rd-place playoff shares the final round's picks.
   const picksFor = (part: (typeof predictions.participants)[number]) =>
-    !match.phase ? part.topPlayers : match.phase === "none" ? [] : part.scorersByRound?.[match.phase] ?? [];
+    !match.phase ? part.topPlayers : part.scorersByRound?.[match.phase === "none" ? "final" : match.phase] ?? [];
   const byPlayer = new Map<string, string[]>();
   for (const part of predictions.participants) {
     for (const pid of picksFor(part)) {

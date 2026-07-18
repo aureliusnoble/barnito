@@ -262,11 +262,11 @@ export function ScorerPickTags({ match, className = "" }: { match: Match; classN
   const firstName = (n: string) => n.split(" ")[0];
   const byPlayer = new Map<string, { player: Player; backers: string[] }>();
   // Group games show the group-stage picks; a knockout tie shows only that round's picks
-  // (so R32 cards list R32 scorer predictions, not the now-irrelevant group picks).
+  // (so R32 cards list R32 scorer predictions, not the now-irrelevant group picks). The
+  // 3rd-place playoff shares the final round's picks.
   const picksFor = (part: (typeof predictions.participants)[number]) =>
     !match.phase ? part.topPlayers
-      : match.phase === "none" ? []
-      : part.scorersByRound?.[match.phase] ?? [];
+      : part.scorersByRound?.[match.phase === "none" ? "final" : match.phase] ?? [];
   for (const part of predictions.participants) {
     for (const pid of picksFor(part)) {
       const pl = playerById.get(pid);

@@ -214,7 +214,7 @@ describe("computeScores — knockout phase multipliers", () => {
     const predictions: PredictionsFile = {
       updatedAt: "x",
       participants: [
-        { id: "alice", name: "Alice", matchScores: [{ matchId: "QF-1", home: 2, away: 1 }, { matchId: "3P-1", home: 1, away: 0 }], topPlayers: [], scorersByRound: { qf: ["d", "f"] }, champion: "" },
+        { id: "alice", name: "Alice", matchScores: [{ matchId: "QF-1", home: 2, away: 1 }, { matchId: "3P-1", home: 1, away: 0 }], topPlayers: [], scorersByRound: { qf: ["d", "f"], final: ["d"] }, champion: "" },
       ],
     };
     const standings: StandingsFile = { updatedAt: "x", groups: [] };
@@ -234,12 +234,16 @@ describe("computeScores — knockout phase multipliers", () => {
 
   it("scales scorer points by phase and excludes shootout goals", () => {
     const alice = out.scorerView.find((s) => s.participantId === "alice")!;
-    expect(alice.total).toBe(128 + 32); // DEF 32×4 + FWD 8×4 (shootout goal excluded)
+    // QF picks: DEF 32×4 + FWD 8×4 (shootout goal excluded) = 160.
+    // Final pick "d" scored in the 3rd-place game (shares the final round): DEF 32×6 = 192.
+    expect(alice.total).toBe(128 + 32 + 192);
   });
 
-  it("scores the 3rd-place scoreline at the final's ×6 (but it carries no scorer picks)", () => {
+  it("scores the 3rd-place scoreline at the final's ×6 and counts its goals for final picks", () => {
     const tp = out.perMatch.find((p) => p.matchId === "3P-1")!;
     expect(tp.predictions[0].points).toBe(270); // exact 45 × 6
+    const finalPick = out.scorerView.find((s) => s.participantId === "alice")!.picks.find((p) => p.phase === "final");
+    expect(finalPick?.points).toBe(192); // "d" (DEF) scored once in the 3rd-place game → 32 × 6
   });
 });
 
