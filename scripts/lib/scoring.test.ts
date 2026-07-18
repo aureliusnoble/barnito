@@ -226,8 +226,10 @@ describe("computeScores — knockout phase multipliers", () => {
     const qf = out.perMatch.find((p) => p.matchId === "QF-1")!;
     expect(qf.predictions[0].points).toBe(180); // 45 × 4
     const alice = out.leaderboard.find((l) => l.participantId === "alice")!;
-    expect(alice.breakdown.exactScores).toBe(60); // 15 × 4
-    expect(alice.breakdown.outcomes).toBe(120); // 30 × 4
+    // breakdown is a per-participant total: QF exact (15×4) + 3rd-place exact (15×6) = 150.
+    expect(alice.breakdown.exactScores).toBe(60 + 90);
+    // QF outcome (30×4) + 3rd-place outcome (30×6) = 300.
+    expect(alice.breakdown.outcomes).toBe(120 + 180);
   });
 
   it("scales scorer points by phase and excludes shootout goals", () => {
@@ -235,9 +237,9 @@ describe("computeScores — knockout phase multipliers", () => {
     expect(alice.total).toBe(128 + 32); // DEF 32×4 + FWD 8×4 (shootout goal excluded)
   });
 
-  it("does not score the 3rd-place match", () => {
+  it("scores the 3rd-place scoreline at the final's ×6 (but it carries no scorer picks)", () => {
     const tp = out.perMatch.find((p) => p.matchId === "3P-1")!;
-    expect(tp.predictions[0].points).toBe(0);
+    expect(tp.predictions[0].points).toBe(270); // exact 45 × 6
   });
 });
 

@@ -10,9 +10,9 @@ import { WC_HISTORY } from "../data/wcHistory";
 import type { Lineup, LineupPlayer, Match, MatchEvent, MatchPredictionResult, PlayerRating, TeamStat, Phase } from "@shared/types";
 import { ROUND_FACTOR } from "@shared/constants";
 
-/** Scoring multiplier for a match's phase (group ⇒ ×1, "none"/3rd-place ⇒ 0). */
+/** Scoring multiplier for a match's phase (group ⇒ ×1; the 3rd-place playoff scores at the final's ×6). */
 function roundFactor(match: Match): number {
-  if (match.phase === "none") return 0;
+  if (match.phase === "none") return ROUND_FACTOR.final;
   return ROUND_FACTOR[(match.phase ?? "group") as Phase];
 }
 

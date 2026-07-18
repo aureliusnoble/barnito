@@ -314,16 +314,21 @@ export function useHelpers() {
       const t = Date.parse(m.kickoff);
       if (Number.isFinite(t) && (!revealAt.has(ph) || t < (revealAt.get(ph) as number))) revealAt.set(ph, t);
     }
+    // Rounds whose picks are locked and released early by the admin, ahead of the usual kickoff gate.
+    const EARLY_REVEAL = new Set<string>(["final"]);
     return {
       teamName: (id: string) => d.teamById.get(id)?.name ?? id,
       teamGroup: (id: string) => d.teamById.get(id)?.group ?? "?",
       playerName: (id: string) => d.playerById.get(id)?.name ?? id,
       participantName: (id: string) => d.participantById.get(id)?.name ?? id,
-      // group games (no phase) are always visible; a knockout tie reveals once its round has kicked off.
-      predictionsRevealed: (m: Match) => !m.phase || m.phase === "none" || Date.now() >= (revealAt.get(m.phase) ?? 0),
+      // group games (no phase) are always visible; a knockout tie reveals once its round has kicked off
+      // (or immediately for a round the admin has released early).
+      predictionsRevealed: (m: Match) =>
+        !m.phase || m.phase === "none" || EARLY_REVEAL.has(m.phase) || Date.now() >= (revealAt.get(m.phase) ?? 0),
       // same rule keyed by phase string ("group"/"r32"/… as used in scorer picks): a knockout round
       // with no fixtures yet counts as not-revealed (nothing to leak).
-      phaseRevealed: (phase: string) => phase === "group" || (revealAt.has(phase) && Date.now() >= (revealAt.get(phase) as number)),
+      phaseRevealed: (phase: string) =>
+        phase === "group" || EARLY_REVEAL.has(phase) || (revealAt.has(phase) && Date.now() >= (revealAt.get(phase) as number)),
     };
   }, [d]);
 }
