@@ -381,9 +381,21 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
   });
   const standings = buildStandings(matches);
 
+  // Champion (+250): the winner of the FINISHED final, penalties breaking a level scoreline.
+  // Drives tournamentComplete, which flips on the champion bonus for whoever picked them.
+  const finalMatch = matches.find(
+    (m) => m.phase === "final" && m.status === "FINISHED" && m.homeGoals !== null && m.awayGoals !== null,
+  );
+  const championOfFinal = (m: Match): string =>
+    m.homeGoals! > m.awayGoals! ? m.homeTeamId
+      : m.awayGoals! > m.homeGoals! ? m.awayTeamId
+      : (m.penHome ?? 0) >= (m.penAway ?? 0) ? m.homeTeamId : m.awayTeamId;
+  const championTeamId = finalMatch ? championOfFinal(finalMatch) : null;
+  const tournamentComplete = championTeamId !== null;
+
   const scores = computeScores({
     roster: { updatedAt: "", teams, players },
-    matches: { updatedAt: "", tournamentComplete: false, championTeamId: null, matches },
+    matches: { updatedAt: "", tournamentComplete, championTeamId, matches },
     predictions: { updatedAt: "", participants },
     standings,
   });
@@ -400,9 +412,10 @@ async function recomputeAndStore(st: State, matchRows: Record<string, unknown>[]
   for (let i = 1; i <= finished.length; i++) {
     const allow = new Set(finished.slice(0, i).map((m) => m.id));
     const subset = matches.map((m) => (allow.has(m.id) ? m : neutral(m)));
+    const subComplete = !!finalMatch && allow.has(finalMatch.id); // +250 lands only once the final is counted
     const subSc = computeScores({
       roster: { updatedAt: "", teams, players },
-      matches: { updatedAt: "", tournamentComplete: false, championTeamId: null, matches: subset },
+      matches: { updatedAt: "", tournamentComplete: subComplete, championTeamId: subComplete ? championTeamId : null, matches: subset },
       predictions: { updatedAt: "", participants },
       standings: buildStandings(subset),
     });
