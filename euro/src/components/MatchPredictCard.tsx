@@ -232,6 +232,11 @@ export default function MatchPredictCard({ fixture }: { fixture: EFixture }) {
             Implied probability {fmtProb(odds.probs[myPred.pick])}. Locking freezes these odds for you
             <span className="font-semibold text-punch-300"> forever</span> — the pick can't be changed after.
           </p>
+          {fixture.phase !== "group" && (
+            <p className="text-xs text-skyx-300">
+              Knockout: scored on the result at the end of extra time — a draw stands and pays; penalties only decide who advances.
+            </p>
+          )}
         </Modal>
       )}
     </div>

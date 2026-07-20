@@ -42,7 +42,7 @@ export interface EFixture {
   homeGoals: number | null;
   awayGoals: number | null;
   scorers: ScorerLine[]; // forwards credited with this fixture's goals
-  penWinnerTeamId?: string | null; // knockout only: shootout winner when 90' is a draw
+  penWinnerTeamId?: string | null; // knockout only: shootout winner when still level after extra time
 }
 
 // ---------------------------------------------------------------------------

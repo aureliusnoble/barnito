@@ -187,6 +187,7 @@ function ResultEditor({ fixture, onClose }: { fixture: EFixture; onClose: () => 
         <input type="number" min={0} max={9} value={ag} onChange={(e) => setAg(Number(e.target.value))} className="e-input w-14 text-center" />
         <TeamMark team={away} size="sm" />
       </div>
+      {isKO && <p className="text-center text-[11px] text-skyx-300">Enter the score at the end of extra time — results and margins lock there; a shootout only picks who advances.</p>}
       {needsPens && (
         <div className="flex items-center justify-center gap-2 text-sm">
           <span className="text-ink-300">Shootout winner:</span>

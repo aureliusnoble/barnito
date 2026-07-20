@@ -54,7 +54,7 @@ const THIRDS_TABLE: Record<string, { B: EGroup; C: EGroup; E: EGroup; F: EGroup 
   CDEF: { B: "F", C: "E", E: "D", F: "C" },
 };
 
-/** 90-minute winner, or shootout winner for drawn knockouts. Null while unresolved. */
+/** Winner on the stored final score (KO: after extra time), or the shootout winner for draws. */
 export function winnerOf(f: EFixture): string | null {
   if (f.status !== "FINISHED" || f.homeGoals == null || f.awayGoals == null) return null;
   if (f.homeGoals > f.awayGoals) return f.homeTeamId;

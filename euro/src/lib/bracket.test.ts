@@ -194,7 +194,7 @@ describe("winnerOf", () => {
     expect(winnerOf(knockoutFixture({ awayGoals: 1 }))).toBeNull();
   });
 
-  it("returns the 90-minute winner", () => {
+  it("returns the stored-score winner", () => {
     expect(winnerOf(knockoutFixture({ homeGoals: 2, awayGoals: 1 }))).toBe("a1");
     expect(winnerOf(knockoutFixture({ homeGoals: 0, awayGoals: 3 }))).toBe("b2");
   });
@@ -206,7 +206,7 @@ describe("winnerOf", () => {
     expect(winnerOf(knockoutFixture({ homeGoals: 0, awayGoals: 0, penWinnerTeamId: "b2" }))).toBe("b2");
   });
 
-  it("prefers the 90-minute scoreline over a stray shootout entry", () => {
+  it("prefers the stored scoreline over a stray shootout entry", () => {
     expect(winnerOf(knockoutFixture({ homeGoals: 3, awayGoals: 1, penWinnerTeamId: "b2" }))).toBe("a1");
   });
 });
@@ -402,7 +402,7 @@ describe("championOf", () => {
     expect(championOf(makeFixtures())).toBeNull();
   });
 
-  it("returns the final's 90-minute winner once FINISHED", () => {
+  it("returns the final's stored-score winner once FINISHED", () => {
     const fx = makeFixtures();
     const final = fx.find((f) => f.id === "final");
     if (!final) throw new Error("missing final");

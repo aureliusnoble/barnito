@@ -141,7 +141,7 @@ describe("tokenPoints", () => {
 });
 
 describe("actualOutcome", () => {
-  it("reads the 90-minute result of finished fixtures only", () => {
+  it("reads the final (after-extra-time) result of finished fixtures only", () => {
     expect(actualOutcome(fx({ id: "a", phase: "group", status: "FINISHED", homeGoals: 2, awayGoals: 0 }))).toBe("H");
     expect(actualOutcome(fx({ id: "b", phase: "group", status: "FINISHED", homeGoals: 0, awayGoals: 2 }))).toBe("A");
     expect(actualOutcome(fx({ id: "c", phase: "group", status: "FINISHED", homeGoals: 1, awayGoals: 1 }))).toBe("D");
@@ -168,7 +168,7 @@ describe("actualOutcome", () => {
 // End-to-end: computeScores over a synthetic mini-tournament.
 //
 // Fixtures: two finished group games, one scheduled group game, and a finished
-// final that is 1–1 after 90' with alpha winning the shootout (⇒ champion).
+// final that is 1–1 after extra time with alpha winning the shootout (⇒ champion).
 // ---------------------------------------------------------------------------
 
 const teams: ETeam[] = [
@@ -190,7 +190,7 @@ const fixtures: EFixture[] = [
   }),
   // Locked picks exist on this one, but it hasn't been played — must score 0.
   fx({ id: "g-A3", phase: "group", group: "A", homeTeamId: "alpha", awayTeamId: "beta" }),
-  // 1–1 after 90 minutes; alpha lifts the trophy on penalties.
+  // 1–1 after extra time; alpha lifts the trophy on penalties.
   fx({
     id: "final", phase: "final", status: "FINISHED",
     homeTeamId: "alpha", awayTeamId: "gamma", homeGoals: 1, awayGoals: 1,
@@ -214,7 +214,7 @@ const predictions: Record<string, UserPredictions> = {
       "g-A1": { pick: "H", locked: true, lockedAt: "2028-06-08T10:00:00.000Z", odds: O.aliceGA1 }, // correct
       "g-B1": { pick: "H", locked: true, odds: O.aliceGB1 }, // wrong (it was a draw)
       "g-A3": { pick: "H", locked: true, odds: O.aliceGA3 }, // fixture unfinished → no score
-      final: { pick: "D", locked: true, odds: O.aliceFinal }, // correct: 90' draw pays even with pens
+      final: { pick: "D", locked: true, odds: O.aliceFinal }, // correct: after-extra-time draw pays even with pens
     },
     scorers: {
       group: {
@@ -240,7 +240,7 @@ const predictions: Record<string, UserPredictions> = {
     outcomes: {
       "g-A1": { pick: "H", locked: false }, // DRAFT — would be correct, must score 0 and produce no line
       "g-B1": { pick: "D", locked: true, odds: O.bobGB1 }, // correct
-      final: { pick: "A", locked: true, odds: O.bobFinal }, // wrong (90' was a draw)
+      final: { pick: "A", locked: true, odds: O.bobFinal }, // wrong (it was a draw after extra time)
     },
     scorers: {
       group: { playerIds: ["p-alpha-9"], locked: false }, // draft set — never scores
@@ -252,12 +252,12 @@ const predictions: Record<string, UserPredictions> = {
         oddsByAssign: { "g-A1:beta": O.bobTokA1 },
       },
     },
-    champion: { teamId: "gamma", locked: true }, // reached the final, drew 90', lost pens → 0
+    champion: { teamId: "gamma", locked: true }, // reached the final, drew after extra time, lost pens → 0
   },
   admin: {
     outcomes: {
       "g-A1": { pick: "H", locked: true, odds: O.adminGA1 }, // correct — admin scores, but never ranks
-      // Alpha "won" the final on penalties, but the 90' result was a draw → H pays nothing.
+      // Alpha "won" the final on penalties, but the result after extra time was a draw → H pays nothing.
       final: { pick: "H", locked: true, odds: O.adminFinal },
     },
     scorers: {},
@@ -318,7 +318,7 @@ describe("computeScores — end to end", () => {
     const gB1 = alice.outcomeLines.find((l) => l.fixtureId === "g-B1");
     expect(gB1).toMatchObject({ pick: "H", correct: false, points: 0 });
 
-    // Knockout rule: the 90-minute draw is the payable outcome, pens are separate.
+    // Knockout rule: the after-extra-time draw is the payable outcome, pens are separate.
     const fin = alice.outcomeLines.find((l) => l.fixtureId === "final");
     expect(fin).toMatchObject({ pick: "D", correct: true, points: PTS_ALICE_FINAL });
 
@@ -392,7 +392,7 @@ describe("computeScores — end to end", () => {
   });
 
   it("computes the admin's points but excludes them from ranking (rank stays 0)", () => {
-    // Admin's H on the final does NOT pay: alpha only won on penalties, 90' was a draw.
+    // Admin's H on the final does NOT pay: alpha only won on penalties, it was a draw after extra time.
     expect(admin.outcomeLines.find((l) => l.fixtureId === "final")).toMatchObject({ correct: false, points: 0 });
     expect(admin.outcomes).toBe(PTS_ADMIN_GA1);
     expect(admin.total).toBe(PTS_ADMIN_GA1);

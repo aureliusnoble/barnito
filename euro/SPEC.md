@@ -7,7 +7,7 @@ localStorage blob so the admin can inspect and drive everything from one browser
 
 ## The game (rules as configured — all tunables in `euro/src/config.ts`)
 
-1. **Outcome picks** (every match): pick Home / Draw / Away for the 90-minute result.
+1. **Outcome picks** (every match): pick Home / Draw / Away for the final result (group: full time; knockout: end of extra time).
    Points if correct = `BASE_OUTCOME (10) × OUTCOME_MULT[phase] × decimal odds at lock-in`.
    `OUTCOME_MULT = { group:1, r16:2, qf:4, sf:8, final:16 }` (each round worth 2× the last).
    Odds are **frozen per user at the moment they lock in**; they can change a draft
@@ -30,8 +30,8 @@ localStorage blob so the admin can inspect and drive everything from one browser
    × PICK_MULT[phase] × the backed team's win odds at lock-in`.
    Negative net difference ⇒ **negative points** (`TOKEN_ALLOW_NEGATIVE = true`).
    The phase's whole allocation locks at once, before the phase's first kickoff.
-6. **Knockout draws**: outcome picks are for the 90-minute result (draw is a valid
-   pick and pays). Penalties only decide who advances / the champion.
+6. **Knockout draws**: outcomes and token margins lock at the END OF EXTRA TIME (a
+   draw is a valid pick and pays). Penalties only decide who advances / the champion.
 
 Scoring counts **only FINISHED fixtures** and **only locked predictions**.
 All point values round to the nearest integer per item.

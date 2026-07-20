@@ -53,8 +53,9 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="every match">Match results</SectionTitle>
         <p className="mb-2 text-sm text-ink-200">
-          Pick <span className="font-semibold text-white">Home, Draw or Away</span> — the 90-minute result (knockout draws stand for scoring;
-          penalties only decide who advances). Each round is worth <span className="font-bold text-white">2× the last</span>.
+          Pick <span className="font-semibold text-white">Home, Draw or Away</span>. Group games score on the full-time result; knockout games
+          score on the result <span className="font-semibold text-white">at the end of extra time</span> — a draw after extra time stands and pays,
+          penalties only decide who advances. Each round is worth <span className="font-bold text-white">2× the last</span>.
         </p>
         <FormulaRow
           parts={[
@@ -98,6 +99,7 @@ export default function Rules() {
         <p className="mb-2 text-sm text-ink-200">
           Each round you get tokens equal to half the games. Stack any number on a team in a match. Each token pays
           {" "}{BASE_TOKEN} × <span className="font-semibold text-white">goal margin</span> × round × that team's win odds.
+          In knockouts the margin is taken at the <span className="font-semibold text-white">end of extra time</span> (shootouts don't move it).
         </p>
         <div className="mb-2 flex flex-wrap gap-2 text-xs">
           <span className="e-chip bg-mint-500/15 text-mint-300 ring-1 ring-mint-500/25">
