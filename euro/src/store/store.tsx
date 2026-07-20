@@ -21,8 +21,8 @@ import { ADMIN_PIN, PHASES, SCORER_PICKS, STORAGE_KEY, TOKENS_BY_PHASE } from ".
 import { TEAMS } from "../data/teams";
 import { FORWARDS } from "../data/players";
 import { BASE_FIXTURES } from "../data/fixtures";
-import { outcomeOdds, scorerOdds, marginSpread, marginOutlook, outrightOdds, type MarginOutlook } from "../lib/odds";
-import { computeScores } from "../lib/scoring";
+import { outcomeOdds, scorerOdds, tokenMarket, outrightOdds } from "../lib/odds";
+import { computeScores, tokenRate } from "../lib/scoring";
 import { fixtureSpice } from "../lib/spice";
 import { advanceBracket, groupsComplete, winnerOf } from "../lib/bracket";
 import { hash32, mulberry32 } from "../lib/rng";
@@ -44,7 +44,7 @@ const emptyPredictions = (): UserPredictions => ({ outcomes: {}, scorers: {}, to
 
 function freshState(): Euro28State {
   return {
-    version: 2,
+    version: 3,
     users: SEED_USERS,
     sessionUserId: null,
     fixtures: BASE_FIXTURES.map((f) => ({ ...f, scorers: [...f.scorers] })),
@@ -58,7 +58,7 @@ function loadState(): Euro28State {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return freshState();
     const parsed = JSON.parse(raw) as Euro28State;
-    if (parsed.version !== 2 || !Array.isArray(parsed.fixtures)) return freshState();
+    if (parsed.version !== 3 || !Array.isArray(parsed.fixtures)) return freshState();
     for (const u of parsed.users) if (!parsed.predictions[u.id]) parsed.predictions[u.id] = emptyPredictions();
     return parsed;
   } catch {
@@ -91,10 +91,8 @@ export interface StoreApi {
   revealPhase: (phase: EPhase) => boolean;
 
   oddsFor: (f: EFixture) => OutcomeOdds | null;
-  /** Frozen-at-lock market spread (expected margin, signed) for a team in a fixture. */
-  spreadFor: (f: EFixture, teamId: string) => number | null;
-  /** Cover probability + typical win/loss distances for a token on this team. */
-  marginOutlookFor: (f: EFixture, teamId: string) => MarginOutlook | null;
+  /** Token market for a team in a fixture: win chance + frozen-able per-goal point rates. */
+  tokenMarketFor: (f: EFixture, teamId: string) => { winProb: number; drawProb: number; win: number; loss: number } | null;
   /** Round-relative leaderboard-swing rating for a fixture (0 sleepy … 2+ table-shaker). */
   spiceOf: (f: EFixture) => number;
   scorerOddsFor: (p: EPlayer, phase: EPhase) => { prob: number; odds: number };
@@ -177,17 +175,12 @@ export function EuroProvider({ children }: { children: ReactNode }) {
       if (!h || !a) return null;
       return outcomeOdds(f, h, a, nowMs);
     };
-    const spreadFor = (f: EFixture, teamId: string) => {
+    const tokenMarketFor = (f: EFixture, teamId: string) => {
       const h = f.homeTeamId && teamById.get(f.homeTeamId);
       const a = f.awayTeamId && teamById.get(f.awayTeamId);
       if (!h || !a) return null;
-      return marginSpread(f, h, a, teamId, nowMs);
-    };
-    const marginOutlookFor = (f: EFixture, teamId: string) => {
-      const h = f.homeTeamId && teamById.get(f.homeTeamId);
-      const a = f.awayTeamId && teamById.get(f.awayTeamId);
-      if (!h || !a) return null;
-      return marginOutlook(f, h, a, teamId, nowMs);
+      const m = tokenMarket(f, h, a, teamId, nowMs);
+      return { winProb: m.winProb, drawProb: m.drawProb, win: tokenRate(f.phase, m.winFactor), loss: tokenRate(f.phase, m.lossFactor) };
     };
     const scorerOddsFor = (p: EPlayer, phase: EPhase) =>
       scorerOdds(p, teamById.get(p.teamId)!, phase, nowMs);
@@ -303,7 +296,7 @@ export function EuroProvider({ children }: { children: ReactNode }) {
           if (!p.tokens[ph]?.locked) {
             let left = TOKENS_BY_PHASE[ph];
             const assigns: TokenAssign[] = [];
-            const spreadByAssign: Record<string, number> = {};
+            const ratesByAssign: Record<string, { win: number; loss: number }> = {};
             const shuffled = [...fxs].sort(() => rng() - 0.5);
             for (const f of shuffled) {
               if (left <= 0) break;
@@ -312,10 +305,11 @@ export function EuroProvider({ children }: { children: ReactNode }) {
               const a = teamById.get(f.awayTeamId!)!;
               const team = (rng() < 0.7 ? (h.rating >= a.rating ? h : a) : h.rating >= a.rating ? a : h).id;
               assigns.push({ fixtureId: f.id, teamId: team, count: n });
-              spreadByAssign[`${f.id}:${team}`] = marginSpread(f, h, a, team, at);
+              const m = tokenMarket(f, h, a, team, at);
+              ratesByAssign[`${f.id}:${team}`] = { win: tokenRate(ph, m.winFactor), loss: tokenRate(ph, m.lossFactor) };
               left -= n;
             }
-            p.tokens[ph] = { assigns, locked: true, lockedAt: new Date(at).toISOString(), spreadByAssign };
+            p.tokens[ph] = { assigns, locked: true, lockedAt: new Date(at).toISOString(), ratesByAssign };
           }
         }
       }
@@ -343,8 +337,7 @@ export function EuroProvider({ children }: { children: ReactNode }) {
       revealPhase: (phase) => isAdmin || nowMs >= phaseFirstKickoff(phase),
 
       oddsFor,
-      spreadFor,
-      marginOutlookFor,
+      tokenMarketFor,
       spiceOf: (f) => fixtureSpice(state, teamById, f),
       scorerOddsFor,
       outright: outrightOdds(TEAMS, nowMs),
@@ -471,16 +464,16 @@ export function EuroProvider({ children }: { children: ReactNode }) {
         if (!tp) return "Assign some tokens first.";
         if (tp.locked) return "Already locked.";
         if (tp.assigns.length === 0) return "Assign at least one token.";
-        const spreadByAssign: Record<string, number> = {};
+        const ratesByAssign: Record<string, { win: number; loss: number }> = {};
         for (const a of tp.assigns) {
           const f = fixtureById.get(a.fixtureId)!;
-          const sp = spreadFor(f, a.teamId);
-          if (sp == null) return "No spread available.";
-          spreadByAssign[`${a.fixtureId}:${a.teamId}`] = sp;
+          const m = tokenMarketFor(f, a.teamId);
+          if (!m) return "No market available.";
+          ratesByAssign[`${a.fixtureId}:${a.teamId}`] = { win: m.win, loss: m.loss };
         }
         mutate((d) => {
           const p = myPreds(d)!;
-          p.tokens[phase] = { assigns: tp.assigns, locked: true, lockedAt: new Date(nowMs).toISOString(), spreadByAssign };
+          p.tokens[phase] = { assigns: tp.assigns, locked: true, lockedAt: new Date(nowMs).toISOString(), ratesByAssign };
         });
         return null;
       },

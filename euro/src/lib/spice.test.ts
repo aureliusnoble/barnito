@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { Euro28State, ETeam, EFixture } from "../types";
 import { fixtureSpice, spiceLevel } from "./spice";
-import { marginSpread } from "./odds";
+import { tokenMarket } from "./odds";
+import { tokenRate } from "./scoring";
 
 const team = (id: string, rating: number): ETeam => ({ id, name: id, code: id.toUpperCase().slice(0, 3), group: "A", rating, color: "#fff", flag: "🏳️" });
 const HOME = team("alpha", 1950);
@@ -19,14 +20,15 @@ function state(withPicks: boolean): Euro28State {
     { id: "b", name: "B", isAdmin: false, emoji: "🅱️" },
     { id: "adm", name: "Admin", isAdmin: true, emoji: "🛠️" },
   ];
-  const spread = marginSpread(fixture, HOME, AWAY, "alpha", Date.parse(fixture.kickoff));
+  const m = tokenMarket(fixture, HOME, AWAY, "alpha", Date.parse(fixture.kickoff));
+  const rates = { win: tokenRate("group", m.winFactor), loss: tokenRate("group", m.lossFactor) };
   return {
     version: 2, users, sessionUserId: null, fixtures: [fixture], admin: { simNow: null },
     predictions: {
       a: {
         outcomes: withPicks ? { "g-A1": { pick: "H", locked: true, odds: 1.5, prob: 0.66 } } : {},
         scorers: {}, champion: null,
-        tokens: withPicks ? { group: { assigns: [{ fixtureId: "g-A1", teamId: "alpha", count: 3 }], locked: true, spreadByAssign: { "g-A1:alpha": spread } } } : {},
+        tokens: withPicks ? { group: { assigns: [{ fixtureId: "g-A1", teamId: "alpha", count: 3 }], locked: true, ratesByAssign: { "g-A1:alpha": rates } } } : {},
       },
       b: {
         outcomes: withPicks ? { "g-A1": { pick: "A", locked: true, odds: 6.0, prob: 0.16 } } : {},

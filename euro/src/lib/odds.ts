@@ -86,25 +86,11 @@ const MARGIN_PMF: [number, number][] = [
   [2, 0.35],
   [3, 0.1278],
 ];
-const MEAN_WIN_MARGIN = MARGIN_PMF.reduce((a, [m, p]) => a + m * p, 0); // ≈ 1.606
-
-/**
- * Market spread for a team in a fixture: its expected goal margin (signed;
- * favourites positive), frozen at token lock. Tokens pay on margin − spread, which
- * has zero expectation on BOTH sides of every game — only beating the market's
- * margin view earns points.
- */
-export function marginSpread(fixture: EFixture, home: ETeam, away: ETeam, teamId: string, atMs: number): number {
-  const o = outcomeOdds(fixture, home, away, atMs);
-  const pT = teamId === home.id ? o.probs.H : o.probs.A;
-  const pO = teamId === home.id ? o.probs.A : o.probs.H;
-  return Math.round(MEAN_WIN_MARGIN * (pT - pO) * 100) / 100;
-}
+export const MEAN_WIN_MARGIN = MARGIN_PMF.reduce((a, [m, p]) => a + m * p, 0); // ≈ 1.606
 
 /**
  * Full goal-margin distribution for a fixture from `teamId`'s perspective
- * (wins positive): 7 outcomes, probabilities sum to 1. The building block for
- * token outlooks and match spiciness.
+ * (wins positive): 7 outcomes, probabilities sum to 1. Powers spiciness.
  */
 export function marginDistribution(fixture: EFixture, home: ETeam, away: ETeam, teamId: string, atMs: number): [number, number][] {
   const o = outcomeOdds(fixture, home, away, atMs);
@@ -117,42 +103,32 @@ export function marginDistribution(fixture: EFixture, home: ETeam, away: ETeam, 
   ];
 }
 
-export interface MarginOutlook {
-  line: number;
-  /** Probability the team finishes ahead of its line (earns points). */
-  cover: number;
-  /** Average goals past the line when it covers (positive). */
-  avgWinDelta: number;
-  /** Average goals short of the line when it misses (negative). */
-  avgLossDelta: number;
+/**
+ * The token market for a team: win/draw/loss probabilities plus the per-goal
+ * rate FACTORS. A token pays winFactor per goal of winning margin and costs
+ * lossFactor per goal of losing margin (scaled by base × round in scoring).
+ * winFactor/lossFactor = pOpp/pTeam makes both sides zero-expectation on RAW
+ * margin; normalizing winFactor + lossFactor = 2 bounds every rate within
+ * [0, 2×base] and prices an even game at exactly ±base.
+ */
+export interface TokenMarket {
+  winProb: number;
+  drawProb: number;
+  lossProb: number;
+  winFactor: number;
+  lossFactor: number;
 }
 
-/**
- * The human-readable view of a token bet: how often this side beats its line,
- * and the typical distance either way — computed from the same margin model the
- * line comes from, so cover × avgWin + miss × avgLoss ≈ 0 (zero expectation).
- */
-export function marginOutlook(fixture: EFixture, home: ETeam, away: ETeam, teamId: string, atMs: number): MarginOutlook {
+export function tokenMarket(fixture: EFixture, home: ETeam, away: ETeam, teamId: string, atMs: number): TokenMarket {
   const o = outcomeOdds(fixture, home, away, atMs);
   const pT = teamId === home.id ? o.probs.H : o.probs.A;
   const pO = teamId === home.id ? o.probs.A : o.probs.H;
-  const pD = o.probs.D;
-  const line = Math.round(MEAN_WIN_MARGIN * (pT - pO) * 100) / 100;
-
-  // Full margin pmf from this team's perspective: wins positive, losses negative.
-  const outcomes = marginDistribution(fixture, home, away, teamId, atMs);
-  void pD;
-  let cover = 0, winSum = 0, miss = 0, lossSum = 0;
-  for (const [m, p] of outcomes) {
-    const delta = m - line;
-    if (delta > 1e-9) { cover += p; winSum += p * delta; }
-    else if (delta < -1e-9) { miss += p; lossSum += p * delta; }
-  }
   return {
-    line,
-    cover,
-    avgWinDelta: cover > 0 ? winSum / cover : 0,
-    avgLossDelta: miss > 0 ? lossSum / miss : 0,
+    winProb: pT,
+    drawProb: o.probs.D,
+    lossProb: pO,
+    winFactor: (2 * pO) / (pT + pO),
+    lossFactor: (2 * pT) / (pT + pO),
   };
 }
 

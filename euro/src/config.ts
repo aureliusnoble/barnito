@@ -60,4 +60,4 @@ export const PHASE_SHORT: Record<EPhase, string> = {
 export const ADMIN_PIN = "2028";
 
 /** localStorage key for the whole mock backend. Bump the suffix on breaking shape changes. */
-export const STORAGE_KEY = "barnito-euro28:v2";
+export const STORAGE_KEY = "barnito-euro28:v3";

@@ -4,7 +4,7 @@
 
 import { describe, it, expect } from "vitest";
 import type { EFixture, EPhase, ETeam, EPlayer, Outcome } from "../types";
-import { marginOutlook, normalizeProbs, outcomeOdds, scorerOdds, teamWinOdds } from "./odds";
+import { normalizeProbs, outcomeOdds, scorerOdds, teamWinOdds, tokenMarket } from "./odds";
 
 // ---------------------------------------------------------------------------
 // Synthetic builders (no imports from data/*).
@@ -258,25 +258,28 @@ describe("normalizeProbs", () => {
 
 
 // ---------------------------------------------------------------------------
-// marginOutlook — the human-readable token view
+// tokenMarket — asymmetric per-goal rates priced from the odds
 // ---------------------------------------------------------------------------
 
-describe("marginOutlook", () => {
-  it("is zero-expectation on both sides and asymmetric the right way round", () => {
+describe("tokenMarket", () => {
+  it("prices raw-margin tokens EV-fair on both sides, favourite earning less/risking more", () => {
     const f = fixture("g-A1", "group", HOME.id, AWAY.id); // HOME is the stronger side
-    for (const teamId of [HOME.id, AWAY.id]) {
-      const lk = marginOutlook(f, HOME, AWAY, teamId, T0);
-      const miss = 1 - lk.cover;
-      // cover × avgWin + miss × avgLoss ≈ 0 (fair line; 2dp rounding tolerance)
-      expect(Math.abs(lk.cover * lk.avgWinDelta + miss * lk.avgLossDelta)).toBeLessThan(0.02);
-      expect(lk.avgWinDelta).toBeGreaterThan(0);
-      expect(lk.avgLossDelta).toBeLessThan(0);
+    const fav = tokenMarket(f, HOME, AWAY, HOME.id, T0);
+    const dog = tokenMarket(f, HOME, AWAY, AWAY.id, T0);
+    for (const m of [fav, dog]) {
+      // EV = winFactor×P(win)×E[m|win] − lossFactor×P(loss)×E[m|loss]; the margin
+      // means cancel, so fairness reduces to winFactor×winProb = lossFactor×lossProb.
+      expect(Math.abs(m.winFactor * m.winProb - m.lossFactor * m.lossProb)).toBeLessThan(1e-9);
+      // Normalization bounds every rate: the two factors always sum to 2.
+      expect(m.winFactor + m.lossFactor).toBeCloseTo(2, 9);
+      expect(m.winFactor).toBeGreaterThan(0);
+      expect(m.lossFactor).toBeGreaterThan(0);
     }
-    const fav = marginOutlook(f, HOME, AWAY, HOME.id, T0);
-    const dog = marginOutlook(f, HOME, AWAY, AWAY.id, T0);
-    // Favourite: pays off often, small wins, bigger rare losses. Dog: mirror image.
-    expect(fav.cover).toBeGreaterThan(dog.cover);
-    expect(fav.avgWinDelta).toBeLessThan(dog.avgWinDelta);
-    expect(Math.abs(fav.avgLossDelta)).toBeGreaterThan(Math.abs(dog.avgLossDelta));
+    // Favourite: earns less per goal won, risks more per goal lost. Dog mirrored.
+    expect(fav.winFactor).toBeLessThan(1);
+    expect(fav.lossFactor).toBeGreaterThan(1);
+    expect(dog.winFactor).toBeGreaterThan(1);
+    expect(dog.winFactor).toBeCloseTo(fav.lossFactor, 9);
+    expect(dog.lossFactor).toBeCloseTo(fav.winFactor, 9);
   });
 });

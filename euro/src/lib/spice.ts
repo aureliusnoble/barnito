@@ -34,11 +34,12 @@ export function fixtureSpice(state: Euro28State, teamById: Map<string, ETeam>, f
       const op = preds?.outcomes[fixture.id];
       if (op?.locked && op.odds != null && op.pick === outcome) total += outcomePoints(fixture.phase, op.odds);
       const tp = preds?.tokens[fixture.phase];
-      if (tp?.locked && tp.spreadByAssign) {
+      if (tp?.locked && tp.ratesByAssign) {
         for (const a of tp.assigns) {
           if (a.fixtureId !== fixture.id) continue;
           const marginForTeam = a.teamId === fixture.homeTeamId ? m : -m;
-          total += tokenPoints(fixture.phase, a.count, marginForTeam, tp.spreadByAssign[`${a.fixtureId}:${a.teamId}`] ?? 0);
+          const rates = tp.ratesByAssign[`${a.fixtureId}:${a.teamId}`] ?? { win: 0, loss: 0 };
+          total += tokenPoints(a.count, marginForTeam, rates.win, rates.loss);
         }
       }
       return total;

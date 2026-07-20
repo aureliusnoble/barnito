@@ -1,6 +1,6 @@
 import type { EPhase } from "../types";
 import { PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_PICKS, TOKENS_BY_PHASE } from "../config";
-import { championPoints, outcomePoints, scorerPointsPerGoal, tokenPoints } from "../lib/scoring";
+import { championPoints, outcomePoints, scorerPointsPerGoal, tokenRate } from "../lib/scoring";
 import { fmtPts, fmtSignedPts } from "../lib/format";
 import { BarBreakdown, PageHead, SectionTitle } from "../ui/kit";
 
@@ -40,7 +40,7 @@ function PointsEconomy() {
   const rows = PHASES.map((p) => {
     const outcomes = MATCHES_IN_ROUND[p] * outcomePoints(p, 1);
     const scorers = SCORER_PICKS[p] * GAMES_PER_TEAM[p] * scorerPointsPerGoal(p, 1);
-    const tokens = TOKENS_BY_PHASE[p] * tokenPoints(p, 1, 1, 0);
+    const tokens = TOKENS_BY_PHASE[p] * tokenRate(p, 1);
     return { phase: p, outcomes, scorers, tokens, total: outcomes + scorers + tokens };
   });
   const max = Math.max(...rows.map((r) => r.total));
@@ -120,14 +120,15 @@ export default function Rules() {
         <SectionTitle hint="the risk lever">Tokens</SectionTitle>
         <p className="mb-2 text-sm text-ink-200">
           Back a team's <span className="font-semibold text-white">winning margin</span>: every token earns points for
-          each goal better than expected they finish, and loses the same for each goal worse.
+          each goal they <span className="font-semibold text-white">win by</span>, and loses points for each goal they
+          <span className="font-semibold text-white"> lose by</span> (a draw scores nothing).
+          The two rates follow the odds — an underdog earns big per goal and risks little, a favourite earns little and
+          risks big — so both sides are a fair bet.
           <span className="font-semibold text-white"> Stack multiple tokens on one game</span> to raise the stakes.
-          Favourites are expected to win big, so a scrappy 1–0 can miss — while an underdog that keeps it close pays
-          <span className="font-semibold text-white"> even in defeat</span>.
         </p>
         <MiniTable
-          head={["Round", "Tokens", "Per goal, per token"]}
-          rows={PHASES.map((p) => [PHASE_SHORT[p], TOKENS_BY_PHASE[p], `±${fmtPts(tokenPoints(p, 1, 1, 0))}`])}
+          head={["Round", "Tokens", "Per goal (even game)"]}
+          rows={PHASES.map((p) => [PHASE_SHORT[p], TOKENS_BY_PHASE[p], `±${fmtPts(tokenRate(p, 1))}`])}
         />
         <p className="mt-2 text-xs text-red-300">⚠️ The only market that can go negative — the market is your opponent.</p>
       </section>

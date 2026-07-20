@@ -28,12 +28,13 @@ localStorage blob so the admin can inspect and drive everything from one browser
    are exactly 180/280/400/600/900: ~1.5× growth at exactly half the results pot every round.
    The whole set locks at once, before the phase's first kickoff.
 5. **Tokens**: per phase users get `TOKENS = { group:12, r16:8, qf:4, sf:2, final:1 }`. Assign any
-   number of tokens to a team in a match (multiple per match allowed). Each match shows each
-   team's **line** (the market's expected goal margin, signed), frozen at lock. Each token scores
-   `BASE_TOKEN (10) × (final margin − line) × TOKEN_MULT[phase]`, with
-   `TOKEN_MULT = { group:2, r16:4, qf:10, sf:30, final:90 }` scaling the ± swing per round.
-   Zero expectation on BOTH sides of every game — only beating the market's margin view pays.
-   Finishing short of the line ⇒ **negative points** (`TOKEN_ALLOW_NEGATIVE = true`).
+   number of tokens to a team in a match (multiple per match allowed). Tokens pay on RAW margin
+   at asymmetric per-goal rates frozen at lock: `+winRate` per goal the team wins by, `−lossRate`
+   per goal it loses by, 0 on a draw. Rates are priced from the odds — `winRate/lossRate =
+   oppWinProb/teamWinProb`, normalized so the two rates sum to 2 × BASE_TOKEN (10) ×
+   TOKEN_MULT[phase] (`TOKEN_MULT = { group:2, r16:4, qf:10, sf:30, final:90 }`) — which makes
+   BOTH sides zero-expectation: underdogs earn big per goal and risk little, favourites the
+   reverse. Losing margins ⇒ **negative points** (`TOKEN_ALLOW_NEGATIVE = true`).
    The phase's whole allocation locks at once, before the phase's first kickoff.
 6. **Knockout draws**: outcomes and token margins lock at the END OF EXTRA TIME (a
    draw is a valid pick and pays). Penalties only decide who advances / the champion.

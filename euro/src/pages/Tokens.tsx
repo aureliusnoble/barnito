@@ -3,12 +3,11 @@ import { AlertTriangle, Coins, Lock } from "lucide-react";
 import type { EPhase, TokenAssign } from "../types";
 import { PHASES, PHASE_SHORT, TOKENS_BY_PHASE } from "../config";
 import { useEuro } from "../store/store";
-import { tokenPoints } from "../lib/scoring";
 import { fmtDay, fmtFull, fmtProb, fmtPts, fmtSignedPts, fmtTime } from "../lib/format";
 import { Btn, CountdownPill, EmptyState, LockBadge, Modal, PageHead, ProbBar, PtsTag, SectionTitle, Stepper, Tabs, TeamMark, useToast } from "../ui/kit";
 
 export default function Tokens() {
-  const { me, state, nowMs, teamById, fixtureById, phaseFirstKickoff, phaseTeamsKnown, canLockPhase, revealPhase, marginOutlookFor, setTokenDraft, lockTokens, scoreOf } = useEuro();
+  const { me, state, nowMs, teamById, fixtureById, phaseFirstKickoff, phaseTeamsKnown, canLockPhase, revealPhase, tokenMarketFor, setTokenDraft, lockTokens, scoreOf } = useEuro();
   const { toast } = useToast();
   const [phase, setPhase] = useState<EPhase>("group");
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -42,13 +41,12 @@ export default function Tokens() {
 
   const myLines = me ? (scoreOf(me.id)?.tokenLines ?? []).filter((l) => l.phase === phase) : [];
   const phaseTotal = myLines.reduce((a, b) => a + b.points, 0);
-  const perGoalNow = tokenPoints(phase, 1, 1, 0);
 
   return (
     <div className="space-y-4 pb-16">
       <PageHead
         title="Tokens"
-        sub={`Back a team's winning margin: each token earns +${perGoalNow} per goal better than expected they finish, and loses ${perGoalNow} per goal worse. Stack as many tokens on one game as you like.`}
+        sub="Each token earns points per goal your team wins by — and loses points per goal they lose by. Rates follow the odds: underdogs earn big and risk little. Stack as many on one game as you like."
       />
       <Tabs options={PHASES.map((p) => ({ value: p, label: PHASE_SHORT[p] }))} value={phase} onChange={setPhase} />
 
@@ -81,6 +79,7 @@ export default function Tokens() {
           {my.assigns.map((a, i) => {
             const f = fixtureById.get(a.fixtureId);
             const t = teamById.get(a.teamId);
+            const rates = my.ratesByAssign?.[`${a.fixtureId}:${a.teamId}`];
             const scored = myLines.find((l) => l.fixtureId === a.fixtureId && l.teamId === a.teamId);
             return (
               <div key={i} className="e-card flex items-center justify-between gap-2 p-3">
@@ -91,13 +90,16 @@ export default function Tokens() {
                   </span>
                   <span className="text-[11px] text-ink-500">
                     v {teamById.get(f?.homeTeamId === a.teamId ? f?.awayTeamId ?? "" : f?.homeTeamId ?? "")?.name ?? "?"} · {f ? fmtDay(f.kickoff) : ""}
+                    {rates && (
+                      <span className="e-num"> · <span className="text-mint-300">+{fmtPts(rates.win * a.count)}</span>/<span className="text-red-300">−{fmtPts(rates.loss * a.count)}</span> per goal</span>
+                    )}
                   </span>
                 </span>
                 <span className="flex items-center gap-1.5">
                   {scored ? (
                     <>
-                      <span className={`e-num text-[11px] ${scored.netDiff - scored.spread >= 0 ? "text-mint-300" : "text-red-300"}`}>
-                        margin {scored.netDiff > 0 ? "+" : ""}{scored.netDiff}
+                      <span className={`e-num text-[11px] ${scored.netDiff > 0 ? "text-mint-300" : scored.netDiff < 0 ? "text-red-300" : "text-ink-400"}`}>
+                        {scored.netDiff > 0 ? `won by ${scored.netDiff}` : scored.netDiff < 0 ? `lost by ${-scored.netDiff}` : "drew"}
                       </span>
                       <PtsTag pts={scored.points} signed />
                     </>
@@ -125,7 +127,7 @@ export default function Tokens() {
                     {fmtDay(f.kickoff)} · {fmtTime(f.kickoff)} · {f.venue}
                   </div>
                   {[home, away].map((t) => {
-                    const look = marginOutlookFor(f, t.id);
+                    const m = tokenMarketFor(f, t.id);
                     const n = countFor(f.id, t.id);
                     const canAdd = placed < wallet;
                     const k = Math.max(1, n);
@@ -133,22 +135,19 @@ export default function Tokens() {
                       <div key={t.id} className="flex items-center justify-between gap-2 py-1.5">
                         <span className="min-w-0">
                           <TeamMark team={t} size="sm" />
-                          {look && (
+                          {m && (
                             <span className="mt-1 flex items-center gap-1.5">
-                              <span className="w-14"><ProbBar pct={look.cover} /></span>
-                              <span className="e-num text-[10px] text-skyx-300">{fmtProb(look.cover)} chance</span>
+                              <span className="w-14"><ProbBar pct={m.winProb} /></span>
+                              <span className="e-num text-[10px] text-skyx-300">{fmtProb(m.winProb)} to win</span>
                             </span>
                           )}
                         </span>
                         <span className="flex shrink-0 items-center gap-2">
-                          {look && (
-                            <span className="e-num text-right text-[11px] leading-tight">
-                              <span className="block font-bold text-mint-300">
-                                +{fmtPts(tokenPoints(phase, k, look.line + look.avgWinDelta, look.line))}
-                              </span>
-                              <span className="block text-[10px] text-red-300">
-                                −{fmtPts(Math.abs(tokenPoints(phase, k, look.line + look.avgLossDelta, look.line)))} if not
-                              </span>
+                          {m && (
+                            <span className="e-num text-right text-[10px] leading-tight">
+                              <span className="block text-[11px] font-bold text-mint-300">+{fmtPts(m.win * k)}/goal won</span>
+                              <span className="block text-red-300">−{fmtPts(m.loss * k)}/goal lost</span>
+                              {n > 1 && <span className="block text-ink-500">{n}🪙</span>}
                             </span>
                           )}
                           <Stepper value={n} min={0} max={n + (canAdd ? 1 : 0)} onChange={(v) => setCount(f.id, t.id, v)} />
@@ -234,19 +233,17 @@ export default function Tokens() {
           {assigns.map((a, i) => {
             const f = fixtureById.get(a.fixtureId);
             const t = teamById.get(a.teamId);
-            const look = f ? marginOutlookFor(f, a.teamId) : null;
+            const m = f ? tokenMarketFor(f, a.teamId) : null;
             return (
               <li key={i} className="flex items-center justify-between gap-2 text-sm">
                 <span className="text-ink-100">
                   {a.count}🪙 on {t?.name ?? a.teamId}
                 </span>
-                {look && (
+                {m && (
                   <span className="e-num text-right text-[11px]">
-                    <span className="text-skyx-300">{fmtProb(look.cover)} pay off</span>
+                    <span className="text-skyx-300">{fmtProb(m.winProb)} to win</span>
                     <span className="block text-ink-400">
-                      <span className="text-mint-300">avg {fmtSignedPts(tokenPoints(phase, a.count, look.line + look.avgWinDelta, look.line))}</span>
-                      {" · "}
-                      <span className="text-red-300">avg {fmtSignedPts(tokenPoints(phase, a.count, look.line + look.avgLossDelta, look.line))}</span>
+                      <span className="text-mint-300">+{fmtPts(m.win * a.count)}</span>/<span className="text-red-300">−{fmtPts(m.loss * a.count)}</span> per goal
                     </span>
                   </span>
                 )}
@@ -256,8 +253,7 @@ export default function Tokens() {
         </ul>
         <p className="flex items-start gap-1.5 text-xs text-ink-400">
           <AlertTriangle size={14} className="mt-0.5 shrink-0 text-red-300" />
-          The line freezes now. Your team's final goal margin is measured against it — finish short and the
-          same rate <span className="font-semibold text-red-300">subtracts</span> points. Locking is permanent.
+          Rates freeze now. Points per goal won, minus per goal lost — a draw scores nothing. Locking is permanent.
         </p>
       </Modal>
     </div>

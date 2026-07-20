@@ -24,8 +24,8 @@ Robsonaldo, and **Admin** (PIN **2028**).
      (500 × odds, uncapped — longshots pay their full price). Lock freezes the odds.
    - **Predict → Scorers**: pick exactly 12 forwards, lock — per-goal points shown
      per player (odds × 5 × round).
-   - **Predict → Tokens**: place the 12 group tokens, note each team's market line and the
-     "+X /goal past the line · −X /goal short" projections, lock.
+   - **Predict → Tokens**: place the 12 group tokens, note each team's win chance and its
+     "+X per goal won · −Y per goal lost" rates (underdogs earn big, risk little), lock.
 4. Back to **Admin** → Time machine → "Groups underway". Try to change a locked
    pick or lock a new one for a started match — correctly refused.
 5. Admin → Bulk → **Seed demo picks for everyone** (fills the other six players),

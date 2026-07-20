@@ -45,12 +45,17 @@ export function championPoints(outrightOdds?: number): number {
   return Math.round(BASE_CHAMPION * (outrightOdds ?? 1));
 }
 
-/** Points for `count` tokens on a team finishing at `margin` against a frozen `spread`.
- * Zero expectation on both sides when the market is right — only edge pays. */
-export function tokenPoints(phase: EPhase, count: number, margin: number, spread: number): number {
-  const delta = margin - spread;
-  const diff = TOKEN_ALLOW_NEGATIVE ? delta : Math.max(0, delta);
-  return Math.round(BASE_TOKEN * count * diff * TOKEN_MULT[phase]);
+/** Per-goal token rate in points for a phase, from a market rate factor (1 = even game). */
+export function tokenRate(phase: EPhase, factor: number): number {
+  return Math.round(BASE_TOKEN * TOKEN_MULT[phase] * factor);
+}
+
+/** Points for `count` tokens on RAW margin: +winRate per goal won by, −lossRate per goal
+ * lost by, 0 on a draw. Rates are priced from the odds so both sides are EV-fair. */
+export function tokenPoints(count: number, margin: number, winRate: number, lossRate: number): number {
+  const gross = margin > 0 ? margin * winRate : margin * lossRate;
+  const kept = TOKEN_ALLOW_NEGATIVE ? gross : Math.max(0, gross);
+  return Math.round(count * kept);
 }
 
 export function computeScores(state: Euro28State, teams: ETeam[]): UserScore[] {
@@ -103,24 +108,25 @@ export function computeScores(state: Euro28State, teams: ETeam[]): UserScore[] {
       }
     }
 
-    // Rule 6: tokens — margin measured against the spread frozen at lock.
+    // Rule 6: tokens — raw margin at the rates frozen at lock.
     const tokenLines: TokenScoreLine[] = [];
     for (const phase of PHASES) {
       const tp = p.tokens[phase];
-      if (!tp?.locked || !tp.spreadByAssign) continue;
+      if (!tp?.locked || !tp.ratesByAssign) continue;
       for (const a of tp.assigns) {
         const f = fixtureById.get(a.fixtureId);
         if (!f || f.status !== "FINISHED" || f.homeGoals == null || f.awayGoals == null) continue;
         const netDiff = a.teamId === f.homeTeamId ? f.homeGoals - f.awayGoals : f.awayGoals - f.homeGoals;
-        const spread = tp.spreadByAssign[`${a.fixtureId}:${a.teamId}`] ?? 0;
+        const rates = tp.ratesByAssign[`${a.fixtureId}:${a.teamId}`] ?? { win: 0, loss: 0 };
         tokenLines.push({
           phase,
           fixtureId: a.fixtureId,
           teamId: a.teamId,
           count: a.count,
           netDiff,
-          spread,
-          points: tokenPoints(phase, a.count, netDiff, spread),
+          winRate: rates.win,
+          lossRate: rates.loss,
+          points: tokenPoints(a.count, netDiff, rates.win, rates.loss),
         });
       }
     }

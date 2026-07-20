@@ -103,8 +103,7 @@ function Row({ s }: { s: UserScore }) {
               {scoredTokens.map((l, i) => (
                 <li key={i} className="flex items-center justify-between">
                   <span className="text-ink-300">
-                    {l.count}🪙 {teamById.get(l.teamId)?.name ?? l.teamId} · margin {l.netDiff > 0 ? "+" : ""}
-                    {l.netDiff} vs line {l.spread > 0 ? "+" : ""}{l.spread.toFixed(1)}
+                    {l.count}🪙 {teamById.get(l.teamId)?.name ?? l.teamId} · {l.netDiff > 0 ? `won by ${l.netDiff}` : l.netDiff < 0 ? `lost by ${-l.netDiff}` : "drew"}
                   </span>
                   <PtsTag pts={l.points} signed />
                 </li>
