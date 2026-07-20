@@ -109,7 +109,7 @@ export default function Rules() {
         <p className="mb-2 text-sm text-ink-200">
           Pick <span className="font-semibold text-white">Home, Draw or Away</span>. Group games score on the full-time result; knockout games
           score on the result <span className="font-semibold text-white">at the end of extra time</span> — a draw after extra time stands and pays,
-          penalties only decide who advances. Multipliers are tuned so each round's total result points <span className="font-bold text-white">double round on round</span>.
+          penalties only decide who advances. Multipliers are tuned so each round's total result points <span className="font-bold text-white">grow ~1.5× round on round</span>.
         </p>
         <FormulaRow
           parts={[
@@ -130,8 +130,8 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="before kickoff no.1">Champion</SectionTitle>
         <p className="text-sm text-ink-200">
-          One team, locked before the opening match. Worth a flat <PtsTag pts={CHAMPION_POINTS} /> — 2× the final's per-pick value
-          ({BASE_OUTCOME} × {OUTCOME_MULT.final} × 2), a genuinely tournament-shaping prize. Outright odds are shown when you pick, purely for bragging rights.
+          One team, locked before the opening match. Worth a flat <PtsTag pts={CHAMPION_POINTS} /> — enough to shake up the podium, not to decide the whole game.
+          Outright odds are shown when you pick, purely for bragging rights.
         </p>
       </section>
 
@@ -140,7 +140,7 @@ export default function Rules() {
         <p className="mb-2 text-sm text-ink-200">
           Pick a fresh set of forwards each round. Every goal a pick scores in that round pays
           {" "}{BASE_GOAL} × round × their scoring odds — and it pays <span className="font-bold text-white">per goal</span>, so a brace doubles it.
-          Multipliers are tuned so each round's scorer pot doubles even as picks shrink.
+          Multipliers are tuned so each round's scorer pot grows ~1.5× even as picks shrink.
         </p>
         <ValueTable
           head={["Round", "Picks", "Multiplier", "Goal at odds ×4.00"]}
@@ -174,8 +174,8 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="what each round is worth">The points economy</SectionTitle>
         <p className="mb-3 text-sm text-ink-200">
-          How much is on offer each round, and where it comes from. Every category doubles round on round,
-          results carry the most weight throughout, and the champion pick is the tournament's single biggest prize.
+          How much is on offer each round, and where it comes from. Every category grows ~1.5× round on round,
+          results carry roughly double weight throughout, and the champion pick can shake up the podium at the end.
         </p>
         <PointsEconomy />
       </section>
