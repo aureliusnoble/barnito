@@ -1,20 +1,11 @@
 import { useMemo, useState } from "react";
 import { AlertTriangle, Coins, Lock } from "lucide-react";
 import type { EPhase, TokenAssign } from "../types";
-import { BASE_TOKEN, PHASES, PHASE_SHORT, TOKENS_BY_PHASE } from "../config";
+import { PHASES, PHASE_SHORT, TOKENS_BY_PHASE } from "../config";
 import { useEuro } from "../store/store";
 import { tokenPoints } from "../lib/scoring";
 import { fmtDay, fmtFull, fmtProb, fmtPts, fmtSignedPts, fmtTime } from "../lib/format";
 import { Btn, CountdownPill, EmptyState, LockBadge, Modal, PageHead, ProbBar, PtsTag, SectionTitle, Stepper, Tabs, TeamMark, useToast } from "../ui/kit";
-
-/** The market line (expected goal margin, signed) — what a token has to beat. */
-function LineTag({ line }: { line: number }) {
-  return (
-    <span className="e-chip e-num bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">
-      line {line > 0 ? "+" : ""}{line.toFixed(1)}
-    </span>
-  );
-}
 
 export default function Tokens() {
   const { me, state, nowMs, teamById, fixtureById, phaseFirstKickoff, phaseTeamsKnown, canLockPhase, revealPhase, marginOutlookFor, setTokenDraft, lockTokens, scoreOf } = useEuro();
@@ -51,14 +42,12 @@ export default function Tokens() {
 
   const myLines = me ? (scoreOf(me.id)?.tokenLines ?? []).filter((l) => l.phase === phase) : [];
   const phaseTotal = myLines.reduce((a, b) => a + b.points, 0);
-  // One goal better/worse than the line, per token.
-  const perGoal = (n: number) => tokenPoints(phase, n, 1, 0);
 
   return (
     <div className="space-y-4 pb-16">
       <PageHead
         title="Tokens"
-        sub={`Each team shows its chance of paying off and the typical win/loss. Tokens pay ${BASE_TOKEN} × (final margin − the market line) × round — fair both sides, so only a better read than the market earns.`}
+        sub="Stake tokens on a team: the % is its chance of coming good, the numbers are what you stand to win — or lose. Fair both ways; back your read."
       />
       <Tabs options={PHASES.map((p) => ({ value: p, label: PHASE_SHORT[p] }))} value={phase} onChange={setPhase} />
 
@@ -70,9 +59,6 @@ export default function Tokens() {
             {placed}<span className="text-ink-500">/{wallet}</span>
           </span>
           <span className="text-ink-300">placed</span>
-          <span className="e-chip e-num bg-white/[0.06] text-ink-200 ring-1 ring-white/[0.08]">
-            1🪙 = <span className="text-mint-300">+{perGoal(1)}</span>/<span className="text-red-300">−{perGoal(1)}</span> per goal
-          </span>
           {my?.locked && <LockBadge lockedAt={my.lockedAt} />}
         </span>
         <span className="flex items-center gap-2 text-[11px] text-ink-400">
@@ -94,7 +80,6 @@ export default function Tokens() {
           {my.assigns.map((a, i) => {
             const f = fixtureById.get(a.fixtureId);
             const t = teamById.get(a.teamId);
-            const line = my.spreadByAssign?.[`${a.fixtureId}:${a.teamId}`] ?? 0;
             const scored = myLines.find((l) => l.fixtureId === a.fixtureId && l.teamId === a.teamId);
             return (
               <div key={i} className="e-card flex items-center justify-between gap-2 p-3">
@@ -108,7 +93,6 @@ export default function Tokens() {
                   </span>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <LineTag line={line} />
                   {scored ? (
                     <>
                       <span className={`e-num text-[11px] ${scored.netDiff - scored.spread >= 0 ? "text-mint-300" : "text-red-300"}`}>
@@ -147,27 +131,23 @@ export default function Tokens() {
                     return (
                       <div key={t.id} className="flex items-center justify-between gap-2 py-1.5">
                         <span className="min-w-0">
-                          <span className="flex items-center gap-1.5">
-                            <TeamMark team={t} size="sm" />
-                            {look && <LineTag line={look.line} />}
-                          </span>
+                          <TeamMark team={t} size="sm" />
                           {look && (
                             <span className="mt-1 flex items-center gap-1.5">
                               <span className="w-14"><ProbBar pct={look.cover} /></span>
-                              <span className="e-num text-[10px] text-skyx-300">{fmtProb(look.cover)} pay off</span>
+                              <span className="e-num text-[10px] text-skyx-300">{fmtProb(look.cover)} chance</span>
                             </span>
                           )}
                         </span>
                         <span className="flex shrink-0 items-center gap-2">
                           {look && (
-                            <span className="e-num text-right text-[10px] leading-tight">
-                              <span className="block text-mint-300">
-                                win avg +{fmtPts(tokenPoints(phase, k, look.line + look.avgWinDelta, look.line))}
+                            <span className="e-num text-right text-[11px] leading-tight">
+                              <span className="block font-bold text-mint-300">
+                                +{fmtPts(tokenPoints(phase, k, look.line + look.avgWinDelta, look.line))}
                               </span>
-                              <span className="block text-red-300">
-                                lose avg −{fmtPts(Math.abs(tokenPoints(phase, k, look.line + look.avgLossDelta, look.line)))}
+                              <span className="block text-[10px] text-red-300">
+                                −{fmtPts(Math.abs(tokenPoints(phase, k, look.line + look.avgLossDelta, look.line)))} if not
                               </span>
-                              <span className="block text-ink-500">{n > 1 ? `${n}🪙 · ` : ""}±{perGoal(k)}/goal</span>
                             </span>
                           )}
                           <Stepper value={n} min={0} max={n + (canAdd ? 1 : 0)} onChange={(v) => setCount(f.id, t.id, v)} />
@@ -223,15 +203,11 @@ export default function Tokens() {
                     {lines.length > 0 && <PtsTag pts={total} signed />}
                   </div>
                   <div className="flex flex-wrap gap-1">
-                    {tp.assigns.map((a, i) => {
-                      const line = tp.spreadByAssign?.[`${a.fixtureId}:${a.teamId}`] ?? 0;
-                      return (
-                        <span key={i} className="e-chip bg-white/[0.05] text-ink-200 ring-1 ring-white/[0.06]">
-                          {a.count}🪙 {teamById.get(a.teamId)?.code ?? a.teamId}
-                          <span className="e-num text-punch-300">{line > 0 ? "+" : ""}{line.toFixed(1)}</span>
-                        </span>
-                      );
-                    })}
+                    {tp.assigns.map((a, i) => (
+                      <span key={i} className="e-chip bg-white/[0.05] text-ink-200 ring-1 ring-white/[0.06]">
+                        {a.count}🪙 {teamById.get(a.teamId)?.code ?? a.teamId}
+                      </span>
+                    ))}
                   </div>
                 </div>
               );

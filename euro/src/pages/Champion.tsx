@@ -3,8 +3,8 @@ import { Crown, Lock } from "lucide-react";
 import { BASE_CHAMPION } from "../config";
 import { championPoints } from "../lib/scoring";
 import { useEuro, winnerOf } from "../store/store";
-import { fmtFull, fmtOdds, fmtPts } from "../lib/format";
-import { Btn, CountdownPill, LockBadge, Modal, OddsTag, PageHead, ProbTag, PtsTag, SectionTitle, TeamMark, useToast } from "../ui/kit";
+import { fmtFull, fmtProb, fmtPts } from "../lib/format";
+import { Btn, CountdownPill, LockBadge, Modal, PageHead, ProbTag, PtsTag, SectionTitle, TeamMark, useToast } from "../ui/kit";
 
 export default function Champion() {
   const { me, state, nowMs, teams, teamById, outright, phaseFirstKickoff, revealPhase, setChampionDraft, lockChampion } = useEuro();
@@ -52,7 +52,7 @@ export default function Champion() {
         title="Champion"
         sub={
           <>
-            One team, locked before kick-off. Pays <span className="e-num font-bold text-volt-300">{BASE_CHAMPION} × outright odds</span> frozen at your lock — the longer the shot, the bigger the prize.
+            One team, locked before kick-off. Each shows its title chance and what you'd win — longer shots pay more.
           </>
         }
       />
@@ -64,7 +64,7 @@ export default function Champion() {
           <div className="mt-1 font-grotesk text-xl font-extrabold text-white">{teamById.get(my.teamId)?.name}</div>
           <div className="mt-1 flex items-center justify-center gap-2 text-xs text-ink-300">
             <LockBadge lockedAt={my.lockedAt} />
-            {my.outrightOdds != null && <OddsTag odds={my.outrightOdds} />}
+            {my.outrightOdds != null && <span className="e-num text-xs text-skyx-300">{fmtProb(1 / my.outrightOdds)}</span>}
             <PtsTag pts={championPoints(my.outrightOdds)} />
           </div>
           {champion ? (
@@ -119,7 +119,6 @@ export default function Champion() {
                   </span>
                 </span>
                 <span className="flex shrink-0 flex-col items-end gap-0.5">
-                  {o && <OddsTag odds={o.odds} />}
                   {o && <ProbTag prob={o.prob} />}
                   {o && <span className="e-num text-[11px] font-bold text-mint-300">+{fmtPts(championPoints(o.odds))}</span>}
                 </span>
@@ -161,7 +160,9 @@ export default function Champion() {
                   {c?.locked && t ? (
                     <span className="flex items-center gap-1.5">
                       <TeamMark team={t} size="sm" />
-                      {c.outrightOdds != null && <span className="e-num text-[11px] text-punch-300">×{fmtOdds(c.outrightOdds)}</span>}
+                      {!correct && !champion && c.outrightOdds != null && (
+                        <span className="e-num text-[11px] text-mint-300">+{fmtPts(championPoints(c.outrightOdds))}</span>
+                      )}
                       {correct && <span className="e-chip bg-volt-400/15 text-volt-300 ring-1 ring-volt-400/30">👑 +{fmtPts(championPoints(c?.outrightOdds))}</span>}
                       {!correct && champion && <span className="text-[10px] text-ink-500">0</span>}
                     </span>
@@ -194,7 +195,7 @@ export default function Champion() {
             <div className="mt-1 font-grotesk text-lg font-bold text-white">{draftTeam.name}</div>
           </div>
           <div className="flex items-center justify-center gap-2 text-sm">
-            {outright.get(draftTeam.id) && <OddsTag odds={outright.get(draftTeam.id)!.odds} />}
+            {outright.get(draftTeam.id) && <ProbTag prob={outright.get(draftTeam.id)!.prob} />}
             <PtsTag pts={championPoints(outright.get(draftTeam.id)?.odds)} />
           </div>
           <p className="text-center text-xs text-ink-400">

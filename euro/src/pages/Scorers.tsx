@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { Lock, Search, X } from "lucide-react";
 import type { EPhase } from "../types";
-import { BASE_GOAL, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_MULT, SCORER_PICKS } from "../config";
+import { PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_MULT, SCORER_PICKS } from "../config";
 import { useEuro } from "../store/store";
 import { scorerPointsPerGoal } from "../lib/scoring";
-import { fmtFull, fmtOdds, fmtPts } from "../lib/format";
-import { Btn, CountdownPill, EmptyState, FormulaRow, LockBadge, Modal, OddsTag, PageHead, ProbBar, ProbTag, PtsTag, SectionTitle, Tabs, TeamMark, useToast } from "../ui/kit";
+import { fmtFull, fmtProb, fmtPts } from "../lib/format";
+import { Btn, CountdownPill, EmptyState, LockBadge, Modal, PageHead, ProbBar, PtsTag, SectionTitle, Tabs, TeamMark, useToast } from "../ui/kit";
 
 export default function Scorers() {
   const euro = useEuro();
@@ -56,7 +56,6 @@ export default function Scorers() {
   };
 
   const myLines = me ? (scoreOf(me.id)?.scorerLines ?? []).filter((l) => l.phase === phase) : [];
-  const topPick = picked.length > 0 ? playerById.get(picked[0]) : undefined;
 
   return (
     <div className="space-y-4 pb-16">
@@ -99,8 +98,7 @@ export default function Scorers() {
                   <TeamMark team={p && teamById.get(p.teamId)} size="sm" muted />
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <OddsTag odds={odds} />
-                  <span className="e-num text-[11px] text-ink-400">{fmtPts(scorerPointsPerGoal(phase, odds))}/goal</span>
+                  <span className="e-num text-[11px] text-ink-400">+{fmtPts(scorerPointsPerGoal(phase, odds))}/goal</span>
                   {line && line.goals > 0 ? <PtsTag pts={line.points} signed /> : <span className="e-num text-[11px] text-ink-500">{line?.goals ?? 0} ⚽</span>}
                 </span>
               </div>
@@ -144,13 +142,12 @@ export default function Scorers() {
                     <span className={`block truncate text-sm font-semibold ${sel ? "text-volt-300" : "text-white"}`}>{p.name}</span>
                     <TeamMark team={teamById.get(p.teamId)} size="sm" muted />
                   </span>
-                  <span className="flex shrink-0 items-center gap-1.5">
-                    <span className="w-16">
+                  <span className="flex shrink-0 items-center gap-2">
+                    <span className="w-20">
                       <ProbBar pct={o.prob} />
-                      <ProbTag prob={o.prob} className="mt-1" />
+                      <span className="e-num mt-1 block text-[10px] text-skyx-300">{fmtProb(o.prob)} to score</span>
                     </span>
-                    <OddsTag odds={o.odds} />
-                    <span className="e-num w-16 text-right text-[11px] font-bold text-mint-300">+{fmtPts(scorerPointsPerGoal(phase, o.odds))}/⚽</span>
+                    <span className="e-num w-18 text-right text-[11px] font-bold text-mint-300">+{fmtPts(scorerPointsPerGoal(phase, o.odds))}/⚽</span>
                   </span>
                 </button>
               );
@@ -214,7 +211,6 @@ export default function Scorers() {
                       return (
                         <span key={pid} className={`e-chip ring-1 ${line && line.goals > 0 ? "bg-mint-500/15 text-mint-300 ring-mint-500/25" : "bg-white/[0.05] text-ink-300 ring-white/[0.06]"}`}>
                           {playerById.get(pid)?.name.split(" ").slice(-1)[0] ?? pid}
-                          <span className="e-num text-punch-300">×{fmtOdds(sp.oddsByPlayer?.[pid] ?? 0)}</span>
                           {line && line.goals > 0 && <span className="e-num">{line.goals}⚽</span>}
                         </span>
                       );
@@ -248,25 +244,15 @@ export default function Scorers() {
               <li key={pid} className="flex items-center justify-between text-sm">
                 <span className="text-ink-100">{p?.name ?? pid}</span>
                 {o && (
-                  <span className="flex items-center gap-1.5">
-                    <OddsTag odds={o.odds} />
-                    <span className="e-num text-xs text-mint-300">+{fmtPts(scorerPointsPerGoal(phase, o.odds))}/goal</span>
+                  <span className="flex items-center gap-2">
+                    <span className="e-num text-xs text-skyx-300">{fmtProb(o.prob)}</span>
+                    <span className="e-num text-xs font-bold text-mint-300">+{fmtPts(scorerPointsPerGoal(phase, o.odds))}/goal</span>
                   </span>
                 )}
               </li>
             );
           })}
         </ul>
-        {topPick && (
-          <FormulaRow
-            parts={[
-              { v: String(BASE_GOAL), label: "base" },
-              { v: `×${SCORER_MULT[phase]}`, label: PHASE_SHORT[phase] },
-              { v: `×${fmtOdds(scorerOddsFor(topPick, phase).odds)}`, label: "odds" },
-            ]}
-            result={`${fmtPts(scorerPointsPerGoal(phase, scorerOddsFor(topPick, phase).odds))} / goal`}
-          />
-        )}
         <p className="text-xs text-ink-400">
           Odds freeze per player at lock. The whole set locks together and
           <span className="font-semibold text-punch-300"> can't be changed</span> afterwards.

@@ -9,7 +9,7 @@ import { BASE_OUTCOME, OUTCOME_MULT, PHASE_SHORT } from "../config";
 import { useEuro } from "../store/store";
 import { outcomePoints } from "../lib/scoring";
 import { fmtDay, fmtOdds, fmtPts, fmtProb, fmtTime } from "../lib/format";
-import { Btn, CountdownPill, FormulaRow, LockBadge, Modal, OddsTag, ProbBar, PtsTag, TeamMark, useToast } from "../ui/kit";
+import { Btn, CountdownPill, FormulaRow, LockBadge, Modal, ProbBar, PtsTag, TeamMark, useToast } from "../ui/kit";
 
 export default function MatchPredictCard({ fixture }: { fixture: EFixture }) {
   const {
@@ -105,7 +105,7 @@ export default function MatchPredictCard({ fixture }: { fixture: EFixture }) {
             <span className="flex items-center gap-2 text-sm">
               <LockBadge lockedAt={myPred.lockedAt} />
               <span className="font-semibold text-white">{pickName(myPred.pick)}</span>
-              {myPred.odds != null && <OddsTag odds={myPred.odds} />}
+              {myPred.prob != null && <span className="e-num text-xs text-skyx-300">{fmtProb(myPred.prob)}</span>}
             </span>
             {finished ? (
               earned?.correct ? (
@@ -140,11 +140,10 @@ export default function MatchPredictCard({ fixture }: { fixture: EFixture }) {
                 >
                   <span className={`text-xs font-bold ${sel ? "text-volt-300" : "text-ink-100"}`}>{optionLabel(o)}</span>
                   <ProbBar pct={odds.probs[o]} />
-                  <span className="flex items-center justify-between text-[10px] text-ink-400">
-                    <span className="e-num">{fmtProb(odds.probs[o])}</span>
-                    <span className="e-num text-punch-300">×{fmtOdds(odds.odds[o])}</span>
+                  <span className="flex items-center justify-between text-[11px]">
+                    <span className="e-num text-skyx-300">{fmtProb(odds.probs[o])}</span>
+                    <span className="e-num font-bold text-mint-300">+{fmtPts(outcomePoints(fixture.phase, odds.odds[o]))}</span>
                   </span>
-                  <span className="e-num text-[11px] font-bold text-mint-300">+{fmtPts(outcomePoints(fixture.phase, odds.odds[o]))}</span>
                 </button>
               );
             })}
@@ -152,8 +151,8 @@ export default function MatchPredictCard({ fixture }: { fixture: EFixture }) {
           {myPred && !myPred.locked && (
             <div className="mt-2 flex items-center justify-between gap-2 rounded-xl bg-ink-800/70 p-2 ring-1 ring-white/[0.06]">
               <span className="text-xs text-ink-300">
-                {pickName(myPred.pick)} · <span className="e-num text-punch-300">×{fmtOdds(odds.odds[myPred.pick])}</span> →{" "}
-                <span className="e-num font-bold text-volt-300">{fmtPts(outcomePoints(fixture.phase, odds.odds[myPred.pick]))} pts</span>
+                {pickName(myPred.pick)} · <span className="e-num text-skyx-300">{fmtProb(odds.probs[myPred.pick])}</span> →{" "}
+                <span className="e-num font-bold text-volt-300">+{fmtPts(outcomePoints(fixture.phase, odds.odds[myPred.pick]))} pts</span>
               </span>
               <Btn variant="primary" size="sm" onClick={() => setConfirmOpen(true)}>
                 <Lock size={12} /> Lock in
@@ -185,8 +184,11 @@ export default function MatchPredictCard({ fixture }: { fixture: EFixture }) {
                     </span>
                     <span className="flex items-center gap-1.5">
                       <span className="font-semibold text-white">{optionLabel(pred!.pick)}</span>
-                      {pred!.odds != null && <span className="e-num text-punch-300">×{fmtOdds(pred!.odds)}</span>}
-                      {finished && (line?.correct ? <PtsTag pts={line.points} /> : <span className="text-ink-500">0</span>)}
+                      {finished ? (
+                        line?.correct ? <PtsTag pts={line.points} /> : <span className="text-ink-500">0</span>
+                      ) : (
+                        pred!.odds != null && <span className="e-num text-[11px] text-mint-300">+{fmtPts(outcomePoints(fixture.phase, pred!.odds))}</span>
+                      )}
                     </span>
                   </li>
                 );
