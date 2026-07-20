@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Crown, Lock } from "lucide-react";
-import { CHAMPION_POINTS } from "../config";
+import { BASE_CHAMPION, CHAMPION_ODDS_CAP } from "../config";
+import { championPoints } from "../lib/scoring";
 import { useEuro, winnerOf } from "../store/store";
 import { fmtFull, fmtOdds, fmtPts } from "../lib/format";
 import { Btn, CountdownPill, LockBadge, Modal, OddsTag, PageHead, ProbTag, PtsTag, SectionTitle, TeamMark, useToast } from "../ui/kit";
@@ -51,7 +52,7 @@ export default function Champion() {
         title="Champion"
         sub={
           <>
-            One team, locked before kick-off. Worth a flat <span className="e-num font-bold text-volt-300">{fmtPts(CHAMPION_POINTS)} pts</span> — outright odds shown for bragging only.
+            One team, locked before kick-off. Pays <span className="e-num font-bold text-volt-300">{BASE_CHAMPION} × outright odds</span> frozen at your lock (capped ×{CHAMPION_ODDS_CAP}) — longshots pay more.
           </>
         }
       />
@@ -64,17 +65,17 @@ export default function Champion() {
           <div className="mt-1 flex items-center justify-center gap-2 text-xs text-ink-300">
             <LockBadge lockedAt={my.lockedAt} />
             {my.outrightOdds != null && <OddsTag odds={my.outrightOdds} />}
-            <PtsTag pts={CHAMPION_POINTS} />
+            <PtsTag pts={championPoints(my.outrightOdds)} />
           </div>
           {champion ? (
             champion === my.teamId ? (
-              <div className="mt-2 text-sm font-bold text-volt-300">👑 CHAMPIONS — {fmtPts(CHAMPION_POINTS)} pts banked!</div>
+              <div className="mt-2 text-sm font-bold text-volt-300">👑 CHAMPIONS — {fmtPts(championPoints(my.outrightOdds))} pts banked!</div>
             ) : (
               <div className="mt-2 text-sm text-ink-400">The trophy went to {teamById.get(champion)?.name}.</div>
             )
           ) : nowMs >= deadline ? (
             eliminated(my.teamId) ? (
-              <div className="mt-2 text-sm text-red-300">Eliminated — no {fmtPts(CHAMPION_POINTS)} pts this time.</div>
+              <div className="mt-2 text-sm text-red-300">Eliminated — no {fmtPts(championPoints(my.outrightOdds))} pts this time.</div>
             ) : (
               <div className="mt-2 text-sm text-mint-300">Still alive 🤞</div>
             )
@@ -120,6 +121,7 @@ export default function Champion() {
                 <span className="flex shrink-0 flex-col items-end gap-0.5">
                   {o && <OddsTag odds={o.odds} />}
                   {o && <ProbTag prob={o.prob} />}
+                  {o && <span className="e-num text-[11px] font-bold text-mint-300">+{fmtPts(championPoints(o.odds))}</span>}
                 </span>
               </button>
             );
@@ -160,7 +162,7 @@ export default function Champion() {
                     <span className="flex items-center gap-1.5">
                       <TeamMark team={t} size="sm" />
                       {c.outrightOdds != null && <span className="e-num text-[11px] text-punch-300">×{fmtOdds(c.outrightOdds)}</span>}
-                      {correct && <span className="e-chip bg-volt-400/15 text-volt-300 ring-1 ring-volt-400/30">👑 +{fmtPts(CHAMPION_POINTS)}</span>}
+                      {correct && <span className="e-chip bg-volt-400/15 text-volt-300 ring-1 ring-volt-400/30">👑 +{fmtPts(championPoints(c?.outrightOdds))}</span>}
                       {!correct && champion && <span className="text-[10px] text-ink-500">0</span>}
                     </span>
                   ) : (
@@ -193,11 +195,11 @@ export default function Champion() {
           </div>
           <div className="flex items-center justify-center gap-2 text-sm">
             {outright.get(draftTeam.id) && <OddsTag odds={outright.get(draftTeam.id)!.odds} />}
-            <PtsTag pts={CHAMPION_POINTS} />
+            <PtsTag pts={championPoints(outright.get(draftTeam.id)?.odds)} />
           </div>
           <p className="text-center text-xs text-ink-400">
-            Flat {fmtPts(CHAMPION_POINTS)} pts if they lift the trophy. Locking is
-            <span className="font-semibold text-punch-300"> permanent</span>.
+            {BASE_CHAMPION} × their outright odds (capped ×{CHAMPION_ODDS_CAP}), frozen now, paid if they lift the trophy.
+            Locking is <span className="font-semibold text-punch-300">permanent</span>.
           </p>
         </Modal>
       )}

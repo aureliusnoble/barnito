@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, Crown } from "lucide-react";
 import type { UserScore } from "../types";
-import { CHAMPION_POINTS } from "../config";
 import { useEuro } from "../store/store";
 import { fmtOdds, fmtPts, fmtSignedPts } from "../lib/format";
 import { BarBreakdown, EmptyState, PageHead, PtsTag } from "../ui/kit";
@@ -49,7 +48,7 @@ function Row({ s }: { s: UserScore }) {
             <span>{user?.emoji}</span> {s.name}
             {s.championCorrect && (
               <span className="e-chip bg-volt-400/15 text-volt-300 ring-1 ring-volt-400/30">
-                <Crown size={10} /> +{fmtPts(CHAMPION_POINTS)}
+                <Crown size={10} /> +{fmtPts(s.champion)}
               </span>
             )}
           </span>

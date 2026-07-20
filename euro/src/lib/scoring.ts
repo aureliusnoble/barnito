@@ -19,8 +19,8 @@ import {
   OUTCOME_MULT,
   SCORER_MULT,
   TOKEN_MULT,
-  CHAMPION_POINTS,
-  CHAMPION_USES_ODDS,
+  BASE_CHAMPION,
+  CHAMPION_ODDS_CAP,
   TOKEN_ALLOW_NEGATIVE,
   PHASES,
 } from "../config";
@@ -39,6 +39,11 @@ export function outcomePoints(phase: EPhase, odds: number): number {
 /** Points per goal for a scorer pick at given odds. */
 export function scorerPointsPerGoal(phase: EPhase, odds: number): number {
   return Math.round(BASE_GOAL * SCORER_MULT[phase] * odds);
+}
+
+/** Champion payout for outright odds frozen at lock (missing snapshot ⇒ ×1), capped. */
+export function championPoints(outrightOdds?: number): number {
+  return Math.round(BASE_CHAMPION * Math.min(outrightOdds ?? 1, CHAMPION_ODDS_CAP));
 }
 
 /** Points for `count` tokens on a team that ends the match at `netDiff` (signed). */
@@ -119,13 +124,9 @@ export function computeScores(state: Euro28State, teams: ETeam[]): UserScore[] {
       }
     }
 
-    // Rule 3: champion.
+    // Rule 3: champion — base × outright odds frozen at lock, capped.
     const championCorrect = !!champion && !!p.champion?.locked && p.champion.teamId === champion;
-    const championPts = championCorrect
-      ? CHAMPION_USES_ODDS && p.champion?.outrightOdds
-        ? Math.round(CHAMPION_POINTS * p.champion.outrightOdds)
-        : CHAMPION_POINTS
-      : 0;
+    const championPts = championCorrect ? championPoints(p.champion?.outrightOdds) : 0;
 
     const sum = (xs: { points: number }[]) => xs.reduce((a, b) => a + b.points, 0);
     const outcomes = sum(outcomeLines);

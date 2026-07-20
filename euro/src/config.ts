@@ -38,11 +38,12 @@ export const SCORER_PICKS: Record<EPhase, number> = { group: 8, r16: 4, qf: 2, s
 /** Rule 6: tokens per phase. */
 export const TOKENS_BY_PHASE: Record<EPhase, number> = { group: 12, r16: 8, qf: 4, sf: 2, final: 1 };
 
-/** Rule 3 (amended): a flat champion prize — enough to swing the top few places
- * (~20% of a typical full-tournament haul of ~10k), not to dominate the game. */
-export const CHAMPION_POINTS = 2000;
-/** If true, champion points multiply by the outright odds snapshotted at lock. */
-export const CHAMPION_USES_ODDS = false;
+/** Rule 3: champion payout = BASE_CHAMPION × outright odds at lock-in (pre-tournament),
+ * capped at CHAMPION_ODDS_CAP. Favourites (~×4.5–6.5) pay 1,800–2,600 — the podium-swing
+ * zone; a dark horse maxes at 400 × 12 = 4,800 (~half a typical ~10k haul). Fair odds make
+ * the expected value ≈ BASE_CHAMPION for every pick inside the cap, so no pick is 'correct'. */
+export const BASE_CHAMPION = 400;
+export const CHAMPION_ODDS_CAP = 12;
 
 /** If false, a backed team losing scores 0 instead of negative token points. */
 export const TOKEN_ALLOW_NEGATIVE = true;

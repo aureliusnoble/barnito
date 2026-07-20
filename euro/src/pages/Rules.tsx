@@ -1,6 +1,6 @@
 import type { EPhase } from "../types";
-import { BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, CHAMPION_POINTS, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_EV_FACTOR, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
-import { outcomePoints, scorerPointsPerGoal, tokenPoints } from "../lib/scoring";
+import { BASE_CHAMPION, BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, CHAMPION_ODDS_CAP, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_EV_FACTOR, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
+import { championPoints, outcomePoints, scorerPointsPerGoal, tokenPoints } from "../lib/scoring";
 import { fmtPts, fmtSignedPts } from "../lib/format";
 import { BarBreakdown, FormulaRow, OddsTag, PageHead, PtsTag, SectionTitle } from "../ui/kit";
 
@@ -24,7 +24,7 @@ function PointsEconomy() {
     const outcomes = MATCHES_IN_ROUND[p] * BASE_OUTCOME * OUTCOME_MULT[p];
     const scorers = Math.round(SCORER_PICKS[p] * GAMES_PER_TEAM[p] * BASE_GOAL * SCORER_MULT[p] * SCORER_EV_FACTOR);
     const tokens = TOKENS_BY_PHASE[p] * BASE_TOKEN * TOKEN_MULT[p];
-    const champion = p === "final" ? CHAMPION_POINTS : 0;
+    const champion = p === "final" ? championPoints(5) : 0; // shown at typical favourite odds ×5
     return { phase: p, outcomes, scorers, tokens, champion, total: outcomes + scorers + tokens + champion };
   });
   const max = Math.max(...rows.map((r) => r.total));
@@ -51,7 +51,7 @@ function PointsEconomy() {
       <p className="text-[11px] text-ink-500">
         Bar length = expected points on offer that round. Results are odds-neutral (fair odds cancel probability); scorers
         include the ×{SCORER_EV_FACTOR} structural edge of per-goal payouts at anytime odds; tokens assume a one-goal margin;
-        the champion prize counts at the final. Segments show each prediction type's share.
+        the champion payout is shown at typical favourite odds (×5) and counts at the final — longshots pay up to the ×{CHAMPION_ODDS_CAP} cap. Segments show each prediction type's share.
       </p>
     </div>
   );
@@ -130,8 +130,10 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="before kickoff no.1">Champion</SectionTitle>
         <p className="text-sm text-ink-200">
-          One team, locked before the opening match. Worth a flat <PtsTag pts={CHAMPION_POINTS} /> — enough to shake up the podium, not to decide the whole game.
-          Outright odds are shown when you pick, purely for bragging rights.
+          One team, locked before the opening match — and like everything else, it pays by the odds:
+          {" "}<span className="e-num font-bold text-white">{BASE_CHAMPION} × their outright odds</span> at your lock, capped at ×{CHAMPION_ODDS_CAP}.
+          A favourite pays around <PtsTag pts={championPoints(5)} />; a bold dark horse up to <PtsTag pts={championPoints(CHAMPION_ODDS_CAP)} />.
+          Enough to shake up the podium — not to carry a bad tournament.
         </p>
       </section>
 

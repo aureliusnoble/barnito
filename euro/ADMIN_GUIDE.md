@@ -20,7 +20,8 @@ Robsonaldo, and **Admin** (PIN **2028**).
      decimal odds, and the exact points if right. Pick the *underdog* and note
      the bigger payout. Lock it — the confirm modal spells out
      `10 × round × odds`. After locking, the odds on your pick are frozen.
-   - **Predict → Champion**: pick a team, lock (320 pts flat).
+   - **Predict → Champion**: pick a team — each shows outright odds and its exact payout
+     (400 × odds, capped ×12; longshots pay more). Lock freezes the odds.
    - **Predict → Scorers**: pick exactly 8 forwards, lock — per-goal points shown
      per player (odds × 10 × round).
    - **Predict → Tokens**: place the 12 group tokens, note the "wins by 2 → +X /
