@@ -119,9 +119,11 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="the risk lever">Tokens</SectionTitle>
         <p className="mb-2 text-sm text-ink-200">
-          Stake tokens on teams to <span className="font-semibold text-white">beat the market's expected margin</span>.
-          Finish a goal better than expected and every token pays; finish a goal worse and it costs the same. Backing an
-          underdog to keep it close scores <span className="font-semibold text-white">even if they lose</span>.
+          Back a team's <span className="font-semibold text-white">winning margin</span>: every token earns points for
+          each goal better than expected they finish, and loses the same for each goal worse.
+          <span className="font-semibold text-white"> Stack multiple tokens on one game</span> to raise the stakes.
+          Favourites are expected to win big, so a scrappy 1–0 can miss — while an underdog that keeps it close pays
+          <span className="font-semibold text-white"> even in defeat</span>.
         </p>
         <MiniTable
           head={["Round", "Tokens", "Per goal, per token"]}

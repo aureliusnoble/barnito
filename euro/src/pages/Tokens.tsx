@@ -42,12 +42,13 @@ export default function Tokens() {
 
   const myLines = me ? (scoreOf(me.id)?.tokenLines ?? []).filter((l) => l.phase === phase) : [];
   const phaseTotal = myLines.reduce((a, b) => a + b.points, 0);
+  const perGoalNow = tokenPoints(phase, 1, 1, 0);
 
   return (
     <div className="space-y-4 pb-16">
       <PageHead
         title="Tokens"
-        sub="Stake tokens on a team: the % is its chance of coming good, the numbers are what you stand to win — or lose. Fair both ways; back your read."
+        sub={`Back a team's winning margin: each token earns +${perGoalNow} per goal better than expected they finish, and loses ${perGoalNow} per goal worse. Stack as many tokens on one game as you like.`}
       />
       <Tabs options={PHASES.map((p) => ({ value: p, label: PHASE_SHORT[p] }))} value={phase} onChange={setPhase} />
 
