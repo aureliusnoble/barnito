@@ -21,8 +21,8 @@ export const PICK_MULT: Record<EPhase, number> = { group: 1, r16: 4, qf: 16, sf:
 /** Rule 5: forwards-only scorer picks per phase. */
 export const SCORER_PICKS: Record<EPhase, number> = { group: 8, r16: 4, qf: 2, sf: 2, final: 1 };
 
-/** Rule 6: tokens per phase = half the number of games (final rounded up). */
-export const TOKENS_BY_PHASE: Record<EPhase, number> = { group: 18, r16: 4, qf: 2, sf: 1, final: 1 };
+/** Rule 6: tokens per phase — 8 for the groups, then half the games per knockout round (final rounded up). */
+export const TOKENS_BY_PHASE: Record<EPhase, number> = { group: 8, r16: 4, qf: 2, sf: 1, final: 1 };
 
 /** Rule 3: champion pick is worth 2× the final round's outcome value, flat. */
 export const CHAMPION_POINTS = 2 * BASE_OUTCOME * OUTCOME_MULT.final; // 320
