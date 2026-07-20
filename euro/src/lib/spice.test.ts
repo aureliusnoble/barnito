@@ -44,6 +44,25 @@ describe("fixtureSpice", () => {
     expect(spice).toBeGreaterThan(0.2);
   });
 
+  it("is driven by prediction DISAGREEMENT: identical picks ⇒ zero, splits ⇒ heat", () => {
+    const mk = (picks: ("H" | "D" | "A")[]): Euro28State => {
+      const users = picks.map((_, i) => ({ id: `u${i}`, name: `U${i}`, isAdmin: false, emoji: "👤" }));
+      return {
+        version: 2, users, sessionUserId: null, fixtures: [fixture], admin: { simNow: null },
+        predictions: Object.fromEntries(users.map((u, i) => [u.id, {
+          outcomes: { "g-A1": { pick: picks[i], locked: true, odds: picks[i] === "H" ? 1.6 : 5.0, prob: 0.5 } },
+          scorers: {}, tokens: {}, champion: null,
+        }])),
+      };
+    };
+    const consensus = fixtureSpice(mk(["H", "H", "H", "H"]), teamById, fixture);
+    const oneRebel = fixtureSpice(mk(["H", "H", "H", "A"]), teamById, fixture);
+    const split = fixtureSpice(mk(["H", "H", "A", "A"]), teamById, fixture);
+    expect(consensus).toBe(0); // everyone gains/loses together — no relative swing
+    expect(oneRebel).toBeGreaterThan(0.2);
+    expect(split).toBeGreaterThan(oneRebel); // deeper disagreement, more heat
+  });
+
   it("is zero for fixtures without teams", () => {
     const tbd = { ...fixture, id: "r16-1", homeTeamId: null, awayTeamId: null };
     expect(fixtureSpice(state(true), teamById, tbd)).toBe(0);
