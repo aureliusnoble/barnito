@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["scripts/**/*.test.ts", "shared/**/*.test.ts", "src/**/*.test.{ts,tsx}"],
-    environmentMatchGlobs: [["src/**", "jsdom"]],
+    include: ["scripts/**/*.test.ts", "shared/**/*.test.ts", "src/**/*.test.{ts,tsx}", "euro/src/**/*.test.{ts,tsx}"],
+    environmentMatchGlobs: [["src/**", "jsdom"], ["euro/src/**", "jsdom"]],
   },
 });

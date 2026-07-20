@@ -14,4 +14,13 @@ export default defineConfig({
       "@shared": fileURLToPath(new URL("./shared", import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      // Two apps, one repo: the World Cup 2026 site at / and the Euro 2028 game at /euro/.
+      input: {
+        main: fileURLToPath(new URL("./index.html", import.meta.url)),
+        euro: fileURLToPath(new URL("./euro/index.html", import.meta.url)),
+      },
+    },
+  },
 });
