@@ -1,7 +1,60 @@
+import type { EPhase } from "../types";
 import { BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, CHAMPION_POINTS, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
 import { outcomePoints, scorerPointsPerGoal, tokenPoints } from "../lib/scoring";
 import { fmtPts, fmtSignedPts } from "../lib/format";
-import { FormulaRow, OddsTag, PageHead, PtsTag, SectionTitle } from "../ui/kit";
+import { BarBreakdown, FormulaRow, OddsTag, PageHead, PtsTag, SectionTitle } from "../ui/kit";
+
+// ---------------------------------------------------------------------------
+// Points economy — expected points on offer per round, by prediction type.
+// With fair odds (odds = 1/probability) the odds cancel in expectation, so an
+// average locked pick is worth base × round multiplier whoever you back:
+//  · results: one pick per match → matches × BASE_OUTCOME × OUTCOME_MULT
+//  · scorers: a pick pays in each game its round covers (group teams play 3)
+//    → picks × games-per-team × BASE_GOAL × SCORER_MULT
+//  · tokens: assumes a one-goal average margin → tokens × BASE_TOKEN × TOKEN_MULT
+//  · champion: its flat prize, landing at the final.
+// Everything derives from config, so this chart tracks any tuning.
+// ---------------------------------------------------------------------------
+
+const MATCHES_IN_ROUND: Record<EPhase, number> = { group: 36, r16: 8, qf: 4, sf: 2, final: 1 };
+const GAMES_PER_TEAM: Record<EPhase, number> = { group: 3, r16: 1, qf: 1, sf: 1, final: 1 };
+
+function PointsEconomy() {
+  const rows = PHASES.map((p) => {
+    const outcomes = MATCHES_IN_ROUND[p] * BASE_OUTCOME * OUTCOME_MULT[p];
+    const scorers = SCORER_PICKS[p] * GAMES_PER_TEAM[p] * BASE_GOAL * SCORER_MULT[p];
+    const tokens = TOKENS_BY_PHASE[p] * BASE_TOKEN * TOKEN_MULT[p];
+    const champion = p === "final" ? CHAMPION_POINTS : 0;
+    return { phase: p, outcomes, scorers, tokens, champion, total: outcomes + scorers + tokens + champion };
+  });
+  const max = Math.max(...rows.map((r) => r.total));
+  return (
+    <div className="space-y-3">
+      {rows.map((r) => (
+        <div key={r.phase}>
+          <div className="mb-1 flex items-baseline justify-between">
+            <span className="text-xs font-semibold text-ink-100">{PHASE_LABEL[r.phase]}</span>
+            <span className="e-num font-grotesk text-sm font-bold text-white">{fmtPts(r.total)} pts</span>
+          </div>
+          <div style={{ width: `${Math.max(8, (r.total / max) * 100)}%` }}>
+            <BarBreakdown
+              items={[
+                { key: "outcomes", value: r.outcomes },
+                { key: "scorers", value: r.scorers },
+                { key: "tokens", value: r.tokens },
+                { key: "champion", value: r.champion },
+              ]}
+            />
+          </div>
+        </div>
+      ))}
+      <p className="text-[11px] text-ink-500">
+        Bar length = expected points on offer that round (fair-odds average: odds cancel probability, tokens assume a one-goal
+        margin, champion counts at the final). Segments show each prediction type's share.
+      </p>
+    </div>
+  );
+}
 
 function ValueTable({ head, rows }: { head: string[]; rows: (string | number)[][] }) {
   return (
@@ -114,6 +167,15 @@ export default function Rules() {
           rows={PHASES.map((p) => [PHASE_SHORT[p], TOKENS_BY_PHASE[p], `×${TOKEN_MULT[p]}`])}
         />
         <p className="mt-2 text-xs text-red-300">⚠️ Margins are signed: a backed team losing SUBTRACTS points at the same rate.</p>
+      </section>
+
+      <section className="e-card p-4">
+        <SectionTitle hint="what each round is worth">The points economy</SectionTitle>
+        <p className="mb-3 text-sm text-ink-200">
+          How much is on offer each round, and where it comes from. Scorer picks are the late-tournament jackpot;
+          results and tokens stay steady all the way through.
+        </p>
+        <PointsEconomy />
       </section>
 
       <section className="e-card p-4">
