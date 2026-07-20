@@ -20,7 +20,7 @@ export default function Home() {
       out.push({ to: "/picks/champion", icon: <Crown size={14} />, label: "Lock your champion" });
     const openOutcomes = state.fixtures.filter((f) => canPredictFixture(f) && !myPreds?.outcomes[f.id]?.locked).length;
     if (openOutcomes > 0)
-      out.push({ to: "/matches", icon: <Target size={14} />, label: `${openOutcomes} match pick${openOutcomes === 1 ? "" : "s"} to lock` });
+      out.push({ to: "/picks/matches", icon: <Target size={14} />, label: `${openOutcomes} match pick${openOutcomes === 1 ? "" : "s"} to lock` });
     for (const ph of PHASES) {
       if (!canLockPhase(ph)) continue;
       if (!myPreds?.scorers[ph]?.locked) out.push({ to: "/picks/scorers", icon: <Goal size={14} />, label: `${PHASE_SHORT[ph]} scorers open` });
@@ -85,7 +85,7 @@ export default function Home() {
             {nextUp.map((f) => {
               const my = myPreds?.outcomes[f.id];
               return (
-                <Link key={f.id} to="/matches" className="e-card e-card-hover flex items-center justify-between gap-2 p-3">
+                <Link key={f.id} to="/picks/matches" className="e-card e-card-hover flex items-center justify-between gap-2 p-3">
                   <span className="flex min-w-0 items-center gap-1.5">
                     {f.homeTeamId ? <TeamMark team={teamById.get(f.homeTeamId)} size="sm" /> : <span className="text-xs text-ink-500">{f.homeLabel}</span>}
                     <span className="text-ink-600">v</span>

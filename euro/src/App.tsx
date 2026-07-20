@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route, NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { Zap, CalendarDays, Target, Trophy, Menu, ShieldCheck, LogOut, BookOpen, Wrench } from "lucide-react";
+import { Zap, Target, Trophy, Menu, ShieldCheck, LogOut, BookOpen, Wrench } from "lucide-react";
 import { EuroProvider, useEuro } from "./store/store";
 import { ToastProvider, Tabs } from "./ui/kit";
 import { fmtPts } from "./lib/format";
@@ -17,11 +17,18 @@ import Admin from "./pages/Admin";
 function PicksHub() {
   const loc = useLocation();
   const nav = useNavigate();
-  const cur = loc.pathname.includes("tokens") ? "tokens" : loc.pathname.includes("champion") ? "champion" : "scorers";
+  const cur = loc.pathname.includes("scorers")
+    ? "scorers"
+    : loc.pathname.includes("tokens")
+      ? "tokens"
+      : loc.pathname.includes("champion")
+        ? "champion"
+        : "matches";
   return (
     <div className="space-y-4">
       <Tabs
         options={[
+          { value: "matches", label: "Matches" },
           { value: "scorers", label: "Scorers" },
           { value: "tokens", label: "Tokens" },
           { value: "champion", label: "Champion" },
@@ -30,10 +37,11 @@ function PicksHub() {
         onChange={(v) => nav(`/picks/${v}`)}
       />
       <Routes>
+        <Route path="matches" element={<Matches />} />
         <Route path="scorers" element={<Scorers />} />
         <Route path="tokens" element={<Tokens />} />
         <Route path="champion" element={<Champion />} />
-        <Route path="*" element={<Navigate to="scorers" replace />} />
+        <Route path="*" element={<Navigate to="matches" replace />} />
       </Routes>
     </div>
   );
@@ -100,8 +108,7 @@ function MoreHub() {
 
 const NAV = [
   { to: "/", label: "Home", icon: Zap, end: true },
-  { to: "/matches", label: "Matches", icon: CalendarDays },
-  { to: "/picks", label: "Picks", icon: Target },
+  { to: "/picks", label: "Predict", icon: Target },
   { to: "/table", label: "Table", icon: Trophy },
   { to: "/more", label: "More", icon: Menu },
 ];
@@ -134,7 +141,7 @@ function Shell() {
       <main className="flex-1 px-4 pb-24 pt-4">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/matches" element={<Matches />} />
+          <Route path="/matches" element={<Navigate to="/picks/matches" replace />} />
           <Route path="/picks/*" element={<PicksHub />} />
           <Route path="/table/*" element={<TableHub />} />
           <Route path="/more" element={<MoreHub />} />
