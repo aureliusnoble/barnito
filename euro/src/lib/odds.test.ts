@@ -4,7 +4,7 @@
 
 import { describe, it, expect } from "vitest";
 import type { EFixture, EPhase, ETeam, EPlayer, Outcome } from "../types";
-import { normalizeProbs, outcomeOdds, scorerOdds, teamWinOdds } from "./odds";
+import { marginOutlook, normalizeProbs, outcomeOdds, scorerOdds, teamWinOdds } from "./odds";
 
 // ---------------------------------------------------------------------------
 // Synthetic builders (no imports from data/*).
@@ -253,5 +253,30 @@ describe("normalizeProbs", () => {
     const o = outcomeOdds(f, HOME, AWAY, T0);
     const impliedSum = 1 / o.odds.H + 1 / o.odds.D + 1 / o.odds.A;
     expect(Math.abs(impliedSum - 1)).toBeLessThan(0.02); // 2dp rounding only
+  });
+});
+
+
+// ---------------------------------------------------------------------------
+// marginOutlook — the human-readable token view
+// ---------------------------------------------------------------------------
+
+describe("marginOutlook", () => {
+  it("is zero-expectation on both sides and asymmetric the right way round", () => {
+    const f = fixture("g-A1", "group", HOME.id, AWAY.id); // HOME is the stronger side
+    for (const teamId of [HOME.id, AWAY.id]) {
+      const lk = marginOutlook(f, HOME, AWAY, teamId, T0);
+      const miss = 1 - lk.cover;
+      // cover × avgWin + miss × avgLoss ≈ 0 (fair line; 2dp rounding tolerance)
+      expect(Math.abs(lk.cover * lk.avgWinDelta + miss * lk.avgLossDelta)).toBeLessThan(0.02);
+      expect(lk.avgWinDelta).toBeGreaterThan(0);
+      expect(lk.avgLossDelta).toBeLessThan(0);
+    }
+    const fav = marginOutlook(f, HOME, AWAY, HOME.id, T0);
+    const dog = marginOutlook(f, HOME, AWAY, AWAY.id, T0);
+    // Favourite: pays off often, small wins, bigger rare losses. Dog: mirror image.
+    expect(fav.cover).toBeGreaterThan(dog.cover);
+    expect(fav.avgWinDelta).toBeLessThan(dog.avgWinDelta);
+    expect(Math.abs(fav.avgLossDelta)).toBeGreaterThan(Math.abs(dog.avgLossDelta));
   });
 });

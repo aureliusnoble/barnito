@@ -21,7 +21,7 @@ import { ADMIN_PIN, PHASES, SCORER_PICKS, STORAGE_KEY, TOKENS_BY_PHASE } from ".
 import { TEAMS } from "../data/teams";
 import { FORWARDS } from "../data/players";
 import { BASE_FIXTURES } from "../data/fixtures";
-import { outcomeOdds, scorerOdds, marginSpread, outrightOdds } from "../lib/odds";
+import { outcomeOdds, scorerOdds, marginSpread, marginOutlook, outrightOdds, type MarginOutlook } from "../lib/odds";
 import { computeScores } from "../lib/scoring";
 import { advanceBracket, groupsComplete, winnerOf } from "../lib/bracket";
 import { hash32, mulberry32 } from "../lib/rng";
@@ -92,6 +92,8 @@ export interface StoreApi {
   oddsFor: (f: EFixture) => OutcomeOdds | null;
   /** Frozen-at-lock market spread (expected margin, signed) for a team in a fixture. */
   spreadFor: (f: EFixture, teamId: string) => number | null;
+  /** Cover probability + typical win/loss distances for a token on this team. */
+  marginOutlookFor: (f: EFixture, teamId: string) => MarginOutlook | null;
   scorerOddsFor: (p: EPlayer, phase: EPhase) => { prob: number; odds: number };
   outright: Map<string, { prob: number; odds: number }>;
 
@@ -174,6 +176,12 @@ export function EuroProvider({ children }: { children: ReactNode }) {
       const a = f.awayTeamId && teamById.get(f.awayTeamId);
       if (!h || !a) return null;
       return marginSpread(f, h, a, teamId, nowMs);
+    };
+    const marginOutlookFor = (f: EFixture, teamId: string) => {
+      const h = f.homeTeamId && teamById.get(f.homeTeamId);
+      const a = f.awayTeamId && teamById.get(f.awayTeamId);
+      if (!h || !a) return null;
+      return marginOutlook(f, h, a, teamId, nowMs);
     };
     const scorerOddsFor = (p: EPlayer, phase: EPhase) =>
       scorerOdds(p, teamById.get(p.teamId)!, phase, nowMs);
@@ -330,6 +338,7 @@ export function EuroProvider({ children }: { children: ReactNode }) {
 
       oddsFor,
       spreadFor,
+      marginOutlookFor,
       scorerOddsFor,
       outright: outrightOdds(TEAMS, nowMs),
 

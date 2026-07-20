@@ -76,10 +76,17 @@ export function scorerOdds(player: EPlayer, team: ETeam, phase: string, atMs: nu
 }
 
 /**
- * The sim's average winning margin (from its scoreline model) — used to convert
- * win/lose probabilities into an expected goal margin (the "spread").
+ * The winning-margin distribution implied by the result simulator's scoreline
+ * model (winner goals 1–4 with a 15% bonus, loser trailing by 1–3):
+ * margin | win ∈ {1: 52.2%, 2: 35%, 3: 12.8%}. Its mean converts win/lose
+ * probabilities into an expected goal margin (the "line").
  */
-const MEAN_WIN_MARGIN = 1.61;
+const MARGIN_PMF: [number, number][] = [
+  [1, 0.5222],
+  [2, 0.35],
+  [3, 0.1278],
+];
+const MEAN_WIN_MARGIN = MARGIN_PMF.reduce((a, [m, p]) => a + m * p, 0); // ≈ 1.606
 
 /**
  * Market spread for a team in a fixture: its expected goal margin (signed;
@@ -92,6 +99,48 @@ export function marginSpread(fixture: EFixture, home: ETeam, away: ETeam, teamId
   const pT = teamId === home.id ? o.probs.H : o.probs.A;
   const pO = teamId === home.id ? o.probs.A : o.probs.H;
   return Math.round(MEAN_WIN_MARGIN * (pT - pO) * 100) / 100;
+}
+
+export interface MarginOutlook {
+  line: number;
+  /** Probability the team finishes ahead of its line (earns points). */
+  cover: number;
+  /** Average goals past the line when it covers (positive). */
+  avgWinDelta: number;
+  /** Average goals short of the line when it misses (negative). */
+  avgLossDelta: number;
+}
+
+/**
+ * The human-readable view of a token bet: how often this side beats its line,
+ * and the typical distance either way — computed from the same margin model the
+ * line comes from, so cover × avgWin + miss × avgLoss ≈ 0 (zero expectation).
+ */
+export function marginOutlook(fixture: EFixture, home: ETeam, away: ETeam, teamId: string, atMs: number): MarginOutlook {
+  const o = outcomeOdds(fixture, home, away, atMs);
+  const pT = teamId === home.id ? o.probs.H : o.probs.A;
+  const pO = teamId === home.id ? o.probs.A : o.probs.H;
+  const pD = o.probs.D;
+  const line = Math.round(MEAN_WIN_MARGIN * (pT - pO) * 100) / 100;
+
+  // Full margin pmf from this team's perspective: wins positive, losses negative.
+  const outcomes: [number, number][] = [
+    ...MARGIN_PMF.map(([m, p]) => [m, pT * p] as [number, number]),
+    [0, pD],
+    ...MARGIN_PMF.map(([m, p]) => [-m, pO * p] as [number, number]),
+  ];
+  let cover = 0, winSum = 0, miss = 0, lossSum = 0;
+  for (const [m, p] of outcomes) {
+    const delta = m - line;
+    if (delta > 1e-9) { cover += p; winSum += p * delta; }
+    else if (delta < -1e-9) { miss += p; lossSum += p * delta; }
+  }
+  return {
+    line,
+    cover,
+    avgWinDelta: cover > 0 ? winSum / cover : 0,
+    avgLossDelta: miss > 0 ? lossSum / miss : 0,
+  };
 }
 
 /** Outright champion odds (display only): softmax over ratings. */
