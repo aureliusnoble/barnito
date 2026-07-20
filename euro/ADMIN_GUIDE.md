@@ -23,7 +23,7 @@ Robsonaldo, and **Admin** (PIN **2028**).
    - **Predict → Champion**: pick a team, lock (320 pts flat).
    - **Predict → Scorers**: pick exactly 8 forwards, lock — per-goal points shown
      per player (odds × 10 × round).
-   - **Predict → Tokens**: place the 8 group tokens, note the "wins by 2 → +X /
+   - **Predict → Tokens**: place the 12 group tokens, note the "wins by 2 → +X /
      loses by 1 → −X" projections, lock.
 4. Back to **Admin** → Time machine → "Groups underway". Try to change a locked
    pick or lock a new one for a started match — correctly refused.

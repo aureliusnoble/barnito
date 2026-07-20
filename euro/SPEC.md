@@ -23,8 +23,7 @@ localStorage blob so the admin can inspect and drive everything from one browser
    `BASE_GOAL (10) × PICK_MULT[phase] × that player's anytime-scorer odds at lock-in`.
    `PICK_MULT = { group:1, r16:4, qf:16, sf:64, final:256 }` (×4 per round — fewer picks).
    The whole set locks at once, before the phase's first kickoff.
-5. **Tokens**: per phase users get `TOKENS = { group:8, r16:4, qf:2, sf:1, final:1 }`
-   (8 for the groups; half the games per knockout round, final rounded up). Assign any number of tokens to a
+5. **Tokens**: per phase users get `TOKENS = { group:12, r16:8, qf:4, sf:2, final:1 }`. Assign any number of tokens to a
    team in a match (multiple per match allowed). Each token scores
    `BASE_TOKEN (10) × (backed team's net goal difference in that match, SIGNED)
    × PICK_MULT[phase] × the backed team's win odds at lock-in`.
