@@ -16,9 +16,10 @@ localStorage blob so the admin can inspect and drive everything from one browser
    round's FIRST kickoff (a bulk "lock all" locks every draft at once).
 2. **No points for group standings** (unlike the WC edition). Group tables still shown.
 3. **Champion pick**: one team, locked before the tournament's first kickoff.
-   Pays `BASE_CHAMPION (400) × outright odds frozen at lock`, uncapped. Favourites pay
-   ~1,800–2,600 (podium-swing zone); a longshot that wins pays its full odds. Fair odds
-   make the expected value ≈ 400 for every pick.
+   Pays `BASE_CHAMPION (500) × outright odds frozen at lock`, uncapped. Favourites pay
+   ~2,300–3,300 (podium-swing zone); a longshot that wins pays its full odds. Fair odds
+   make the expected value ≈ 500 for every pick. Separate from round scoring: it is one
+   prediction about the whole tournament, made before the opening game.
 4. **Scorer picks** (forwards only): per-phase pick sets of
    `SCORER_PICKS = { group:12, r16:8, qf:4, sf:2, final:1 }` (half the games each round).
    Each goal a picked forward scores in that phase =

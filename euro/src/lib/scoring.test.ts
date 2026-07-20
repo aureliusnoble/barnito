@@ -99,10 +99,10 @@ describe("config sanity (the points economy the multipliers encode)", () => {
   });
 
   it("champion payout scales with the frozen outright odds, uncapped", () => {
-    expect(BASE_CHAMPION).toBe(400);
-    expect(championPoints(5)).toBe(2000); // typical favourite
-    expect(championPoints(6.5)).toBe(2600);
-    expect(championPoints(40)).toBe(16000); // a longshot pays its full odds
+    expect(BASE_CHAMPION).toBe(500);
+    expect(championPoints(5)).toBe(2500); // typical favourite
+    expect(championPoints(6.5)).toBe(3250);
+    expect(championPoints(40)).toBe(20000); // a longshot pays its full odds
     expect(championPoints(undefined)).toBe(BASE_CHAMPION); // missing snapshot ⇒ ×1
     const tournamentPot = PHASES.reduce((sum, p) => {
       const { results, scorers, tokens } = pot(p);
@@ -335,7 +335,7 @@ const PTS_BOB_GB1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.bobGB1); //
 const PTS_BOB_TOKEN = Math.round(BASE_TOKEN * 3 * (-2 - O.bobTokA1) * TOKEN_MULT.group); // 10×3×(−2+0.9)×2 = −66
 const PTS_ADMIN_GA1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.adminGA1); // 10×1×1.8 = 18
 
-const PTS_ALICE_CHAMPION = Math.round(BASE_CHAMPION * 6.0); // 400 × 6.0 = 2400
+const PTS_ALICE_CHAMPION = Math.round(BASE_CHAMPION * 6.0); // 500 × 6.0 = 3000
 const ALICE_TOTAL = PTS_ALICE_GA1 + PTS_ALICE_FINAL + PTS_ALICE_SCORER + PTS_ALICE_TOKEN + PTS_ALICE_CHAMPION;
 const BOB_TOTAL = PTS_BOB_GB1 + PTS_BOB_TOKEN; // −173
 
