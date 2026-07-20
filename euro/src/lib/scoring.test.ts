@@ -17,7 +17,6 @@ import {
   BASE_GOAL,
   BASE_TOKEN,
   OUTCOME_MULT,
-  SCORER_EV_FACTOR,
   SCORER_MULT,
   TOKEN_MULT,
   BASE_CHAMPION,
@@ -63,16 +62,18 @@ function scoreOf(results: UserScore[], userId: string): UserScore {
 // ---------------------------------------------------------------------------
 
 describe("config sanity (the points economy the multipliers encode)", () => {
-  // Fair odds cancel probability in expectation, so a round's expected pot per
-  // category = count × base × multiplier. The design: every category's pot
-  // doubles each knockout round, and results carry ~2× scorers and tokens.
+  // Fair pricing cancels probability in expectation, so a round's expected pot per
+  // category = count × base × multiplier. The design: every category grows ~1.5×
+  // per knockout round and results carry ~2× scorers and tokens. Tokens are a
+  // zero-expectation bet against the line, so their "pot" is the ± swing of one
+  // goal versus the line — same formula, different meaning.
   const MATCHES = { group: 36, r16: 8, qf: 4, sf: 2, final: 1 } as const;
   const PICK_GAMES = { group: 24, r16: 4, qf: 2, sf: 2, final: 1 } as const; // picks × games-per-team
   const WALLETS = { group: 12, r16: 8, qf: 4, sf: 2, final: 1 } as const;
   const pot = (p: (typeof PHASES)[number]) => ({
     results: MATCHES[p] * BASE_OUTCOME * OUTCOME_MULT[p],
-    // Scorer picks pay per goal at anytime odds — structurally ~1.35× a fair payout.
-    scorers: PICK_GAMES[p] * BASE_GOAL * SCORER_MULT[p] * SCORER_EV_FACTOR,
+    // Per-goal pricing at expected-goals odds makes scorer pots exact (EV factor = 1).
+    scorers: PICK_GAMES[p] * BASE_GOAL * SCORER_MULT[p],
     tokens: WALLETS[p] * BASE_TOKEN * TOKEN_MULT[p],
   });
 
@@ -90,12 +91,8 @@ describe("config sanity (the points economy the multipliers encode)", () => {
   it("results are worth roughly double scorers and tokens every round", () => {
     for (const p of PHASES) {
       const { results, scorers, tokens } = pot(p);
-      // Group is the one anomaly: 8 picks × 3 games at the ×1 floor can't go lower,
-      // so group scorers land near parity with results instead of half.
-      if (p !== "group") {
-        expect(results / scorers).toBeGreaterThanOrEqual(1.5);
-        expect(results / scorers).toBeLessThanOrEqual(2.1);
-      }
+      expect(results / scorers).toBeGreaterThanOrEqual(1.5);
+      expect(results / scorers).toBeLessThanOrEqual(2.1);
       expect(results / tokens).toBeGreaterThanOrEqual(1.25);
       expect(results / tokens).toBeLessThanOrEqual(2);
     }
@@ -144,41 +141,44 @@ describe("scorerPointsPerGoal", () => {
     for (const phase of PHASES) {
       expect(scorerPointsPerGoal(phase, 1)).toBe(BASE_GOAL * SCORER_MULT[phase]);
     }
-    // 10 × 5 (R16) × 1.87 = 93.5 → 94.
+    // 10 × 7 (R16) × 1.87 = 130.9 → 131.
     expect(scorerPointsPerGoal("r16", 1.87)).toBe(Math.round(BASE_GOAL * SCORER_MULT.r16 * 1.87));
-    expect(scorerPointsPerGoal("r16", 1.87)).toBe(94);
-    // 10 × 70 (final) × 5.5 = 3850 exactly.
-    expect(scorerPointsPerGoal("final", 5.5)).toBe(3850);
+    expect(scorerPointsPerGoal("r16", 1.87)).toBe(131);
+    // 10 × 90 (final) × 5.5 = 4950 exactly.
+    expect(scorerPointsPerGoal("final", 5.5)).toBe(4950);
   });
 });
 
-describe("tokenPoints", () => {
-  it("is BASE_TOKEN × count × netDiff × TOKEN_MULT[phase] × odds, rounded", () => {
-    // 10 × 3 tokens × +2 diff × 2 (group) × 1.8 = 216.
-    expect(tokenPoints("group", 3, 2, 1.8)).toBe(Math.round(BASE_TOKEN * 3 * 2 * TOKEN_MULT.group * 1.8));
-    expect(tokenPoints("group", 3, 2, 1.8)).toBe(216);
-    // 10 × 1 × +3 × 64 (SF) × 2.5 = 4800.
-    expect(tokenPoints("sf", 1, 3, 2.5)).toBe(BASE_TOKEN * 1 * 3 * TOKEN_MULT.sf * 2.5);
+describe("tokenPoints (margin vs the frozen line)", () => {
+  it("is BASE_TOKEN × count × (margin − spread) × TOKEN_MULT[phase], rounded", () => {
+    // 10 × 3 tokens × (2 − 0.5) × 2 (group) = 90.
+    expect(tokenPoints("group", 3, 2, 0.5)).toBe(Math.round(BASE_TOKEN * 3 * (2 - 0.5) * TOKEN_MULT.group));
+    expect(tokenPoints("group", 3, 2, 0.5)).toBe(90);
+    // 10 × 1 × (3 − 1.5) × 30 (SF) = 450.
+    expect(tokenPoints("sf", 1, 3, 1.5)).toBe(450);
   });
 
-  it("goes NEGATIVE when the backed team loses (TOKEN_ALLOW_NEGATIVE)", () => {
-    // 10 × 1 × −2 × 16 (QF) × 1.5 = −480 when negatives are allowed, else 0.
-    const expected = TOKEN_ALLOW_NEGATIVE ? Math.round(BASE_TOKEN * 1 * -2 * TOKEN_MULT.qf * 1.5) : 0;
-    expect(tokenPoints("qf", 1, -2, 1.5)).toBe(expected);
-    expect(tokenPoints("qf", 1, -2, 1.5)).toBe(-300); // 10 × 1 × −2 × 10 (QF) × 1.5
-    // 10 × 2 × −3 × 2 (group) × 2.5 = −300.
-    expect(tokenPoints("group", 2, -3, 2.5)).toBe(-300);
+  it("goes NEGATIVE when the team finishes short of its line (TOKEN_ALLOW_NEGATIVE)", () => {
+    // 10 × 1 × (−1 − 0.6) × 10 (QF) = −160 when negatives are allowed, else 0.
+    const expected = TOKEN_ALLOW_NEGATIVE ? Math.round(BASE_TOKEN * 1 * (-1 - 0.6) * TOKEN_MULT.qf) : 0;
+    expect(tokenPoints("qf", 1, -1, 0.6)).toBe(expected);
+    expect(tokenPoints("qf", 1, -1, 0.6)).toBe(-160);
   });
 
-  it("scores 0 for a level match or zero tokens", () => {
-    expect(tokenPoints("group", 4, 0, 3.2)).toBe(0);
-    expect(tokenPoints("final", 0, 5, 3.2)).toBe(0);
+  it("pays an underdog that covers its line even in defeat", () => {
+    // Dog line −1.8, loses by only 1: 10 × 2 × (−1 + 1.8) × 2 (group) = +32.
+    expect(tokenPoints("group", 2, -1, -1.8)).toBe(32);
   });
 
-  it("rounds halves toward +∞ (JS Math.round), so ±12.5 is asymmetric", () => {
-    // 10 × 1 × ±1 × 2 (group) × 1.125 = ±22.5 exactly → +23 but −22.
-    expect(tokenPoints("group", 1, 1, 1.125)).toBe(23);
-    expect(tokenPoints("group", 1, -1, 1.125)).toBe(-22);
+  it("scores 0 when the margin lands exactly on the line, or with zero tokens", () => {
+    expect(tokenPoints("group", 4, 1, 1)).toBe(0);
+    expect(tokenPoints("final", 0, 5, 0)).toBe(0);
+  });
+
+  it("rounds halves toward +∞ (JS Math.round), so ±22.5 is asymmetric", () => {
+    // 10 × 1 × ±1.125 × 2 (group) = ±22.5 exactly → +23 but −22.
+    expect(tokenPoints("group", 1, 1.125, 0)).toBe(23);
+    expect(tokenPoints("group", 1, -1.125, 0)).toBe(-22);
   });
 });
 
@@ -245,8 +245,8 @@ const fixtures: EFixture[] = [
 const O = {
   aliceGA1: 1.8, aliceGB1: 2.4, aliceGA3: 2.0, aliceFinal: 3.6,
   aliceScorerHot: 2.2, aliceScorerCold: 3.0,
-  aliceTokA1: 1.7, aliceTokB1: 2.9, aliceTokA3: 2.0,
-  bobGB1: 3.1, bobFinal: 3.0, bobTokA1: 3.4,
+  aliceTokA1: 0.9, aliceTokB1: 0.0, aliceTokA3: 1.2, // frozen LINES (spreads), not odds
+  bobGB1: 3.1, bobFinal: 3.0, bobTokA1: -0.9,
   adminGA1: 1.8, adminFinal: 2.8,
 } as const;
 
@@ -273,7 +273,7 @@ const predictions: Record<string, UserPredictions> = {
           { fixtureId: "g-A3", teamId: "alpha", count: 1 }, // unfinished → no score
         ],
         locked: true,
-        oddsByAssign: { "g-A1:alpha": O.aliceTokA1, "g-B1:delta": O.aliceTokB1, "g-A3:alpha": O.aliceTokA3 },
+        spreadByAssign: { "g-A1:alpha": O.aliceTokA1, "g-B1:delta": O.aliceTokB1, "g-A3:alpha": O.aliceTokA3 },
       },
     },
     champion: { teamId: "alpha", locked: true, outrightOdds: 6.0 }, // correct (pens) — pays 400 × 6.0
@@ -291,7 +291,7 @@ const predictions: Record<string, UserPredictions> = {
       group: {
         assigns: [{ fixtureId: "g-A1", teamId: "beta", count: 3 }], // backed the 0–2 loser → negative
         locked: true,
-        oddsByAssign: { "g-A1:beta": O.bobTokA1 },
+        spreadByAssign: { "g-A1:beta": O.bobTokA1 },
       },
     },
     champion: { teamId: "gamma", locked: true }, // reached the final, drew after extra time, lost pens → 0
@@ -330,9 +330,9 @@ const state: Euro28State = {
 const PTS_ALICE_GA1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.aliceGA1); // 10×1×1.8 = 18
 const PTS_ALICE_FINAL = Math.round(BASE_OUTCOME * OUTCOME_MULT.final * O.aliceFinal); // 10×16×3.6 = 576
 const PTS_ALICE_SCORER = Math.round(BASE_GOAL * SCORER_MULT.group * O.aliceScorerHot) * 2; // (10×1×2.2=22) × 2 goals = 44
-const PTS_ALICE_TOKEN = Math.round(BASE_TOKEN * 2 * 2 * TOKEN_MULT.group * O.aliceTokA1); // 10×2×(+2)×1×1.7 = 68
+const PTS_ALICE_TOKEN = Math.round(BASE_TOKEN * 2 * (2 - O.aliceTokA1) * TOKEN_MULT.group); // 10×2×(2−0.9)×2 = 44
 const PTS_BOB_GB1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.bobGB1); // 10×1×3.1 = 31
-const PTS_BOB_TOKEN = Math.round(BASE_TOKEN * 3 * -2 * TOKEN_MULT.group * O.bobTokA1); // 10×3×(−2)×1×3.4 = −204
+const PTS_BOB_TOKEN = Math.round(BASE_TOKEN * 3 * (-2 - O.bobTokA1) * TOKEN_MULT.group); // 10×3×(−2+0.9)×2 = −66
 const PTS_ADMIN_GA1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.adminGA1); // 10×1×1.8 = 18
 
 const PTS_ALICE_CHAMPION = Math.round(BASE_CHAMPION * 6.0); // 400 × 6.0 = 2400
@@ -381,7 +381,7 @@ describe("computeScores — end to end", () => {
   it("scores alice's tokens: positive netDiff pays, level match pays 0, unfinished skipped", () => {
     expect(alice.tokenLines).toHaveLength(2); // the g-A3 assign is unfinished → no line
     const winTok = alice.tokenLines.find((l) => l.fixtureId === "g-A1");
-    expect(winTok).toMatchObject({ teamId: "alpha", count: 2, netDiff: 2, odds: O.aliceTokA1, points: PTS_ALICE_TOKEN });
+    expect(winTok).toMatchObject({ teamId: "alpha", count: 2, netDiff: 2, spread: O.aliceTokA1, points: PTS_ALICE_TOKEN });
     const levelTok = alice.tokenLines.find((l) => l.fixtureId === "g-B1");
     expect(levelTok).toMatchObject({ teamId: "delta", netDiff: 0, points: 0 });
     expect(alice.tokens).toBe(PTS_ALICE_TOKEN);

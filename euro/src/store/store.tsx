@@ -21,7 +21,7 @@ import { ADMIN_PIN, PHASES, SCORER_PICKS, STORAGE_KEY, TOKENS_BY_PHASE } from ".
 import { TEAMS } from "../data/teams";
 import { FORWARDS } from "../data/players";
 import { BASE_FIXTURES } from "../data/fixtures";
-import { outcomeOdds, scorerOdds, teamWinOdds, outrightOdds } from "../lib/odds";
+import { outcomeOdds, scorerOdds, marginSpread, outrightOdds } from "../lib/odds";
 import { computeScores } from "../lib/scoring";
 import { advanceBracket, groupsComplete, winnerOf } from "../lib/bracket";
 import { hash32, mulberry32 } from "../lib/rng";
@@ -43,7 +43,7 @@ const emptyPredictions = (): UserPredictions => ({ outcomes: {}, scorers: {}, to
 
 function freshState(): Euro28State {
   return {
-    version: 1,
+    version: 2,
     users: SEED_USERS,
     sessionUserId: null,
     fixtures: BASE_FIXTURES.map((f) => ({ ...f, scorers: [...f.scorers] })),
@@ -57,7 +57,7 @@ function loadState(): Euro28State {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return freshState();
     const parsed = JSON.parse(raw) as Euro28State;
-    if (parsed.version !== 1 || !Array.isArray(parsed.fixtures)) return freshState();
+    if (parsed.version !== 2 || !Array.isArray(parsed.fixtures)) return freshState();
     for (const u of parsed.users) if (!parsed.predictions[u.id]) parsed.predictions[u.id] = emptyPredictions();
     return parsed;
   } catch {
@@ -90,7 +90,8 @@ export interface StoreApi {
   revealPhase: (phase: EPhase) => boolean;
 
   oddsFor: (f: EFixture) => OutcomeOdds | null;
-  teamOddsFor: (f: EFixture, teamId: string) => { prob: number; odds: number } | null;
+  /** Frozen-at-lock market spread (expected margin, signed) for a team in a fixture. */
+  spreadFor: (f: EFixture, teamId: string) => number | null;
   scorerOddsFor: (p: EPlayer, phase: EPhase) => { prob: number; odds: number };
   outright: Map<string, { prob: number; odds: number }>;
 
@@ -168,11 +169,11 @@ export function EuroProvider({ children }: { children: ReactNode }) {
       if (!h || !a) return null;
       return outcomeOdds(f, h, a, nowMs);
     };
-    const teamOddsFor = (f: EFixture, teamId: string) => {
+    const spreadFor = (f: EFixture, teamId: string) => {
       const h = f.homeTeamId && teamById.get(f.homeTeamId);
       const a = f.awayTeamId && teamById.get(f.awayTeamId);
       if (!h || !a) return null;
-      return teamWinOdds(f, h, a, teamId, nowMs);
+      return marginSpread(f, h, a, teamId, nowMs);
     };
     const scorerOddsFor = (p: EPlayer, phase: EPhase) =>
       scorerOdds(p, teamById.get(p.teamId)!, phase, nowMs);
@@ -288,7 +289,7 @@ export function EuroProvider({ children }: { children: ReactNode }) {
           if (!p.tokens[ph]?.locked) {
             let left = TOKENS_BY_PHASE[ph];
             const assigns: TokenAssign[] = [];
-            const oddsByAssign: Record<string, number> = {};
+            const spreadByAssign: Record<string, number> = {};
             const shuffled = [...fxs].sort(() => rng() - 0.5);
             for (const f of shuffled) {
               if (left <= 0) break;
@@ -297,10 +298,10 @@ export function EuroProvider({ children }: { children: ReactNode }) {
               const a = teamById.get(f.awayTeamId!)!;
               const team = (rng() < 0.7 ? (h.rating >= a.rating ? h : a) : h.rating >= a.rating ? a : h).id;
               assigns.push({ fixtureId: f.id, teamId: team, count: n });
-              oddsByAssign[`${f.id}:${team}`] = teamWinOdds(f, h, a, team, at).odds;
+              spreadByAssign[`${f.id}:${team}`] = marginSpread(f, h, a, team, at);
               left -= n;
             }
-            p.tokens[ph] = { assigns, locked: true, lockedAt: new Date(at).toISOString(), oddsByAssign };
+            p.tokens[ph] = { assigns, locked: true, lockedAt: new Date(at).toISOString(), spreadByAssign };
           }
         }
       }
@@ -328,7 +329,7 @@ export function EuroProvider({ children }: { children: ReactNode }) {
       revealPhase: (phase) => isAdmin || nowMs >= phaseFirstKickoff(phase),
 
       oddsFor,
-      teamOddsFor,
+      spreadFor,
       scorerOddsFor,
       outright: outrightOdds(TEAMS, nowMs),
 
@@ -431,16 +432,16 @@ export function EuroProvider({ children }: { children: ReactNode }) {
         if (!tp) return "Assign some tokens first.";
         if (tp.locked) return "Already locked.";
         if (tp.assigns.length === 0) return "Assign at least one token.";
-        const oddsByAssign: Record<string, number> = {};
+        const spreadByAssign: Record<string, number> = {};
         for (const a of tp.assigns) {
           const f = fixtureById.get(a.fixtureId)!;
-          const o = teamOddsFor(f, a.teamId);
-          if (!o) return "No odds available.";
-          oddsByAssign[`${a.fixtureId}:${a.teamId}`] = o.odds;
+          const sp = spreadFor(f, a.teamId);
+          if (sp == null) return "No spread available.";
+          spreadByAssign[`${a.fixtureId}:${a.teamId}`] = sp;
         }
         mutate((d) => {
           const p = myPreds(d)!;
-          p.tokens[phase] = { assigns: tp.assigns, locked: true, lockedAt: new Date(nowMs).toISOString(), oddsByAssign };
+          p.tokens[phase] = { assigns: tp.assigns, locked: true, lockedAt: new Date(nowMs).toISOString(), spreadByAssign };
         });
         return null;
       },

@@ -45,10 +45,12 @@ export function championPoints(outrightOdds?: number): number {
   return Math.round(BASE_CHAMPION * (outrightOdds ?? 1));
 }
 
-/** Points for `count` tokens on a team that ends the match at `netDiff` (signed). */
-export function tokenPoints(phase: EPhase, count: number, netDiff: number, odds: number): number {
-  const diff = TOKEN_ALLOW_NEGATIVE ? netDiff : Math.max(0, netDiff);
-  return Math.round(BASE_TOKEN * count * diff * TOKEN_MULT[phase] * odds);
+/** Points for `count` tokens on a team finishing at `margin` against a frozen `spread`.
+ * Zero expectation on both sides when the market is right — only edge pays. */
+export function tokenPoints(phase: EPhase, count: number, margin: number, spread: number): number {
+  const delta = margin - spread;
+  const diff = TOKEN_ALLOW_NEGATIVE ? delta : Math.max(0, delta);
+  return Math.round(BASE_TOKEN * count * diff * TOKEN_MULT[phase]);
 }
 
 export function computeScores(state: Euro28State, teams: ETeam[]): UserScore[] {
@@ -101,24 +103,24 @@ export function computeScores(state: Euro28State, teams: ETeam[]): UserScore[] {
       }
     }
 
-    // Rule 6: tokens.
+    // Rule 6: tokens — margin measured against the spread frozen at lock.
     const tokenLines: TokenScoreLine[] = [];
     for (const phase of PHASES) {
       const tp = p.tokens[phase];
-      if (!tp?.locked || !tp.oddsByAssign) continue;
+      if (!tp?.locked || !tp.spreadByAssign) continue;
       for (const a of tp.assigns) {
         const f = fixtureById.get(a.fixtureId);
         if (!f || f.status !== "FINISHED" || f.homeGoals == null || f.awayGoals == null) continue;
         const netDiff = a.teamId === f.homeTeamId ? f.homeGoals - f.awayGoals : f.awayGoals - f.homeGoals;
-        const odds = tp.oddsByAssign[`${a.fixtureId}:${a.teamId}`] ?? 0;
+        const spread = tp.spreadByAssign[`${a.fixtureId}:${a.teamId}`] ?? 0;
         tokenLines.push({
           phase,
           fixtureId: a.fixtureId,
           teamId: a.teamId,
           count: a.count,
           netDiff,
-          odds,
-          points: tokenPoints(phase, a.count, netDiff, odds),
+          spread,
+          points: tokenPoints(phase, a.count, netDiff, spread),
         });
       }
     }

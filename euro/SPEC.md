@@ -22,17 +22,16 @@ localStorage blob so the admin can inspect and drive everything from one browser
    `SCORER_PICKS = { group:8, r16:4, qf:2, sf:2, final:1 }`.
    Each goal a picked forward scores in that phase =
    `BASE_GOAL (10) × SCORER_MULT[phase] × that player's anytime-scorer odds at lock-in`.
-   `SCORER_MULT = { group:1, r16:5, qf:15, sf:25, final:70 }` — tuned with SCORER_EV_FACTOR (1.35,
-   the structural edge of per-goal payouts at anytime odds) so the scorer pot grows ~1.5× per
-   round at roughly half the results pot.
+   `SCORER_MULT = { group:1, r16:7, qf:20, sf:30, final:90 }` — with per-goal pricing the pots are
+   exactly 240/280/400/600/900: ~1.5× growth at half the results pot from the R16 on.
    The whole set locks at once, before the phase's first kickoff.
-5. **Tokens**: per phase users get `TOKENS = { group:12, r16:8, qf:4, sf:2, final:1 }`. Assign any number of tokens to a
-   team in a match (multiple per match allowed). Each token scores
-   `BASE_TOKEN (10) × (backed team's net goal difference in that match, SIGNED)
-   × TOKEN_MULT[phase] × the backed team's win odds at lock-in`, with
-   `TOKEN_MULT = { group:2, r16:4, qf:10, sf:30, final:90 }` — tuned so the token pot grows ~1.5×
-   per round at roughly half the results pot.
-   Negative net difference ⇒ **negative points** (`TOKEN_ALLOW_NEGATIVE = true`).
+5. **Tokens**: per phase users get `TOKENS = { group:12, r16:8, qf:4, sf:2, final:1 }`. Assign any
+   number of tokens to a team in a match (multiple per match allowed). Each match shows each
+   team's **line** (the market's expected goal margin, signed), frozen at lock. Each token scores
+   `BASE_TOKEN (10) × (final margin − line) × TOKEN_MULT[phase]`, with
+   `TOKEN_MULT = { group:2, r16:4, qf:10, sf:30, final:90 }` scaling the ± swing per round.
+   Zero expectation on BOTH sides of every game — only beating the market's margin view pays.
+   Finishing short of the line ⇒ **negative points** (`TOKEN_ALLOW_NEGATIVE = true`).
    The phase's whole allocation locks at once, before the phase's first kickoff.
 6. **Knockout draws**: outcomes and token margins lock at the END OF EXTRA TIME (a
    draw is a valid pick and pays). Penalties only decide who advances / the champion.

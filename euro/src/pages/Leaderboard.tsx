@@ -103,13 +103,10 @@ function Row({ s }: { s: UserScore }) {
               {scoredTokens.map((l, i) => (
                 <li key={i} className="flex items-center justify-between">
                   <span className="text-ink-300">
-                    {l.count}🪙 {teamById.get(l.teamId)?.name ?? l.teamId} ({l.netDiff > 0 ? "+" : ""}
-                    {l.netDiff})
+                    {l.count}🪙 {teamById.get(l.teamId)?.name ?? l.teamId} · margin {l.netDiff > 0 ? "+" : ""}
+                    {l.netDiff} vs line {l.spread > 0 ? "+" : ""}{l.spread.toFixed(1)}
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="e-num text-punch-300">×{fmtOdds(l.odds)}</span>
-                    <PtsTag pts={l.points} signed />
-                  </span>
+                  <PtsTag pts={l.points} signed />
                 </li>
               ))}
             </MiniList>

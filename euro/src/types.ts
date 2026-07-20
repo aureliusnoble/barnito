@@ -75,7 +75,9 @@ export interface TokenPrediction {
   assigns: TokenAssign[];
   locked: boolean;
   lockedAt?: string;
-  oddsByAssign?: Record<string, number>; // key `${fixtureId}:${teamId}`, frozen at lock
+  /** Frozen market spread (expected goal margin, signed) per `${fixtureId}:${teamId}`.
+   * Tokens pay on (actual margin − spread), so both sides of every game are EV-fair. */
+  spreadByAssign?: Record<string, number>;
 }
 
 export interface ChampionPrediction {
@@ -140,8 +142,8 @@ export interface TokenScoreLine {
   fixtureId: string;
   teamId: string;
   count: number;
-  netDiff: number; // signed
-  odds: number;
+  netDiff: number; // actual goal margin for the backed team, signed
+  spread: number; // frozen market spread the margin is measured against, signed
   points: number; // signed
 }
 

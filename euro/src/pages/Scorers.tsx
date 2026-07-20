@@ -60,7 +60,7 @@ export default function Scorers() {
 
   return (
     <div className="space-y-4 pb-16">
-      <PageHead title="Scorers" sub="Forwards only. Every goal they score in the round pays odds × round multiplier." />
+      <PageHead title="Scorers" sub="Forwards only. Every goal pays their per-goal odds × round multiplier — priced so every pick's expected return is identical. Braces pay double." />
       <Tabs options={PHASES.map((p) => ({ value: p, label: PHASE_SHORT[p] }))} value={phase} onChange={setPhase} />
 
       {/* status */}

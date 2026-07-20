@@ -1,14 +1,23 @@
 import { useMemo, useState } from "react";
 import { AlertTriangle, Coins, Lock } from "lucide-react";
 import type { EPhase, TokenAssign } from "../types";
-import { BASE_TOKEN, PHASES, PHASE_SHORT, TOKEN_MULT, TOKENS_BY_PHASE } from "../config";
+import { BASE_TOKEN, PHASES, PHASE_SHORT, TOKENS_BY_PHASE } from "../config";
 import { useEuro } from "../store/store";
 import { tokenPoints } from "../lib/scoring";
-import { fmtDay, fmtFull, fmtOdds, fmtSignedPts, fmtTime } from "../lib/format";
-import { Btn, CountdownPill, EmptyState, LockBadge, Modal, OddsTag, PageHead, PtsTag, SectionTitle, Stepper, Tabs, TeamMark, useToast } from "../ui/kit";
+import { fmtDay, fmtFull, fmtSignedPts, fmtTime } from "../lib/format";
+import { Btn, CountdownPill, EmptyState, LockBadge, Modal, PageHead, PtsTag, SectionTitle, Stepper, Tabs, TeamMark, useToast } from "../ui/kit";
+
+/** The market line (expected goal margin, signed) — what a token has to beat. */
+function LineTag({ line }: { line: number }) {
+  return (
+    <span className="e-chip e-num bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">
+      line {line > 0 ? "+" : ""}{line.toFixed(1)}
+    </span>
+  );
+}
 
 export default function Tokens() {
-  const { me, state, nowMs, teamById, fixtureById, phaseFirstKickoff, phaseTeamsKnown, canLockPhase, revealPhase, teamOddsFor, setTokenDraft, lockTokens, scoreOf } = useEuro();
+  const { me, state, nowMs, teamById, fixtureById, phaseFirstKickoff, phaseTeamsKnown, canLockPhase, revealPhase, spreadFor, setTokenDraft, lockTokens, scoreOf } = useEuro();
   const { toast } = useToast();
   const [phase, setPhase] = useState<EPhase>("group");
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -42,12 +51,14 @@ export default function Tokens() {
 
   const myLines = me ? (scoreOf(me.id)?.tokenLines ?? []).filter((l) => l.phase === phase) : [];
   const phaseTotal = myLines.reduce((a, b) => a + b.points, 0);
+  // One goal better/worse than the line, per token.
+  const perGoal = (n: number) => tokenPoints(phase, n, 1, 0);
 
   return (
     <div className="space-y-4 pb-16">
       <PageHead
         title="Tokens"
-        sub={`Back a team with tokens: each pays ${BASE_TOKEN} × goal margin × round × odds — and margins go NEGATIVE if they lose.`}
+        sub={`Beat the market's line: each token pays ${BASE_TOKEN} × (final margin − the line) × round. Both sides are priced fair — only a better read than the market earns points.`}
       />
       <Tabs options={PHASES.map((p) => ({ value: p, label: PHASE_SHORT[p] }))} value={phase} onChange={setPhase} />
 
@@ -59,7 +70,7 @@ export default function Tokens() {
             {placed}<span className="text-ink-500">/{wallet}</span>
           </span>
           <span className="text-ink-300">placed</span>
-          <span className="e-chip bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">×{TOKEN_MULT[phase]} round</span>
+          <span className="e-chip bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">±{perGoal(1)}/goal·token</span>
           {my?.locked && <LockBadge lockedAt={my.lockedAt} />}
         </span>
         <span className="flex items-center gap-2 text-[11px] text-ink-400">
@@ -81,8 +92,8 @@ export default function Tokens() {
           {my.assigns.map((a, i) => {
             const f = fixtureById.get(a.fixtureId);
             const t = teamById.get(a.teamId);
-            const odds = my.oddsByAssign?.[`${a.fixtureId}:${a.teamId}`] ?? 0;
-            const line = myLines.find((l) => l.fixtureId === a.fixtureId && l.teamId === a.teamId);
+            const line = my.spreadByAssign?.[`${a.fixtureId}:${a.teamId}`] ?? 0;
+            const scored = myLines.find((l) => l.fixtureId === a.fixtureId && l.teamId === a.teamId);
             return (
               <div key={i} className="e-card flex items-center justify-between gap-2 p-3">
                 <span className="min-w-0">
@@ -95,14 +106,13 @@ export default function Tokens() {
                   </span>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <OddsTag odds={odds} />
-                  {line ? (
+                  <LineTag line={line} />
+                  {scored ? (
                     <>
-                      <span className={`e-num text-[11px] ${line.netDiff >= 0 ? "text-ink-300" : "text-red-300"}`}>
-                        {line.netDiff > 0 ? "+" : ""}
-                        {line.netDiff} margin
+                      <span className={`e-num text-[11px] ${scored.netDiff - scored.spread >= 0 ? "text-mint-300" : "text-red-300"}`}>
+                        margin {scored.netDiff > 0 ? "+" : ""}{scored.netDiff}
                       </span>
-                      <PtsTag pts={line.points} signed />
+                      <PtsTag pts={scored.points} signed />
                     </>
                   ) : (
                     <span className="text-[11px] text-ink-500">pending</span>
@@ -128,20 +138,20 @@ export default function Tokens() {
                     {fmtDay(f.kickoff)} · {fmtTime(f.kickoff)} · {f.venue}
                   </div>
                   {[home, away].map((t) => {
-                    const o = teamOddsFor(f, t.id);
+                    const line = spreadFor(f, t.id);
                     const n = countFor(f.id, t.id);
                     const canAdd = placed < wallet;
                     return (
                       <div key={t.id} className="flex items-center justify-between gap-2 py-1">
                         <span className="flex min-w-0 items-center gap-1.5">
                           <TeamMark team={t} size="sm" />
-                          {o && <OddsTag odds={o.odds} />}
+                          {line != null && <LineTag line={line} />}
                         </span>
                         <span className="flex items-center gap-2">
-                          {n > 0 && o && (
+                          {n > 0 && line != null && (
                             <span className="e-num hidden text-[10px] text-ink-400 sm:block">
-                              <span className="text-mint-300">+{tokenPoints(phase, n, 1, o.odds)}</span>/goal up ·{" "}
-                              <span className="text-red-300">{tokenPoints(phase, n, -1, o.odds)}</span>/goal down
+                              <span className="text-mint-300">+{perGoal(n)}</span> /goal past the line ·{" "}
+                              <span className="text-red-300">−{perGoal(n)}</span> /goal short
                             </span>
                           )}
                           <Stepper value={n} min={0} max={n + (canAdd ? 1 : 0)} onChange={(v) => setCount(f.id, t.id, v)} />
@@ -197,12 +207,15 @@ export default function Tokens() {
                     {lines.length > 0 && <PtsTag pts={total} signed />}
                   </div>
                   <div className="flex flex-wrap gap-1">
-                    {tp.assigns.map((a, i) => (
-                      <span key={i} className="e-chip bg-white/[0.05] text-ink-200 ring-1 ring-white/[0.06]">
-                        {a.count}🪙 {teamById.get(a.teamId)?.code ?? a.teamId}
-                        <span className="e-num text-punch-300">×{fmtOdds(tp.oddsByAssign?.[`${a.fixtureId}:${a.teamId}`] ?? 0)}</span>
-                      </span>
-                    ))}
+                    {tp.assigns.map((a, i) => {
+                      const line = tp.spreadByAssign?.[`${a.fixtureId}:${a.teamId}`] ?? 0;
+                      return (
+                        <span key={i} className="e-chip bg-white/[0.05] text-ink-200 ring-1 ring-white/[0.06]">
+                          {a.count}🪙 {teamById.get(a.teamId)?.code ?? a.teamId}
+                          <span className="e-num text-punch-300">{line > 0 ? "+" : ""}{line.toFixed(1)}</span>
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -228,20 +241,20 @@ export default function Tokens() {
           {assigns.map((a, i) => {
             const f = fixtureById.get(a.fixtureId);
             const t = teamById.get(a.teamId);
-            const o = f ? teamOddsFor(f, a.teamId) : null;
+            const line = f ? spreadFor(f, a.teamId) : null;
             return (
               <li key={i} className="flex items-center justify-between text-sm">
                 <span className="text-ink-100">
                   {a.count}🪙 on {t?.name ?? a.teamId}
                 </span>
-                {o && (
+                {line != null && (
                   <span className="flex items-center gap-1.5">
-                    <OddsTag odds={o.odds} />
+                    <LineTag line={line} />
                     <span className="e-num text-[11px]">
-                      <span className="text-mint-300">{fmtSignedPts(tokenPoints(phase, a.count, 2, o.odds))}</span>
-                      <span className="text-ink-500"> if +2 · </span>
-                      <span className="text-red-300">{fmtSignedPts(tokenPoints(phase, a.count, -1, o.odds))}</span>
-                      <span className="text-ink-500"> if −1</span>
+                      <span className="text-mint-300">{fmtSignedPts(tokenPoints(phase, a.count, line + 1, line))}</span>
+                      <span className="text-ink-500"> /goal past · </span>
+                      <span className="text-red-300">{fmtSignedPts(tokenPoints(phase, a.count, line - 1, line))}</span>
+                      <span className="text-ink-500"> /goal short</span>
                     </span>
                   </span>
                 )}
@@ -249,9 +262,10 @@ export default function Tokens() {
             );
           })}
         </ul>
-        <p className="flex items-start gap-1.5 text-xs text-red-300">
-          <AlertTriangle size={14} className="mt-0.5 shrink-0" />
-          If a backed team loses, tokens SUBTRACT points at the same rate. Locking freezes the odds and is permanent.
+        <p className="flex items-start gap-1.5 text-xs text-ink-400">
+          <AlertTriangle size={14} className="mt-0.5 shrink-0 text-red-300" />
+          The line freezes now. Your team's final goal margin is measured against it — finish short and the
+          same rate <span className="font-semibold text-red-300">subtracts</span> points. Locking is permanent.
         </p>
       </Modal>
     </div>

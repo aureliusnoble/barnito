@@ -16,20 +16,15 @@ export const BASE_TOKEN = 10;
  * grow ~1.5× (36/8/4/2/1 matches → expected totals 360/560/800/1200/1800). */
 export const OUTCOME_MULT: Record<EPhase, number> = { group: 1, r16: 7, qf: 20, sf: 60, final: 180 };
 
-/** Rule 5: scorer multipliers — pick-games shrink 24/4/2/2/1. Tuned so that AFTER the
- * scorer market's structural edge (see SCORER_EV_FACTOR) the round's scorer pot grows
- * ~1.5× and sits at roughly HALF the results pot (~324/270/405/675/945 expected;
- * the group floor of ×1 makes groups the one rich-scorer anomaly). */
-export const SCORER_MULT: Record<EPhase, number> = { group: 1, r16: 5, qf: 15, sf: 25, final: 70 };
+/** Rule 5: scorer multipliers — pick-games shrink 24/4/2/2/1. Per-goal payouts are priced
+ * at expected-goals odds (see lib/odds.ts scorerOdds), so a pick's EV per match is exactly
+ * BASE_GOAL × multiplier and the round pots are 240/280/400/600/900 — half the results pot
+ * from the R16 on (the group ×1 floor makes groups the one rich-scorer anomaly). */
+export const SCORER_MULT: Record<EPhase, number> = { group: 1, r16: 7, qf: 20, sf: 30, final: 90 };
 
-/** Scorer picks pay PER GOAL at ANYTIME-scorer odds, and good strikers score multiples:
- * historically elite picks price ~1.4–1.9 anytime with ~0.8–1.0 xG/game, so odds ×
- * expected goals averages ≈ 1.35 rather than the 1.0 a fair single-payout market gives.
- * Used to calibrate the points-economy view and the multiplier tuning above. */
-export const SCORER_EV_FACTOR = 1.35;
-
-/** Rule 6: token multipliers — wallets shrink 12/8/4/2/1, tuned so the round's token
- * pot grows ~1.5× and sits at roughly HALF the results pot (240/320/400/600/900). */
+/** Rule 6: token multipliers — wallets shrink 12/8/4/2/1. Tokens pay on the margin
+ * RELATIVE to the frozen market spread (zero expectation both sides — pure edge), so
+ * these scale the ± swing per round rather than an expected pot. */
 export const TOKEN_MULT: Record<EPhase, number> = { group: 2, r16: 4, qf: 10, sf: 30, final: 90 };
 
 /** Rule 5: forwards-only scorer picks per phase. */
@@ -65,4 +60,4 @@ export const PHASE_SHORT: Record<EPhase, string> = {
 export const ADMIN_PIN = "2028";
 
 /** localStorage key for the whole mock backend. Bump the suffix on breaking shape changes. */
-export const STORAGE_KEY = "barnito-euro28:v1";
+export const STORAGE_KEY = "barnito-euro28:v2";

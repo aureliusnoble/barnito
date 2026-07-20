@@ -4,7 +4,7 @@
 
 import { describe, it, expect } from "vitest";
 import type { EFixture, EPhase, ETeam, EPlayer, Outcome } from "../types";
-import { outcomeOdds, scorerOdds, teamWinOdds } from "./odds";
+import { normalizeProbs, outcomeOdds, scorerOdds, teamWinOdds } from "./odds";
 
 // ---------------------------------------------------------------------------
 // Synthetic builders (no imports from data/*).
@@ -161,7 +161,9 @@ describe("scorerOdds", () => {
             const { prob, odds } = scorerOdds(player(`p${rating}`, t.id, rating), t, phase, T0 + h * HOUR);
             expect(prob).toBeGreaterThanOrEqual(0.03);
             expect(prob).toBeLessThanOrEqual(0.75);
-            expect(odds).toBe(fair(prob));
+            // Per-goal fair pricing: odds = 1/λ with λ = −ln(1−p) — so paying per
+            // goal at these odds gives every pick an identical expected return.
+            expect(odds).toBe(fair(-Math.log(1 - prob)));
           }
         }
       }
@@ -219,5 +221,37 @@ describe("teamWinOdds", () => {
     const homeSide = teamWinOdds(FX, HOME, AWAY, HOME.id, T0);
     const awaySide = teamWinOdds(FX, HOME, AWAY, AWAY.id, T0);
     expect(homeSide.prob + awaySide.prob + full.probs.D).toBeCloseTo(1, 12);
+  });
+});
+
+
+// ---------------------------------------------------------------------------
+// normalizeProbs — the overround guard for real bookmaker odds
+// ---------------------------------------------------------------------------
+
+describe("normalizeProbs", () => {
+  it("rescales a margined book (sum > 1) to sum exactly 1, preserving ratios", () => {
+    // A typical 1X2 book at ~110% overround: implied probs from 1/odds.
+    const raw = { H: 1 / 1.8, D: 1 / 3.4, A: 1 / 4.2 }; // sums ≈ 1.088
+    const fairP = normalizeProbs(raw);
+    const sum = fairP.H + fairP.D + fairP.A;
+    expect(Math.abs(sum - 1)).toBeLessThan(1e-12);
+    expect(fairP.H / fairP.A).toBeCloseTo(raw.H / raw.A, 12); // relative beliefs unchanged
+    expect(fairP.H).toBeLessThan(raw.H); // every prob shrinks — no pick is EV-taxed vs another
+  });
+
+  it("leaves an already-fair book unchanged", () => {
+    const raw = { H: 0.5, D: 0.3, A: 0.2 };
+    const out = normalizeProbs(raw);
+    expect(out.H).toBeCloseTo(0.5, 12);
+    expect(out.D).toBeCloseTo(0.3, 12);
+    expect(out.A).toBeCloseTo(0.2, 12);
+  });
+
+  it("outcomeOdds routes through it: implied probs of the quoted odds sum to ~1", () => {
+    const f = fixture("g-A1", "group", HOME.id, AWAY.id);
+    const o = outcomeOdds(f, HOME, AWAY, T0);
+    const impliedSum = 1 / o.odds.H + 1 / o.odds.D + 1 / o.odds.A;
+    expect(Math.abs(impliedSum - 1)).toBeLessThan(0.02); // 2dp rounding only
   });
 });

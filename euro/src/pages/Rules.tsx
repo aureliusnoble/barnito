@@ -1,5 +1,5 @@
 import type { EPhase } from "../types";
-import { BASE_CHAMPION, BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_EV_FACTOR, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
+import { BASE_CHAMPION, BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
 import { championPoints, outcomePoints, scorerPointsPerGoal, tokenPoints } from "../lib/scoring";
 import { fmtPts, fmtSignedPts } from "../lib/format";
 import { BarBreakdown, FormulaRow, OddsTag, PageHead, PtsTag, SectionTitle } from "../ui/kit";
@@ -22,7 +22,7 @@ const GAMES_PER_TEAM: Record<EPhase, number> = { group: 3, r16: 1, qf: 1, sf: 1,
 function PointsEconomy() {
   const rows = PHASES.map((p) => {
     const outcomes = MATCHES_IN_ROUND[p] * BASE_OUTCOME * OUTCOME_MULT[p];
-    const scorers = Math.round(SCORER_PICKS[p] * GAMES_PER_TEAM[p] * BASE_GOAL * SCORER_MULT[p] * SCORER_EV_FACTOR);
+    const scorers = SCORER_PICKS[p] * GAMES_PER_TEAM[p] * BASE_GOAL * SCORER_MULT[p];
     const tokens = TOKENS_BY_PHASE[p] * BASE_TOKEN * TOKEN_MULT[p];
     const champion = p === "final" ? championPoints(5) : 0; // shown at typical favourite odds ×5
     return { phase: p, outcomes, scorers, tokens, champion, total: outcomes + scorers + tokens + champion };
@@ -49,9 +49,10 @@ function PointsEconomy() {
         </div>
       ))}
       <p className="text-[11px] text-ink-500">
-        Bar length = expected points on offer that round. Results are odds-neutral (fair odds cancel probability); scorers
-        include the ×{SCORER_EV_FACTOR} structural edge of per-goal payouts at anytime odds; tokens assume a one-goal margin;
-        the champion payout is shown at typical favourite odds (×5) and counts at the final — a longshot champion pays its full odds. Segments show each prediction type's share.
+        Bar length = expected points on offer that round. Every market is priced fair, so odds cancel probability: results and
+        scorers show their true expected pots; tokens are zero-expectation (a bet against the market's line) so their segment
+        shows the ± swing of one goal versus the line; the champion payout is shown at typical favourite odds (×5) and counts
+        at the final. Segments show each prediction type's share.
       </p>
     </div>
   );
@@ -140,9 +141,10 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="forwards only">Scorers</SectionTitle>
         <p className="mb-2 text-sm text-ink-200">
-          Pick a fresh set of forwards each round. Every goal a pick scores in that round pays
-          {" "}{BASE_GOAL} × round × their scoring odds — and it pays <span className="font-bold text-white">per goal</span>, so a brace doubles it.
-          Multipliers are tuned so each round's scorer pot grows ~1.5× even as picks shrink.
+          Pick a fresh set of forwards each round. Every goal a pick scores pays {BASE_GOAL} × round × their
+          {" "}<span className="font-bold text-white">per-goal odds</span> — priced from expected goals, so a star at ×1.4 and a longshot at ×8
+          have the <span className="font-bold text-white">same expected return</span>; only spotting a mispriced player beats the market. It pays per
+          goal, so a brace doubles it. Multipliers are tuned so each round's scorer pot grows ~1.5× even as picks shrink.
         </p>
         <ValueTable
           head={["Round", "Picks", "Multiplier", "Goal at odds ×4.00"]}
@@ -154,23 +156,26 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="the risk lever">Tokens</SectionTitle>
         <p className="mb-2 text-sm text-ink-200">
-          Each round you get a shrinking wallet of tokens. Stack any number on a team in a match. Each token pays
-          {" "}{BASE_TOKEN} × <span className="font-semibold text-white">goal margin</span> × round × that team's win odds.
-          In knockouts the margin is taken at the <span className="font-semibold text-white">end of extra time</span> (shootouts don't move it).
+          Each round you get a shrinking wallet of tokens. Every match shows each team's <span className="font-semibold text-white">line</span> —
+          the goal margin the market expects (favourites +, underdogs −), frozen when you lock. Each token pays
+          {" "}{BASE_TOKEN} × (<span className="font-semibold text-white">final margin − the line</span>) × round. Both sides of every game are priced
+          fair, so tokens are a pure bet that <span className="font-semibold text-white">your read of the margin beats the market's</span> — back an
+          underdog to keep it close and you score even if they lose. In knockouts the margin is taken at the
+          {" "}<span className="font-semibold text-white">end of extra time</span> (shootouts don't move it).
         </p>
         <div className="mb-2 flex flex-wrap gap-2 text-xs">
           <span className="e-chip bg-mint-500/15 text-mint-300 ring-1 ring-mint-500/25">
-            win by 2 at ×3.00 (R16): {fmtSignedPts(tokenPoints("r16", 1, 2, 3))} / token
+            beat the line by 1 (R16): {fmtSignedPts(tokenPoints("r16", 1, 1, 0))} / token
           </span>
           <span className="e-chip bg-red-500/15 text-red-300 ring-1 ring-red-500/30">
-            lose by 1 at ×3.00 (R16): {fmtSignedPts(tokenPoints("r16", 1, -1, 3))} / token
+            miss the line by 1 (R16): {fmtSignedPts(tokenPoints("r16", 1, -1, 0))} / token
           </span>
         </div>
         <ValueTable
           head={["Round", "Tokens", "Multiplier"]}
           rows={PHASES.map((p) => [PHASE_SHORT[p], TOKENS_BY_PHASE[p], `×${TOKEN_MULT[p]}`])}
         />
-        <p className="mt-2 text-xs text-red-300">⚠️ Margins are signed: a backed team losing SUBTRACTS points at the same rate.</p>
+        <p className="mt-2 text-xs text-red-300">⚠️ Finishing short of the line SUBTRACTS points at the same rate — the market is the opponent.</p>
       </section>
 
       <section className="e-card p-4">
