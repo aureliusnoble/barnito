@@ -1,5 +1,5 @@
 import type { EPhase } from "../types";
-import { BASE_CHAMPION, BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, CHAMPION_ODDS_CAP, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_EV_FACTOR, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
+import { BASE_CHAMPION, BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_EV_FACTOR, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
 import { championPoints, outcomePoints, scorerPointsPerGoal, tokenPoints } from "../lib/scoring";
 import { fmtPts, fmtSignedPts } from "../lib/format";
 import { BarBreakdown, FormulaRow, OddsTag, PageHead, PtsTag, SectionTitle } from "../ui/kit";
@@ -51,7 +51,7 @@ function PointsEconomy() {
       <p className="text-[11px] text-ink-500">
         Bar length = expected points on offer that round. Results are odds-neutral (fair odds cancel probability); scorers
         include the ×{SCORER_EV_FACTOR} structural edge of per-goal payouts at anytime odds; tokens assume a one-goal margin;
-        the champion payout is shown at typical favourite odds (×5) and counts at the final — longshots pay up to the ×{CHAMPION_ODDS_CAP} cap. Segments show each prediction type's share.
+        the champion payout is shown at typical favourite odds (×5) and counts at the final — a longshot champion pays its full odds. Segments show each prediction type's share.
       </p>
     </div>
   );
@@ -131,9 +131,9 @@ export default function Rules() {
         <SectionTitle hint="before kickoff no.1">Champion</SectionTitle>
         <p className="text-sm text-ink-200">
           One team, locked before the opening match — and like everything else, it pays by the odds:
-          {" "}<span className="e-num font-bold text-white">{BASE_CHAMPION} × their outright odds</span> at your lock, capped at ×{CHAMPION_ODDS_CAP}.
-          A favourite pays around <PtsTag pts={championPoints(5)} />; a bold dark horse up to <PtsTag pts={championPoints(CHAMPION_ODDS_CAP)} />.
-          Enough to shake up the podium — not to carry a bad tournament.
+          {" "}<span className="e-num font-bold text-white">{BASE_CHAMPION} × their outright odds</span> at your lock — uncapped.
+          A favourite pays around <PtsTag pts={championPoints(5)} />; a true longshot pays its full odds, so a ×25 shock winner
+          banks <PtsTag pts={championPoints(25)} />. Glory favours the brave.
         </p>
       </section>
 

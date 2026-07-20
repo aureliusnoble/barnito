@@ -15,9 +15,9 @@ localStorage blob so the admin can inspect and drive everything from one browser
    freely, but locking is permanent and only locked picks can score.
 2. **No points for group standings** (unlike the WC edition). Group tables still shown.
 3. **Champion pick**: one team, locked before the tournament's first kickoff.
-   Pays `BASE_CHAMPION (400) × outright odds frozen at lock`, capped at `CHAMPION_ODDS_CAP (12)`.
-   Favourites pay ~1,800–2,600 (podium-swing zone); a dark horse maxes at 4,800. Fair odds
-   make the expected value ≈ 400 for every pick inside the cap.
+   Pays `BASE_CHAMPION (400) × outright odds frozen at lock`, uncapped. Favourites pay
+   ~1,800–2,600 (podium-swing zone); a longshot that wins pays its full odds. Fair odds
+   make the expected value ≈ 400 for every pick.
 4. **Scorer picks** (forwards only): per-phase pick sets of
    `SCORER_PICKS = { group:8, r16:4, qf:2, sf:2, final:1 }`.
    Each goal a picked forward scores in that phase =

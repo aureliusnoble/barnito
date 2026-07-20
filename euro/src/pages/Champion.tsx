@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Crown, Lock } from "lucide-react";
-import { BASE_CHAMPION, CHAMPION_ODDS_CAP } from "../config";
+import { BASE_CHAMPION } from "../config";
 import { championPoints } from "../lib/scoring";
 import { useEuro, winnerOf } from "../store/store";
 import { fmtFull, fmtOdds, fmtPts } from "../lib/format";
@@ -52,7 +52,7 @@ export default function Champion() {
         title="Champion"
         sub={
           <>
-            One team, locked before kick-off. Pays <span className="e-num font-bold text-volt-300">{BASE_CHAMPION} × outright odds</span> frozen at your lock (capped ×{CHAMPION_ODDS_CAP}) — longshots pay more.
+            One team, locked before kick-off. Pays <span className="e-num font-bold text-volt-300">{BASE_CHAMPION} × outright odds</span> frozen at your lock — the longer the shot, the bigger the prize.
           </>
         }
       />
@@ -198,7 +198,7 @@ export default function Champion() {
             <PtsTag pts={championPoints(outright.get(draftTeam.id)?.odds)} />
           </div>
           <p className="text-center text-xs text-ink-400">
-            {BASE_CHAMPION} × their outright odds (capped ×{CHAMPION_ODDS_CAP}), frozen now, paid if they lift the trophy.
+            {BASE_CHAMPION} × their outright odds, frozen now, paid if they lift the trophy.
             Locking is <span className="font-semibold text-punch-300">permanent</span>.
           </p>
         </Modal>

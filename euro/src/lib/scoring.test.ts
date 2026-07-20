@@ -21,7 +21,6 @@ import {
   SCORER_MULT,
   TOKEN_MULT,
   BASE_CHAMPION,
-  CHAMPION_ODDS_CAP,
   TOKEN_ALLOW_NEGATIVE,
   PHASES,
 } from "../config";
@@ -102,21 +101,19 @@ describe("config sanity (the points economy the multipliers encode)", () => {
     }
   });
 
-  it("champion payout swings the podium without dominating", () => {
+  it("champion payout scales with the frozen outright odds, uncapped", () => {
     expect(BASE_CHAMPION).toBe(400);
-    expect(CHAMPION_ODDS_CAP).toBe(12);
-    // Payout scales with the frozen outright odds, capped.
     expect(championPoints(5)).toBe(2000); // typical favourite
     expect(championPoints(6.5)).toBe(2600);
-    expect(championPoints(40)).toBe(BASE_CHAMPION * CHAMPION_ODDS_CAP); // longshot hits the cap
+    expect(championPoints(40)).toBe(16000); // a longshot pays its full odds
     expect(championPoints(undefined)).toBe(BASE_CHAMPION); // missing snapshot ⇒ ×1
     const tournamentPot = PHASES.reduce((sum, p) => {
       const { results, scorers, tokens } = pot(p);
       return sum + results + scorers + tokens;
     }, 0);
-    // Even the capped maximum stays around half a typical full haul.
-    expect(championPoints(CHAMPION_ODDS_CAP) / tournamentPot).toBeLessThan(0.55);
+    // A favourite's payout stays in the podium-swing zone relative to a full haul.
     expect(championPoints(5) / tournamentPot).toBeGreaterThan(0.1);
+    expect(championPoints(5) / tournamentPot).toBeLessThan(0.35);
     expect(TOKEN_ALLOW_NEGATIVE).toBe(true);
   });
 });
@@ -338,7 +335,7 @@ const PTS_BOB_GB1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.bobGB1); //
 const PTS_BOB_TOKEN = Math.round(BASE_TOKEN * 3 * -2 * TOKEN_MULT.group * O.bobTokA1); // 10×3×(−2)×1×3.4 = −204
 const PTS_ADMIN_GA1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.adminGA1); // 10×1×1.8 = 18
 
-const PTS_ALICE_CHAMPION = Math.round(BASE_CHAMPION * Math.min(6.0, CHAMPION_ODDS_CAP)); // 400 × 6.0 = 2400
+const PTS_ALICE_CHAMPION = Math.round(BASE_CHAMPION * 6.0); // 400 × 6.0 = 2400
 const ALICE_TOTAL = PTS_ALICE_GA1 + PTS_ALICE_FINAL + PTS_ALICE_SCORER + PTS_ALICE_TOKEN + PTS_ALICE_CHAMPION;
 const BOB_TOTAL = PTS_BOB_GB1 + PTS_BOB_TOKEN; // −173
 

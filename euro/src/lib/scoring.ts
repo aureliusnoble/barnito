@@ -20,7 +20,6 @@ import {
   SCORER_MULT,
   TOKEN_MULT,
   BASE_CHAMPION,
-  CHAMPION_ODDS_CAP,
   TOKEN_ALLOW_NEGATIVE,
   PHASES,
 } from "../config";
@@ -41,9 +40,9 @@ export function scorerPointsPerGoal(phase: EPhase, odds: number): number {
   return Math.round(BASE_GOAL * SCORER_MULT[phase] * odds);
 }
 
-/** Champion payout for outright odds frozen at lock (missing snapshot ⇒ ×1), capped. */
+/** Champion payout for outright odds frozen at lock (missing snapshot ⇒ ×1), uncapped. */
 export function championPoints(outrightOdds?: number): number {
-  return Math.round(BASE_CHAMPION * Math.min(outrightOdds ?? 1, CHAMPION_ODDS_CAP));
+  return Math.round(BASE_CHAMPION * (outrightOdds ?? 1));
 }
 
 /** Points for `count` tokens on a team that ends the match at `netDiff` (signed). */
