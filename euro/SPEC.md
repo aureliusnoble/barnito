@@ -11,8 +11,9 @@ localStorage blob so the admin can inspect and drive everything from one browser
    Points if correct = `BASE_OUTCOME (10) × OUTCOME_MULT[phase] × decimal odds at lock-in`.
    `OUTCOME_MULT = { group:1, r16:7, qf:20, sf:60, final:180 }` — tuned so each round's total
    result points on offer grow ~1.5× (360/560/800/1200/1800 expected).
-   Odds are **frozen per user at the moment they lock in**; they can change a draft
-   freely, but locking is permanent and only locked picks can score.
+   Odds are **frozen per user at the moment they lock in**; drafts change freely, locking
+   is permanent, and only locked picks score. ALL of a round's match picks close at the
+   round's FIRST kickoff (a bulk "lock all" locks every draft at once).
 2. **No points for group standings** (unlike the WC edition). Group tables still shown.
 3. **Champion pick**: one team, locked before the tournament's first kickoff.
    Pays `BASE_CHAMPION (400) × outright odds frozen at lock`, uncapped. Favourites pay

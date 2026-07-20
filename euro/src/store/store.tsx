@@ -106,6 +106,8 @@ export interface StoreApi {
   setOutcomeDraft: (fid: string, pick: Outcome) => string | null;
   clearOutcomeDraft: (fid: string) => void;
   lockOutcome: (fid: string) => string | null;
+  /** Lock every unlocked outcome draft in a phase at current odds. Returns error or null. */
+  lockAllOutcomes: (phase: EPhase) => string | null;
   setScorerDraft: (phase: EPhase, playerIds: string[]) => string | null;
   lockScorers: (phase: EPhase) => string | null;
   setTokenDraft: (phase: EPhase, assigns: TokenAssign[]) => string | null;
@@ -165,7 +167,8 @@ export function EuroProvider({ children }: { children: ReactNode }) {
     const phaseTeamsKnown = (phase: EPhase) =>
       phaseFixtures(phase).every((f) => !!f.homeTeamId && !!f.awayTeamId);
     const fixtureStarted = (f: EFixture) => nowMs >= Date.parse(f.kickoff);
-    const canPredictFixture = (f: EFixture) => !!f.homeTeamId && !!f.awayTeamId && !fixtureStarted(f);
+    // A round's match picks ALL close when the round's first game kicks off.
+    const canPredictFixture = (f: EFixture) => !!f.homeTeamId && !!f.awayTeamId && nowMs < phaseFirstKickoff(f.phase);
     const canLockPhase = (phase: EPhase) => phaseTeamsKnown(phase) && nowMs < phaseFirstKickoff(phase);
 
     const oddsFor = (f: EFixture): OutcomeOdds | null => {
@@ -374,7 +377,7 @@ export function EuroProvider({ children }: { children: ReactNode }) {
         const f = fixtureById.get(fid);
         if (!me) return "Sign in first.";
         if (!f) return "Unknown fixture.";
-        if (!canPredictFixture(f)) return "Too late — this match has kicked off.";
+        if (!canPredictFixture(f)) return "Too late — this round's picks are closed.";
         const pred = state.predictions[me.id]?.outcomes[fid];
         if (!pred) return "Pick an outcome first.";
         if (pred.locked) return "Already locked.";
@@ -389,6 +392,29 @@ export function EuroProvider({ children }: { children: ReactNode }) {
             odds: o.odds[pred.pick],
             prob: o.probs[pred.pick],
           };
+        });
+        return null;
+      },
+
+      lockAllOutcomes: (phase) => {
+        if (!me) return "Sign in first.";
+        const preds = state.predictions[me.id]?.outcomes ?? {};
+        const targets = state.fixtures.filter(
+          (f) => f.phase === phase && canPredictFixture(f) && preds[f.id] && !preds[f.id].locked,
+        );
+        if (targets.length === 0) return "No unlocked picks to lock in this round.";
+        const snaps: Record<string, { pick: Outcome; odds: number; prob: number }> = {};
+        for (const f of targets) {
+          const o = oddsFor(f);
+          if (!o) return "No odds available.";
+          const pick = preds[f.id].pick;
+          snaps[f.id] = { pick, odds: o.odds[pick], prob: o.probs[pick] };
+        }
+        mutate((d) => {
+          const p = myPreds(d)!;
+          for (const [fid, snap] of Object.entries(snaps)) {
+            p.outcomes[fid] = { pick: snap.pick, locked: true, lockedAt: new Date(nowMs).toISOString(), odds: snap.odds, prob: snap.prob };
+          }
         });
         return null;
       },

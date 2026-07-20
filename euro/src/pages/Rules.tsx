@@ -110,7 +110,7 @@ export default function Rules() {
         <p className="mb-2 text-sm text-ink-200">
           Pick <span className="font-semibold text-white">Home, Draw or Away</span>. Group games score on the full-time result; knockout games
           score on the result <span className="font-semibold text-white">at the end of extra time</span> — a draw after extra time stands and pays,
-          penalties only decide who advances. Multipliers are tuned so each round's total result points <span className="font-bold text-white">grow ~1.5× round on round</span>.
+          penalties only decide who advances. <span className="font-semibold text-white">Every pick in a round locks before the round's first kickoff.</span> Multipliers are tuned so each round's total result points <span className="font-bold text-white">grow ~1.5× round on round</span>.
         </p>
         <FormulaRow
           parts={[

@@ -160,10 +160,8 @@ export default function MatchPredictCard({ fixture }: { fixture: EFixture }) {
             </div>
           )}
         </>
-      ) : started && !finished ? (
-        <p className="mt-1 text-xs text-ink-500">In play — no lock made, 0 pts possible.</p>
-      ) : !myPred?.locked && finished ? (
-        <p className="mt-1 text-xs text-ink-500">No prediction locked for this one.</p>
+      ) : !myPred?.locked ? (
+        <p className="mt-1 text-xs text-ink-500">Round closed — no lock made, 0 pts possible.</p>
       ) : null}
 
       {/* everyone's picks (post-kickoff) */}
