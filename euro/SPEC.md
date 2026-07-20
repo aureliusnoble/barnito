@@ -9,25 +9,29 @@ localStorage blob so the admin can inspect and drive everything from one browser
 
 1. **Outcome picks** (every match): pick Home / Draw / Away for the final result (group: full time; knockout: end of extra time).
    Points if correct = `BASE_OUTCOME (10) × OUTCOME_MULT[phase] × decimal odds at lock-in`.
-   `OUTCOME_MULT = { group:1, r16:2, qf:4, sf:8, final:16 }` (each round worth 2× the last).
+   `OUTCOME_MULT = { group:1, r16:8, qf:32, sf:128, final:512 }` — tuned so each round's total
+   result points on offer double (360/640/1280/2560/5120 expected).
    Odds are **frozen per user at the moment they lock in**; they can change a draft
    freely, but locking is permanent and only locked picks can score.
 2. **No points for group standings** (unlike the WC edition). Group tables still shown.
 3. **Champion pick**: one team, locked before the tournament's first kickoff.
-   Worth `CHAMPION_POINTS = 2 × BASE_OUTCOME × OUTCOME_MULT.final = 320` flat
+   Worth `CHAMPION_POINTS = 2 × BASE_OUTCOME × OUTCOME_MULT.final = 10,240` flat — a real prize
    (outright odds are displayed for context but do NOT multiply — config flag
    `CHAMPION_USES_ODDS = false` exists to change that later).
 4. **Scorer picks** (forwards only): per-phase pick sets of
    `SCORER_PICKS = { group:8, r16:4, qf:2, sf:2, final:1 }`.
    Each goal a picked forward scores in that phase =
    `BASE_GOAL (10) × SCORER_MULT[phase] × that player's anytime-scorer odds at lock-in`.
-   `SCORER_MULT = { group:1, r16:4, qf:16, sf:64, final:256 }` (×4 per round — fewer picks).
+   `SCORER_MULT = { group:1, r16:6, qf:24, sf:48, final:192 }` — tuned with SCORER_EV_FACTOR (1.35,
+   the structural edge of per-goal payouts at anytime odds) so the scorer pot doubles per round
+   at roughly half the results pot.
    The whole set locks at once, before the phase's first kickoff.
 5. **Tokens**: per phase users get `TOKENS = { group:12, r16:8, qf:4, sf:2, final:1 }`. Assign any number of tokens to a
    team in a match (multiple per match allowed). Each token scores
    `BASE_TOKEN (10) × (backed team's net goal difference in that match, SIGNED)
    × TOKEN_MULT[phase] × the backed team's win odds at lock-in`, with
-   `TOKEN_MULT = { group:1, r16:2, qf:4, sf:8, final:16 }` (×2 per round — halving wallet).
+   `TOKEN_MULT = { group:2, r16:4, qf:16, sf:64, final:256 }` — tuned so the token pot doubles per
+   round at roughly half the results pot.
    Negative net difference ⇒ **negative points** (`TOKEN_ALLOW_NEGATIVE = true`).
    The phase's whole allocation locks at once, before the phase's first kickoff.
 6. **Knockout draws**: outcomes and token margins lock at the END OF EXTRA TIME (a

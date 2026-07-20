@@ -16,6 +16,7 @@ import {
   BASE_GOAL,
   BASE_TOKEN,
   OUTCOME_MULT,
+  SCORER_EV_FACTOR,
   SCORER_MULT,
   TOKEN_MULT,
   CHAMPION_POINTS,
@@ -61,18 +62,47 @@ function scoreOf(results: UserScore[], userId: string): UserScore {
 // Unit math: the three formulas, exactly as configured.
 // ---------------------------------------------------------------------------
 
-describe("config sanity (the constants the formulas are derived from)", () => {
-  it("outcome multipliers double per round; pick multipliers quadruple", () => {
-    for (let i = 1; i < PHASES.length; i++) {
-      expect(OUTCOME_MULT[PHASES[i]]).toBe(2 * OUTCOME_MULT[PHASES[i - 1]]);
-      expect(SCORER_MULT[PHASES[i]]).toBe(4 * SCORER_MULT[PHASES[i - 1]]);
-      expect(TOKEN_MULT[PHASES[i]]).toBe(2 * TOKEN_MULT[PHASES[i - 1]]);
+describe("config sanity (the points economy the multipliers encode)", () => {
+  // Fair odds cancel probability in expectation, so a round's expected pot per
+  // category = count × base × multiplier. The design: every category's pot
+  // doubles each knockout round, and results carry ~2× scorers and tokens.
+  const MATCHES = { group: 36, r16: 8, qf: 4, sf: 2, final: 1 } as const;
+  const PICK_GAMES = { group: 24, r16: 4, qf: 2, sf: 2, final: 1 } as const; // picks × games-per-team
+  const WALLETS = { group: 12, r16: 8, qf: 4, sf: 2, final: 1 } as const;
+  const pot = (p: (typeof PHASES)[number]) => ({
+    results: MATCHES[p] * BASE_OUTCOME * OUTCOME_MULT[p],
+    // Scorer picks pay per goal at anytime odds — structurally ~1.35× a fair payout.
+    scorers: PICK_GAMES[p] * BASE_GOAL * SCORER_MULT[p] * SCORER_EV_FACTOR,
+    tokens: WALLETS[p] * BASE_TOKEN * TOKEN_MULT[p],
+  });
+
+  it("every category's pot doubles each knockout round", () => {
+    for (let i = 2; i < PHASES.length; i++) {
+      const prev = pot(PHASES[i - 1]);
+      const cur = pot(PHASES[i]);
+      expect(cur.results).toBe(2 * prev.results);
+      expect(cur.scorers).toBe(2 * prev.scorers);
+      expect(cur.tokens).toBe(2 * prev.tokens);
     }
   });
 
-  it("champion pick is worth 2× the final's outcome base, flat", () => {
+  it("results are worth roughly double scorers and tokens every round", () => {
+    for (const p of PHASES) {
+      const { results, scorers, tokens } = pot(p);
+      // Group is the one anomaly: 8 picks × 3 games at the ×1 floor can't go lower,
+      // so group scorers land near parity with results instead of half.
+      if (p !== "group") {
+        expect(results / scorers).toBeGreaterThanOrEqual(1.5);
+        expect(results / scorers).toBeLessThanOrEqual(2.1);
+      }
+      expect(results / tokens).toBeGreaterThanOrEqual(1.25);
+      expect(results / tokens).toBeLessThanOrEqual(2);
+    }
+  });
+
+  it("champion pick is worth 2× the final's outcome base — a significant flat prize", () => {
     expect(CHAMPION_POINTS).toBe(2 * BASE_OUTCOME * OUTCOME_MULT.final);
-    expect(CHAMPION_POINTS).toBe(320); // 2 × 10 × 16
+    expect(CHAMPION_POINTS).toBe(10240); // 2 × 10 × 512
     expect(CHAMPION_USES_ODDS).toBe(false);
     expect(TOKEN_ALLOW_NEGATIVE).toBe(true);
   });
@@ -84,18 +114,18 @@ describe("outcomePoints", () => {
       // At odds 1.0 the formula collapses to base × round multiplier.
       expect(outcomePoints(phase, 1)).toBe(BASE_OUTCOME * OUTCOME_MULT[phase]);
     }
-    // The SPEC's own worked example: 10 base × 4 (QF) × 7.14 odds = 285.6 → 286.
+    // Worked example: 10 base × 32 (QF) × 7.14 odds = 2284.8 → 2285.
     expect(outcomePoints("qf", 7.14)).toBe(Math.round(BASE_OUTCOME * OUTCOME_MULT.qf * 7.14));
-    expect(outcomePoints("qf", 7.14)).toBe(286);
+    expect(outcomePoints("qf", 7.14)).toBe(2285);
   });
 
   it("rounds to the nearest integer (halves round up)", () => {
     // 10 × 1 × 1.25 = 12.5 exactly (1.25 is dyadic, no float fuzz) → 13.
     expect(outcomePoints("group", 1.25)).toBe(13);
-    // 10 × 2 × 1.33 = 26.6 → 27.
-    expect(outcomePoints("r16", 1.33)).toBe(27);
-    // 10 × 8 × 7.14 = 571.2 → 571 (rounds down).
-    expect(outcomePoints("sf", 7.14)).toBe(571);
+    // 10 × 8 (R16) × 1.33 = 106.4 → 106.
+    expect(outcomePoints("r16", 1.33)).toBe(106);
+    // 10 × 128 (SF) × 7.14 = 9139.2 → 9139 (rounds down).
+    expect(outcomePoints("sf", 7.14)).toBe(9139);
   });
 });
 
@@ -104,19 +134,19 @@ describe("scorerPointsPerGoal", () => {
     for (const phase of PHASES) {
       expect(scorerPointsPerGoal(phase, 1)).toBe(BASE_GOAL * SCORER_MULT[phase]);
     }
-    // 10 × 4 (R16) × 1.87 = 74.8 → 75.
+    // 10 × 6 (R16) × 1.87 = 112.2 → 112.
     expect(scorerPointsPerGoal("r16", 1.87)).toBe(Math.round(BASE_GOAL * SCORER_MULT.r16 * 1.87));
-    expect(scorerPointsPerGoal("r16", 1.87)).toBe(75);
-    // 10 × 256 (final) × 5.5 = 14080 exactly.
-    expect(scorerPointsPerGoal("final", 5.5)).toBe(14080);
+    expect(scorerPointsPerGoal("r16", 1.87)).toBe(112);
+    // 10 × 192 (final) × 5.5 = 10560 exactly.
+    expect(scorerPointsPerGoal("final", 5.5)).toBe(10560);
   });
 });
 
 describe("tokenPoints", () => {
   it("is BASE_TOKEN × count × netDiff × TOKEN_MULT[phase] × odds, rounded", () => {
-    // 10 × 3 tokens × +2 diff × 1 (group) × 1.8 = 108.
+    // 10 × 3 tokens × +2 diff × 2 (group) × 1.8 = 216.
     expect(tokenPoints("group", 3, 2, 1.8)).toBe(Math.round(BASE_TOKEN * 3 * 2 * TOKEN_MULT.group * 1.8));
-    expect(tokenPoints("group", 3, 2, 1.8)).toBe(108);
+    expect(tokenPoints("group", 3, 2, 1.8)).toBe(216);
     // 10 × 1 × +3 × 64 (SF) × 2.5 = 4800.
     expect(tokenPoints("sf", 1, 3, 2.5)).toBe(BASE_TOKEN * 1 * 3 * TOKEN_MULT.sf * 2.5);
   });
@@ -125,9 +155,9 @@ describe("tokenPoints", () => {
     // 10 × 1 × −2 × 16 (QF) × 1.5 = −480 when negatives are allowed, else 0.
     const expected = TOKEN_ALLOW_NEGATIVE ? Math.round(BASE_TOKEN * 1 * -2 * TOKEN_MULT.qf * 1.5) : 0;
     expect(tokenPoints("qf", 1, -2, 1.5)).toBe(expected);
-    expect(tokenPoints("qf", 1, -2, 1.5)).toBe(-120); // 10 × 1 × −2 × 4 (QF) × 1.5
-    // 10 × 2 × −3 × 1 (group) × 2.5 = −150.
-    expect(tokenPoints("group", 2, -3, 2.5)).toBe(-150);
+    expect(tokenPoints("qf", 1, -2, 1.5)).toBe(-480); // 10 × 1 × −2 × 16 (QF) × 1.5
+    // 10 × 2 × −3 × 2 (group) × 2.5 = −300.
+    expect(tokenPoints("group", 2, -3, 2.5)).toBe(-300);
   });
 
   it("scores 0 for a level match or zero tokens", () => {
@@ -136,9 +166,9 @@ describe("tokenPoints", () => {
   });
 
   it("rounds halves toward +∞ (JS Math.round), so ±12.5 is asymmetric", () => {
-    // 10 × 1 × ±1 × 1 × 1.25 = ±12.5 exactly → +13 but −12.
-    expect(tokenPoints("group", 1, 1, 1.25)).toBe(13);
-    expect(tokenPoints("group", 1, -1, 1.25)).toBe(-12);
+    // 10 × 1 × ±1 × 2 (group) × 1.125 = ±22.5 exactly → +23 but −22.
+    expect(tokenPoints("group", 1, 1, 1.125)).toBe(23);
+    expect(tokenPoints("group", 1, -1, 1.125)).toBe(-22);
   });
 });
 

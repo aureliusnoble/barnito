@@ -1,5 +1,5 @@
 import type { EPhase } from "../types";
-import { BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, CHAMPION_POINTS, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
+import { BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, CHAMPION_POINTS, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_EV_FACTOR, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
 import { outcomePoints, scorerPointsPerGoal, tokenPoints } from "../lib/scoring";
 import { fmtPts, fmtSignedPts } from "../lib/format";
 import { BarBreakdown, FormulaRow, OddsTag, PageHead, PtsTag, SectionTitle } from "../ui/kit";
@@ -22,7 +22,7 @@ const GAMES_PER_TEAM: Record<EPhase, number> = { group: 3, r16: 1, qf: 1, sf: 1,
 function PointsEconomy() {
   const rows = PHASES.map((p) => {
     const outcomes = MATCHES_IN_ROUND[p] * BASE_OUTCOME * OUTCOME_MULT[p];
-    const scorers = SCORER_PICKS[p] * GAMES_PER_TEAM[p] * BASE_GOAL * SCORER_MULT[p];
+    const scorers = Math.round(SCORER_PICKS[p] * GAMES_PER_TEAM[p] * BASE_GOAL * SCORER_MULT[p] * SCORER_EV_FACTOR);
     const tokens = TOKENS_BY_PHASE[p] * BASE_TOKEN * TOKEN_MULT[p];
     const champion = p === "final" ? CHAMPION_POINTS : 0;
     return { phase: p, outcomes, scorers, tokens, champion, total: outcomes + scorers + tokens + champion };
@@ -49,8 +49,9 @@ function PointsEconomy() {
         </div>
       ))}
       <p className="text-[11px] text-ink-500">
-        Bar length = expected points on offer that round (fair-odds average: odds cancel probability, tokens assume a one-goal
-        margin, champion counts at the final). Segments show each prediction type's share.
+        Bar length = expected points on offer that round. Results are odds-neutral (fair odds cancel probability); scorers
+        include the ×{SCORER_EV_FACTOR} structural edge of per-goal payouts at anytime odds; tokens assume a one-goal margin;
+        the champion prize counts at the final. Segments show each prediction type's share.
       </p>
     </div>
   );
@@ -108,7 +109,7 @@ export default function Rules() {
         <p className="mb-2 text-sm text-ink-200">
           Pick <span className="font-semibold text-white">Home, Draw or Away</span>. Group games score on the full-time result; knockout games
           score on the result <span className="font-semibold text-white">at the end of extra time</span> — a draw after extra time stands and pays,
-          penalties only decide who advances. Each round is worth <span className="font-bold text-white">2× the last</span>.
+          penalties only decide who advances. Multipliers are tuned so each round's total result points <span className="font-bold text-white">double round on round</span>.
         </p>
         <FormulaRow
           parts={[
@@ -129,8 +130,8 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="before kickoff no.1">Champion</SectionTitle>
         <p className="text-sm text-ink-200">
-          One team, locked before the opening match. Worth a flat <PtsTag pts={CHAMPION_POINTS} /> — that's 2× the final's round value
-          ({BASE_OUTCOME} × {OUTCOME_MULT.final} × 2). Outright odds are shown when you pick, purely for bragging rights.
+          One team, locked before the opening match. Worth a flat <PtsTag pts={CHAMPION_POINTS} /> — 2× the final's per-pick value
+          ({BASE_OUTCOME} × {OUTCOME_MULT.final} × 2), a genuinely tournament-shaping prize. Outright odds are shown when you pick, purely for bragging rights.
         </p>
       </section>
 
@@ -138,7 +139,8 @@ export default function Rules() {
         <SectionTitle hint="forwards only">Scorers</SectionTitle>
         <p className="mb-2 text-sm text-ink-200">
           Pick a fresh set of forwards each round. Every goal a pick scores in that round pays
-          {" "}{BASE_GOAL} × round × their scoring odds. Fewer picks each round — so the multiplier jumps <span className="font-bold text-white">×4 per round</span>. Tokens halve instead, so their multiplier doubles per round.
+          {" "}{BASE_GOAL} × round × their scoring odds — and it pays <span className="font-bold text-white">per goal</span>, so a brace doubles it.
+          Multipliers are tuned so each round's scorer pot doubles even as picks shrink.
         </p>
         <ValueTable
           head={["Round", "Picks", "Multiplier", "Goal at odds ×4.00"]}
@@ -172,8 +174,8 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="what each round is worth">The points economy</SectionTitle>
         <p className="mb-3 text-sm text-ink-200">
-          How much is on offer each round, and where it comes from. Scorer picks are the late-tournament jackpot;
-          results and tokens stay steady all the way through.
+          How much is on offer each round, and where it comes from. Every category doubles round on round,
+          results carry the most weight throughout, and the champion pick is the tournament's single biggest prize.
         </p>
         <PointsEconomy />
       </section>
