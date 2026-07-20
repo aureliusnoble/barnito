@@ -23,6 +23,7 @@ import { FORWARDS } from "../data/players";
 import { BASE_FIXTURES } from "../data/fixtures";
 import { outcomeOdds, scorerOdds, marginSpread, marginOutlook, outrightOdds, type MarginOutlook } from "../lib/odds";
 import { computeScores } from "../lib/scoring";
+import { fixtureSpice } from "../lib/spice";
 import { advanceBracket, groupsComplete, winnerOf } from "../lib/bracket";
 import { hash32, mulberry32 } from "../lib/rng";
 
@@ -94,6 +95,8 @@ export interface StoreApi {
   spreadFor: (f: EFixture, teamId: string) => number | null;
   /** Cover probability + typical win/loss distances for a token on this team. */
   marginOutlookFor: (f: EFixture, teamId: string) => MarginOutlook | null;
+  /** Round-relative leaderboard-swing rating for a fixture (0 sleepy … 2+ table-shaker). */
+  spiceOf: (f: EFixture) => number;
   scorerOddsFor: (p: EPlayer, phase: EPhase) => { prob: number; odds: number };
   outright: Map<string, { prob: number; odds: number }>;
 
@@ -339,6 +342,7 @@ export function EuroProvider({ children }: { children: ReactNode }) {
       oddsFor,
       spreadFor,
       marginOutlookFor,
+      spiceOf: (f) => fixtureSpice(state, teamById, f),
       scorerOddsFor,
       outright: outrightOdds(TEAMS, nowMs),
 

@@ -1,11 +1,13 @@
 import { HashRouter, Routes, Route, NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { Zap, Target, Trophy, Menu, ShieldCheck, LogOut, BookOpen, Wrench } from "lucide-react";
+import { Zap, CalendarDays, Target, Trophy, Menu, ShieldCheck, LogOut, BookOpen, Wrench } from "lucide-react";
 import { EuroProvider, useEuro } from "./store/store";
 import { ToastProvider, Tabs } from "./ui/kit";
 import { fmtPts } from "./lib/format";
 import SignIn from "./pages/SignIn";
 import Home from "./pages/Home";
 import Matches from "./pages/Matches";
+import MatchesBrowse from "./pages/MatchesBrowse";
+import Spicy from "./pages/Spicy";
 import Scorers from "./pages/Scorers";
 import Tokens from "./pages/Tokens";
 import Champion from "./pages/Champion";
@@ -13,6 +15,29 @@ import Leaderboard from "./pages/Leaderboard";
 import Tournament from "./pages/Tournament";
 import Rules from "./pages/Rules";
 import Admin from "./pages/Admin";
+
+function MatchesHub() {
+  const loc = useLocation();
+  const nav = useNavigate();
+  const cur = loc.pathname.includes("spicy") ? "spicy" : "fixtures";
+  return (
+    <div className="space-y-4">
+      <Tabs
+        options={[
+          { value: "fixtures", label: "Fixtures" },
+          { value: "spicy", label: "Spicy 🌶️" },
+        ]}
+        value={cur}
+        onChange={(v) => nav(`/matches/${v}`)}
+      />
+      <Routes>
+        <Route path="fixtures" element={<MatchesBrowse />} />
+        <Route path="spicy" element={<Spicy />} />
+        <Route path="*" element={<Navigate to="fixtures" replace />} />
+      </Routes>
+    </div>
+  );
+}
 
 function PicksHub() {
   const loc = useLocation();
@@ -108,6 +133,7 @@ function MoreHub() {
 
 const NAV = [
   { to: "/", label: "Home", icon: Zap, end: true },
+  { to: "/matches", label: "Matches", icon: CalendarDays },
   { to: "/picks", label: "Predict", icon: Target },
   { to: "/table", label: "Table", icon: Trophy },
   { to: "/more", label: "More", icon: Menu },
@@ -141,7 +167,7 @@ function Shell() {
       <main className="flex-1 px-4 pb-24 pt-4">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/matches" element={<Navigate to="/picks/matches" replace />} />
+          <Route path="/matches/*" element={<MatchesHub />} />
           <Route path="/picks/*" element={<PicksHub />} />
           <Route path="/table/*" element={<TableHub />} />
           <Route path="/more" element={<MoreHub />} />

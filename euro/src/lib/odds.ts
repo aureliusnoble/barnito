@@ -101,6 +101,22 @@ export function marginSpread(fixture: EFixture, home: ETeam, away: ETeam, teamId
   return Math.round(MEAN_WIN_MARGIN * (pT - pO) * 100) / 100;
 }
 
+/**
+ * Full goal-margin distribution for a fixture from `teamId`'s perspective
+ * (wins positive): 7 outcomes, probabilities sum to 1. The building block for
+ * token outlooks and match spiciness.
+ */
+export function marginDistribution(fixture: EFixture, home: ETeam, away: ETeam, teamId: string, atMs: number): [number, number][] {
+  const o = outcomeOdds(fixture, home, away, atMs);
+  const pT = teamId === home.id ? o.probs.H : o.probs.A;
+  const pO = teamId === home.id ? o.probs.A : o.probs.H;
+  return [
+    ...MARGIN_PMF.map(([m, p]) => [m, pT * p] as [number, number]),
+    [0, o.probs.D],
+    ...MARGIN_PMF.map(([m, p]) => [-m, pO * p] as [number, number]),
+  ];
+}
+
 export interface MarginOutlook {
   line: number;
   /** Probability the team finishes ahead of its line (earns points). */
@@ -124,11 +140,8 @@ export function marginOutlook(fixture: EFixture, home: ETeam, away: ETeam, teamI
   const line = Math.round(MEAN_WIN_MARGIN * (pT - pO) * 100) / 100;
 
   // Full margin pmf from this team's perspective: wins positive, losses negative.
-  const outcomes: [number, number][] = [
-    ...MARGIN_PMF.map(([m, p]) => [m, pT * p] as [number, number]),
-    [0, pD],
-    ...MARGIN_PMF.map(([m, p]) => [-m, pO * p] as [number, number]),
-  ];
+  const outcomes = marginDistribution(fixture, home, away, teamId, atMs);
+  void pD;
   let cover = 0, winSum = 0, miss = 0, lossSum = 0;
   for (const [m, p] of outcomes) {
     const delta = m - line;

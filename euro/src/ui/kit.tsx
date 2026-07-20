@@ -154,6 +154,16 @@ export function LockBadge({ lockedAt }: { lockedAt?: string }) {
   );
 }
 
+/** Chili heat for a fixture — 1..3 peppers; renders nothing when mild. */
+export function SpiceTag({ level, className = "" }: { level: 0 | 1 | 2 | 3; className?: string }) {
+  if (level === 0) return null;
+  return (
+    <span className={`e-chip bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25 ${className}`} title="Could shake the leaderboard">
+      {"\u{1F336}\u{FE0F}".repeat(level)}
+    </span>
+  );
+}
+
 export function CountdownPill({ toIso, nowMs }: { toIso: string; nowMs: number }) {
   return <span className="e-chip e-num bg-white/[0.06] text-ink-200 ring-1 ring-white/[0.08]">{relKickoff(toIso, nowMs)}</span>;
 }
