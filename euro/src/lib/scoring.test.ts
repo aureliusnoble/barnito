@@ -68,7 +68,7 @@ describe("config sanity (the points economy the multipliers encode)", () => {
   // zero-expectation bet against the line, so their "pot" is the ± swing of one
   // goal versus the line — same formula, different meaning.
   const MATCHES = { group: 36, r16: 8, qf: 4, sf: 2, final: 1 } as const;
-  const PICK_GAMES = { group: 24, r16: 4, qf: 2, sf: 2, final: 1 } as const; // picks × games-per-team
+  const PICK_GAMES = { group: 36, r16: 8, qf: 4, sf: 2, final: 1 } as const; // picks × games-per-team
   const WALLETS = { group: 12, r16: 8, qf: 4, sf: 2, final: 1 } as const;
   const pot = (p: (typeof PHASES)[number]) => ({
     results: MATCHES[p] * BASE_OUTCOME * OUTCOME_MULT[p],
@@ -141,10 +141,10 @@ describe("scorerPointsPerGoal", () => {
     for (const phase of PHASES) {
       expect(scorerPointsPerGoal(phase, 1)).toBe(BASE_GOAL * SCORER_MULT[phase]);
     }
-    // 10 × 7 (R16) × 1.87 = 130.9 → 131.
+    // 5 × 7 (R16) × 1.87 = 65.45 → 65.
     expect(scorerPointsPerGoal("r16", 1.87)).toBe(Math.round(BASE_GOAL * SCORER_MULT.r16 * 1.87));
-    expect(scorerPointsPerGoal("r16", 1.87)).toBe(131);
-    // 10 × 90 (final) × 5.5 = 4950 exactly.
+    expect(scorerPointsPerGoal("r16", 1.87)).toBe(65);
+    // 5 × 180 (final) × 5.5 = 4950 exactly.
     expect(scorerPointsPerGoal("final", 5.5)).toBe(4950);
   });
 });

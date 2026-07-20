@@ -20,11 +20,11 @@ localStorage blob so the admin can inspect and drive everything from one browser
    ~1,800–2,600 (podium-swing zone); a longshot that wins pays its full odds. Fair odds
    make the expected value ≈ 400 for every pick.
 4. **Scorer picks** (forwards only): per-phase pick sets of
-   `SCORER_PICKS = { group:8, r16:4, qf:2, sf:2, final:1 }`.
+   `SCORER_PICKS = { group:12, r16:8, qf:4, sf:2, final:1 }` (half the games each round).
    Each goal a picked forward scores in that phase =
    `BASE_GOAL (10) × SCORER_MULT[phase] × that player's anytime-scorer odds at lock-in`.
-   `SCORER_MULT = { group:1, r16:7, qf:20, sf:30, final:90 }` — with per-goal pricing the pots are
-   exactly 240/280/400/600/900: ~1.5× growth at half the results pot from the R16 on.
+   `SCORER_MULT = { group:1, r16:7, qf:20, sf:60, final:180 }` — with per-goal pricing the pots
+   are exactly 180/280/400/600/900: ~1.5× growth at exactly half the results pot every round.
    The whole set locks at once, before the phase's first kickoff.
 5. **Tokens**: per phase users get `TOKENS = { group:12, r16:8, qf:4, sf:2, final:1 }`. Assign any
    number of tokens to a team in a match (multiple per match allowed). Each match shows each

@@ -8,7 +8,7 @@ import type { EPhase } from "./types";
 /** Base points for a correct outcome pick, before round & odds multipliers. */
 export const BASE_OUTCOME = 10;
 /** Base points per goal by a picked forward, before round & odds multipliers. */
-export const BASE_GOAL = 10;
+export const BASE_GOAL = 5;
 /** Base points per token per net goal, before round & odds multipliers. */
 export const BASE_TOKEN = 10;
 
@@ -16,19 +16,19 @@ export const BASE_TOKEN = 10;
  * grow ~1.5× (36/8/4/2/1 matches → expected totals 360/560/800/1200/1800). */
 export const OUTCOME_MULT: Record<EPhase, number> = { group: 1, r16: 7, qf: 20, sf: 60, final: 180 };
 
-/** Rule 5: scorer multipliers — pick-games shrink 24/4/2/2/1. Per-goal payouts are priced
+/** Rule 5: scorer multipliers — pick-games shrink 36/8/4/2/1. Per-goal payouts are priced
  * at expected-goals odds (see lib/odds.ts scorerOdds), so a pick's EV per match is exactly
- * BASE_GOAL × multiplier and the round pots are 240/280/400/600/900 — half the results pot
- * from the R16 on (the group ×1 floor makes groups the one rich-scorer anomaly). */
-export const SCORER_MULT: Record<EPhase, number> = { group: 1, r16: 7, qf: 20, sf: 30, final: 90 };
+ * BASE_GOAL × multiplier and the round pots are 180/280/400/600/900 — exactly HALF the
+ * results pot in every round. */
+export const SCORER_MULT: Record<EPhase, number> = { group: 1, r16: 7, qf: 20, sf: 60, final: 180 };
 
 /** Rule 6: token multipliers — wallets shrink 12/8/4/2/1. Tokens pay on the margin
  * RELATIVE to the frozen market spread (zero expectation both sides — pure edge), so
  * these scale the ± swing per round rather than an expected pot. */
 export const TOKEN_MULT: Record<EPhase, number> = { group: 2, r16: 4, qf: 10, sf: 30, final: 90 };
 
-/** Rule 5: forwards-only scorer picks per phase. */
-export const SCORER_PICKS: Record<EPhase, number> = { group: 8, r16: 4, qf: 2, sf: 2, final: 1 };
+/** Rule 5: forwards-only scorer picks per phase — half the games each round (like tokens). */
+export const SCORER_PICKS: Record<EPhase, number> = { group: 12, r16: 8, qf: 4, sf: 2, final: 1 };
 
 /** Rule 6: tokens per phase. */
 export const TOKENS_BY_PHASE: Record<EPhase, number> = { group: 12, r16: 8, qf: 4, sf: 2, final: 1 };
