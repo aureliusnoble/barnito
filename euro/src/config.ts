@@ -15,8 +15,11 @@ export const BASE_TOKEN = 10;
 /** Rule 1: each round's outcome points are worth 2× the last. */
 export const OUTCOME_MULT: Record<EPhase, number> = { group: 1, r16: 2, qf: 4, sf: 8, final: 16 };
 
-/** Rules 5–6: scorer picks and tokens scale ×4 per round (pick counts shrink). */
-export const PICK_MULT: Record<EPhase, number> = { group: 1, r16: 4, qf: 16, sf: 64, final: 256 };
+/** Rule 5: scorer picks scale ×4 per round (pick counts shrink 8→4→2→2→1). */
+export const SCORER_MULT: Record<EPhase, number> = { group: 1, r16: 4, qf: 16, sf: 64, final: 256 };
+
+/** Rule 6: token points scale ×2 per round, tracking the halving wallet (12→8→4→2→1). */
+export const TOKEN_MULT: Record<EPhase, number> = { group: 1, r16: 2, qf: 4, sf: 8, final: 16 };
 
 /** Rule 5: forwards-only scorer picks per phase. */
 export const SCORER_PICKS: Record<EPhase, number> = { group: 8, r16: 4, qf: 2, sf: 2, final: 1 };

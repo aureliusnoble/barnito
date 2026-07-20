@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Lock, Search, X } from "lucide-react";
 import type { EPhase } from "../types";
-import { BASE_GOAL, PHASES, PHASE_LABEL, PHASE_SHORT, PICK_MULT, SCORER_PICKS } from "../config";
+import { BASE_GOAL, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_MULT, SCORER_PICKS } from "../config";
 import { useEuro } from "../store/store";
 import { scorerPointsPerGoal } from "../lib/scoring";
 import { fmtFull, fmtOdds, fmtPts } from "../lib/format";
@@ -70,7 +70,7 @@ export default function Scorers() {
             {picked.length}<span className="text-ink-500">/{limit}</span>
           </span>
           <span className="text-ink-300">picks</span>
-          <span className="e-chip bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">×{PICK_MULT[phase]} round</span>
+          <span className="e-chip bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">×{SCORER_MULT[phase]} round</span>
           {my?.locked && <LockBadge lockedAt={my.lockedAt} />}
         </span>
         <span className="flex items-center gap-2 text-[11px] text-ink-400">
@@ -261,7 +261,7 @@ export default function Scorers() {
           <FormulaRow
             parts={[
               { v: String(BASE_GOAL), label: "base" },
-              { v: `×${PICK_MULT[phase]}`, label: PHASE_SHORT[phase] },
+              { v: `×${SCORER_MULT[phase]}`, label: PHASE_SHORT[phase] },
               { v: `×${fmtOdds(scorerOddsFor(topPick, phase).odds)}`, label: "odds" },
             ]}
             result={`${fmtPts(scorerPointsPerGoal(phase, scorerOddsFor(topPick, phase).odds))} / goal`}

@@ -1,4 +1,4 @@
-import { BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, CHAMPION_POINTS, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, PICK_MULT, SCORER_PICKS, TOKENS_BY_PHASE } from "../config";
+import { BASE_GOAL, BASE_OUTCOME, BASE_TOKEN, CHAMPION_POINTS, OUTCOME_MULT, PHASES, PHASE_LABEL, PHASE_SHORT, SCORER_MULT, SCORER_PICKS, TOKENS_BY_PHASE, TOKEN_MULT } from "../config";
 import { outcomePoints, scorerPointsPerGoal, tokenPoints } from "../lib/scoring";
 import { fmtPts, fmtSignedPts } from "../lib/format";
 import { FormulaRow, OddsTag, PageHead, PtsTag, SectionTitle } from "../ui/kit";
@@ -85,11 +85,11 @@ export default function Rules() {
         <SectionTitle hint="forwards only">Scorers</SectionTitle>
         <p className="mb-2 text-sm text-ink-200">
           Pick a fresh set of forwards each round. Every goal a pick scores in that round pays
-          {" "}{BASE_GOAL} × round × their scoring odds. Fewer picks each round — so the multiplier jumps <span className="font-bold text-white">×4 per round</span>.
+          {" "}{BASE_GOAL} × round × their scoring odds. Fewer picks each round — so the multiplier jumps <span className="font-bold text-white">×4 per round</span>. Tokens halve instead, so their multiplier doubles per round.
         </p>
         <ValueTable
           head={["Round", "Picks", "Multiplier", "Goal at odds ×4.00"]}
-          rows={PHASES.map((p) => [PHASE_SHORT[p], SCORER_PICKS[p], `×${PICK_MULT[p]}`, `${fmtPts(scorerPointsPerGoal(p, 4))} pts`])}
+          rows={PHASES.map((p) => [PHASE_SHORT[p], SCORER_PICKS[p], `×${SCORER_MULT[p]}`, `${fmtPts(scorerPointsPerGoal(p, 4))} pts`])}
         />
         <p className="mt-2 text-xs text-ink-400">The whole set locks at once, before the round's first kickoff; each player's odds freeze at lock.</p>
       </section>
@@ -97,7 +97,7 @@ export default function Rules() {
       <section className="e-card p-4">
         <SectionTitle hint="the risk lever">Tokens</SectionTitle>
         <p className="mb-2 text-sm text-ink-200">
-          Each round you get tokens equal to half the games. Stack any number on a team in a match. Each token pays
+          Each round you get a shrinking wallet of tokens. Stack any number on a team in a match. Each token pays
           {" "}{BASE_TOKEN} × <span className="font-semibold text-white">goal margin</span> × round × that team's win odds.
           In knockouts the margin is taken at the <span className="font-semibold text-white">end of extra time</span> (shootouts don't move it).
         </p>
@@ -111,7 +111,7 @@ export default function Rules() {
         </div>
         <ValueTable
           head={["Round", "Tokens", "Multiplier"]}
-          rows={PHASES.map((p) => [PHASE_SHORT[p], TOKENS_BY_PHASE[p], `×${PICK_MULT[p]}`])}
+          rows={PHASES.map((p) => [PHASE_SHORT[p], TOKENS_BY_PHASE[p], `×${TOKEN_MULT[p]}`])}
         />
         <p className="mt-2 text-xs text-red-300">⚠️ Margins are signed: a backed team losing SUBTRACTS points at the same rate.</p>
       </section>

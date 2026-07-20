@@ -20,13 +20,14 @@ localStorage blob so the admin can inspect and drive everything from one browser
 4. **Scorer picks** (forwards only): per-phase pick sets of
    `SCORER_PICKS = { group:8, r16:4, qf:2, sf:2, final:1 }`.
    Each goal a picked forward scores in that phase =
-   `BASE_GOAL (10) × PICK_MULT[phase] × that player's anytime-scorer odds at lock-in`.
-   `PICK_MULT = { group:1, r16:4, qf:16, sf:64, final:256 }` (×4 per round — fewer picks).
+   `BASE_GOAL (10) × SCORER_MULT[phase] × that player's anytime-scorer odds at lock-in`.
+   `SCORER_MULT = { group:1, r16:4, qf:16, sf:64, final:256 }` (×4 per round — fewer picks).
    The whole set locks at once, before the phase's first kickoff.
 5. **Tokens**: per phase users get `TOKENS = { group:12, r16:8, qf:4, sf:2, final:1 }`. Assign any number of tokens to a
    team in a match (multiple per match allowed). Each token scores
    `BASE_TOKEN (10) × (backed team's net goal difference in that match, SIGNED)
-   × PICK_MULT[phase] × the backed team's win odds at lock-in`.
+   × TOKEN_MULT[phase] × the backed team's win odds at lock-in`, with
+   `TOKEN_MULT = { group:1, r16:2, qf:4, sf:8, final:16 }` (×2 per round — halving wallet).
    Negative net difference ⇒ **negative points** (`TOKEN_ALLOW_NEGATIVE = true`).
    The phase's whole allocation locks at once, before the phase's first kickoff.
 6. **Knockout draws**: outcomes and token margins lock at the END OF EXTRA TIME (a

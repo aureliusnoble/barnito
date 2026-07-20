@@ -17,7 +17,8 @@ import {
   BASE_GOAL,
   BASE_TOKEN,
   OUTCOME_MULT,
-  PICK_MULT,
+  SCORER_MULT,
+  TOKEN_MULT,
   CHAMPION_POINTS,
   CHAMPION_USES_ODDS,
   TOKEN_ALLOW_NEGATIVE,
@@ -37,13 +38,13 @@ export function outcomePoints(phase: EPhase, odds: number): number {
 
 /** Points per goal for a scorer pick at given odds. */
 export function scorerPointsPerGoal(phase: EPhase, odds: number): number {
-  return Math.round(BASE_GOAL * PICK_MULT[phase] * odds);
+  return Math.round(BASE_GOAL * SCORER_MULT[phase] * odds);
 }
 
 /** Points for `count` tokens on a team that ends the match at `netDiff` (signed). */
 export function tokenPoints(phase: EPhase, count: number, netDiff: number, odds: number): number {
   const diff = TOKEN_ALLOW_NEGATIVE ? netDiff : Math.max(0, netDiff);
-  return Math.round(BASE_TOKEN * count * diff * PICK_MULT[phase] * odds);
+  return Math.round(BASE_TOKEN * count * diff * TOKEN_MULT[phase] * odds);
 }
 
 export function computeScores(state: Euro28State, teams: ETeam[]): UserScore[] {

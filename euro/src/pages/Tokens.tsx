@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { AlertTriangle, Coins, Lock } from "lucide-react";
 import type { EPhase, TokenAssign } from "../types";
-import { BASE_TOKEN, PHASES, PHASE_SHORT, PICK_MULT, TOKENS_BY_PHASE } from "../config";
+import { BASE_TOKEN, PHASES, PHASE_SHORT, TOKEN_MULT, TOKENS_BY_PHASE } from "../config";
 import { useEuro } from "../store/store";
 import { tokenPoints } from "../lib/scoring";
 import { fmtDay, fmtFull, fmtOdds, fmtSignedPts, fmtTime } from "../lib/format";
@@ -59,7 +59,7 @@ export default function Tokens() {
             {placed}<span className="text-ink-500">/{wallet}</span>
           </span>
           <span className="text-ink-300">placed</span>
-          <span className="e-chip bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">×{PICK_MULT[phase]} round</span>
+          <span className="e-chip bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">×{TOKEN_MULT[phase]} round</span>
           {my?.locked && <LockBadge lockedAt={my.lockedAt} />}
         </span>
         <span className="flex items-center gap-2 text-[11px] text-ink-400">

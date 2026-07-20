@@ -16,7 +16,8 @@ import {
   BASE_GOAL,
   BASE_TOKEN,
   OUTCOME_MULT,
-  PICK_MULT,
+  SCORER_MULT,
+  TOKEN_MULT,
   CHAMPION_POINTS,
   CHAMPION_USES_ODDS,
   TOKEN_ALLOW_NEGATIVE,
@@ -64,7 +65,8 @@ describe("config sanity (the constants the formulas are derived from)", () => {
   it("outcome multipliers double per round; pick multipliers quadruple", () => {
     for (let i = 1; i < PHASES.length; i++) {
       expect(OUTCOME_MULT[PHASES[i]]).toBe(2 * OUTCOME_MULT[PHASES[i - 1]]);
-      expect(PICK_MULT[PHASES[i]]).toBe(4 * PICK_MULT[PHASES[i - 1]]);
+      expect(SCORER_MULT[PHASES[i]]).toBe(4 * SCORER_MULT[PHASES[i - 1]]);
+      expect(TOKEN_MULT[PHASES[i]]).toBe(2 * TOKEN_MULT[PHASES[i - 1]]);
     }
   });
 
@@ -98,12 +100,12 @@ describe("outcomePoints", () => {
 });
 
 describe("scorerPointsPerGoal", () => {
-  it("is BASE_GOAL × PICK_MULT[phase] × odds, rounded", () => {
+  it("is BASE_GOAL × SCORER_MULT[phase] × odds, rounded", () => {
     for (const phase of PHASES) {
-      expect(scorerPointsPerGoal(phase, 1)).toBe(BASE_GOAL * PICK_MULT[phase]);
+      expect(scorerPointsPerGoal(phase, 1)).toBe(BASE_GOAL * SCORER_MULT[phase]);
     }
     // 10 × 4 (R16) × 1.87 = 74.8 → 75.
-    expect(scorerPointsPerGoal("r16", 1.87)).toBe(Math.round(BASE_GOAL * PICK_MULT.r16 * 1.87));
+    expect(scorerPointsPerGoal("r16", 1.87)).toBe(Math.round(BASE_GOAL * SCORER_MULT.r16 * 1.87));
     expect(scorerPointsPerGoal("r16", 1.87)).toBe(75);
     // 10 × 256 (final) × 5.5 = 14080 exactly.
     expect(scorerPointsPerGoal("final", 5.5)).toBe(14080);
@@ -111,19 +113,19 @@ describe("scorerPointsPerGoal", () => {
 });
 
 describe("tokenPoints", () => {
-  it("is BASE_TOKEN × count × netDiff × PICK_MULT[phase] × odds, rounded", () => {
+  it("is BASE_TOKEN × count × netDiff × TOKEN_MULT[phase] × odds, rounded", () => {
     // 10 × 3 tokens × +2 diff × 1 (group) × 1.8 = 108.
-    expect(tokenPoints("group", 3, 2, 1.8)).toBe(Math.round(BASE_TOKEN * 3 * 2 * PICK_MULT.group * 1.8));
+    expect(tokenPoints("group", 3, 2, 1.8)).toBe(Math.round(BASE_TOKEN * 3 * 2 * TOKEN_MULT.group * 1.8));
     expect(tokenPoints("group", 3, 2, 1.8)).toBe(108);
     // 10 × 1 × +3 × 64 (SF) × 2.5 = 4800.
-    expect(tokenPoints("sf", 1, 3, 2.5)).toBe(BASE_TOKEN * 1 * 3 * PICK_MULT.sf * 2.5);
+    expect(tokenPoints("sf", 1, 3, 2.5)).toBe(BASE_TOKEN * 1 * 3 * TOKEN_MULT.sf * 2.5);
   });
 
   it("goes NEGATIVE when the backed team loses (TOKEN_ALLOW_NEGATIVE)", () => {
     // 10 × 1 × −2 × 16 (QF) × 1.5 = −480 when negatives are allowed, else 0.
-    const expected = TOKEN_ALLOW_NEGATIVE ? Math.round(BASE_TOKEN * 1 * -2 * PICK_MULT.qf * 1.5) : 0;
+    const expected = TOKEN_ALLOW_NEGATIVE ? Math.round(BASE_TOKEN * 1 * -2 * TOKEN_MULT.qf * 1.5) : 0;
     expect(tokenPoints("qf", 1, -2, 1.5)).toBe(expected);
-    expect(tokenPoints("qf", 1, -2, 1.5)).toBe(-480);
+    expect(tokenPoints("qf", 1, -2, 1.5)).toBe(-120); // 10 × 1 × −2 × 4 (QF) × 1.5
     // 10 × 2 × −3 × 1 (group) × 2.5 = −150.
     expect(tokenPoints("group", 2, -3, 2.5)).toBe(-150);
   });
@@ -287,10 +289,10 @@ const state: Euro28State = {
 // Expected values, derived from the config constants (comments show the arithmetic).
 const PTS_ALICE_GA1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.aliceGA1); // 10×1×1.8 = 18
 const PTS_ALICE_FINAL = Math.round(BASE_OUTCOME * OUTCOME_MULT.final * O.aliceFinal); // 10×16×3.6 = 576
-const PTS_ALICE_SCORER = Math.round(BASE_GOAL * PICK_MULT.group * O.aliceScorerHot) * 2; // (10×1×2.2=22) × 2 goals = 44
-const PTS_ALICE_TOKEN = Math.round(BASE_TOKEN * 2 * 2 * PICK_MULT.group * O.aliceTokA1); // 10×2×(+2)×1×1.7 = 68
+const PTS_ALICE_SCORER = Math.round(BASE_GOAL * SCORER_MULT.group * O.aliceScorerHot) * 2; // (10×1×2.2=22) × 2 goals = 44
+const PTS_ALICE_TOKEN = Math.round(BASE_TOKEN * 2 * 2 * TOKEN_MULT.group * O.aliceTokA1); // 10×2×(+2)×1×1.7 = 68
 const PTS_BOB_GB1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.bobGB1); // 10×1×3.1 = 31
-const PTS_BOB_TOKEN = Math.round(BASE_TOKEN * 3 * -2 * PICK_MULT.group * O.bobTokA1); // 10×3×(−2)×1×3.4 = −204
+const PTS_BOB_TOKEN = Math.round(BASE_TOKEN * 3 * -2 * TOKEN_MULT.group * O.bobTokA1); // 10×3×(−2)×1×3.4 = −204
 const PTS_ADMIN_GA1 = Math.round(BASE_OUTCOME * OUTCOME_MULT.group * O.adminGA1); // 10×1×1.8 = 18
 
 const ALICE_TOTAL = PTS_ALICE_GA1 + PTS_ALICE_FINAL + PTS_ALICE_SCORER + PTS_ALICE_TOKEN + CHAMPION_POINTS; // 1026
