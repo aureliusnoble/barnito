@@ -70,7 +70,9 @@ export default function Tokens() {
             {placed}<span className="text-ink-500">/{wallet}</span>
           </span>
           <span className="text-ink-300">placed</span>
-          <span className="e-chip bg-punch-500/15 text-punch-300 ring-1 ring-punch-500/25">±{perGoal(1)}/goal·token</span>
+          <span className="e-chip e-num bg-white/[0.06] text-ink-200 ring-1 ring-white/[0.08]">
+            1🪙 = <span className="text-mint-300">+{perGoal(1)}</span>/<span className="text-red-300">−{perGoal(1)}</span> per goal
+          </span>
           {my?.locked && <LockBadge lockedAt={my.lockedAt} />}
         </span>
         <span className="flex items-center gap-2 text-[11px] text-ink-400">
@@ -148,10 +150,12 @@ export default function Tokens() {
                           {line != null && <LineTag line={line} />}
                         </span>
                         <span className="flex items-center gap-2">
-                          {n > 0 && line != null && (
-                            <span className="e-num hidden text-[10px] text-ink-400 sm:block">
-                              <span className="text-mint-300">+{perGoal(n)}</span> /goal past the line ·{" "}
-                              <span className="text-red-300">−{perGoal(n)}</span> /goal short
+                          {line != null && (
+                            <span className="e-num text-right text-[10px] leading-tight text-ink-400">
+                              <span className="text-mint-300">+{perGoal(Math.max(1, n))}</span>
+                              <span className="text-ink-600">/</span>
+                              <span className="text-red-300">−{perGoal(Math.max(1, n))}</span>
+                              <span className="block text-ink-500">per goal{n > 1 ? ` (${n}🪙)` : ""}</span>
                             </span>
                           )}
                           <Stepper value={n} min={0} max={n + (canAdd ? 1 : 0)} onChange={(v) => setCount(f.id, t.id, v)} />
